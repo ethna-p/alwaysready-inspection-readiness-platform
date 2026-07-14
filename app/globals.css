@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   Brand CSS variables — AlwaysReady palette
+   (PROJECT_BRIEF.md §Brand Colours)
+───────────────────────────────────────────── */
+:root {
+  --color-teal:       #00b8a6;
+  --color-dark-teal:  #014D4E;
+  --color-gold:       #ffd700;
+  --color-off-white:  #faf9f6;
+  --color-body-text:  #1a1a1a;
+}
+
+/* Global base */
+body {
+  background-color: var(--color-off-white);
+  color: var(--color-body-text);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────────
+   Visible focus ring — WCAG 2.1 AA (2.4.7)
+   A clear, consistent ring for keyboard users.
+───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-dark-teal);
+  outline-offset: 2px;
+}

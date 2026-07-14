@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" role="img" aria-label="AlwaysReady">
+  <!-- Gold circle with white tick -->
+  <circle cx="24" cy="24" r="22" fill="#ffd700"/>
+  <polyline points="13,24 21,32 35,16" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- AlwaysReady wordmark -->
+  <text x="54" y="32" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#00b8a6" letter-spacing="-0.3">AlwaysReady</text>
+</svg>
