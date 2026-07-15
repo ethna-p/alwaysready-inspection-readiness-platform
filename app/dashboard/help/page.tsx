@@ -80,7 +80,7 @@ function FAQ({ question, answer }: { question: string; answer: string }) {
 
 export default function HelpPage() {
   return (
-    <div className="max-w-3xl print:max-w-none">
+    <div className="print:max-w-none">
 
       {/* Page heading */}
       <div className="mb-6 print:mb-4">
@@ -277,8 +277,8 @@ export default function HelpPage() {
               answer="No. The audit trail is permanent and cannot be altered or deleted. This is by design — it protects the service by proving that records are genuine and have not been tampered with. If you make a mistake, simply save a corrected update and it will appear as the latest entry."
             />
             <FAQ
-              question="What if a KLOE is not relevant to our service?"
-              answer="You can add a note in the Notes field explaining why it does not apply (for example, 'Not applicable — service does not provide nursing care'). Set the status to Completed and give it a review date. This shows the inspector that you have actively considered it."
+              question="Why can I only see certain KLOEs?"
+              answer="AlwaysReady shows you only the KLOEs that apply to your service type. This keeps your tracker focused and avoids confusion. If you think a KLOE is missing or has been incorrectly filtered for your service, contact your admin."
             />
             <FAQ
               question="Who can see my updates?"
