@@ -52,6 +52,12 @@ export default async function SiteHeader() {
             KLOEs
           </a>
           <a
+            href="/dashboard/daily-report"
+            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Daily Report
+          </a>
+          <a
             href="/dashboard/trend"
             className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
@@ -62,12 +68,6 @@ export default async function SiteHeader() {
             className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Inspection Pack
-          </a>
-          <a
-            href="/dashboard/daily-report"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
-          >
-            Daily Report
           </a>
           {isAdmin && (
             <a
