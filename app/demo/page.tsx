@@ -109,6 +109,9 @@ export default async function DemoPage({ searchParams }: Props) {
       {/* What you'll see */}
       <main className="flex-1 flex items-start justify-center px-6 py-12">
         <div className="max-w-xl w-full">
+          <p className="text-xs text-gray-500 text-center mb-4">
+            KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
+          </p>
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <h2 className="text-sm font-bold text-[#014D4E] uppercase tracking-widest mb-4">
               What you&apos;ll see

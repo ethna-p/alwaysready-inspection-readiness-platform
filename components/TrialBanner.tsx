@@ -38,11 +38,16 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
     return (
       <div className="bg-[#014D4E] text-white print:hidden">
         <div className="max-w-7xl mx-auto px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm">
-            <span className="font-semibold">You&apos;re exploring AlwaysReady</span>
-            {' — '}
-            launching Autumn 2026. Impressed? Join the waitlist for early access.
-          </p>
+          <div>
+            <p className="text-sm">
+              <span className="font-semibold">You&apos;re exploring AlwaysReady</span>
+              {' — '}
+              launching Autumn 2026. Impressed? Join the waitlist for early access.
+            </p>
+            <p className="text-xs text-white/60 mt-0.5">
+              KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
+            </p>
+          </div>
           <a
             href="https://alwaysready.uk/waitlist"
             target="_blank"
