@@ -16,6 +16,8 @@ import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
 import KloeForm from './kloe-form'
 import AssignForm from './assign-form'
+import ChecklistPanel from './checklist-panel'
+import type { ItemWithCompletion } from './checklist-panel'
 
 type Props = { params: Promise<{ kloId: string }> }
 
@@ -83,6 +85,45 @@ export default async function KloeDetailPage({ params }: Props) {
   const nameById = new Map(
     (userRows ?? []).map(u => [u.id, u.full_name ?? u.email])
   )
+
+  // ── Fetch org + service type (for checklist filtering) ─────────────────
+  const { data: org } = await supabase
+    .from('organisations')
+    .select('service_type_id, service_types(name)')
+    .eq('id', profile.organisation_id)
+    .single()
+
+  const orgServiceTypeName: string =
+    (org as unknown as { service_types: { name: string } | null })?.service_types?.name ?? ''
+  const isDualReg = orgServiceTypeName === 'Dual-Registered Care Home'
+
+  // ── Fetch checklist items for this KLOE + this org's service type ────────
+  let checklistItems: ItemWithCompletion[] = []
+  if (org?.service_type_id) {
+    const { data: ciRows } = await supabase
+      .from('klo_checklist_items')
+      .select('*')
+      .eq('klo_item_id', kloId)
+      .or(`service_type_id.eq.${org.service_type_id},service_type_id.is.null`)
+      .order('display_order', { ascending: true })
+
+    if (ciRows && ciRows.length > 0) {
+      const ciIds = ciRows.map(ci => ci.id)
+      const { data: completions } = await supabase
+        .from('klo_checklist_completions')
+        .select('id, checklist_item_id, is_complete, evidence_location')
+        .in('checklist_item_id', ciIds)
+
+      const completionByItemId = new Map(
+        (completions ?? []).map(c => [c.checklist_item_id, c])
+      )
+
+      checklistItems = ciRows.map(ci => ({
+        ...ci,
+        completion: completionByItemId.get(ci.id) ?? null,
+      }))
+    }
+  }
 
   // ── Fetch all org team members (admins only, for assignment dropdown) ──
   const teamMembers: { id: string; email: string; full_name: string | null; role: string }[] = []
@@ -212,6 +253,27 @@ export default async function KloeDetailPage({ params }: Props) {
             </div>
           )}
         </section>
+
+        {/* Compliance checklist */}
+        {checklistItems.length > 0 && (
+          <section
+            className="bg-white rounded-xl border border-gray-200 p-5"
+            aria-labelledby="checklist-heading"
+          >
+            <h2 id="checklist-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+              Compliance checklist
+            </h2>
+            <p className="text-xs text-gray-500 mb-4">
+              Tick each item as your team gathers the required evidence. This does not affect the RAG status — that reflects
+              how recently this KLOE was reviewed, not checklist completion.
+            </p>
+            <ChecklistPanel
+              items={checklistItems}
+              isViewer={isViewer}
+              isDualReg={isDualReg}
+            />
+          </section>
+        )}
 
         {/* Assignment panel — admins only */}
         {isAdmin && (

@@ -205,6 +205,121 @@ export type Database = {
         ]
       }
 
+      // ── Compliance sub-checklist tables ───────────────────────────────
+
+      klo_checklist_items: {
+        Row: {
+          id: string
+          klo_item_id: string
+          service_type_id: string | null
+          item_type: 'Core' | 'Dementia Care'
+          ref: string
+          sub_service: 'Residential' | 'Nursing' | 'Joint' | null
+          checklist_item: string
+          regulation: string | null
+          evidence_notes: string | null
+          display_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          klo_item_id: string
+          service_type_id?: string | null
+          item_type: 'Core' | 'Dementia Care'
+          ref: string
+          sub_service?: 'Residential' | 'Nursing' | 'Joint' | null
+          checklist_item: string
+          regulation?: string | null
+          evidence_notes?: string | null
+          display_order: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          klo_item_id?: string
+          service_type_id?: string | null
+          item_type?: 'Core' | 'Dementia Care'
+          ref?: string
+          sub_service?: 'Residential' | 'Nursing' | 'Joint' | null
+          checklist_item?: string
+          regulation?: string | null
+          evidence_notes?: string | null
+          display_order?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'klo_checklist_items_klo_item_id_fkey'
+            columns: ['klo_item_id']
+            isOneToOne: false
+            referencedRelation: 'klo_items'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'klo_checklist_items_service_type_id_fkey'
+            columns: ['service_type_id']
+            isOneToOne: false
+            referencedRelation: 'service_types'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
+      klo_checklist_completions: {
+        Row: {
+          id: string
+          organisation_id: string
+          checklist_item_id: string
+          is_complete: boolean
+          evidence_location: string | null
+          notes: string | null
+          completed_by: string | null
+          completed_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          checklist_item_id: string
+          is_complete?: boolean
+          evidence_location?: string | null
+          notes?: string | null
+          completed_by?: string | null
+          completed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          checklist_item_id?: string
+          is_complete?: boolean
+          evidence_location?: string | null
+          notes?: string | null
+          completed_by?: string | null
+          completed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'klo_checklist_completions_organisation_id_fkey'
+            columns: ['organisation_id']
+            isOneToOne: false
+            referencedRelation: 'organisations'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'klo_checklist_completions_checklist_item_id_fkey'
+            columns: ['checklist_item_id']
+            isOneToOne: false
+            referencedRelation: 'klo_checklist_items'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
       // ── Compliance tracking tables ─────────────────────────────────────
 
       compliance_records: {
@@ -430,3 +545,5 @@ export type PriorityHistory         = Database['public']['Tables']['priority_his
 
 export type UserRole         = User['role']
 export type ComplianceStatus = ComplianceRecord['status']
+export type KloChecklistItem       = Database['public']['Tables']['klo_checklist_items']['Row']
+export type KloChecklistCompletion = Database['public']['Tables']['klo_checklist_completions']['Row']
