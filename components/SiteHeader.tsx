@@ -66,6 +66,12 @@ export default async function SiteHeader() {
               Team
             </a>
           )}
+          <a
+            href="/dashboard/help"
+            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Help
+          </a>
         </nav>
 
         {/* Sign out */}
