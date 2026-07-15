@@ -62,7 +62,7 @@ export default function UpgradePage() {
 
         {/* CTA */}
         <a
-          href="mailto:hello@alwaysready.uk?subject=AlwaysReady%20Subscription&body=Hi%20AJ%2C%0A%0AI%27d%20like%20to%20subscribe%20to%20AlwaysReady.%0A%0AOrganisation%3A%20%0AContact%20name%3A%20%0APhone%20(optional)%3A%20"
+          href="mailto:hello@alwaysready.uk?subject=AlwaysReady%20Subscription&body=Hi%2C%0A%0AI%27d%20like%20to%20subscribe%20to%20AlwaysReady.%0A%0AOrganisation%3A%20%0AContact%20name%3A%20%0APhone%20(optional)%3A%20"
           className="
             block w-full
             bg-[#ffd700] text-[#014D4E]
