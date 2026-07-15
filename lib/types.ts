@@ -578,6 +578,7 @@ export type Database = {
           sent_by: string | null
           message: string
           is_staff_reply: boolean
+          read_at: string | null
           created_at: string
         }
         Insert: {
@@ -586,6 +587,7 @@ export type Database = {
           sent_by?: string | null
           message: string
           is_staff_reply?: boolean
+          read_at?: string | null
           created_at?: string
         }
         Update: {
@@ -594,6 +596,7 @@ export type Database = {
           sent_by?: string | null
           message?: string
           is_staff_reply?: boolean
+          read_at?: string | null
           created_at?: string
         }
         Relationships: [

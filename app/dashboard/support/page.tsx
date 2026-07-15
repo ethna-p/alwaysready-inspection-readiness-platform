@@ -30,7 +30,7 @@ export default async function SupportPage() {
         <div>
           <h1 className="text-2xl font-bold text-[#014D4E]">Support</h1>
           <p className="text-sm text-gray-500 mt-1">
-            We aim to respond within one business day.
+            We aim to respond within three business days.
           </p>
         </div>
         <Link

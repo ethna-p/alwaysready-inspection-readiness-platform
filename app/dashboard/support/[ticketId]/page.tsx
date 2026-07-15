@@ -29,9 +29,17 @@ export default async function TicketThreadPage({ params }: Props) {
 
   const { data: replies } = await supabase
     .from('support_ticket_replies')
-    .select('id, message, is_staff_reply, created_at, sent_by')
+    .select('id, message, is_staff_reply, read_at, created_at, sent_by')
     .eq('ticket_id', ticketId)
     .order('created_at', { ascending: true })
+
+  // Mark any unread staff replies as read now that the user has opened the thread
+  await supabase
+    .from('support_ticket_replies')
+    .update({ read_at: new Date().toISOString() })
+    .eq('ticket_id', ticketId)
+    .eq('is_staff_reply', true)
+    .is('read_at', null)
 
   const status = STATUS_LABELS[ticket.status] ?? STATUS_LABELS.open
   const createdAt = new Date(ticket.created_at).toLocaleString('en-GB', {

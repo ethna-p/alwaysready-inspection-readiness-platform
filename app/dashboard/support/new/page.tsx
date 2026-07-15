@@ -28,7 +28,7 @@ export default function NewTicketPage() {
 
       <h1 className="text-2xl font-bold text-[#014D4E] mb-2">Get in touch</h1>
       <p className="text-sm text-[#1a1a1a] mb-8">
-        We aim to respond within one business day. You can track your ticket here once it&apos;s submitted.
+        We aim to respond within three business days. You can track your ticket here once it&apos;s submitted.
       </p>
 
       {state.status === 'error' && (

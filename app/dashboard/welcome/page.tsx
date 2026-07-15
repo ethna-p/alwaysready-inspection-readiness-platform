@@ -54,8 +54,9 @@ export default async function WelcomePage() {
             <p className="text-xs leading-relaxed text-[#1a1a1a]">
               You have full access to AlwaysReady for 90 days, completely free.
               All your data is saved and carries over when you subscribe.
-              After the trial, the plan is{' '}
-              <strong>£75 + VAT per month</strong> (20% discount for registered charities).
+              As a Founding Member, after your trial your exclusive rate is{' '}
+              <strong>£60 + VAT per month</strong> — in return for your feedback
+              and a review of the platform.
             </p>
           </div>
 
@@ -81,9 +82,9 @@ export default async function WelcomePage() {
                   "
                 />
                 <span className="text-sm text-[#1a1a1a] leading-relaxed">
-                  I agree to receive a weekly email from AJ Parker at AlwaysReady
-                  containing tips for getting the most out of the platform and
-                  general adult social care advice.
+                  I agree to receive a weekly email from AlwaysReady filled with
+                  practical, timely CQC compliance insights for registered
+                  managers and care leaders.
                   <span className="block mt-1 text-xs text-gray-400">
                     You can unsubscribe at any time by emailing{' '}
                     <a
