@@ -35,7 +35,7 @@ export default async function RatingsPage({ params }: Props) {
   const hasAnyRating = RATINGS.some(r => klo[r.key])
 
   return (
-    <div className="max-w-2xl">
+    <div>
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
