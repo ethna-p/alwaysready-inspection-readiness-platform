@@ -30,28 +30,23 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
   // Active subscribers: no banner
   if (!isDemo && subscriptionTier === 'active') return null
 
-  // Demo banner
-  if (isDemo) {
-    const hours = hoursRemaining(demoExpiresAt)
-    const days  = daysRemaining(demoExpiresAt)
-    const timeLabel = days >= 2
-      ? `${days} days`
-      : hours <= 1
-      ? 'less than an hour'
-      : `${hours} hours`
+  // Permanent preview accounts (is_demo=true, active, no expiry): no banner
+  if (isDemo && subscriptionTier === 'active' && !demoExpiresAt) return null
 
+  // Demo banner — shown to real demo visitors
+  if (isDemo) {
     return (
       <div className="bg-[#014D4E] text-white print:hidden">
         <div className="max-w-7xl mx-auto px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm">
-            <span className="font-semibold">Demo mode</span>
+            <span className="font-semibold">You&apos;re exploring AlwaysReady</span>
             {' — '}
-            your session expires in{' '}
-            <span className="font-semibold">{timeLabel}</span>.
-            {' '}Data resets when the session ends.
+            launching Autumn 2026. Impressed? Join the waitlist for early access.
           </p>
           <a
-            href="/api/demo-signup"
+            href="https://alwaysready.uk/waitlist"
+            target="_blank"
+            rel="noopener noreferrer"
             className="
               shrink-0 text-sm font-semibold
               bg-[#ffd700] text-[#014D4E]
@@ -61,7 +56,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
               transition-colors
             "
           >
-            SIGN UP HERE
+            Join the Waitlist →
           </a>
         </div>
       </div>
