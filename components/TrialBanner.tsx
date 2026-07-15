@@ -44,7 +44,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
               {' — '}
               launching Autumn 2026. Impressed? Join the waitlist for early access.
             </p>
-            <p className="text-xs text-white/60 mt-0.5">
+            <p className="text-xs text-white/75 mt-0.5">
               KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
             </p>
           </div>
