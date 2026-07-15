@@ -152,7 +152,7 @@ export default async function KloeDetailPage({ params }: Props) {
     ?.key_questions?.name ?? '—'
 
   return (
-    <div className="max-w-4xl">
+    <div>
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
@@ -171,18 +171,18 @@ export default async function KloeDetailPage({ params }: Props) {
         </p>
         <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
         {klo.wording && (
-          <p className="mt-3 text-sm text-[#1a1a1a] leading-relaxed max-w-2xl">
+          <p className="mt-3 text-sm text-[#1a1a1a] leading-relaxed">
             {klo.wording}
           </p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-xs text-gray-500 max-w-2xl">
+          <p className="mt-2 text-xs text-gray-500">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}
       </div>
 
-      <div className="space-y-6 max-w-2xl">
+      <div className="space-y-6">
 
         {/* Current status card */}
         <section
