@@ -3,8 +3,11 @@
  * Runs on every request to refresh the Supabase session cookie,
  * and redirects unauthenticated users away from protected routes.
  *
- * Protected: /dashboard and everything under it.
- * Public:    /login, /auth/callback, and all static assets.
+ * Protected routes:
+ *   /dashboard/*       — requires auth + onboarding complete
+ *   /superadmin/*      — requires auth + SUPERADMIN_EMAIL match
+ *
+ * Public routes: /login, /auth/callback, /upgrade, static assets.
  */
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
@@ -40,18 +43,51 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Redirect unauthenticated users to /login
-  if (!user && pathname.startsWith('/dashboard')) {
-    const loginUrl = request.nextUrl.clone()
-    loginUrl.pathname = '/login'
-    return NextResponse.redirect(loginUrl)
+  // ── Unauthenticated guards ──────────────────────────────────────────────
+
+  if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/superadmin'))) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from /login
+  // ── Superadmin guard ───────────────────────────────────────────────────
+  // Only the SUPERADMIN_EMAIL env var holder may access /superadmin/*
+  if (pathname.startsWith('/superadmin')) {
+    const superadminEmail = process.env.SUPERADMIN_EMAIL
+    if (!superadminEmail || user?.email !== superadminEmail) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
+  }
+
+  // ── First-login onboarding redirect ───────────────────────────────────
+  // If the user hasn't completed onboarding, send them to /dashboard/welcome.
+  // Skip if they're already on /dashboard/welcome (avoid loop).
+  if (
+    user &&
+    pathname.startsWith('/dashboard') &&
+    pathname !== '/dashboard/welcome'
+  ) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('onboarding_complete')
+      .eq('id', user.id)
+      .single()
+
+    if (profile && profile.onboarding_complete === false) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard/welcome'
+      return NextResponse.redirect(url)
+    }
+  }
+
+  // ── Redirect authenticated users away from /login ─────────────────────
   if (user && pathname === '/login') {
-    const dashboardUrl = request.nextUrl.clone()
-    dashboardUrl.pathname = '/dashboard'
-    return NextResponse.redirect(dashboardUrl)
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse

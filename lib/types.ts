@@ -127,9 +127,12 @@ export type Database = {
           name: string
           cqc_location_id: string | null
           service_type_id: string
-          subscription_tier: 'trial' | 'starter' | 'pro'
+          subscription_tier: 'trial' | 'active'
           is_demo: boolean
           demo_expires_at: string | null
+          trial_expires_at: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           created_at: string
         }
         Insert: {
@@ -137,9 +140,12 @@ export type Database = {
           name: string
           cqc_location_id?: string | null
           service_type_id: string
-          subscription_tier?: 'trial' | 'starter' | 'pro'
+          subscription_tier?: 'trial' | 'active'
           is_demo?: boolean
           demo_expires_at?: string | null
+          trial_expires_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           created_at?: string
         }
         Update: {
@@ -147,9 +153,12 @@ export type Database = {
           name?: string
           cqc_location_id?: string | null
           service_type_id?: string
-          subscription_tier?: 'trial' | 'starter' | 'pro'
+          subscription_tier?: 'trial' | 'active'
           is_demo?: boolean
           demo_expires_at?: string | null
+          trial_expires_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           created_at?: string
         }
         Relationships: [
@@ -172,6 +181,9 @@ export type Database = {
           username: string | null
           role: 'admin' | 'user' | 'viewer'
           viewer_expires_at: string | null
+          marketing_consent: boolean | null
+          marketing_consent_at: string | null
+          onboarding_complete: boolean
           created_at: string
         }
         Insert: {
@@ -182,6 +194,9 @@ export type Database = {
           username?: string | null
           role?: 'admin' | 'user' | 'viewer'
           viewer_expires_at?: string | null
+          marketing_consent?: boolean | null
+          marketing_consent_at?: string | null
+          onboarding_complete?: boolean
           created_at?: string
         }
         Update: {
@@ -192,6 +207,9 @@ export type Database = {
           username?: string | null
           role?: 'admin' | 'user' | 'viewer'
           viewer_expires_at?: string | null
+          marketing_consent?: boolean | null
+          marketing_consent_at?: string | null
+          onboarding_complete?: boolean
           created_at?: string
         }
         Relationships: [
@@ -506,6 +524,89 @@ export type Database = {
         ]
       }
 
+      // ── Support tickets ────────────────────────────────────────────────
+
+      support_tickets: {
+        Row: {
+          id: string
+          organisation_id: string
+          submitted_by: string
+          reference: string
+          subject: string
+          message: string
+          status: 'open' | 'in_progress' | 'resolved'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          submitted_by: string
+          reference?: string
+          subject: string
+          message: string
+          status?: 'open' | 'in_progress' | 'resolved'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          submitted_by?: string
+          reference?: string
+          subject?: string
+          message?: string
+          status?: 'open' | 'in_progress' | 'resolved'
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'support_tickets_organisation_id_fkey'
+            columns: ['organisation_id']
+            isOneToOne: false
+            referencedRelation: 'organisations'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
+      support_ticket_replies: {
+        Row: {
+          id: string
+          ticket_id: string
+          sent_by: string | null
+          message: string
+          is_staff_reply: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          ticket_id: string
+          sent_by?: string | null
+          message: string
+          is_staff_reply?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          ticket_id?: string
+          sent_by?: string | null
+          message?: string
+          is_staff_reply?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'support_ticket_replies_ticket_id_fkey'
+            columns: ['ticket_id']
+            isOneToOne: false
+            referencedRelation: 'support_tickets'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
     }
     Views: Record<string, never>
     Functions: {
@@ -547,3 +648,6 @@ export type UserRole         = User['role']
 export type ComplianceStatus = ComplianceRecord['status']
 export type KloChecklistItem       = Database['public']['Tables']['klo_checklist_items']['Row']
 export type KloChecklistCompletion = Database['public']['Tables']['klo_checklist_completions']['Row']
+export type SupportTicket          = Database['public']['Tables']['support_tickets']['Row']
+export type SupportTicketReply     = Database['public']['Tables']['support_ticket_replies']['Row']
+export type SubscriptionTier       = Organisation['subscription_tier']

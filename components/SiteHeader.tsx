@@ -67,6 +67,12 @@ export default async function SiteHeader() {
             </a>
           )}
           <a
+            href="/dashboard/support"
+            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Support
+          </a>
+          <a
             href="/dashboard/help"
             className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
