@@ -61,7 +61,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
               transition-colors
             "
           >
-            Start free trial →
+            SIGN UP HERE
           </a>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
             transition-colors
           "
         >
-          Subscribe now →
+          SUBSCRIBE HERE
         </a>
       </div>
     </div>
