@@ -51,7 +51,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
             {' '}Data resets when the session ends.
           </p>
           <a
-            href="/signup"
+            href="/api/demo-signup"
             className="
               shrink-0 text-sm font-semibold
               bg-[#ffd700] text-[#014D4E]
