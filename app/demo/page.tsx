@@ -58,7 +58,7 @@ export default async function DemoPage({ searchParams }: Props) {
             <span className="font-semibold text-[#1a1a1a]">Sunrise Residential Care Home</span>.
           </p>
 
-          <p className="text-sm text-gray-500 mb-8">
+          <p className="text-sm text-gray-600 mb-8">
             No sign-up required. Your session is fully isolated — no one else
             can see your data, and it is automatically cleared after 7 days.
           </p>
@@ -93,7 +93,7 @@ export default async function DemoPage({ searchParams }: Props) {
             </svg>
           </a>
 
-          <p className="text-xs text-gray-400 mt-4">
+          <p className="text-xs text-gray-600 mt-4">
             Takes about 2 seconds to load. Nothing to install.
           </p>
 
@@ -141,7 +141,7 @@ export default async function DemoPage({ searchParams }: Props) {
           They do not constitute official CQC guidance and do not guarantee any
           particular inspection outcome.
         </p>
-        <p className="text-xs text-gray-400 mt-3">
+        <p className="text-xs text-gray-600 mt-3">
           Already have an account?{' '}
           <Link href="/login" className="text-[#014D4E] underline hover:no-underline">
             Sign in

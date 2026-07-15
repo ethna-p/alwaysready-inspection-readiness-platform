@@ -132,7 +132,7 @@ export default async function DailyReportPage() {
   return (
     <div>
       {/* Breadcrumb + heading */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -143,7 +143,7 @@ export default async function DailyReportPage() {
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#014D4E]">Daily Review Report</h1>
-          <p className="text-sm text-gray-500 mt-1">{todayLabel}</p>
+          <p className="text-sm text-gray-600 mt-1">{todayLabel}</p>
         </div>
 
         {totalAttention > 0 && (
@@ -235,7 +235,7 @@ function ReportTable({
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+          <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
             <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
             <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">Key question</th>
             <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">Status</th>
@@ -281,7 +281,7 @@ function ReportTable({
                         {klo.title}
                       </Link>
                       {/* Mobile: show key question + context inline */}
-                      <div className="text-xs text-gray-500 mt-0.5 sm:hidden">{kqName}</div>
+                      <div className="text-xs text-gray-600 mt-0.5 sm:hidden">{kqName}</div>
                       {dueContext && (
                         <div className={`text-xs mt-0.5 font-medium ${rag === 'red' ? 'text-red-600' : 'text-amber-600'}`}>
                           {dueContext}
@@ -305,7 +305,7 @@ function ReportTable({
                 <td className="px-4 py-3 hidden md:table-cell">
                   {record
                     ? <StatusBadge status={record.status} />
-                    : <span className="text-gray-400 text-xs">—</span>}
+                    : <span className="text-gray-600 text-xs">—</span>}
                 </td>
 
                 {/* RAG */}

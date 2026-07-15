@@ -14,7 +14,7 @@ export default function UpgradePage() {
         {/* Logo mark */}
         <div className="mb-8">
           <span className="inline-block text-4xl font-extrabold tracking-tight text-[#014D4E]">
-            Always<span className="text-[#00b8a6]">Ready</span>
+            Always<span className="text-[#014D4E]">Ready</span>
           </span>
         </div>
 
@@ -30,14 +30,14 @@ export default function UpgradePage() {
 
         {/* Pricing card */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6 text-left shadow-sm">
-          <p className="text-xs font-semibold text-[#00b8a6] uppercase tracking-widest mb-2">
+          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-2">
             AlwaysReady Subscription
           </p>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-4xl font-extrabold text-[#014D4E]">£75</span>
-            <span className="text-sm text-gray-500">+ VAT / month</span>
+            <span className="text-sm text-gray-600">+ VAT / month</span>
           </div>
-          <p className="text-xs text-gray-500 mb-6">
+          <p className="text-xs text-gray-600 mb-6">
             Unlimited users · Unlimited KLOEs · Full audit trail
           </p>
           <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
@@ -49,12 +49,12 @@ export default function UpgradePage() {
               'Role-based access (Admin / User / Viewer)',
             ].map(item => (
               <li key={item} className="flex items-start gap-2">
-                <span className="text-[#00b8a6] font-bold mt-0.5">✓</span>
+                <span className="text-[#014D4E] font-bold mt-0.5">✓</span>
                 {item}
               </li>
             ))}
           </ul>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-600">
             Registered charities receive a 20% discount — mention your charity
             number when you get in touch.
           </p>
@@ -77,7 +77,7 @@ export default function UpgradePage() {
           Subscribe now — email us →
         </a>
 
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-600">
           We&apos;ll send you a secure payment link within one business day.
         </p>
 
@@ -85,7 +85,7 @@ export default function UpgradePage() {
         <div className="mt-10 pt-6 border-t border-gray-200">
           <Link
             href="/login"
-            className="text-xs text-gray-400 hover:text-[#014D4E] underline"
+            className="text-xs text-gray-600 hover:text-[#014D4E] underline"
           >
             Back to login
           </Link>

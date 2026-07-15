@@ -37,7 +37,7 @@ export default async function RatingsPage({ params }: Props) {
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -51,7 +51,7 @@ export default async function RatingsPage({ params }: Props) {
 
       {/* Heading */}
       <div className="mb-8">
-        <p className="text-xs font-semibold text-[#00b8a6] uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
           {kqName}
         </p>
         <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
@@ -59,7 +59,7 @@ export default async function RatingsPage({ params }: Props) {
           <p className="mt-3 text-sm text-[#1a1a1a] leading-relaxed">{klo.wording}</p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-gray-600">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}
@@ -68,7 +68,7 @@ export default async function RatingsPage({ params }: Props) {
       {/* Rating cards */}
       {hasAnyRating ? (
         <div className="space-y-4">
-          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+          <p className="text-xs text-gray-600 uppercase tracking-wide font-medium">
             CQC rating characteristics
           </p>
           {RATINGS.map(({ key, label, colour, heading }) => {
@@ -86,7 +86,7 @@ export default async function RatingsPage({ params }: Props) {
           })}
         </div>
       ) : (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-600">
           No rating characteristics are recorded for this KLOE yet.
         </p>
       )}

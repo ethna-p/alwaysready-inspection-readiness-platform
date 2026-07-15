@@ -48,7 +48,7 @@ export default function VisitorRow({ visitor }: Props) {
       <td className="px-4 py-3">
         <p className="font-medium text-[#1a1a1a]">{displayName}</p>
         {visitor.username && (
-          <p className="text-xs font-mono text-gray-500 mt-0.5">{visitor.username}</p>
+          <p className="text-xs font-mono text-gray-600 mt-0.5">{visitor.username}</p>
         )}
       </td>
 

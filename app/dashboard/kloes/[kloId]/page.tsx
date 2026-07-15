@@ -154,7 +154,7 @@ export default async function KloeDetailPage({ params }: Props) {
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -166,7 +166,7 @@ export default async function KloeDetailPage({ params }: Props) {
 
       {/* KLOE heading */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-[#00b8a6] uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
           {kqName}
         </p>
         <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
@@ -176,7 +176,7 @@ export default async function KloeDetailPage({ params }: Props) {
           </p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-gray-600">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}
@@ -196,15 +196,15 @@ export default async function KloeDetailPage({ params }: Props) {
           {record ? (
             <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
               <div>
-                <dt className="text-xs text-gray-500 mb-1">RAG</dt>
+                <dt className="text-xs text-gray-600 mb-1">RAG</dt>
                 <dd><RagBadge status={rag} /></dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 mb-1">Status</dt>
+                <dt className="text-xs text-gray-600 mb-1">Status</dt>
                 <dd><StatusBadge status={record.status} /></dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 mb-1">Priority</dt>
+                <dt className="text-xs text-gray-600 mb-1">Priority</dt>
                 <dd>
                   <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#014D4E] text-white text-sm font-bold" aria-label={`Priority ${record.priority}`}>
                     {record.priority}
@@ -212,34 +212,34 @@ export default async function KloeDetailPage({ params }: Props) {
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 mb-1">Last reviewed</dt>
+                <dt className="text-xs text-gray-600 mb-1">Last reviewed</dt>
                 <dd className="text-[#1a1a1a]">{formatDate(record.date_reviewed)}</dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 mb-1">Next due</dt>
+                <dt className="text-xs text-gray-600 mb-1">Next due</dt>
                 <dd className={`font-medium ${rag === 'red' ? 'text-red-600' : 'text-[#1a1a1a]'}`}>
                   {formatDate(record.next_review_due)}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-500 mb-1">Review frequency</dt>
+                <dt className="text-xs text-gray-600 mb-1">Review frequency</dt>
                 <dd className="text-[#1a1a1a]">{frequencyLabel(record.review_frequency_days)}</dd>
               </div>
               {record.assigned_to && (
                 <div className="col-span-2 sm:col-span-3">
-                  <dt className="text-xs text-gray-500 mb-1">Assigned to</dt>
+                  <dt className="text-xs text-gray-600 mb-1">Assigned to</dt>
                   <dd className="text-[#1a1a1a]">{assignedToName ?? record.assigned_to}</dd>
                 </div>
               )}
               {record.evidence_location && (
                 <div className="col-span-2 sm:col-span-3">
-                  <dt className="text-xs text-gray-500 mb-1">Evidence location</dt>
+                  <dt className="text-xs text-gray-600 mb-1">Evidence location</dt>
                   <dd className="text-[#1a1a1a] break-words">{record.evidence_location}</dd>
                 </div>
               )}
               {record.notes && (
                 <div className="col-span-2 sm:col-span-3">
-                  <dt className="text-xs text-gray-500 mb-1">Notes</dt>
+                  <dt className="text-xs text-gray-600 mb-1">Notes</dt>
                   <dd className="text-[#1a1a1a]">{record.notes}</dd>
                 </div>
               )}
@@ -247,7 +247,7 @@ export default async function KloeDetailPage({ params }: Props) {
           ) : (
             <div className="flex items-center gap-3">
               <RagBadge status="grey" />
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-600">
                 No review recorded yet.{!isViewer && ' Use the form below to log your first entry.'}
               </p>
             </div>
@@ -263,7 +263,7 @@ export default async function KloeDetailPage({ params }: Props) {
             <h2 id="checklist-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
               Compliance checklist
             </h2>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-gray-600 mb-4">
               Tick each item as your team gathers the required evidence. This does not affect the RAG status — that reflects
               how recently this KLOE was reviewed, not checklist completion.
             </p>
@@ -284,7 +284,7 @@ export default async function KloeDetailPage({ params }: Props) {
             <h2 id="assign-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
               Assign this KLOE
             </h2>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-gray-600 mb-4">
               Assign a team member to own this KLOE. They will be able to update status, evidence, and notes.
             </p>
             <AssignForm
@@ -350,7 +350,7 @@ export default async function KloeDetailPage({ params }: Props) {
           <h2 id="history-heading" className="text-lg font-bold text-[#014D4E]">
             Audit trail
             {history && history.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-gray-500">
+              <span className="ml-2 text-sm font-normal text-gray-600">
                 ({history.length} {history.length === 1 ? 'entry' : 'entries'})
               </span>
             )}
@@ -372,7 +372,7 @@ export default async function KloeDetailPage({ params }: Props) {
         </div>
 
         {!history || history.length === 0 ? (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-600">
             No history yet. Your first save will appear here.
           </p>
         ) : (
@@ -393,7 +393,7 @@ export default async function KloeDetailPage({ params }: Props) {
                         Latest
                       </span>
                     )}
-                    <span className="text-xs text-gray-500 ml-auto">
+                    <span className="text-xs text-gray-600 ml-auto">
                       Recorded {formatDate(entry.system_recorded_at, true)}
                     </span>
                   </div>
@@ -402,42 +402,42 @@ export default async function KloeDetailPage({ params }: Props) {
                   <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
                     {entry.date_reviewed && (
                       <div>
-                        <dt className="text-gray-500 mb-0.5">Review date</dt>
+                        <dt className="text-gray-600 mb-0.5">Review date</dt>
                         <dd className="font-medium text-[#1a1a1a]">{formatDate(entry.date_reviewed)}</dd>
                       </div>
                     )}
                     {entry.next_review_due && (
                       <div>
-                        <dt className="text-gray-500 mb-0.5">Next due</dt>
+                        <dt className="text-gray-600 mb-0.5">Next due</dt>
                         <dd className="font-medium text-[#1a1a1a]">{formatDate(entry.next_review_due)}</dd>
                       </div>
                     )}
                     {entry.priority !== null && (
                       <div>
-                        <dt className="text-gray-500 mb-0.5">Priority</dt>
+                        <dt className="text-gray-600 mb-0.5">Priority</dt>
                         <dd className="font-medium text-[#1a1a1a]">{entry.priority}</dd>
                       </div>
                     )}
                     {entry.review_frequency_days !== null && (
                       <div>
-                        <dt className="text-gray-500 mb-0.5">Frequency</dt>
+                        <dt className="text-gray-600 mb-0.5">Frequency</dt>
                         <dd className="font-medium text-[#1a1a1a]">{frequencyLabel(entry.review_frequency_days)}</dd>
                       </div>
                     )}
                     {entry.evidence_location && (
                       <div className="col-span-2 sm:col-span-3">
-                        <dt className="text-gray-500 mb-0.5">Evidence</dt>
+                        <dt className="text-gray-600 mb-0.5">Evidence</dt>
                         <dd className="font-medium text-[#1a1a1a] break-words">{entry.evidence_location}</dd>
                       </div>
                     )}
                     {entry.notes && (
                       <div className="col-span-2 sm:col-span-3">
-                        <dt className="text-gray-500 mb-0.5">Notes</dt>
+                        <dt className="text-gray-600 mb-0.5">Notes</dt>
                         <dd className="text-[#1a1a1a]">{entry.notes}</dd>
                       </div>
                     )}
                     <div className="col-span-2 sm:col-span-3">
-                      <dt className="text-gray-500 mb-0.5">Recorded by</dt>
+                      <dt className="text-gray-600 mb-0.5">Recorded by</dt>
                       <dd className="text-[#1a1a1a]">
                         {nameById.get(entry.changed_by) ?? entry.changed_by}
                       </dd>

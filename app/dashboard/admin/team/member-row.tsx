@@ -51,10 +51,10 @@ export default function MemberRow({ member, isSelf }: Props) {
           )}
         </p>
         {member.username && (
-          <p className="text-xs text-gray-500 mt-0.5 font-mono">{member.username}</p>
+          <p className="text-xs text-gray-600 mt-0.5 font-mono">{member.username}</p>
         )}
         {!isStaffAccount && (
-          <p className="text-xs text-gray-400 mt-0.5">{member.email}</p>
+          <p className="text-xs text-gray-600 mt-0.5">{member.email}</p>
         )}
       </td>
 
@@ -94,7 +94,7 @@ export default function MemberRow({ member, isSelf }: Props) {
       {/* Password reset */}
       <td className="px-4 py-4">
         {isSelf ? (
-          <span className="text-xs text-gray-400">—</span>
+          <span className="text-xs text-gray-600">—</span>
         ) : (
           <>
             <form action={resetAction}>
@@ -114,7 +114,7 @@ export default function MemberRow({ member, isSelf }: Props) {
                 <p className="font-mono text-sm text-[#014D4E] font-semibold select-all">
                   {resetState.credentials.password}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">Give this to {displayName} directly.</p>
+                <p className="text-xs text-gray-600 mt-1">Give this to {displayName} directly.</p>
               </div>
             )}
             {resetState && !resetState.success && (

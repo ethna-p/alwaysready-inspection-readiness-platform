@@ -29,7 +29,7 @@ export default async function SupportPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#014D4E]">Support</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             We aim to respond within three business days.
           </p>
         </div>
@@ -49,7 +49,7 @@ export default async function SupportPage() {
 
       {/* Ticket list */}
       {!tickets || tickets.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 text-sm">
+        <div className="text-center py-16 text-gray-600 text-sm">
           <p className="text-4xl mb-4">💬</p>
           <p className="font-medium text-[#014D4E] mb-1">No tickets yet</p>
           <p>If you need help, we&apos;re here. Submit a ticket and we&apos;ll get back to you.</p>
@@ -75,9 +75,9 @@ export default async function SupportPage() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-xs text-gray-400 font-mono mb-1">{ticket.reference}</p>
+                    <p className="text-xs text-gray-600 font-mono mb-1">{ticket.reference}</p>
                     <p className="text-sm font-semibold text-[#014D4E] truncate">{ticket.subject}</p>
-                    <p className="text-xs text-gray-400 mt-1">Submitted {created}</p>
+                    <p className="text-xs text-gray-600 mt-1">Submitted {created}</p>
                   </div>
                   <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${status.colour}`}>
                     {status.label}

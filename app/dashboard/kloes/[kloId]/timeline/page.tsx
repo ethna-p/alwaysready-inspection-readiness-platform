@@ -205,7 +205,7 @@ export default async function TimelinePage({ params }: Props) {
   return (
     <div className="max-w-3xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -219,11 +219,11 @@ export default async function TimelinePage({ params }: Props) {
 
       {/* Heading */}
       <div className="mb-8">
-        <p className="text-xs font-semibold text-[#00b8a6] uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
           {kqName}
         </p>
         <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-600 mt-1">
           Complete audit trail — every change, in order, with who made it and when.
         </p>
       </div>
@@ -232,7 +232,7 @@ export default async function TimelinePage({ params }: Props) {
       <div className="flex flex-wrap gap-4 mb-8">
         <div className="bg-white border border-gray-200 rounded-xl px-5 py-3 flex items-center gap-3">
           <span className="text-2xl font-bold text-[#014D4E]">{totalEntries}</span>
-          <span className="text-sm text-gray-500">total {totalEntries === 1 ? 'entry' : 'entries'}</span>
+          <span className="text-sm text-gray-600">total {totalEntries === 1 ? 'entry' : 'entries'}</span>
         </div>
         {(['review', 'frequency', 'priority'] as const).map(type => {
           const count = entries.filter(e => e.type === type).length
@@ -249,7 +249,7 @@ export default async function TimelinePage({ params }: Props) {
       {/* Empty state */}
       {totalEntries === 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
-          <p className="text-sm text-gray-500">No history yet for this KLOE.</p>
+          <p className="text-sm text-gray-600">No history yet for this KLOE.</p>
           <Link
             href={`/dashboard/kloes/${kloId}`}
             className="inline-block mt-3 text-sm font-medium text-[#014D4E] underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
@@ -292,7 +292,7 @@ export default async function TimelinePage({ params }: Props) {
                       <p className="text-xs font-medium text-[#1a1a1a]">
                         {formatDateTime(entry.timestamp)}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-gray-600 mt-0.5">
                         by {entry.changedByEmail}
                       </p>
                     </div>
@@ -344,16 +344,16 @@ function ReviewEntryBody({ entry }: {
 
       {/* Status — highlight if changed */}
       <div>
-        <dt className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+        <dt className="text-xs text-gray-600 mb-1 flex items-center gap-1">
           Status
           {statusChanged && <ChangedPill />}
         </dt>
         <dd>
           {entry.status
             ? <StatusBadge status={entry.status} />
-            : <span className="text-gray-400">—</span>}
+            : <span className="text-gray-600">—</span>}
           {statusChanged && entry.prevStatus && (
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-600 mt-0.5">
               was: <StatusBadge status={entry.prevStatus} />
             </p>
           )}
@@ -362,7 +362,7 @@ function ReviewEntryBody({ entry }: {
 
       {/* Date reviewed */}
       <div>
-        <dt className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+        <dt className="text-xs text-gray-600 mb-1 flex items-center gap-1">
           Date of review
           {dateChanged && <ChangedPill />}
         </dt>
@@ -374,7 +374,7 @@ function ReviewEntryBody({ entry }: {
       {/* Next review due */}
       {entry.nextReviewDue && (
         <div>
-          <dt className="text-xs text-gray-500 mb-1">Next review due</dt>
+          <dt className="text-xs text-gray-600 mb-1">Next review due</dt>
           <dd className="font-medium text-[#1a1a1a]">{formatDate(entry.nextReviewDue)}</dd>
         </div>
       )}
@@ -382,7 +382,7 @@ function ReviewEntryBody({ entry }: {
       {/* Review frequency */}
       {entry.reviewFrequencyDays && (
         <div>
-          <dt className="text-xs text-gray-500 mb-1">Review frequency</dt>
+          <dt className="text-xs text-gray-600 mb-1">Review frequency</dt>
           <dd className="text-[#1a1a1a]">{frequencyLabel(entry.reviewFrequencyDays)}</dd>
         </div>
       )}
@@ -390,12 +390,12 @@ function ReviewEntryBody({ entry }: {
       {/* Evidence location */}
       {(entry.evidenceLocation || evidenceChanged) && (
         <div className="sm:col-span-2">
-          <dt className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+          <dt className="text-xs text-gray-600 mb-1 flex items-center gap-1">
             Evidence location
             {evidenceChanged && <ChangedPill />}
           </dt>
           <dd className="text-[#1a1a1a] break-words">
-            {entry.evidenceLocation ?? <span className="text-gray-400 italic">Cleared</span>}
+            {entry.evidenceLocation ?? <span className="text-gray-600 italic">Cleared</span>}
           </dd>
         </div>
       )}
@@ -403,7 +403,7 @@ function ReviewEntryBody({ entry }: {
       {/* Notes */}
       {entry.notes && (
         <div className="sm:col-span-2">
-          <dt className="text-xs text-gray-500 mb-1">Notes</dt>
+          <dt className="text-xs text-gray-600 mb-1">Notes</dt>
           <dd className="text-[#1a1a1a]">{entry.notes}</dd>
         </div>
       )}
@@ -418,11 +418,11 @@ function FrequencyEntryBody({ entry }: {
     <div className="flex items-center gap-3 text-sm flex-wrap">
       {entry.oldFrequencyDays !== null ? (
         <>
-          <span className="text-gray-500 line-through">{frequencyLabel(entry.oldFrequencyDays)}</span>
-          <span className="text-gray-400" aria-hidden="true">→</span>
+          <span className="text-gray-600 line-through">{frequencyLabel(entry.oldFrequencyDays)}</span>
+          <span className="text-gray-600" aria-hidden="true">→</span>
         </>
       ) : (
-        <span className="text-xs text-gray-400 italic mr-1">First set:</span>
+        <span className="text-xs text-gray-600 italic mr-1">First set:</span>
       )}
       <span className="font-semibold text-[#014D4E]">{frequencyLabel(entry.newFrequencyDays)}</span>
     </div>
@@ -437,13 +437,13 @@ function PriorityEntryBody({ entry }: {
       {entry.oldPriority !== null ? (
         <>
           <PriorityDot value={entry.oldPriority} muted />
-          <span className="text-gray-400" aria-hidden="true">→</span>
+          <span className="text-gray-600" aria-hidden="true">→</span>
         </>
       ) : (
-        <span className="text-xs text-gray-400 italic mr-1">First set:</span>
+        <span className="text-xs text-gray-600 italic mr-1">First set:</span>
       )}
       <PriorityDot value={entry.newPriority} />
-      <span className="text-xs text-gray-500">
+      <span className="text-xs text-gray-600">
         {entry.newPriority === 1 ? '(Critical — most serious if non-compliant)'
           : entry.newPriority === 2 ? '(High)'
           : entry.newPriority === 3 ? '(Medium)'
@@ -459,7 +459,7 @@ function PriorityDot({ value, muted = false }: { value: number; muted?: boolean 
     <span
       className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${
         muted
-          ? 'bg-gray-200 text-gray-500 line-through'
+          ? 'bg-gray-200 text-gray-600 line-through'
           : 'bg-[#014D4E] text-white'
       }`}
       aria-label={`Priority ${value}`}

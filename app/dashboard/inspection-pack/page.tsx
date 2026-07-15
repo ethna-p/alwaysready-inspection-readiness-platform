@@ -154,7 +154,7 @@ export default async function InspectionPackPage() {
 
       {/* ── Screen-only controls ─────────────────────────────────────────── */}
       <div className="print:hidden">
-        <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+        <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
           <ol className="flex gap-1">
             <li>
               <Link href="/dashboard" className="hover:text-[#014D4E] underline">
@@ -171,7 +171,7 @@ export default async function InspectionPackPage() {
         <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-[#014D4E]">Inspection Pack</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-600 mt-1">
               A printable snapshot of your current readiness — ready to share
               with an inspector or board member.
             </p>
@@ -179,7 +179,7 @@ export default async function InspectionPackPage() {
           <PrintButton />
         </div>
 
-        <p className="text-xs text-gray-400 mb-6 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+        <p className="text-xs text-gray-600 mb-6 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
           Click <strong className="text-gray-600">Print / Save as PDF</strong> above, then choose{' '}
           <strong className="text-gray-600">Save as PDF</strong> in your browser's print dialog.
           The navigation and this message will not appear in the output.
@@ -200,7 +200,7 @@ export default async function InspectionPackPage() {
             </h1>
             <p className="text-base font-semibold text-[#014D4E] mt-1">{orgName}</p>
           </div>
-          <div className="text-right text-xs text-gray-500">
+          <div className="text-right text-xs text-gray-600">
             <p>Prepared: {generatedDate}</p>
             <p className="mt-1">alwaysready.co.uk</p>
           </div>
@@ -208,13 +208,13 @@ export default async function InspectionPackPage() {
 
         {/* Screen header (hidden when printing) */}
         <div className="print:hidden mb-8 pb-6 border-b border-gray-200">
-          <p className="text-xs font-semibold text-[#00b8a6] uppercase tracking-widest mb-1">
+          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
             {orgName}
           </p>
           <h2 className="text-xl font-bold text-[#014D4E]">
             CQC Inspection Readiness Pack
           </h2>
-          <p className="text-sm text-gray-500 mt-1">Prepared: {generatedDate}</p>
+          <p className="text-sm text-gray-600 mt-1">Prepared: {generatedDate}</p>
         </div>
 
         {/* ── Overall readiness ─────────────────────────────────────────── */}
@@ -229,7 +229,7 @@ export default async function InspectionPackPage() {
               >
                 {overallPct}%
               </div>
-              <div className="text-xs text-gray-500 mt-2 uppercase tracking-wide font-medium">
+              <div className="text-xs text-gray-600 mt-2 uppercase tracking-wide font-medium">
                 Overall readiness
               </div>
             </div>
@@ -252,7 +252,7 @@ export default async function InspectionPackPage() {
                   }}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-600 mt-2">
                 {totalCompliant} of {totalKlos} KLOEs currently up to date
               </p>
             </div>
@@ -293,7 +293,7 @@ export default async function InspectionPackPage() {
                 <tr key={kq.id} className="hover:bg-gray-50 print:hover:bg-transparent">
                   <td className="px-4 py-2.5 font-medium text-[#1a1a1a]">{kq.name}</td>
                   <td className="px-4 py-2.5 text-center tabular-nums">{kq.compliant}</td>
-                  <td className="px-4 py-2.5 text-center tabular-nums text-gray-500">{kq.total}</td>
+                  <td className="px-4 py-2.5 text-center tabular-nums text-gray-600">{kq.total}</td>
                   <td
                     className="px-4 py-2.5 text-center font-bold tabular-nums"
                     style={{ color: pctColour(kq.pct) }}
@@ -423,7 +423,7 @@ export default async function InspectionPackPage() {
                             <td />
                             <td
                               colSpan={6}
-                              className="px-3 pb-2.5 text-gray-500 text-xs italic"
+                              className="px-3 pb-2.5 text-gray-600 text-xs italic"
                             >
                               Evidence: {record.evidence_location}
                             </td>
@@ -439,7 +439,7 @@ export default async function InspectionPackPage() {
         </div>
 
         {/* ── Print footer — disclaimer (hidden on screen; SiteFooter covers it) */}
-        <div className="hidden print:block mt-10 pt-6 border-t border-gray-200 text-xs text-gray-500 space-y-1">
+        <div className="hidden print:block mt-10 pt-6 border-t border-gray-200 text-xs text-gray-600 space-y-1">
           <p>
             © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
             Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE

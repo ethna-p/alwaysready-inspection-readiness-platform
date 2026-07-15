@@ -81,7 +81,7 @@ export default async function KloesPage() {
     <div>
       {/* Page heading */}
       <div className="mb-8">
-        <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+        <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
           <ol className="flex gap-1">
             <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
             <li aria-hidden="true">/</li>
@@ -89,7 +89,7 @@ export default async function KloesPage() {
           </ol>
         </nav>
         <h1 className="text-2xl font-bold text-[#014D4E]">KLOE Compliance Tracker</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-600 mt-1">
           Select any KLOE to update its status or view its audit trail.
         </p>
       </div>
@@ -97,15 +97,15 @@ export default async function KloesPage() {
       {/* Summary strip */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
         <div className="col-span-2 sm:col-span-1 bg-white rounded-xl border border-gray-200 p-4">
-          <p className="text-xs text-gray-500 font-medium mb-1">Overall</p>
+          <p className="text-xs text-gray-600 font-medium mb-1">Overall</p>
           <p className="text-3xl font-bold text-[#014D4E]">{pctComplete}<span className="text-lg">%</span></p>
-          <p className="text-xs text-gray-500">Completed</p>
+          <p className="text-xs text-gray-600">Completed</p>
         </div>
         {([ 'green', 'amber', 'red', 'grey'] as const).map(rag => (
           <div key={rag} className="bg-white rounded-xl border border-gray-200 p-4">
             <RagBadge status={rag} compact />
             <p className="text-2xl font-bold text-[#1a1a1a] mt-2">{ragCounts[rag]}</p>
-            <p className="text-xs text-gray-500">KLOEs</p>
+            <p className="text-xs text-gray-600">KLOEs</p>
           </div>
         ))}
       </div>
@@ -129,7 +129,7 @@ export default async function KloesPage() {
                 className="text-lg font-bold text-[#014D4E] mb-3 pb-2 border-b border-gray-200"
               >
                 {kq.name}
-                <span className="ml-2 text-sm font-normal text-gray-500">
+                <span className="ml-2 text-sm font-normal text-gray-600">
                   ({groupKlos.length} KLOEs)
                 </span>
               </h2>
@@ -137,7 +137,7 @@ export default async function KloesPage() {
               <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                    <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
                       <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">Status</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">RAG</th>
@@ -178,7 +178,7 @@ export default async function KloesPage() {
                           <td className="px-4 py-3 hidden sm:table-cell">
                             {record
                               ? <StatusBadge status={record.status} />
-                              : <span className="text-gray-400 text-xs">—</span>
+                              : <span className="text-gray-600 text-xs">—</span>
                             }
                           </td>
 
@@ -195,7 +195,7 @@ export default async function KloesPage() {
                                   {record.priority}
                                 </span>
                               )
-                              : <span className="text-gray-400 text-xs">—</span>
+                              : <span className="text-gray-600 text-xs">—</span>
                             }
                           </td>
 

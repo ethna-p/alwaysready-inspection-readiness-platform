@@ -34,7 +34,7 @@ export default async function WelcomePage() {
         {/* Logo */}
         <div className="mb-8 text-center">
           <span className="inline-block text-3xl font-extrabold tracking-tight text-[#014D4E]">
-            Always<span className="text-[#00b8a6]">Ready</span>
+            Always<span className="text-[#014D4E]">Ready</span>
           </span>
         </div>
 
@@ -67,7 +67,7 @@ export default async function WelcomePage() {
                 of the beta invitation: weekly tips email. We use a checkbox
                 rather than a pre-ticked opt-in. */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                 Email preferences
               </p>
               <label className="flex items-start gap-3 cursor-pointer group">
@@ -77,7 +77,7 @@ export default async function WelcomePage() {
                   defaultChecked
                   className="
                     mt-0.5 h-4 w-4 rounded border-gray-300
-                    text-[#00b8a6] accent-[#00b8a6]
+                    text-[#014D4E] accent-[#00b8a6]
                     focus:ring-[#00b8a6] focus:ring-offset-0
                   "
                 />
@@ -85,7 +85,7 @@ export default async function WelcomePage() {
                   I agree to receive a weekly email from AlwaysReady filled with
                   practical, timely CQC compliance insights for registered
                   managers and care leaders.
-                  <span className="block mt-1 text-xs text-gray-400">
+                  <span className="block mt-1 text-xs text-gray-600">
                     You can unsubscribe at any time by emailing{' '}
                     <a
                       href="mailto:hello@alwaysready.uk"
@@ -100,7 +100,7 @@ export default async function WelcomePage() {
             </div>
 
             {/* Privacy note */}
-            <p className="text-xs text-gray-400 leading-relaxed">
+            <p className="text-xs text-gray-600 leading-relaxed">
               By continuing you confirm that you have read and agree to our{' '}
               <a
                 href="https://alwaysready.uk/privacy"

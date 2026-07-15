@@ -13,6 +13,10 @@
 }
 
 /* Global base */
+html {
+  font-size: 112.5%; /* 18px base — scales all rem units up from the default 16px */
+}
+
 body {
   background-color: var(--color-off-white);
   color: var(--color-body-text);

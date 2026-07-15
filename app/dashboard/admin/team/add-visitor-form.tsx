@@ -29,7 +29,7 @@ export default function AddVisitorForm() {
             Login credentials — share these now
           </p>
           <div>
-            <p className="text-xs text-gray-500 mb-0.5">Login ID</p>
+            <p className="text-xs text-gray-600 mb-0.5">Login ID</p>
             <p
               className="font-mono text-sm bg-white border border-gray-200 rounded px-3 py-2 select-all cursor-text"
               onClick={e => {
@@ -43,7 +43,7 @@ export default function AddVisitorForm() {
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 mb-0.5">Temporary password</p>
+            <p className="text-xs text-gray-600 mb-0.5">Temporary password</p>
             <p
               className="font-mono text-sm bg-white border border-gray-200 rounded px-3 py-2 select-all cursor-text"
               onClick={e => {
@@ -56,7 +56,7 @@ export default function AddVisitorForm() {
               {state.credentials.password}
             </p>
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-600">
             Click either field to select all. These credentials will not be shown again.
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function AddVisitorForm() {
             type="text"
             required
             placeholder="e.g. Sarah Thompson"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
         </div>
 
@@ -107,9 +107,9 @@ export default function AddVisitorForm() {
             min={1}
             max={365}
             placeholder="e.g. 7"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-600 mt-1">
             Login will stop working automatically after this many days.
           </p>
         </div>

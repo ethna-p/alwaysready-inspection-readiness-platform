@@ -14,9 +14,9 @@ export default function NewTicketPage() {
   )
 
   return (
-    <div className="max-w-2xl">
+    <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -27,9 +27,17 @@ export default function NewTicketPage() {
       </nav>
 
       <h1 className="text-2xl font-bold text-[#014D4E] mb-2">Get in touch</h1>
-      <p className="text-sm text-[#1a1a1a] mb-8">
+      <p className="text-sm text-[#1a1a1a] mb-6">
         We aim to respond within three business days. You can track your ticket here once it&apos;s submitted.
       </p>
+
+      <div className="bg-teal-50 border border-teal-200 rounded-xl px-4 py-3 text-sm text-[#014D4E] mb-8">
+        Before submitting, it&apos;s worth checking our{' '}
+        <a href="/dashboard/help" className="font-semibold underline hover:text-[#014D4E]">
+          Help page
+        </a>
+        {' '}— it covers common questions about KLOEs, roles, and using the platform.
+      </div>
 
       {state.status === 'error' && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700 mb-6">

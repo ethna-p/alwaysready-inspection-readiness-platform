@@ -35,7 +35,7 @@ export default async function TeamPage() {
   return (
     <div className="max-w-4xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -46,7 +46,7 @@ export default async function TeamPage() {
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#014D4E]">Team management</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             Add team members, assign roles, and manage login credentials.
           </p>
         </div>
@@ -58,18 +58,18 @@ export default async function TeamPage() {
         <section aria-labelledby="team-list-heading">
           <h2 id="team-list-heading" className="text-lg font-bold text-[#014D4E] mb-4">
             Team members
-            <span className="ml-2 text-sm font-normal text-gray-500">
+            <span className="ml-2 text-sm font-normal text-gray-600">
               ({members.length})
             </span>
           </h2>
 
           {members.length === 0 ? (
-            <p className="text-sm text-gray-500">No team members yet. Add your first below.</p>
+            <p className="text-sm text-gray-600">No team members yet. Add your first below.</p>
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                  <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
                     <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Role</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Password</th>
@@ -121,7 +121,7 @@ export default async function TeamPage() {
           <h2 id="add-member-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
             Add team member
           </h2>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs text-gray-600 mb-4">
             A login ID and temporary password will be generated. Give them to the team member directly — they do not need an email address.
           </p>
           <AddMemberForm />
@@ -132,22 +132,22 @@ export default async function TeamPage() {
           <h2 id="visitor-list-heading" className="text-lg font-bold text-[#014D4E] mb-1">
             Visitor logins
             {visitors.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-gray-500">
+              <span className="ml-2 text-sm font-normal text-gray-600">
                 ({visitors.length})
               </span>
             )}
           </h2>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-gray-600 mb-4">
             Read-only access for inspectors, board members, or other external visitors. Access expires automatically.
           </p>
 
           {visitors.length === 0 ? (
-            <p className="text-sm text-gray-500">No visitor logins yet.</p>
+            <p className="text-sm text-gray-600">No visitor logins yet.</p>
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                  <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
                     <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Access expires</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Revoke</th>
@@ -171,7 +171,7 @@ export default async function TeamPage() {
           <h2 id="add-visitor-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
             Create visitor login
           </h2>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs text-gray-600 mb-4">
             Create a temporary read-only login for an inspector or external visitor. They can view all KLOEs, the audit trail, trend data, and reports — but cannot make any changes.
           </p>
           <AddVisitorForm />

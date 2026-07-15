@@ -69,7 +69,7 @@ export default async function MyKloesPage() {
       {/* Heading */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[#014D4E]">My KLOEs</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-600 mt-1">
           Welcome, {displayName}. Here are the KLOEs assigned to you.
         </p>
       </div>
@@ -78,12 +78,12 @@ export default async function MyKloesPage() {
         /* Empty state */
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
           <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           </div>
           <h2 className="font-semibold text-[#014D4E] mb-1">Nothing assigned to you yet</h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-600">
             Your admin will assign KLOEs to you. Check back after speaking to your manager.
           </p>
         </div>
@@ -107,7 +107,7 @@ export default async function MyKloesPage() {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-[#00b8a6] uppercase tracking-wide mb-0.5">
+                    <p className="text-xs font-medium text-[#014D4E] uppercase tracking-wide mb-0.5">
                       {kqName}
                     </p>
                     <Link
@@ -117,7 +117,7 @@ export default async function MyKloesPage() {
                       {klo?.title ?? 'KLOE'}
                     </Link>
 
-                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-500">
+                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-600">
                       <StatusBadge status={record.status} />
                       <span>
                         Next due:{' '}

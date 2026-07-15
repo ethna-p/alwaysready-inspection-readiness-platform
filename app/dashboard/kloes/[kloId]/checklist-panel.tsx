@@ -112,7 +112,7 @@ function ChecklistItemRow({
             if (!isViewer) onToggle(item.id, e.target.checked)
           }}
           className="
-            w-4 h-4 rounded border-gray-300 text-[#00b8a6]
+            w-4 h-4 rounded border-gray-300 text-[#014D4E]
             focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-1
             disabled:opacity-60 disabled:cursor-not-allowed
             cursor-pointer
@@ -126,7 +126,7 @@ function ChecklistItemRow({
         {/* Top row: ref + text + regulation */}
         <div className="flex flex-wrap items-start gap-2">
           <RefBadge ref={item.ref} itemType={item.item_type} />
-          <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-gray-400' : 'text-[#1a1a1a]'}`}>
+          <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-gray-600' : 'text-[#1a1a1a]'}`}>
             {item.checklist_item}
           </p>
           <RegBadge reg={item.regulation} />
@@ -137,13 +137,13 @@ function ChecklistItemRow({
           <button
             type="button"
             onClick={() => setShowEvidence(v => !v)}
-            className="text-[11px] text-[#00b8a6] hover:underline focus:outline-none focus:ring-1 focus:ring-[#00b8a6] rounded"
+            className="text-[11px] text-[#014D4E] hover:underline focus:outline-none focus:ring-1 focus:ring-[#00b8a6] rounded"
           >
             {showEvidence ? 'Hide evidence hint' : 'What evidence is needed?'}
           </button>
         )}
         {showEvidence && item.evidence_notes && (
-          <p className="text-[11px] text-gray-500 bg-gray-50 rounded px-2 py-1.5 leading-relaxed">
+          <p className="text-[11px] text-gray-600 bg-gray-50 rounded px-2 py-1.5 leading-relaxed">
             {item.evidence_notes}
           </p>
         )}
@@ -162,7 +162,7 @@ function ChecklistItemRow({
               placeholder="Evidence location (optional)"
               className="
                 flex-1 text-xs rounded border border-gray-200 px-2 py-1.5
-                bg-white text-[#1a1a1a] placeholder:text-gray-400
+                bg-white text-[#1a1a1a] placeholder:text-gray-600
                 focus:outline-none focus:ring-1 focus:ring-[#014D4E] focus:border-[#014D4E]
               "
             />
@@ -189,7 +189,7 @@ function ChecklistItemRow({
           </div>
         )}
         {isViewer && evidence && (
-          <p className="text-[11px] text-gray-500 mt-1">
+          <p className="text-[11px] text-gray-600 mt-1">
             <span className="font-medium">Evidence: </span>{evidence}
           </p>
         )}
@@ -221,7 +221,7 @@ function ItemGroup({
   return (
     <div>
       {label && (
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-4">{label}</p>
+        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 px-4">{label}</p>
       )}
       <div className="space-y-1">
         {items.map(item => (
@@ -299,7 +299,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg }: Props) {
 
   if (items.length === 0) {
     return (
-      <div className="text-sm text-gray-500 px-1">
+      <div className="text-sm text-gray-600 px-1">
         No compliance checklist items available for this KLOE and your service type.
       </div>
     )
@@ -399,7 +399,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg }: Props) {
       )}
 
       {isPending && (
-        <p className="text-xs text-gray-400 animate-pulse">Saving…</p>
+        <p className="text-xs text-gray-600 animate-pulse">Saving…</p>
       )}
     </div>
   )

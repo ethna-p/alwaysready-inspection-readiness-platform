@@ -158,7 +158,7 @@ export default async function DashboardPage() {
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#014D4E]">Inspection Readiness</h1>
-          <p className="text-sm text-gray-500 mt-1">{orgName}</p>
+          <p className="text-sm text-gray-600 mt-1">{orgName}</p>
         </div>
         <Link
           href="/dashboard/kloes"
@@ -188,12 +188,12 @@ export default async function DashboardPage() {
               >
                 {overallPct}<span className="text-3xl">%</span>
               </p>
-              <p className="text-sm text-gray-500 mt-1">Overall readiness</p>
+              <p className="text-sm text-gray-600 mt-1">Overall readiness</p>
             </div>
 
             {/* Progress bar + breakdown */}
             <div className="flex-1 min-w-[220px]">
-              <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <div className="flex justify-between text-xs text-gray-600 mb-1">
                 <span>{compliantKlos} of {totalKlos} KLOEs up to date</span>
                 <span>{overallPct}%</span>
               </div>
@@ -210,7 +210,7 @@ export default async function DashboardPage() {
                   style={{ width: `${overallPct}%` }}
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-gray-600 mt-2">
                 Up to date = status Completed and next review not yet overdue
               </p>
 
@@ -274,7 +274,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Counts */}
-                <p className="text-xs text-gray-500 mb-3">
+                <p className="text-xs text-gray-600 mb-3">
                   {kq.compliant} of {kq.total} KLOEs up to date
                 </p>
 
@@ -315,7 +315,7 @@ export default async function DashboardPage() {
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
                   <th scope="col" className="text-left px-4 py-3 font-medium">Team member</th>
                   <th scope="col" className="text-left px-4 py-3 font-medium">Assigned KLOEs</th>
                   <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">RAG breakdown</th>
@@ -363,7 +363,7 @@ export default async function DashboardPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-gray-600 mt-2">
             Sorted by most at-risk first. Assign KLOEs from each KLOE's detail page.
           </p>
         </section>

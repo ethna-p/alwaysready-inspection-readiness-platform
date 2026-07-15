@@ -224,7 +224,7 @@ export default async function TrendPage() {
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
           <li>
             <Link href="/dashboard" className="hover:text-[#014D4E] underline">
@@ -242,7 +242,7 @@ export default async function TrendPage() {
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#014D4E]">Readiness Trend</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-600 mt-1">
             Overall inspection readiness over the last 8 weeks — derived from your audit history
           </p>
         </div>
@@ -257,7 +257,7 @@ export default async function TrendPage() {
       {/* ── Empty state ──────────────────────────────────────────────────── */}
       {!hasHistory ? (
         <div className="bg-gray-50 border border-gray-200 rounded-2xl p-10 text-center max-w-lg mx-auto">
-          <p className="text-gray-500 text-sm mb-3">
+          <p className="text-gray-600 text-sm mb-3">
             No review history yet. Once you start logging KLOE reviews, your
             readiness trend will appear here.
           </p>
@@ -283,14 +283,14 @@ export default async function TrendPage() {
             <h2 className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
               By key question
             </h2>
-            <p className="text-xs text-gray-500 mb-4">
+            <p className="text-xs text-gray-600 mb-4">
               Comparing current readiness against 4 weeks ago
             </p>
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                  <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
                     <th scope="col" className="text-left py-2 pr-4 font-medium">
                       Key question
                     </th>
@@ -329,7 +329,7 @@ export default async function TrendPage() {
                           ↓ {delta}%
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-gray-500 text-xs bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-gray-600 text-xs bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-full">
                           → no change
                         </span>
                       )
@@ -339,15 +339,15 @@ export default async function TrendPage() {
                         <td className="py-3 pr-4 font-medium text-[#1a1a1a]">
                           {kq.name}
                         </td>
-                        <td className="py-3 px-4 text-right text-gray-500 tabular-nums">
+                        <td className="py-3 px-4 text-right text-gray-600 tabular-nums">
                           {ago.pct}%
-                          <span className="text-gray-400 text-xs ml-1">
+                          <span className="text-gray-600 text-xs ml-1">
                             ({ago.compliant}/{ago.total})
                           </span>
                         </td>
                         <td className="py-3 px-4 text-right font-semibold text-[#014D4E] tabular-nums">
                           {now.pct}%
-                          <span className="text-gray-400 text-xs ml-1 font-normal">
+                          <span className="text-gray-600 text-xs ml-1 font-normal">
                             ({now.compliant}/{now.total})
                           </span>
                         </td>
@@ -359,7 +359,7 @@ export default async function TrendPage() {
               </table>
             </div>
 
-            <p className="text-xs text-gray-400 mt-4 border-t border-gray-100 pt-3">
+            <p className="text-xs text-gray-600 mt-4 border-t border-gray-100 pt-3">
               A KLOE counts as ready when its status is <em>completed</em> and its
               next review date has not yet passed.
             </p>

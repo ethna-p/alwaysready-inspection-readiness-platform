@@ -118,11 +118,11 @@ export default function LoginPage() {
                   placeholder="e.g. sarah.jones.f7a2e1"
                   className="
                     w-full rounded-lg border border-gray-300 px-3 py-2
-                    text-[#1a1a1a] text-sm bg-white placeholder:text-gray-400
+                    text-[#1a1a1a] text-sm bg-white placeholder:text-gray-600
                     focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                   "
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-600 mt-1">
                   Managers: use your email address. Staff: use the login ID given to you.
                 </p>
               </div>

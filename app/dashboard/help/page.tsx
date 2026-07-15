@@ -85,7 +85,7 @@ export default function HelpPage() {
       {/* Page heading */}
       <div className="mb-6 print:mb-4">
         <h1 className="text-2xl font-bold text-[#014D4E]">Help &amp; User Guide</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-600 mt-1">
           Everything you need to get the most out of AlwaysReady.
         </p>
       </div>
@@ -306,7 +306,7 @@ export default function HelpPage() {
       </div>
 
       {/* Print footer */}
-      <div className="hidden print:block mt-8 pt-4 border-t border-gray-300 text-xs text-gray-500 text-center">
+      <div className="hidden print:block mt-8 pt-4 border-t border-gray-300 text-xs text-gray-600 text-center">
         AlwaysReady Inspection Readiness Platform — User Guide
       </div>
 

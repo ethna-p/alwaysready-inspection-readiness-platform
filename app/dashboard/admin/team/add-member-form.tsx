@@ -32,19 +32,19 @@ export default function AddMemberForm() {
         </p>
         <dl className="space-y-3">
           <div className="bg-white rounded-lg border border-green-200 px-4 py-3">
-            <dt className="text-xs text-gray-500 mb-1">Login ID (username)</dt>
+            <dt className="text-xs text-gray-600 mb-1">Login ID (username)</dt>
             <dd className="font-mono text-sm font-semibold text-[#014D4E] select-all">
               {state.credentials.username}
             </dd>
           </div>
           <div className="bg-white rounded-lg border border-green-200 px-4 py-3">
-            <dt className="text-xs text-gray-500 mb-1">Temporary password</dt>
+            <dt className="text-xs text-gray-600 mb-1">Temporary password</dt>
             <dd className="font-mono text-sm font-semibold text-[#014D4E] select-all">
               {state.credentials.password}
             </dd>
           </div>
         </dl>
-        <p className="text-xs text-gray-500 mt-3">
+        <p className="text-xs text-gray-600 mt-3">
           Staff log in at the AlwaysReady login page using their Login ID and this password.
         </p>
         <button
@@ -71,9 +71,9 @@ export default function AddMemberForm() {
           name="full_name"
           required
           placeholder="e.g. Sarah Jones"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-600 mt-1">
           Used to generate their login ID and shown in the audit trail.
         </p>
       </div>

@@ -97,7 +97,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <div>
             <label htmlFor="priority" className="block text-sm font-medium text-[#1a1a1a] mb-1">
               Priority
-              <span className="ml-1 text-xs text-gray-500 font-normal">(how serious if non-compliant)</span>
+              <span className="ml-1 text-xs text-gray-600 font-normal">(how serious if non-compliant)</span>
             </label>
             <select
               id="priority"
@@ -116,7 +116,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         <div>
           <label htmlFor="date_reviewed" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Date of this review
-            <span className="ml-1 text-xs text-gray-500 font-normal">(when you actually completed the review, not today's date)</span>
+            <span className="ml-1 text-xs text-gray-600 font-normal">(when you actually completed the review, not today's date)</span>
           </label>
           <input
             type="date"
@@ -126,7 +126,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             max={todayStr}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-600 mt-1">
             Leave blank if you are only updating status{isAdmin ? ' or priority' : ''} without completing a review.
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <div>
             <label htmlFor="review_frequency_days" className="block text-sm font-medium text-[#1a1a1a] mb-1">
               Review frequency
-              <span className="ml-1 text-xs text-gray-500 font-normal">(how often this KLOE should be reviewed)</span>
+              <span className="ml-1 text-xs text-gray-600 font-normal">(how often this KLOE should be reviewed)</span>
             </label>
             <select
               id="review_frequency_days"
@@ -150,7 +150,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-600 mt-1">
               Changes to review frequency are logged in your audit trail.
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         <div>
           <label htmlFor="evidence_location" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Evidence location
-            <span className="ml-1 text-xs text-gray-500 font-normal">(link, folder path, or physical location)</span>
+            <span className="ml-1 text-xs text-gray-600 font-normal">(link, folder path, or physical location)</span>
           </label>
           <input
             type="text"
@@ -168,7 +168,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             name="evidence_location"
             defaultValue={defaultEvidence}
             placeholder="e.g. SharePoint › Policies › Safeguarding 2026, or Blue folder, top shelf"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
         </div>
 
@@ -176,7 +176,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         <div>
           <label htmlFor="notes" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Notes
-            <span className="ml-1 text-xs text-gray-500 font-normal">(optional context for this entry)</span>
+            <span className="ml-1 text-xs text-gray-600 font-normal">(optional context for this entry)</span>
           </label>
           <textarea
             id="notes"
@@ -184,7 +184,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             rows={3}
             defaultValue={defaultNotes}
             placeholder="Any context about this review entry — actions taken, issues noted, etc."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] resize-y"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] resize-y"
           />
         </div>
 
@@ -220,7 +220,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             {isPending ? 'Saving…' : 'Save to audit trail'}
           </button>
           {isPending && (
-            <span className="text-sm text-gray-500" aria-live="polite">
+            <span className="text-sm text-gray-600" aria-live="polite">
               Saving your update…
             </span>
           )}

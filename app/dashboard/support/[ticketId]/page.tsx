@@ -49,7 +49,7 @@ export default async function TicketThreadPage({ params }: Props) {
   return (
     <div className="max-w-2xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+      <nav className="text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
           <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
@@ -63,14 +63,14 @@ export default async function TicketThreadPage({ params }: Props) {
       <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <p className="text-xs text-gray-400 font-mono mb-1">{ticket.reference}</p>
+            <p className="text-xs text-gray-600 font-mono mb-1">{ticket.reference}</p>
             <h1 className="text-xl font-bold text-[#014D4E]">{ticket.subject}</h1>
           </div>
           <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${status.colour}`}>
             {status.label}
           </span>
         </div>
-        <p className="text-xs text-gray-400 mb-4">Submitted {createdAt}</p>
+        <p className="text-xs text-gray-600 mb-4">Submitted {createdAt}</p>
         <div className="bg-gray-50 rounded-lg p-4 text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">
           {ticket.message}
         </div>
@@ -94,10 +94,10 @@ export default async function TicketThreadPage({ params }: Props) {
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#014D4E]' : 'text-gray-500'}`}>
+                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#014D4E]' : 'text-gray-600'}`}>
                     {isStaff ? 'AlwaysReady Support' : 'You'}
                   </span>
-                  <span className="text-xs text-gray-400">{replyAt}</span>
+                  <span className="text-xs text-gray-600">{replyAt}</span>
                 </div>
                 <p className="text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">
                   {reply.message}
@@ -118,7 +118,7 @@ export default async function TicketThreadPage({ params }: Props) {
           .
         </div>
       ) : (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-500">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
           We&apos;ll reply here as soon as possible. You&apos;ll be able to see our response on this page.
         </div>
       )}
