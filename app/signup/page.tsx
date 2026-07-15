@@ -9,8 +9,6 @@ import { useActionState } from 'react'
 import Link from 'next/link'
 import { signUp, type SignUpState } from './actions'
 
-export const metadata = { title: 'Start your free trial — AlwaysReady' }
-
 const SERVICE_TYPES = [
   'Residential Care Home',
   'Nursing Home',

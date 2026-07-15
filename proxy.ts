@@ -72,19 +72,23 @@ export async function proxy(request: NextRequest) {
   ) {
     const { data: profile } = await supabase
       .from('users')
-      .select('onboarding_complete')
+      .select('onboarding_complete, organisations(is_demo)')
       .eq('id', user.id)
       .single()
 
-    if (profile && profile.onboarding_complete === false) {
+    const isDemo = (profile?.organisations as { is_demo?: boolean } | null)?.is_demo === true
+
+    if (!isDemo && profile && profile.onboarding_complete === false) {
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard/welcome'
       return NextResponse.redirect(url)
     }
   }
 
-  // ── Redirect authenticated users away from /login and /signup ──────────
-  if (user && (pathname === '/login' || pathname === '/signup')) {
+  // ── Redirect authenticated users away from /login ──────────────────────
+  // Note: /signup is intentionally excluded — demo users land here to create
+  // a real account; the signup action replaces their session on completion.
+  if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)

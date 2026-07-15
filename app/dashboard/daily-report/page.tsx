@@ -78,39 +78,40 @@ export default async function DailyReportPage() {
   type AttentionItem = {
     klo: { id: string; title: string; key_question_id: string; display_order: number }
     record: ComplianceRecord | undefined
-    rag: 'red' | 'amber'
+    rag: 'red' | 'amber' | 'grey'
     priority: number
     kqName: string
   }
 
-  const redItems:   AttentionItem[] = []
-  const amberItems: AttentionItem[] = []
+  const redItems:        AttentionItem[] = []
+  const amberItems:      AttentionItem[] = []
+  const unassessedItems: AttentionItem[] = []
 
   for (const klo of kloItems ?? []) {
     const record = recordByKloId.get(klo.id)
     const due = record?.next_review_due ? new Date(record.next_review_due) : null
-
-    let rag: 'red' | 'amber' | null = null
-    if (due && due < now) {
-      rag = 'red'
-    } else if (due) {
-      const daysUntilDue = (due.getTime() - now.getTime()) / (1_000 * 60 * 60 * 24)
-      if (daysUntilDue <= DUE_SOON_DAYS) rag = 'amber'
-    }
-
-    if (!rag) continue
-
     const kq = kqById.get(klo.key_question_id)
+
     const item: AttentionItem = {
       klo: klo as { id: string; title: string; key_question_id: string; display_order: number },
       record,
-      rag,
+      rag: 'red',
       priority: record?.priority ?? 3,
       kqName: kq?.name ?? '—',
     }
 
-    if (rag === 'red') redItems.push(item)
-    else               amberItems.push(item)
+    if (!due) {
+      // Never reviewed — no date set at all
+      unassessedItems.push({ ...item, rag: 'grey' })
+      continue
+    }
+
+    if (due < now) {
+      redItems.push({ ...item, rag: 'red' })
+    } else {
+      const daysUntilDue = (due.getTime() - now.getTime()) / (1_000 * 60 * 60 * 24)
+      if (daysUntilDue <= DUE_SOON_DAYS) amberItems.push({ ...item, rag: 'amber' })
+    }
   }
 
   // Sort each group by priority (1 = most critical first), then by due date
@@ -123,7 +124,7 @@ export default async function DailyReportPage() {
   redItems.sort(byPriorityThenDue)
   amberItems.sort(byPriorityThenDue)
 
-  const totalAttention = redItems.length + amberItems.length
+  const totalAttention = redItems.length + amberItems.length + unassessedItems.length
   const todayLabel = new Date().toLocaleDateString('en-GB', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
@@ -164,7 +165,7 @@ export default async function DailyReportPage() {
           </div>
           <h2 className="text-lg font-semibold text-green-800 mb-2">All clear</h2>
           <p className="text-sm text-green-700">
-            No KLOEs are overdue or due soon. Good work keeping on top of reviews.
+            No KLOEs are overdue, due soon, or unassessed. Good work keeping on top of reviews.
           </p>
           <Link
             href="/dashboard/kloes"
@@ -173,6 +174,23 @@ export default async function DailyReportPage() {
             View all KLOEs →
           </Link>
         </div>
+      )}
+
+      {/* ── Unassessed ──────────────────────────────────────────────────── */}
+      {unassessedItems.length > 0 && (
+        <section aria-labelledby="unassessed-heading" className="mb-8">
+          <h2
+            id="unassessed-heading"
+            className="flex items-center gap-2 text-lg font-bold text-gray-700 mb-4"
+          >
+            <span className="w-3 h-3 rounded-full bg-gray-400" aria-hidden="true" />
+            Never assessed
+            <span className="text-sm font-normal text-gray-600">
+              ({unassessedItems.length} {unassessedItems.length === 1 ? 'KLOE' : 'KLOEs'} — no review date set)
+            </span>
+          </h2>
+          <ReportTable items={unassessedItems} kloById={kloById} />
+        </section>
       )}
 
       {/* ── Overdue (Red) ───────────────────────────────────────────────── */}
@@ -219,7 +237,7 @@ export default async function DailyReportPage() {
 type AttentionItem = {
   klo: { id: string; title: string; key_question_id: string; display_order: number }
   record: ComplianceRecord | undefined
-  rag: 'red' | 'amber'
+  rag: 'red' | 'amber' | 'grey'
   priority: number
   kqName: string
 }
@@ -250,9 +268,11 @@ function ReportTable({
             const code = kloCode(kqName, klo.display_order)
             const dueStr = record?.next_review_due ?? null
 
-            // Context label: "3 days overdue" or "due in 5 days" or "in progress"
+            // Context label
             let dueContext: string | null = null
-            if (rag === 'red' && dueStr) {
+            if (rag === 'grey') {
+              dueContext = 'No review date set'
+            } else if (rag === 'red' && dueStr) {
               const d = daysOverdue(dueStr)
               dueContext = d === 1 ? '1 day overdue' : `${d} days overdue`
             } else if (rag === 'amber' && dueStr) {
@@ -261,6 +281,7 @@ function ReportTable({
             } else if (record?.status === 'in_progress') {
               dueContext = 'In progress'
             }
+            const contextColour = rag === 'red' ? 'text-red-600' : rag === 'amber' ? 'text-amber-600' : 'text-gray-500'
 
             return (
               <tr key={klo.id} className="hover:bg-[#faf9f6] transition-colors">
@@ -283,13 +304,13 @@ function ReportTable({
                       {/* Mobile: show key question + context inline */}
                       <div className="text-xs text-gray-600 mt-0.5 sm:hidden">{kqName}</div>
                       {dueContext && (
-                        <div className={`text-xs mt-0.5 font-medium ${rag === 'red' ? 'text-red-600' : 'text-amber-600'}`}>
+                        <div className={`text-xs mt-0.5 font-medium ${contextColour}`}>
                           {dueContext}
                         </div>
                       )}
                       {/* Mobile: RAG + status */}
                       <div className="flex items-center gap-2 mt-1 md:hidden">
-                        <RagBadge status={rag} compact />
+                        {rag !== 'grey' && <RagBadge status={rag} compact />}
                         {record && <StatusBadge status={record.status} />}
                       </div>
                     </div>
@@ -311,9 +332,9 @@ function ReportTable({
                 {/* RAG */}
                 <td className="px-4 py-3 hidden md:table-cell">
                   <div>
-                    <RagBadge status={rag} compact />
+                    {rag !== 'grey' && <RagBadge status={rag} compact />}
                     {dueContext && (
-                      <p className={`text-xs mt-1 font-medium ${rag === 'red' ? 'text-red-600' : 'text-amber-600'}`}>
+                      <p className={`text-xs mt-1 font-medium ${contextColour}`}>
                         {dueContext}
                       </p>
                     )}
@@ -331,7 +352,7 @@ function ReportTable({
                 </td>
 
                 {/* Due date */}
-                <td className={`px-4 py-3 hidden lg:table-cell text-xs font-medium ${rag === 'red' ? 'text-red-600' : 'text-[#1a1a1a]'}`}>
+                <td className={`px-4 py-3 hidden lg:table-cell text-xs font-medium ${rag === 'red' ? 'text-red-600' : rag === 'amber' ? 'text-[#1a1a1a]' : 'text-gray-500'}`}>
                   {formatDate(dueStr)}
                 </td>
 

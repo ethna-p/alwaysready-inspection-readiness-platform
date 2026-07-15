@@ -73,6 +73,7 @@ export async function signUp(
     .single()
 
   if (orgError || !org) {
+    console.error('[signup] org insert failed:', orgError)
     return { status: 'error', message: 'Could not create your account. Please try again.' }
   }
 
@@ -85,6 +86,7 @@ export async function signUp(
   })
 
   if (authError || !authData.user) {
+    console.error('[signup] auth createUser failed:', authError)
     await admin.from('organisations').delete().eq('id', org.id)
     if (authError?.message?.toLowerCase().includes('already registered')) {
       return { status: 'error', message: 'An account with that email already exists. Try logging in.' }
@@ -110,6 +112,7 @@ export async function signUp(
   })
 
   if (userError) {
+    console.error('[signup] users insert failed:', userError)
     await admin.auth.admin.deleteUser(userId)
     await admin.from('organisations').delete().eq('id', org.id)
     return { status: 'error', message: 'Could not create your account. Please try again.' }

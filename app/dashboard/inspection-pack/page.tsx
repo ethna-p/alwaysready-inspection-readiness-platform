@@ -10,6 +10,7 @@
  * Data sources: same tables as the Readiness Dashboard + Daily Report.
  * No new tables.
  */
+import { Fragment } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { calculateRAG, RAG_LABELS, type RAGStatus } from '@/lib/rag'
@@ -383,9 +384,8 @@ export default async function InspectionPackPage() {
                     const code = kloCode(kq.name, klo.displayOrder)
 
                     return (
-                      <>
+                      <Fragment key={klo.id}>
                         <tr
-                          key={klo.id}
                           className={compliant ? 'bg-green-50 print:bg-transparent' : ''}
                         >
                           <td className="px-3 py-2.5 font-bold text-[#014D4E] align-top">
@@ -417,7 +417,6 @@ export default async function InspectionPackPage() {
                         {/* Evidence location sub-row — only if present */}
                         {record?.evidence_location && (
                           <tr
-                            key={`${klo.id}-evidence`}
                             className={`border-t-0 ${compliant ? 'bg-green-50 print:bg-transparent' : ''}`}
                           >
                             <td />
@@ -429,7 +428,7 @@ export default async function InspectionPackPage() {
                             </td>
                           </tr>
                         )}
-                      </>
+                      </Fragment>
                     )
                   })}
                 </tbody>
