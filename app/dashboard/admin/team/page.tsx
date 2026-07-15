@@ -14,6 +14,8 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import AddMemberForm from './add-member-form'
 import MemberRow from './member-row'
+import AddVisitorForm from './add-visitor-form'
+import VisitorRow from './visitor-row'
 
 export default async function TeamPage() {
   const profile = await getCurrentUserProfile()
@@ -21,13 +23,14 @@ export default async function TeamPage() {
 
   const supabase = await createClient()
 
-  const { data: members } = await supabase
+  const { data: allUsers } = await supabase
     .from('users')
-    .select('id, full_name, username, email, role, created_at')
+    .select('id, full_name, username, email, role, viewer_expires_at, created_at')
     .eq('organisation_id', profile.organisation_id)
     .order('full_name', { ascending: true })
 
-  const teamMembers = members ?? []
+  const members  = (allUsers ?? []).filter(u => u.role !== 'viewer')
+  const visitors = (allUsers ?? []).filter(u => u.role === 'viewer')
 
   return (
     <div className="max-w-4xl">
@@ -56,11 +59,11 @@ export default async function TeamPage() {
           <h2 id="team-list-heading" className="text-lg font-bold text-[#014D4E] mb-4">
             Team members
             <span className="ml-2 text-sm font-normal text-gray-500">
-              ({teamMembers.length})
+              ({members.length})
             </span>
           </h2>
 
-          {teamMembers.length === 0 ? (
+          {members.length === 0 ? (
             <p className="text-sm text-gray-500">No team members yet. Add your first below.</p>
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -73,7 +76,7 @@ export default async function TeamPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {teamMembers.map(member => (
+                  {members.map(member => (
                     <MemberRow
                       key={member.id}
                       member={member}
@@ -122,6 +125,56 @@ export default async function TeamPage() {
             A login ID and temporary password will be generated. Give them to the team member directly — they do not need an email address.
           </p>
           <AddMemberForm />
+        </section>
+
+        {/* ── Visitor logins ─────────────────────────────────────────────── */}
+        <section aria-labelledby="visitor-list-heading">
+          <h2 id="visitor-list-heading" className="text-lg font-bold text-[#014D4E] mb-1">
+            Visitor logins
+            {visitors.length > 0 && (
+              <span className="ml-2 text-sm font-normal text-gray-500">
+                ({visitors.length})
+              </span>
+            )}
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Read-only access for inspectors, board members, or other external visitors. Access expires automatically.
+          </p>
+
+          {visitors.length === 0 ? (
+            <p className="text-sm text-gray-500">No visitor logins yet.</p>
+          ) : (
+            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                    <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
+                    <th scope="col" className="text-left px-4 py-3 font-medium">Access expires</th>
+                    <th scope="col" className="text-left px-4 py-3 font-medium">Revoke</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {visitors.map(visitor => (
+                    <VisitorRow key={visitor.id} visitor={visitor} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        {/* ── Create visitor login ───────────────────────────────────────── */}
+        <section
+          className="bg-white rounded-xl border border-gray-200 p-5"
+          aria-labelledby="add-visitor-heading"
+        >
+          <h2 id="add-visitor-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+            Create visitor login
+          </h2>
+          <p className="text-xs text-gray-500 mb-4">
+            Create a temporary read-only login for an inspector or external visitor. They can view all KLOEs, the audit trail, trend data, and reports — but cannot make any changes.
+          </p>
+          <AddVisitorForm />
         </section>
 
       </div>

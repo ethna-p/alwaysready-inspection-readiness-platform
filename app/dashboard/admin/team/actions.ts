@@ -166,6 +166,148 @@ export async function resetTeamMemberPassword(
 }
 
 
+// ── Create visitor login ────────────────────────────────────────────────────
+
+export async function createVisitorLogin(
+  _prevState: TeamActionState,
+  formData: FormData
+): Promise<TeamActionState> {
+  const supabase      = await createClient()
+  const adminSupabase = createAdminClient()
+
+  const profile = await getCurrentUserProfile()
+  if (!profile || profile.role !== 'admin') {
+    return { success: false, error: 'Only admins can create visitor logins.' }
+  }
+
+  const fullName    = (formData.get('full_name') as string).trim()
+  const daysRaw     = parseInt(formData.get('duration_days') as string, 10)
+
+  if (!fullName) return { success: false, error: 'Name is required.' }
+  if (isNaN(daysRaw) || daysRaw < 1 || daysRaw > 365) {
+    return { success: false, error: 'Duration must be between 1 and 365 days.' }
+  }
+
+  // ── Generate username (same format as staff) ─────────────────────────────
+  const orgPrefix = profile.organisation_id.replace(/-/g, '').slice(0, 6)
+  const namePart  = sanitiseName(fullName)
+  let username    = `${namePart}.${orgPrefix}`
+
+  // Deduplicate across all users (staff + visitors) in this org
+  const { data: existing } = await supabase
+    .from('users')
+    .select('username')
+    .eq('organisation_id', profile.organisation_id)
+    .ilike('username', `${namePart}.${orgPrefix}%`)
+
+  if (existing && existing.length > 0) {
+    username = `${namePart}.${orgPrefix}.${existing.length + 1}`
+  }
+
+  const email    = staffEmail(username)
+  const password = generatePassword()
+
+  // viewer_expires_at = now + N days (UTC)
+  const expiresAt = new Date()
+  expiresAt.setUTCDate(expiresAt.getUTCDate() + daysRaw)
+
+  // ── Create Supabase auth user ────────────────────────────────────────────
+  const { data: authData, error: authError } = await adminSupabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  })
+
+  if (authError || !authData.user) {
+    console.error('createVisitorLogin auth error:', authError)
+    if (authError?.message?.includes('already been registered')) {
+      return { success: false, error: 'A login with this name already exists. Try a slightly different name.' }
+    }
+    return { success: false, error: 'Failed to create visitor login. Please try again.' }
+  }
+
+  // ── Insert into public.users ─────────────────────────────────────────────
+  const { error: insertError } = await supabase
+    .from('users')
+    .insert({
+      id:               authData.user.id,
+      organisation_id:  profile.organisation_id,
+      email,
+      full_name:        fullName,
+      username,
+      role:             'viewer',
+      viewer_expires_at: expiresAt.toISOString(),
+    })
+
+  if (insertError) {
+    await adminSupabase.auth.admin.deleteUser(authData.user.id)
+    console.error('createVisitorLogin insert error:', insertError)
+    return { success: false, error: 'Failed to save visitor login. Please try again.' }
+  }
+
+  revalidatePath('/dashboard/admin/team')
+
+  return {
+    success: true,
+    message: `Visitor login created for ${fullName}. Access expires in ${daysRaw} day${daysRaw === 1 ? '' : 's'}.`,
+    credentials: { username, password },
+  }
+}
+
+
+// ── Revoke visitor login ────────────────────────────────────────────────────
+
+export async function revokeVisitorLogin(
+  _prevState: TeamActionState,
+  formData: FormData
+): Promise<TeamActionState> {
+  const supabase      = await createClient()
+  const adminSupabase = createAdminClient()
+
+  const profile = await getCurrentUserProfile()
+  if (!profile || profile.role !== 'admin') {
+    return { success: false, error: 'Only admins can revoke visitor logins.' }
+  }
+
+  const userId   = formData.get('user_id') as string
+  const fullName = (formData.get('full_name') as string) ?? 'visitor'
+
+  if (!userId) return { success: false, error: 'Missing user ID.' }
+
+  // Verify the target is a viewer in this org (safety check)
+  const { data: targetUser } = await supabase
+    .from('users')
+    .select('id, role, organisation_id')
+    .eq('id', userId)
+    .eq('organisation_id', profile.organisation_id)
+    .single()
+
+  if (!targetUser) return { success: false, error: 'Visitor login not found.' }
+  if (targetUser.role !== 'viewer') return { success: false, error: 'Only viewer accounts can be revoked here.' }
+
+  // Delete from public.users first (FK constraint means auth delete can cascade)
+  const { error: deleteRowError } = await supabase
+    .from('users')
+    .delete()
+    .eq('id', userId)
+
+  if (deleteRowError) {
+    console.error('revokeVisitorLogin delete row error:', deleteRowError)
+    return { success: false, error: 'Failed to revoke visitor login. Please try again.' }
+  }
+
+  // Delete from Supabase auth
+  const { error: deleteAuthError } = await adminSupabase.auth.admin.deleteUser(userId)
+  if (deleteAuthError) {
+    // Row already gone — log but don't surface as an error to admin
+    console.error('revokeVisitorLogin auth delete error:', deleteAuthError)
+  }
+
+  revalidatePath('/dashboard/admin/team')
+  return { success: true, message: `Visitor login for ${fullName} has been revoked.` }
+}
+
+
 // ── Change role ─────────────────────────────────────────────────────────────
 
 export async function changeTeamMemberRole(
