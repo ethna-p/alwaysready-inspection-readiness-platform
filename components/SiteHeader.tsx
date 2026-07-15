@@ -20,7 +20,7 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="bg-white border-b border-gray-200">
+    <header className="bg-white border-b border-gray-200 print:hidden">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo — links to dashboard */}
         <a href="/dashboard" aria-label="AlwaysReady — go to dashboard">
@@ -29,6 +29,7 @@ export default function SiteHeader() {
             alt="AlwaysReady"
             width={180}
             height={40}
+            style={{ height: 'auto' }}
             priority
           />
         </a>
@@ -46,6 +47,18 @@ export default function SiteHeader() {
             className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             KLOEs
+          </a>
+          <a
+            href="/dashboard/trend"
+            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Trend
+          </a>
+          <a
+            href="/dashboard/inspection-pack"
+            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Inspection Pack
           </a>
           <a
             href="/dashboard/daily-report"

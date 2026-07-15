@@ -4,7 +4,7 @@
  */
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-gray-200 bg-[#faf9f6] px-6 py-6 text-center mt-auto">
+    <footer className="border-t border-gray-200 bg-[#faf9f6] px-6 py-6 text-center mt-auto print:hidden">
       <p className="text-xs text-[#1a1a1a]">
         © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
         Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE

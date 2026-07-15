@@ -40,6 +40,7 @@ export default function LoginPage() {
           alt="AlwaysReady"
           width={220}
           height={48}
+          style={{ height: 'auto' }}
           priority
         />
       </header>

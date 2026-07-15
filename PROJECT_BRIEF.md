@@ -272,6 +272,88 @@ Priority (1–5) reflects how serious the consequences are if a KLOE is non-comp
 
 ---
 
+## Team Roles & Task Delegation — Post-Demo Feature
+
+**Purpose:** RCMs cannot personally gather evidence for all 24 KLOEs. Delegation lets them assign specific KLOEs to named team members — Deputy Manager, Senior Carer, Activities Coordinator — who each log in, see their assignments, and update evidence and status. The RCM retains full visibility and can override anything.
+
+### Roles
+
+Three roles on `users.role`:
+
+| Role | Who | Access |
+|---|---|---|
+| `manager` | RCM / Registered Manager | Full access — view and edit all KLOEs, assign to team members, manage team, create inspector logins |
+| `member` | Care staff, deputies, coordinators | View all KLOEs (transparency matters for compliance culture); can only edit KLOEs assigned to them |
+| `viewer` | Board members, owners, CQC inspectors | Read-only — sees Dashboard, KLOE list, KLOE detail + audit trail, Readiness Trend; cannot see edit forms, Daily Report, or Inspection Pack generator |
+
+### Access model
+
+All org members can see all KLOEs — siloed "only see yours" access is inappropriate for a compliance culture where CQC expects whole-team awareness. The distinction between `manager` and `member` is edit access, not view access. `viewer` accounts are purely read-only.
+
+### Assignment model
+
+Simple v1 approach: `assigned_to UUID REFERENCES users(id)` on `compliance_records`. One assignee per KLOE. Assignment changes are captured in `compliance_record_history` (same append-only trail) so there is a record of when responsibility changed hands and who made the change.
+
+Do not build a separate tasks table for v1 — this would be over-engineering before real users clarify what they actually need. Revisit only if providers ask for multiple assignees per KLOE, task-level granularity within a KLOE, or a separate task status independent of the KLOE's compliance status.
+
+### "My Tasks" view
+
+A filter on the KLOE list page — toggling between "All KLOEs" and "My assignments" — is sufficient for v1. No separate tasks screen needed.
+
+### User management
+
+The schema already supports multiple users per org. What's missing is a way to add them:
+- **For the demo:** seed additional users manually via SQL, or create a simple manager-facing "Add team member" form that creates a Supabase auth invite.
+- **For production:** a proper email invite flow (Supabase Auth has built-in invite support via `supabase.auth.admin.inviteUserByEmail()`).
+
+### Notifications (follow-on, not v1)
+
+Email notifications when a KLOE is assigned, and when something assigned to you is overdue, are genuinely valuable but a separate workstream. Use Supabase Edge Functions + Resend (or similar transactional email service). Do not block delegation on notifications.
+
+---
+
+## Inspector Access — Viewer Role in Practice
+
+**Context:** CQC inspections run for 2–3 days. Shorter inspections (2 days) typically indicate a provider performing well — inspectors have seen what they need quickly. Longer inspections (3+ days, sometimes with return visits) indicate concern or active investigation of a failing provider. The providers who most need AlwaysReady to be thorough and evidenced are exactly the ones whose inspectors will use viewer access most intensively.
+
+**The proposition:** instead of handing an inspector a printed PDF, the RCM hands them a tablet or laptop with a read-only login. The inspector sees live data, real audit trails, real timestamps — nothing that could have been prepared in the hour before they arrived. This is a direct, visible expression of the platform's trust proposition.
+
+### What inspectors can see (viewer role)
+
+- Readiness Dashboard — overall % and per-key-question breakdown
+- Full KLOE list with RAG statuses
+- Individual KLOE detail pages including the full audit trail
+- Readiness Trend — demonstrates continuous improvement over time, a core Well-led theme
+
+### What inspectors cannot see (viewer role)
+
+- Edit forms (read-only enforced at RLS level, not just UI)
+- Daily Report (internal triage — not relevant to an inspector)
+- Inspection Pack generator (internal tool)
+- Team management
+
+### Creating inspector access
+
+The RCM needs to create an inspector login in under a minute, on the spot, under pressure — CQC can arrive unannounced. The UI must be a single action: one button, generates a time-limited login, displays credentials clearly for immediate handover.
+
+### Access duration
+
+Inspector logins are temporary. Duration is set by the RCM when creating the login, not hardcoded — suggested default is 3 days (covers a standard 3-day inspection), with a simple "extend by 1 day" option visible to managers. This allows the RCM to respond if an inspection runs longer than expected, which is itself a stress signal — they should not be scrambling to renew credentials mid-inspection.
+
+### Multiple inspectors
+
+CQC typically sends a small team for anything beyond a brief visit (lead inspector + specialist inspectors, e.g. a nurse inspector for a nursing home). Each inspector should have a separate login — CQC's own governance requires individual accountability. The inspector access UI should support creating multiple viewer accounts per inspection event, each clearly labelled.
+
+### Account labelling
+
+Inspector logins should display the org name prominently ("Sunrise Care Home — Inspector Access") so there is no ambiguity about which provider's data they are viewing. Inspectors see multiple providers; a generic dashboard with no org-level framing is a risk.
+
+### Expiry and cleanup
+
+Inspector accounts expire automatically when their duration window closes. The same expiry/cleanup mechanism used for demo shadow orgs (Step 10) applies here — a `viewer_expires_at` field on `users`, checked at login or via a scheduled cleanup job. Expired inspector accounts are deactivated, not deleted, preserving the audit record of who accessed what.
+
+---
+
 ## Recommended Build Order
 
 1. `organisations` + `users` + auth
@@ -282,8 +364,13 @@ Priority (1–5) reflects how serious the consequences are if a KLOE is non-comp
 6. **Daily Review Report** (see "Daily Review Report" section above) — in demo scope, not deferred
 7. **KLOE Audit Trail Timeline** (see section above) — in demo scope, not deferred
 8. **Readiness Trend Over Time** (see section above) — in demo scope, not deferred
-9. **Exportable Inspection Pack summary** (see section above) — in demo scope, not deferred
+9. **Exportable Inspection Pack summary** (see section above) — in demo scope, not deferred ✅ Done
 10. Demo-specific: shadow organisation creation on demo start (service type: Residential Care Home) + expiry/cleanup job
+11. **Team roles** — enforce `manager` / `member` / `viewer` via RLS; role-based UI gating
+12. **Task delegation** — `assigned_to` on `compliance_records`, captured in history, "My Tasks" filter on KLOE list, manager-facing assignment UI
+13. **Team management page** — manager can view team members, assign roles; simple add-member form (Supabase invite)
+14. **Inspector access** — manager can create temporary `viewer` accounts with configurable duration (default 3 days), extend-by-1-day option, multiple accounts per inspection, auto-expiry via cleanup job (shared mechanism with Step 10)
+15. **Email notifications** (follow-on) — assignment notifications and overdue reminders via Edge Functions + Resend
 
 ---
 
@@ -292,9 +379,9 @@ Priority (1–5) reflects how serious the consequences are if a KLOE is non-comp
 - `key_questions` — static reference table, the 5 CQC key questions (Safe, Effective, Caring, Responsive, Well-led), seeded once, stable
 - `service_types` — static reference table, all 11 Adult Social Care service types, seeded once, not subscriber-editable
 - `organisations` (id, name, cqc_location_id, service_type, subscription_tier)
-- `users` (id, organisation_id, email, role)
+- `users` (id, organisation_id, email, role [`manager` | `member` | `viewer`], viewer_expires_at [nullable — set on temporary inspector/board accounts, null for permanent team members])
 - `klo_items` — static reference table, ~24 KLOEs, seeded once, not subscriber-editable, with a `key_question_id` foreign key linking each KLOE to its current key question
-- `compliance_records` — current state only, one row per organisation per KLOE (includes status, priority, date_reviewed, next_review_due, review_frequency_days, evidence_location, pointer to latest history row)
+- `compliance_records` — current state only, one row per organisation per KLOE (includes status, priority, date_reviewed, next_review_due, review_frequency_days, evidence_location, assigned_to [nullable FK → users.id], pointer to latest history row)
 - `compliance_record_history` — append-only audit trail (who changed what, status at time of change, date_reviewed as asserted, system_recorded_at as actual write time, note field for context)
 - `review_frequency_history` — append-only log of review frequency changes (organisation_id, klo_item_id, old_frequency, new_frequency, changed_by, changed_at)
 - `priority_history` — append-only log of priority changes (organisation_id, klo_item_id, old_priority, new_priority, changed_by, changed_at)
