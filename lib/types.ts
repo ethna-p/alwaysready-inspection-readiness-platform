@@ -168,6 +168,8 @@ export type Database = {
           id: string
           organisation_id: string
           email: string
+          full_name: string | null
+          username: string | null
           role: 'admin' | 'user' | 'viewer'
           viewer_expires_at: string | null
           created_at: string
@@ -176,6 +178,8 @@ export type Database = {
           id: string
           organisation_id: string
           email: string
+          full_name?: string | null
+          username?: string | null
           role?: 'admin' | 'user' | 'viewer'
           viewer_expires_at?: string | null
           created_at?: string
@@ -184,6 +188,8 @@ export type Database = {
           id?: string
           organisation_id?: string
           email?: string
+          full_name?: string | null
+          username?: string | null
           role?: 'admin' | 'user' | 'viewer'
           viewer_expires_at?: string | null
           created_at?: string

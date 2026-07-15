@@ -13,7 +13,7 @@
 import { createClient } from '@/lib/supabase/server'
 import type { User } from '@/lib/types'
 
-export type UserProfile = Pick<User, 'id' | 'email' | 'role' | 'organisation_id' | 'viewer_expires_at'>
+export type UserProfile = Pick<User, 'id' | 'email' | 'full_name' | 'username' | 'role' | 'organisation_id' | 'viewer_expires_at'>
 
 export async function getCurrentUserProfile(): Promise<UserProfile | null> {
   const supabase = await createClient()
@@ -23,7 +23,7 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
 
   const { data, error } = await supabase
     .from('users')
-    .select('id, email, role, organisation_id, viewer_expires_at')
+    .select('id, email, full_name, username, role, organisation_id, viewer_expires_at')
     .eq('id', user.id)
     .single()
 

@@ -53,14 +53,14 @@ export default async function KloesPage() {
     (records ?? []).map(r => [r.klo_item_id, r])
   )
 
-  // Resolve assigned_to emails
+  // Resolve assigned_to display names
   const assignedIds = [...new Set(
     (records ?? []).map(r => r.assigned_to).filter(Boolean) as string[]
   )]
   const { data: assignedUsers } = assignedIds.length > 0
-    ? await supabase.from('users').select('id, email').in('id', assignedIds)
+    ? await supabase.from('users').select('id, email, full_name').in('id', assignedIds)
     : { data: [] }
-  const emailByUserId = new Map((assignedUsers ?? []).map(u => [u.id, u.email]))
+  const nameByUserId = new Map((assignedUsers ?? []).map(u => [u.id, u.full_name ?? u.email]))
 
   // ── Summary counts ───────────────────────────────────────────────────
   const allKlos = kloItems ?? []
@@ -207,7 +207,7 @@ export default async function KloesPage() {
                           {/* Assigned to */}
                           <td className="px-4 py-3 hidden lg:table-cell text-gray-600 text-xs">
                             {record?.assigned_to
-                              ? emailByUserId.get(record.assigned_to) ?? '—'
+                              ? nameByUserId.get(record.assigned_to) ?? '—'
                               : <span className="text-gray-300">Unassigned</span>
                             }
                           </td>

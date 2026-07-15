@@ -5,29 +5,64 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
+/**
+ * Login page.
+ *
+ * Accepts either:
+ *   - A real email address (admin accounts)
+ *   - A username (staff accounts, e.g. sarah.jones.f7a2e1)
+ *     The login page appends @staff.alwaysready.uk before calling Supabase auth.
+ *
+ * After successful login, redirects based on role:
+ *   admin / viewer → /dashboard
+ *   user           → /dashboard/my-kloes
+ */
+
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [email, setEmail] = useState('')
+  const [login, setLogin]       = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [error, setError]       = useState<string | null>(null)
+  const [loading, setLoading]   = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    // Resolve email — if no @ present, treat as staff username
+    const email = login.includes('@')
+      ? login.trim()
+      : `${login.trim()}@staff.alwaysready.uk`
 
-    if (error) {
-      setError(error.message)
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (authError) {
+      setError('Incorrect login ID or password. Please try again.')
       setLoading(false)
       return
     }
 
-    router.push('/dashboard')
+    // Fetch role to decide where to redirect
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      if (profile?.role === 'user') {
+        router.push('/dashboard/my-kloes')
+      } else {
+        router.push('/dashboard')
+      }
+    } else {
+      router.push('/dashboard')
+    }
+
     router.refresh()
   }
 
@@ -57,7 +92,6 @@ export default function LoginPage() {
             </p>
 
             <form onSubmit={handleLogin} noValidate>
-              {/* Error message — visible to screen readers via role=alert */}
               {error && (
                 <div
                   role="alert"
@@ -69,24 +103,28 @@ export default function LoginPage() {
 
               <div className="mb-4">
                 <label
-                  htmlFor="email"
+                  htmlFor="login"
                   className="block text-sm font-medium text-[#1a1a1a] mb-1"
                 >
-                  Email address
+                  Email or login ID
                 </label>
                 <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
+                  id="login"
+                  type="text"
+                  autoComplete="username"
                   required
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  value={login}
+                  onChange={e => setLogin(e.target.value)}
+                  placeholder="e.g. sarah.jones.f7a2e1"
                   className="
                     w-full rounded-lg border border-gray-300 px-3 py-2
-                    text-[#1a1a1a] text-sm bg-white
+                    text-[#1a1a1a] text-sm bg-white placeholder:text-gray-400
                     focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                   "
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Managers: use your email address. Staff: use the login ID given to you.
+                </p>
               </div>
 
               <div className="mb-6">
@@ -111,7 +149,6 @@ export default function LoginPage() {
                 />
               </div>
 
-              {/* Button: white text on Dark Teal — 9.66:1 contrast ✓ */}
               <button
                 type="submit"
                 disabled={loading}
@@ -131,7 +168,6 @@ export default function LoginPage() {
         </div>
       </main>
 
-      {/* Footer */}
       <SiteFooter />
     </div>
   )

@@ -14,6 +14,7 @@ import type { ActionState } from '../actions'
 interface TeamMember {
   id: string
   email: string
+  full_name: string | null
   role: string
 }
 
@@ -47,7 +48,7 @@ export default function AssignForm({ kloItemId, currentAssignedTo, teamMembers }
             <option value="">— Unassigned —</option>
             {teamMembers.map(m => (
               <option key={m.id} value={m.id}>
-                {m.email}{m.role === 'admin' ? ' (Admin)' : ''}
+                {m.full_name ?? m.email}{m.role === 'admin' ? ' (Admin)' : ''}
               </option>
             ))}
           </select>

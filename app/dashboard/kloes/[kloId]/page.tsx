@@ -71,32 +71,36 @@ export default async function KloeDetailPage({ params }: Props) {
     .eq('klo_item_id', kloId)
     .order('system_recorded_at', { ascending: false })
 
-  // ── Resolve user emails for history entries ───────────────────────────
+  // ── Resolve display names for history entries ─────────────────────────
   const changedByIds = [...new Set((history ?? []).map(h => h.changed_by))]
   const { data: userRows } = changedByIds.length > 0
     ? await supabase
         .from('users')
-        .select('id, email')
+        .select('id, email, full_name')
         .in('id', changedByIds)
     : { data: [] }
 
-  const emailById = new Map((userRows ?? []).map(u => [u.id, u.email]))
+  const nameById = new Map(
+    (userRows ?? []).map(u => [u.id, u.full_name ?? u.email])
+  )
 
   // ── Fetch all org team members (admins only, for assignment dropdown) ──
-  const teamMembers: { id: string; email: string; role: string }[] = []
+  const teamMembers: { id: string; email: string; full_name: string | null; role: string }[] = []
   if (isAdmin) {
     const { data: members } = await supabase
       .from('users')
-      .select('id, email, role')
+      .select('id, email, full_name, role')
       .eq('organisation_id', profile.organisation_id)
       .in('role', ['admin', 'user'])
-      .order('email')
+      .order('full_name', { ascending: true })
     if (members) teamMembers.push(...members)
   }
 
-  // ── Resolve assigned-to email ─────────────────────────────────────────
-  const assignedToEmail = record?.assigned_to
-    ? (teamMembers.find(m => m.id === record.assigned_to)?.email
+  // ── Resolve assigned-to display name ─────────────────────────────────
+  const assignedToName = record?.assigned_to
+    ? (teamMembers.find(m => m.id === record.assigned_to)?.full_name
+        ?? teamMembers.find(m => m.id === record.assigned_to)?.email
+        ?? (userRows ?? []).find(u => u.id === record.assigned_to)?.full_name
         ?? (userRows ?? []).find(u => u.id === record.assigned_to)?.email
         ?? null)
     : null
@@ -183,7 +187,7 @@ export default async function KloeDetailPage({ params }: Props) {
               {record.assigned_to && (
                 <div className="col-span-2 sm:col-span-3">
                   <dt className="text-xs text-gray-500 mb-1">Assigned to</dt>
-                  <dd className="text-[#1a1a1a]">{assignedToEmail ?? record.assigned_to}</dd>
+                  <dd className="text-[#1a1a1a]">{assignedToName ?? record.assigned_to}</dd>
                 </div>
               )}
               {record.evidence_location && (
@@ -373,7 +377,7 @@ export default async function KloeDetailPage({ params }: Props) {
                     <div className="col-span-2 sm:col-span-3">
                       <dt className="text-gray-500 mb-0.5">Recorded by</dt>
                       <dd className="text-[#1a1a1a]">
-                        {emailById.get(entry.changed_by) ?? entry.changed_by}
+                        {nameById.get(entry.changed_by) ?? entry.changed_by}
                       </dd>
                     </div>
                   </dl>

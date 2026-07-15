@@ -9,8 +9,10 @@
  *   status = 'completed' AND next_review_due has not yet passed.
  *   An overdue completed KLOE is NOT counted as compliant — overdue wins.
  */
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import type { RAGStatus } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
@@ -44,6 +46,11 @@ function progressColour(percent: number): string {
 export default async function DashboardPage() {
   const supabase = await createClient()
   const now = new Date()
+
+  // ── Role-based redirect ───────────────────────────────────────────────────
+  // Users (non-admin, non-viewer) land on their personal My KLOEs page
+  const sessionProfile = await getCurrentUserProfile()
+  if (sessionProfile?.role === 'user') redirect('/dashboard/my-kloes')
 
   // ── Auth / profile ────────────────────────────────────────────────────────
   const { data: { user } } = await supabase.auth.getUser()
@@ -91,7 +98,7 @@ export default async function DashboardPage() {
 
   type TeamMemberStats = {
     id: string
-    email: string
+    displayName: string
     rag: Record<RAGStatus, number>
     total: number
   }
@@ -100,10 +107,10 @@ export default async function DashboardPage() {
   if (isAdmin) {
     const { data: orgUsers } = await supabase
       .from('users')
-      .select('id, email')
+      .select('id, email, full_name')
       .eq('organisation_id', profile!.organisation_id)
       .in('role', ['admin', 'user'])
-      .order('email')
+      .order('full_name', { ascending: true })
 
     const assignedRecords = (records ?? []).filter(r => r.assigned_to)
     const recordsByAssignee = new Map<string, ComplianceRecord[]>()
@@ -119,7 +126,7 @@ export default async function DashboardPage() {
         const memberRecords = recordsByAssignee.get(u.id)!
         const rag: Record<RAGStatus, number> = { grey: 0, red: 0, amber: 0, green: 0 }
         for (const r of memberRecords) rag[calculateRAG(r, now)]++
-        return { id: u.id, email: u.email, rag, total: memberRecords.length }
+        return { id: u.id, displayName: u.full_name ?? u.email, rag, total: memberRecords.length }
       })
       .sort((a, b) => (b.rag.red + b.rag.grey) - (a.rag.red + a.rag.grey))
   }
@@ -318,7 +325,7 @@ export default async function DashboardPage() {
                 {teamStats.map(member => (
                   <tr key={member.id} className="hover:bg-[#faf9f6] transition-colors">
                     <td className="px-4 py-3 font-medium text-[#1a1a1a]">
-                      {member.email}
+                      {member.displayName}
                       {/* RAG inline on mobile */}
                       <div className="flex flex-wrap gap-2 mt-1 sm:hidden">
                         {(['red', 'amber', 'green', 'grey'] as const)

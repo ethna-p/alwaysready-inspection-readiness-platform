@@ -143,10 +143,10 @@ export default async function TimelinePage({ params }: Props) {
   ])
 
   const { data: userRows } = allUserIds.size > 0
-    ? await supabase.from('users').select('id, email').in('id', [...allUserIds])
+    ? await supabase.from('users').select('id, email, full_name').in('id', [...allUserIds])
     : { data: [] }
 
-  const emailById = new Map((userRows ?? []).map(u => [u.id, u.email]))
+  const emailById = new Map((userRows ?? []).map(u => [u.id, u.full_name ?? u.email]))
 
   // ── Build unified timeline ────────────────────────────────────────────────
   const entries: TimelineEntry[] = []
