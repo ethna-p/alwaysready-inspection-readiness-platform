@@ -1,23 +1,15 @@
 /**
- * SiteHeader — appears on every authenticated page.
- * Logo top-left, sign-out button top-right.
- * Keyboard-navigable, focus rings visible.
+ * SiteHeader — server component.
+ * Fetches the user's role to conditionally show the Team link (admins only).
+ * Sign-out is delegated to SignOutButton (client component).
  */
-'use client'
-
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { getCurrentUserProfile } from '@/lib/session'
+import SignOutButton from './SignOutButton'
 
-export default function SiteHeader() {
-  const router = useRouter()
-  const supabase = createClient()
-
-  async function handleSignOut() {
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
+export default async function SiteHeader() {
+  const profile = await getCurrentUserProfile()
+  const isAdmin = profile?.role === 'admin'
 
   return (
     <header className="bg-white border-b border-gray-200 print:hidden">
@@ -66,20 +58,18 @@ export default function SiteHeader() {
           >
             Daily Report
           </a>
+          {isAdmin && (
+            <a
+              href="/dashboard/admin/team"
+              className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            >
+              Team
+            </a>
+          )}
         </nav>
 
         {/* Sign out */}
-        <button
-          onClick={handleSignOut}
-          className="
-            text-sm font-medium text-[#014D4E]
-            hover:underline
-            focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-            rounded
-          "
-        >
-          Sign out
-        </button>
+        <SignOutButton />
       </div>
     </header>
   )
