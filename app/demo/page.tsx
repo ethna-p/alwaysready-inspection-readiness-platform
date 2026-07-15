@@ -40,25 +40,31 @@ export default async function DemoPage({ searchParams }: Props) {
         </a>
       </header>
 
-      {/* Hero */}
-      <main className="flex-1 flex items-center justify-center px-6 py-16">
-        <div className="max-w-xl w-full text-center">
+      {/* Hero — dark teal with decorative circles */}
+      <section className="relative bg-[#014D4E] overflow-hidden px-6 py-20 text-center">
+
+        {/* Decorative background circles */}
+        <span aria-hidden="true" className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5" />
+        <span aria-hidden="true" className="pointer-events-none absolute -bottom-32 -right-20 w-[28rem] h-[28rem] rounded-full bg-white/5" />
+        <span aria-hidden="true" className="pointer-events-none absolute top-10 right-1/4 w-40 h-40 rounded-full bg-[#ffd700]/10" />
+
+        <div className="relative max-w-xl mx-auto">
 
           {/* Badge */}
-          <span className="inline-block text-xs font-bold text-[#014D4E] bg-[#014D4E]/10 px-3 py-1 rounded-full uppercase tracking-widest mb-6">
+          <span className="inline-block text-xs font-bold text-[#ffd700] bg-[#ffd700]/15 border border-[#ffd700]/30 px-3 py-1 rounded-full uppercase tracking-widest mb-6">
             Interactive demo
           </span>
 
-          <h1 className="text-4xl font-bold text-[#014D4E] leading-tight mb-4">
+          <h1 className="text-4xl font-bold text-white leading-tight mb-4">
             See AlwaysReady in action
           </h1>
 
-          <p className="text-lg text-gray-600 mb-3 leading-relaxed">
+          <p className="text-lg text-white/80 mb-3 leading-relaxed">
             Your own private demo environment, pre-loaded with realistic data for{' '}
-            <span className="font-semibold text-[#1a1a1a]">Sunrise Residential Care Home</span>.
+            <span className="font-semibold text-white">Sunrise Residential Care Home</span>.
           </p>
 
-          <p className="text-sm text-gray-600 mb-8">
+          <p className="text-sm text-white/60 mb-8">
             No sign-up required. Your session is fully isolated — no one else
             can see your data, and it is automatically cleared after 7 days.
           </p>
@@ -78,10 +84,10 @@ export default async function DemoPage({ searchParams }: Props) {
             href="/demo/start"
             className="
               inline-flex items-center justify-center gap-2
-              bg-[#014D4E] text-white text-base font-semibold
+              bg-[#ffd700] text-[#014D4E] text-base font-bold
               px-8 py-4 rounded-xl
-              hover:bg-[#013838]
-              focus:outline-none focus:ring-4 focus:ring-[#014D4E]/30
+              hover:bg-yellow-300
+              focus:outline-none focus:ring-4 focus:ring-[#ffd700]/50
               transition-colors
               w-full sm:w-auto
             "
@@ -93,14 +99,19 @@ export default async function DemoPage({ searchParams }: Props) {
             </svg>
           </a>
 
-          <p className="text-xs text-gray-600 mt-4">
+          <p className="text-xs text-white/50 mt-4">
             Takes about 2 seconds to load. Nothing to install.
           </p>
 
-          {/* What you'll see */}
-          <div className="mt-12 text-left bg-white rounded-2xl border border-gray-200 p-6">
+        </div>
+      </section>
+
+      {/* What you'll see */}
+      <main className="flex-1 flex items-start justify-center px-6 py-12">
+        <div className="max-w-xl w-full">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <h2 className="text-sm font-bold text-[#014D4E] uppercase tracking-widest mb-4">
-              What you'll see
+              What you&apos;ll see
             </h2>
             <ul className="space-y-3 text-sm text-gray-700">
               {[
@@ -126,7 +137,6 @@ export default async function DemoPage({ searchParams }: Props) {
               ))}
             </ul>
           </div>
-
         </div>
       </main>
 
