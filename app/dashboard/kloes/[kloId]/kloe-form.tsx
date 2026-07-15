@@ -5,6 +5,10 @@
  *
  * Client component so we can use useActionState for pending/success/error states.
  * The form uses a server action (updateKloCompliance) — no JSON API needed.
+ *
+ * Props:
+ *   isAdmin — when false, priority and review frequency fields are hidden.
+ *             Non-admins can only update status, review date, evidence, and notes.
  */
 
 import Link from 'next/link'
@@ -44,9 +48,11 @@ function toDateInput(iso: string | null): string {
 interface Props {
   kloItemId: string
   currentRecord: ComplianceRecord | null
+  /** When false, priority and review frequency controls are hidden */
+  isAdmin: boolean
 }
 
-export default function KloeForm({ kloItemId, currentRecord }: Props) {
+export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
     updateKloCompliance,
     null
@@ -86,23 +92,25 @@ export default function KloeForm({ kloItemId, currentRecord }: Props) {
           </select>
         </div>
 
-        {/* Priority */}
-        <div>
-          <label htmlFor="priority" className="block text-sm font-medium text-[#1a1a1a] mb-1">
-            Priority
-            <span className="ml-1 text-xs text-gray-500 font-normal">(how serious if non-compliant)</span>
-          </label>
-          <select
-            id="priority"
-            name="priority"
-            defaultValue={defaultPriority}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
-          >
-            {PRIORITY_OPTIONS.map(o => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-        </div>
+        {/* Priority — admins only */}
+        {isAdmin && (
+          <div>
+            <label htmlFor="priority" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+              Priority
+              <span className="ml-1 text-xs text-gray-500 font-normal">(how serious if non-compliant)</span>
+            </label>
+            <select
+              id="priority"
+              name="priority"
+              defaultValue={defaultPriority}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            >
+              {PRIORITY_OPTIONS.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Date reviewed */}
         <div>
@@ -119,32 +127,34 @@ export default function KloeForm({ kloItemId, currentRecord }: Props) {
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
           <p className="text-xs text-gray-500 mt-1">
-            Leave blank if you are only updating status or priority without completing a review.
+            Leave blank if you are only updating status{isAdmin ? ' or priority' : ''} without completing a review.
           </p>
         </div>
 
-        {/* Review frequency */}
-        <div>
-          <label htmlFor="review_frequency_days" className="block text-sm font-medium text-[#1a1a1a] mb-1">
-            Review frequency
-            <span className="ml-1 text-xs text-gray-500 font-normal">(how often this KLOE should be reviewed)</span>
-          </label>
-          <select
-            id="review_frequency_days"
-            name="review_frequency_days"
-            defaultValue={FREQUENCY_OPTIONS.some(o => o.value === defaultFrequency)
-              ? defaultFrequency
-              : '90'}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
-          >
-            {FREQUENCY_OPTIONS.map(o => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-          <p className="text-xs text-gray-500 mt-1">
-            Changes to review frequency are logged in your audit trail.
-          </p>
-        </div>
+        {/* Review frequency — admins only */}
+        {isAdmin && (
+          <div>
+            <label htmlFor="review_frequency_days" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+              Review frequency
+              <span className="ml-1 text-xs text-gray-500 font-normal">(how often this KLOE should be reviewed)</span>
+            </label>
+            <select
+              id="review_frequency_days"
+              name="review_frequency_days"
+              defaultValue={FREQUENCY_OPTIONS.some(o => o.value === defaultFrequency)
+                ? defaultFrequency
+                : '90'}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            >
+              {FREQUENCY_OPTIONS.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Changes to review frequency are logged in your audit trail.
+            </p>
+          </div>
+        )}
 
         {/* Evidence location */}
         <div>

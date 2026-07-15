@@ -53,6 +53,15 @@ export default async function KloesPage() {
     (records ?? []).map(r => [r.klo_item_id, r])
   )
 
+  // Resolve assigned_to emails
+  const assignedIds = [...new Set(
+    (records ?? []).map(r => r.assigned_to).filter(Boolean) as string[]
+  )]
+  const { data: assignedUsers } = assignedIds.length > 0
+    ? await supabase.from('users').select('id, email').in('id', assignedIds)
+    : { data: [] }
+  const emailByUserId = new Map((assignedUsers ?? []).map(u => [u.id, u.email]))
+
   // ── Summary counts ───────────────────────────────────────────────────
   const allKlos = kloItems ?? []
   const ragCounts = { grey: 0, red: 0, amber: 0, green: 0 }
@@ -134,6 +143,7 @@ export default async function KloesPage() {
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">RAG</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Priority</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Next due</th>
+                      <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Assigned to</th>
                       <th scope="col" className="px-4 py-3">
                         <span className="sr-only">Actions</span>
                       </th>
@@ -192,6 +202,14 @@ export default async function KloesPage() {
                           {/* Next due */}
                           <td className="px-4 py-3 hidden lg:table-cell text-gray-600">
                             {formatDate(record?.next_review_due ?? null)}
+                          </td>
+
+                          {/* Assigned to */}
+                          <td className="px-4 py-3 hidden lg:table-cell text-gray-600 text-xs">
+                            {record?.assigned_to
+                              ? emailByUserId.get(record.assigned_to) ?? '—'
+                              : <span className="text-gray-300">Unassigned</span>
+                            }
                           </td>
 
                           {/* Link */}

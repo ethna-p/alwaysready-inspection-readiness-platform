@@ -86,6 +86,44 @@ export default async function DashboardPage() {
     overallRag[calculateRAG(recordByKloId.get(k.id), now)]++
   }
 
+  // ── Team workload (admins only) ───────────────────────────────────────────
+  const isAdmin = profile?.role === 'admin'
+
+  type TeamMemberStats = {
+    id: string
+    email: string
+    rag: Record<RAGStatus, number>
+    total: number
+  }
+  let teamStats: TeamMemberStats[] = []
+
+  if (isAdmin) {
+    const { data: orgUsers } = await supabase
+      .from('users')
+      .select('id, email')
+      .eq('organisation_id', profile!.organisation_id)
+      .in('role', ['admin', 'user'])
+      .order('email')
+
+    const assignedRecords = (records ?? []).filter(r => r.assigned_to)
+    const recordsByAssignee = new Map<string, ComplianceRecord[]>()
+    for (const r of assignedRecords) {
+      const key = r.assigned_to!
+      if (!recordsByAssignee.has(key)) recordsByAssignee.set(key, [])
+      recordsByAssignee.get(key)!.push(r)
+    }
+
+    teamStats = (orgUsers ?? [])
+      .filter(u => recordsByAssignee.has(u.id))
+      .map(u => {
+        const memberRecords = recordsByAssignee.get(u.id)!
+        const rag: Record<RAGStatus, number> = { grey: 0, red: 0, amber: 0, green: 0 }
+        for (const r of memberRecords) rag[calculateRAG(r, now)]++
+        return { id: u.id, email: u.email, rag, total: memberRecords.length }
+      })
+      .sort((a, b) => (b.rag.red + b.rag.grey) - (a.rag.red + a.rag.grey))
+  }
+
   // ── Per-key-question stats ────────────────────────────────────────────────
   type KqStats = {
     id: string
@@ -260,6 +298,70 @@ export default async function DashboardPage() {
           })}
         </div>
       </section>
+
+      {/* ── Team workload ─────────────────────────────────────────────────── */}
+      {isAdmin && teamStats.length > 0 && (
+        <section aria-labelledby="team-heading" className="mt-8">
+          <h2 id="team-heading" className="text-lg font-bold text-[#014D4E] mb-4">
+            Team workload
+          </h2>
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wide">
+                  <th scope="col" className="text-left px-4 py-3 font-medium">Team member</th>
+                  <th scope="col" className="text-left px-4 py-3 font-medium">Assigned KLOEs</th>
+                  <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">RAG breakdown</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {teamStats.map(member => (
+                  <tr key={member.id} className="hover:bg-[#faf9f6] transition-colors">
+                    <td className="px-4 py-3 font-medium text-[#1a1a1a]">
+                      {member.email}
+                      {/* RAG inline on mobile */}
+                      <div className="flex flex-wrap gap-2 mt-1 sm:hidden">
+                        {(['red', 'amber', 'green', 'grey'] as const)
+                          .filter(r => member.rag[r] > 0)
+                          .map(r => (
+                            <span key={r} className="inline-flex items-center gap-1 text-xs">
+                              <RagBadge status={r} compact />
+                              <span className="font-medium">{member.rag[r]}</span>
+                            </span>
+                          ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-[#1a1a1a]">
+                      <span className="font-semibold">{member.total}</span>
+                      {member.rag.red > 0 && (
+                        <span className="ml-2 text-xs text-red-600 font-medium">
+                          {member.rag.red} overdue
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 hidden sm:table-cell">
+                      <div className="flex flex-wrap gap-3">
+                        {(['red', 'amber', 'green', 'grey'] as const)
+                          .filter(r => member.rag[r] > 0)
+                          .map(r => (
+                            <span key={r} className="inline-flex items-center gap-1 text-xs">
+                              <RagBadge status={r} compact />
+                              <span className="font-medium text-[#1a1a1a]">{member.rag[r]}</span>
+                            </span>
+                          ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">
+            Sorted by most at-risk first. Assign KLOEs from each KLOE's detail page.
+          </p>
+        </section>
+      )}
+
     </div>
   )
 }

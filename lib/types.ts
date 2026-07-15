@@ -168,21 +168,24 @@ export type Database = {
           id: string
           organisation_id: string
           email: string
-          role: 'admin' | 'rcm'
+          role: 'admin' | 'user' | 'viewer'
+          viewer_expires_at: string | null
           created_at: string
         }
         Insert: {
           id: string
           organisation_id: string
           email: string
-          role?: 'admin' | 'rcm'
+          role?: 'admin' | 'user' | 'viewer'
+          viewer_expires_at?: string | null
           created_at?: string
         }
         Update: {
           id?: string
           organisation_id?: string
           email?: string
-          role?: 'admin' | 'rcm'
+          role?: 'admin' | 'user' | 'viewer'
+          viewer_expires_at?: string | null
           created_at?: string
         }
         Relationships: [
@@ -211,6 +214,7 @@ export type Database = {
           evidence_location: string | null
           notes: string | null
           last_updated_by: string | null
+          assigned_to: string | null
           created_at: string
           updated_at: string
         }
@@ -226,6 +230,7 @@ export type Database = {
           evidence_location?: string | null
           notes?: string | null
           last_updated_by?: string | null
+          assigned_to?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -241,6 +246,7 @@ export type Database = {
           evidence_location?: string | null
           notes?: string | null
           last_updated_by?: string | null
+          assigned_to?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -383,6 +389,10 @@ export type Database = {
     Views: Record<string, never>
     Functions: {
       get_user_org_id: {
+        Args: Record<string, never>
+        Returns: string
+      }
+      get_user_role: {
         Args: Record<string, never>
         Returns: string
       }

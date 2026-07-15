@@ -7,11 +7,18 @@
  *   App INSERTs into compliance_record_history.
  *   The database trigger (sync_compliance_record_from_history) UPSERTs
  *   compliance_records automatically. We never write to compliance_records
- *   directly from app code.
+ *   directly from app code — except for the assigned_to field (assignKloe).
+ *
+ * Role rules (enforced here AND at the RLS layer):
+ *   admin  → can update all fields including priority, frequency, and assignment
+ *   user   → can only update status / date_reviewed / evidence_location / notes
+ *              and only for KLOEs assigned to them
+ *   viewer → read-only; all mutations blocked
  */
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { getCurrentUserProfile } from '@/lib/session'
 import type { ComplianceStatus } from '@/lib/types'
 
 export type ActionState =
@@ -32,15 +39,16 @@ export async function updateKloCompliance(
 ): Promise<ActionState> {
   const supabase = await createClient()
 
-  // ── Auth ───────────────────────────────────────────────────
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser()
-
-  if (authError || !user) {
+  // ── Auth + role ────────────────────────────────────────────
+  const profile = await getCurrentUserProfile()
+  if (!profile) {
     return { success: false, error: 'Not authenticated. Please sign in again.' }
   }
+  if (profile.role === 'viewer') {
+    return { success: false, error: 'Viewers cannot make changes.' }
+  }
+
+  const isAdmin = profile.role === 'admin'
 
   // ── Parse form ─────────────────────────────────────────────
   const kloItemId         = formData.get('klo_item_id') as string
@@ -48,41 +56,42 @@ export async function updateKloCompliance(
   const rawPriority       = formData.get('priority') as string
   const rawDateReviewed   = formData.get('date_reviewed') as string
   const rawFrequency      = formData.get('review_frequency_days') as string
-  const evidenceLocation  = (formData.get('evidence_location') as string).trim() || null
-  const notes             = (formData.get('notes') as string).trim() || null
+  const evidenceLocation  = (formData.get('evidence_location') as string | null)?.trim() || null
+  const notes             = (formData.get('notes') as string | null)?.trim() || null
 
   const status: ComplianceStatus = (rawStatus as ComplianceStatus) || 'not_started'
-  const priority                 = Math.min(5, Math.max(1, parseInt(rawPriority, 10) || 3))
   const dateReviewed             = rawDateReviewed || null
-  const reviewFrequencyDays      = Math.max(1, parseInt(rawFrequency, 10) || 90)
-  const nextReviewDue            = dateReviewed
-    ? calcNextReviewDue(dateReviewed, reviewFrequencyDays)
-    : null
 
   if (!kloItemId) {
     return { success: false, error: 'Missing KLOE identifier.' }
   }
 
-  // ── User's org ─────────────────────────────────────────────
-  const { data: userRow, error: userErr } = await supabase
-    .from('users')
-    .select('organisation_id')
-    .eq('id', user.id)
-    .single()
+  const organisationId = profile.organisation_id
 
-  if (userErr || !userRow) {
-    return { success: false, error: 'Could not retrieve your organisation.' }
-  }
-
-  const organisationId = userRow.organisation_id
-
-  // ── Fetch the current record (to detect priority/frequency changes) ─
+  // ── Fetch the current record ────────────────────────────────
+  // Need this to:
+  //   a) Preserve admin-set priority/frequency for non-admin saves
+  //   b) Detect changes for audit sub-tables
   const { data: currentRecord } = await supabase
     .from('compliance_records')
     .select('priority, review_frequency_days')
     .eq('organisation_id', organisationId)
     .eq('klo_item_id', kloItemId)
     .maybeSingle()
+
+  // For non-admins: ignore any submitted priority/frequency and use the
+  // existing values (or sensible defaults if this is a brand-new record).
+  const priority = isAdmin
+    ? Math.min(5, Math.max(1, parseInt(rawPriority, 10) || 3))
+    : (currentRecord?.priority ?? 3)
+
+  const reviewFrequencyDays = isAdmin
+    ? Math.max(1, parseInt(rawFrequency, 10) || 90)
+    : (currentRecord?.review_frequency_days ?? 90)
+
+  const nextReviewDue = dateReviewed
+    ? calcNextReviewDue(dateReviewed, reviewFrequencyDays)
+    : null
 
   // ── Insert into history (trigger will upsert compliance_records) ────
   const { error: historyErr } = await supabase
@@ -97,36 +106,42 @@ export async function updateKloCompliance(
       review_frequency_days: reviewFrequencyDays,
       evidence_location:     evidenceLocation,
       notes,
-      changed_by:            user.id,
+      changed_by:            profile.id,
     })
 
   if (historyErr) {
     console.error('compliance_record_history insert error:', historyErr)
+    // If RLS blocked the insert, surface a helpful message
+    if (historyErr.code === '42501') {
+      return { success: false, error: 'You do not have permission to edit this KLOE. Check with your admin.' }
+    }
     return { success: false, error: 'Failed to save. Please try again.' }
   }
 
-  // ── Audit: priority changed? ────────────────────────────────
-  const oldPriority = currentRecord?.priority ?? null
-  if (oldPriority !== priority) {
-    await supabase.from('priority_history').insert({
-      organisation_id: organisationId,
-      klo_item_id:     kloItemId,
-      old_priority:    oldPriority,
-      new_priority:    priority,
-      changed_by:      user.id,
-    })
-  }
+  // ── Audit: priority changed? (admin only — users can't change it) ────
+  if (isAdmin) {
+    const oldPriority = currentRecord?.priority ?? null
+    if (oldPriority !== priority) {
+      await supabase.from('priority_history').insert({
+        organisation_id: organisationId,
+        klo_item_id:     kloItemId,
+        old_priority:    oldPriority,
+        new_priority:    priority,
+        changed_by:      profile.id,
+      })
+    }
 
-  // ── Audit: review frequency changed? ───────────────────────
-  const oldFrequency = currentRecord?.review_frequency_days ?? null
-  if (oldFrequency !== reviewFrequencyDays) {
-    await supabase.from('review_frequency_history').insert({
-      organisation_id:    organisationId,
-      klo_item_id:        kloItemId,
-      old_frequency_days: oldFrequency,
-      new_frequency_days: reviewFrequencyDays,
-      changed_by:         user.id,
-    })
+    // ── Audit: review frequency changed? ─────────────────────
+    const oldFrequency = currentRecord?.review_frequency_days ?? null
+    if (oldFrequency !== reviewFrequencyDays) {
+      await supabase.from('review_frequency_history').insert({
+        organisation_id:    organisationId,
+        klo_item_id:        kloItemId,
+        old_frequency_days: oldFrequency,
+        new_frequency_days: reviewFrequencyDays,
+        changed_by:         profile.id,
+      })
+    }
   }
 
   // ── Revalidate pages that show this data ───────────────────
@@ -134,4 +149,52 @@ export async function updateKloCompliance(
   revalidatePath(`/dashboard/kloes/${kloItemId}`)
 
   return { success: true, message: 'KLOE updated and saved to your audit trail.' }
+}
+
+/**
+ * Assign (or unassign) a KLOE to a team member.
+ * Admin-only action — RLS also enforces this at the DB layer.
+ */
+export async function assignKloe(
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const supabase = await createClient()
+
+  const profile = await getCurrentUserProfile()
+  if (!profile) {
+    return { success: false, error: 'Not authenticated. Please sign in again.' }
+  }
+  if (profile.role !== 'admin') {
+    return { success: false, error: 'Only admins can assign KLOEs.' }
+  }
+
+  const kloItemId  = formData.get('klo_item_id') as string
+  const assignToId = (formData.get('assigned_to') as string) || null // empty string → null (unassign)
+
+  if (!kloItemId) {
+    return { success: false, error: 'Missing KLOE identifier.' }
+  }
+
+  const { error } = await supabase
+    .from('compliance_records')
+    .update({ assigned_to: assignToId || null })
+    .eq('organisation_id', profile.organisation_id)
+    .eq('klo_item_id', kloItemId)
+
+  if (error) {
+    console.error('assignKloe update error:', error)
+    if (error.code === '42501') {
+      return { success: false, error: 'Permission denied. Only admins can assign KLOEs.' }
+    }
+    return { success: false, error: 'Failed to save assignment. Please try again.' }
+  }
+
+  revalidatePath(`/dashboard/kloes/${kloItemId}`)
+  revalidatePath('/dashboard/kloes')
+
+  return {
+    success: true,
+    message: assignToId ? 'KLOE assigned successfully.' : 'KLOE unassigned.',
+  }
 }

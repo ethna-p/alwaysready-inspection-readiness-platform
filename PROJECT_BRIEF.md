@@ -278,37 +278,58 @@ Priority (1–5) reflects how serious the consequences are if a KLOE is non-comp
 
 ### Roles
 
-Three roles on `users.role`:
+Three roles on `users.role` (finalized — do not rename):
 
 | Role | Who | Access |
 |---|---|---|
-| `manager` | RCM / Registered Manager | Full access — view and edit all KLOEs, assign to team members, manage team, create inspector logins |
-| `member` | Care staff, deputies, coordinators | View all KLOEs (transparency matters for compliance culture); can only edit KLOEs assigned to them |
+| `admin` | RCM / Registered Manager / Deputy (when covering) | Full access — view and edit all KLOEs, assign to team members, manage team, create inspector logins |
+| `user` | Care staff, deputies, coordinators | View all KLOEs; can only edit KLOEs assigned to them |
 | `viewer` | Board members, owners, CQC inspectors | Read-only — sees Dashboard, KLOE list, KLOE detail + audit trail, Readiness Trend; cannot see edit forms, Daily Report, or Inspection Pack generator |
+
+Multiple admins are supported. The RCM is admin by default at setup; they can promote others to admin (e.g. deputy covering during leave or inspection). All changes are attributed to the individual who made them — the audit trail gives full accountability regardless of how many admins exist.
 
 ### Access model
 
-All org members can see all KLOEs — siloed "only see yours" access is inappropriate for a compliance culture where CQC expects whole-team awareness. The distinction between `manager` and `member` is edit access, not view access. `viewer` accounts are purely read-only.
+All org members can see all KLOEs — siloed "only see yours" access is inappropriate for a compliance culture where CQC expects whole-team awareness. The distinction between `admin` and `user` is edit access, not view access. `viewer` accounts are purely read-only.
 
 ### Assignment model
 
-Simple v1 approach: `assigned_to UUID REFERENCES users(id)` on `compliance_records`. One assignee per KLOE. Assignment changes are captured in `compliance_record_history` (same append-only trail) so there is a record of when responsibility changed hands and who made the change.
+Simple v1 approach: `assigned_to UUID REFERENCES users(id)` on `compliance_records`. One assignee per KLOE. The sync trigger does NOT touch `assigned_to` — admin assignments persist across compliance record updates.
 
 Do not build a separate tasks table for v1 — this would be over-engineering before real users clarify what they actually need. Revisit only if providers ask for multiple assignees per KLOE, task-level granularity within a KLOE, or a separate task status independent of the KLOE's compliance status.
 
-### "My Tasks" view
+### "My KLOEs" personal space (Step 13)
 
-A filter on the KLOE list page — toggling between "All KLOEs" and "My assignments" — is sufficient for v1. No separate tasks screen needed.
+Role-based landing pages after login:
 
-### User management
+- **`admin`** → full Inspection Readiness dashboard (overall %, key question breakdown, team workload card)
+- **`user`** → "My KLOEs" — a personal landing page showing only KLOEs assigned to them, with RAG status, next due date, and a direct update link. If nothing is assigned yet, shows a clear message ("Nothing assigned to you yet — speak to your admin"). No noise, no distraction.
+- **`viewer`** → full dashboard in read-only mode
 
-The schema already supports multiple users per org. What's missing is a way to add them:
-- **For the demo:** seed additional users manually via SQL, or create a simple manager-facing "Add team member" form that creates a Supabase auth invite.
-- **For production:** a proper email invite flow (Supabase Auth has built-in invite support via `supabase.auth.admin.inviteUserByEmail()`).
+The KLOE list page shows an "Assigned to" column (admins see who owns what). The team workload card on the dashboard shows each assignee's RAG breakdown so admins can see at a glance who is behind.
 
-### Notifications (follow-on, not v1)
+### User management & login (Step 13 — key decisions)
 
-Email notifications when a KLOE is assigned, and when something assigned to you is overdue, are genuinely valuable but a separate workstream. Use Supabase Edge Functions + Resend (or similar transactional email service). Do not block delegation on notifications.
+**Staff in small care homes typically do not have work email addresses.** Personal email addresses are unsuitable — data handling risks, and family members sometimes share accounts. The platform therefore generates a placeholder login credential internally and does not require a real email address for staff accounts.
+
+**How it works:**
+- The RCM creates a staff account via the team management page — enters a name and (optionally) a role
+- The platform auto-generates a placeholder login identifier (e.g. `sarah.jones.{shortOrgId}@staff.alwaysready.uk`) for use by Supabase Auth internally — the staff member never sees or uses this
+- The RCM sets an initial password and tells the staff member directly (in person, via handover book, or WhatsApp)
+- The login screen asks for **username** (not "email address") + password
+- The staff member's name (not email) is what appears in the UI and in the audit trail
+
+**Password resets:** since there is no real email behind staff accounts, self-service reset is not possible. The RCM resets passwords on behalf of staff via the team management page. This is acceptable for the target setting — small homes where the RCM knows everyone and manages day-to-day access decisions.
+
+**Admin accounts** (RCM and deputies) may optionally have a real email address for login — this enables self-service password reset and is appropriate since they are more likely to have a work or personal business email.
+
+**`full_name` field:** add `full_name TEXT` to the `users` table (Step 13 migration). Display name in the UI, assignment dropdowns, and audit trail. Fall back to the username portion of the generated email if no name is set.
+
+### Notifications (Step 13 — in-app only for staff)
+
+Since staff accounts have no real email address, email notifications to staff are not viable. Notifications are **in-app only** for `user` role accounts — staff see their assigned KLOEs when they log in to their "My KLOEs" page. The admin is responsible for alerting staff via existing channels (verbal, WhatsApp, handover book) that something new has been assigned.
+
+For `admin` accounts (who may have a real email), email notifications on overdue KLOEs remain a future option via Supabase Edge Functions + a transactional email provider (e.g. Resend). Do not block Step 13 on this — it is a follow-on.
 
 ---
 
@@ -379,7 +400,7 @@ Inspector accounts expire automatically when their duration window closes. The s
 - `key_questions` — static reference table, the 5 CQC key questions (Safe, Effective, Caring, Responsive, Well-led), seeded once, stable
 - `service_types` — static reference table, all 11 Adult Social Care service types, seeded once, not subscriber-editable
 - `organisations` (id, name, cqc_location_id, service_type, subscription_tier)
-- `users` (id, organisation_id, email, role [`manager` | `member` | `viewer`], viewer_expires_at [nullable — set on temporary inspector/board accounts, null for permanent team members])
+- `users` (id, organisation_id, email, full_name [nullable — added Step 13], role [`admin` | `user` | `viewer`], viewer_expires_at [nullable — set on temporary inspector/board accounts, null for permanent team members])
 - `klo_items` — static reference table, ~24 KLOEs, seeded once, not subscriber-editable, with a `key_question_id` foreign key linking each KLOE to its current key question
 - `compliance_records` — current state only, one row per organisation per KLOE (includes status, priority, date_reviewed, next_review_due, review_frequency_days, evidence_location, assigned_to [nullable FK → users.id], pointer to latest history row)
 - `compliance_record_history` — append-only audit trail (who changed what, status at time of change, date_reviewed as asserted, system_recorded_at as actual write time, note field for context)
@@ -414,6 +435,12 @@ Environment/API credentials (Supabase URL, anon key, database password) must liv
 - A new subdomain will need a new DNS record at FastHosts once ready for public launch, pointing to wherever the Next.js frontend is hosted (e.g. Vercel).
 - Supabase's custom domain add-on (Pro plan) will also be used so the platform's API/auth runs on the AlwaysReady domain rather than a Supabase-branded one — this is a separate DNS record from the frontend's.
 - Free-tier Supabase projects pause after 7 days of inactivity (20–30 second cold start on next request) — a relevant risk for a public demo if traffic is infrequent; a lightweight keep-alive ping is a cheap mitigation if this becomes a problem.
+
+---
+
+## To Discuss — Parked Topics
+
+- **Enterprise pricing** — care groups managing multiple locations could be a significant revenue opportunity. Need to discuss pricing model (per-location? per-seat? flat group rate?) and whether the platform needs any additional features to serve a group/HQ use case (e.g. cross-location reporting, centralised admin).
 
 ---
 

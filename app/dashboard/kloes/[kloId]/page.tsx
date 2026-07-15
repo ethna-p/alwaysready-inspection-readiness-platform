@@ -1,16 +1,21 @@
 /**
  * /dashboard/kloes/[kloId] — KLOE detail: current status + edit form + audit trail.
  *
- * Server component: fetches KLOE, current record, and history.
- * KloeForm is the only client component (needs useActionState).
+ * Server component: fetches KLOE, current record, history, and user profile.
+ * Role-based rendering:
+ *   admin  → sees all fields, assignment panel, full edit form
+ *   user   → sees edit form with status/date/evidence/notes only (RLS enforces assignment)
+ *   viewer → read-only; edit form hidden
  */
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
 import KloeForm from './kloe-form'
+import AssignForm from './assign-form'
 
 type Props = { params: Promise<{ kloId: string }> }
 
@@ -36,6 +41,12 @@ function frequencyLabel(days: number | null): string {
 export default async function KloeDetailPage({ params }: Props) {
   const { kloId } = await params
   const supabase = await createClient()
+
+  // ── User profile + role ───────────────────────────────────────────────
+  const profile = await getCurrentUserProfile()
+  if (!profile) notFound() // middleware should have redirected; defensive fallback
+  const isAdmin  = profile.role === 'admin'
+  const isViewer = profile.role === 'viewer'
 
   // ── Fetch KLOE + its key question ─────────────────────────────────────
   const { data: klo } = await supabase
@@ -70,6 +81,25 @@ export default async function KloeDetailPage({ params }: Props) {
     : { data: [] }
 
   const emailById = new Map((userRows ?? []).map(u => [u.id, u.email]))
+
+  // ── Fetch all org team members (admins only, for assignment dropdown) ──
+  const teamMembers: { id: string; email: string; role: string }[] = []
+  if (isAdmin) {
+    const { data: members } = await supabase
+      .from('users')
+      .select('id, email, role')
+      .eq('organisation_id', profile.organisation_id)
+      .in('role', ['admin', 'user'])
+      .order('email')
+    if (members) teamMembers.push(...members)
+  }
+
+  // ── Resolve assigned-to email ─────────────────────────────────────────
+  const assignedToEmail = record?.assigned_to
+    ? (teamMembers.find(m => m.id === record.assigned_to)?.email
+        ?? (userRows ?? []).find(u => u.id === record.assigned_to)?.email
+        ?? null)
+    : null
 
   const rag = calculateRAG(record)
   // The nested join returns key_questions as an object
@@ -109,71 +139,98 @@ export default async function KloeDetailPage({ params }: Props) {
 
       <div className="space-y-6 max-w-2xl">
 
-          {/* Current status card */}
+        {/* Current status card */}
+        <section
+          className="bg-white rounded-xl border border-gray-200 p-5"
+          aria-labelledby="current-status-heading"
+        >
+          <h2 id="current-status-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-4">
+            Current status
+          </h2>
+
+          {record ? (
+            <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+              <div>
+                <dt className="text-xs text-gray-500 mb-1">RAG</dt>
+                <dd><RagBadge status={rag} /></dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 mb-1">Status</dt>
+                <dd><StatusBadge status={record.status} /></dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 mb-1">Priority</dt>
+                <dd>
+                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#014D4E] text-white text-sm font-bold" aria-label={`Priority ${record.priority}`}>
+                    {record.priority}
+                  </span>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 mb-1">Last reviewed</dt>
+                <dd className="text-[#1a1a1a]">{formatDate(record.date_reviewed)}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 mb-1">Next due</dt>
+                <dd className={`font-medium ${rag === 'red' ? 'text-red-600' : 'text-[#1a1a1a]'}`}>
+                  {formatDate(record.next_review_due)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 mb-1">Review frequency</dt>
+                <dd className="text-[#1a1a1a]">{frequencyLabel(record.review_frequency_days)}</dd>
+              </div>
+              {record.assigned_to && (
+                <div className="col-span-2 sm:col-span-3">
+                  <dt className="text-xs text-gray-500 mb-1">Assigned to</dt>
+                  <dd className="text-[#1a1a1a]">{assignedToEmail ?? record.assigned_to}</dd>
+                </div>
+              )}
+              {record.evidence_location && (
+                <div className="col-span-2 sm:col-span-3">
+                  <dt className="text-xs text-gray-500 mb-1">Evidence location</dt>
+                  <dd className="text-[#1a1a1a] break-words">{record.evidence_location}</dd>
+                </div>
+              )}
+              {record.notes && (
+                <div className="col-span-2 sm:col-span-3">
+                  <dt className="text-xs text-gray-500 mb-1">Notes</dt>
+                  <dd className="text-[#1a1a1a]">{record.notes}</dd>
+                </div>
+              )}
+            </dl>
+          ) : (
+            <div className="flex items-center gap-3">
+              <RagBadge status="grey" />
+              <p className="text-sm text-gray-500">
+                No review recorded yet.{!isViewer && ' Use the form below to log your first entry.'}
+              </p>
+            </div>
+          )}
+        </section>
+
+        {/* Assignment panel — admins only */}
+        {isAdmin && (
           <section
             className="bg-white rounded-xl border border-gray-200 p-5"
-            aria-labelledby="current-status-heading"
+            aria-labelledby="assign-heading"
           >
-            <h2 id="current-status-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-4">
-              Current status
+            <h2 id="assign-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+              Assign this KLOE
             </h2>
-
-            {record ? (
-              <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-                <div>
-                  <dt className="text-xs text-gray-500 mb-1">RAG</dt>
-                  <dd><RagBadge status={rag} /></dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500 mb-1">Status</dt>
-                  <dd><StatusBadge status={record.status} /></dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500 mb-1">Priority</dt>
-                  <dd>
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#014D4E] text-white text-sm font-bold" aria-label={`Priority ${record.priority}`}>
-                      {record.priority}
-                    </span>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500 mb-1">Last reviewed</dt>
-                  <dd className="text-[#1a1a1a]">{formatDate(record.date_reviewed)}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500 mb-1">Next due</dt>
-                  <dd className={`font-medium ${rag === 'red' ? 'text-red-600' : 'text-[#1a1a1a]'}`}>
-                    {formatDate(record.next_review_due)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500 mb-1">Review frequency</dt>
-                  <dd className="text-[#1a1a1a]">{frequencyLabel(record.review_frequency_days)}</dd>
-                </div>
-                {record.evidence_location && (
-                  <div className="col-span-2 sm:col-span-3">
-                    <dt className="text-xs text-gray-500 mb-1">Evidence location</dt>
-                    <dd className="text-[#1a1a1a] break-words">{record.evidence_location}</dd>
-                  </div>
-                )}
-                {record.notes && (
-                  <div className="col-span-2 sm:col-span-3">
-                    <dt className="text-xs text-gray-500 mb-1">Notes</dt>
-                    <dd className="text-[#1a1a1a]">{record.notes}</dd>
-                  </div>
-                )}
-              </dl>
-            ) : (
-              <div className="flex items-center gap-3">
-                <RagBadge status="grey" />
-                <p className="text-sm text-gray-500">
-                  No review recorded yet. Use the form below to log your first entry.
-                </p>
-              </div>
-            )}
+            <p className="text-xs text-gray-500 mb-4">
+              Assign a team member to own this KLOE. They will be able to update status, evidence, and notes.
+            </p>
+            <AssignForm
+              kloItemId={kloId}
+              currentAssignedTo={record?.assigned_to ?? null}
+              teamMembers={teamMembers}
+            />
           </section>
+        )}
 
-          {/* Edit form */}
+        {/* Edit form — hidden for viewers */}
+        {!isViewer && (
           <section
             className="bg-white rounded-xl border border-gray-200 p-5"
             aria-labelledby="update-heading"
@@ -181,20 +238,43 @@ export default async function KloeDetailPage({ params }: Props) {
             <h2 id="update-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-4">
               {record ? 'Update this KLOE' : 'Log first review'}
             </h2>
-            <KloeForm kloItemId={kloId} currentRecord={record ?? null} />
+            {/* Non-admin users: show a note if this KLOE isn't assigned to them */}
+            {!isAdmin && record && !record.assigned_to && (
+              <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-4">
+                This KLOE is not yet assigned. An admin needs to assign it to you before you can save changes.
+              </p>
+            )}
+            {!isAdmin && record?.assigned_to && record.assigned_to !== profile.id && (
+              <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-4">
+                This KLOE is assigned to another team member. Contact your admin if you need access.
+              </p>
+            )}
+            <KloeForm
+              kloItemId={kloId}
+              currentRecord={record ?? null}
+              isAdmin={isAdmin}
+            />
           </section>
+        )}
 
-          {/* Link to CQC rating characteristics */}
-          {(klo.rating_outstanding || klo.rating_good || klo.rating_ri || klo.rating_inadequate) && (
-            <div className="text-sm">
-              <Link
-                href={`/dashboard/kloes/${kloId}/ratings`}
-                className="text-[#014D4E] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
-              >
-                View CQC rating characteristics for this KLOE →
-              </Link>
-            </div>
-          )}
+        {/* Viewer notice */}
+        {isViewer && (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 text-sm text-gray-600">
+            You have view-only access. Contact your admin to make changes.
+          </div>
+        )}
+
+        {/* Link to CQC rating characteristics */}
+        {(klo.rating_outstanding || klo.rating_good || klo.rating_ri || klo.rating_inadequate) && (
+          <div className="text-sm">
+            <Link
+              href={`/dashboard/kloes/${kloId}/ratings`}
+              className="text-[#014D4E] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+            >
+              View CQC rating characteristics for this KLOE →
+            </Link>
+          </div>
+        )}
 
       </div>
 
