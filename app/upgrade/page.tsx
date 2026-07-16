@@ -91,7 +91,7 @@ export default function UpgradePage() {
             mb-4
           "
         >
-          Subscribe now — email us →
+          Subscribe Now
         </a>
 
 
