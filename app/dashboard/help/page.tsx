@@ -298,7 +298,7 @@ export default function HelpPage() {
             />
             <FAQ
               question="What should I do if something looks wrong in the system?"
-              answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin can contact AlwaysReady support."
+              answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin can contact AlwaysReady support at hello@alwaysready.uk."
             />
           </div>
         </Section>

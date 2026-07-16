@@ -37,32 +37,14 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
   if (isDemo) {
     return (
       <div className="bg-[#014D4E] text-white print:hidden">
-        <div className="max-w-7xl mx-auto px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm">
-              <span className="font-semibold">You&apos;re exploring AlwaysReady</span>
-              {' — '}
-              launching Autumn 2026. Impressed? Join the waitlist for early access.
-            </p>
-            <p className="text-xs text-white/75 mt-0.5">
-              KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
-            </p>
-          </div>
-          <a
-            href="https://alwaysready.uk/waitlist"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              shrink-0 text-sm font-semibold
-              bg-[#ffd700] text-[#014D4E]
-              px-4 py-1.5 rounded-lg
-              hover:bg-yellow-300
-              focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#014D4E]
-              transition-colors
-            "
-          >
-            Join the Waitlist →
-          </a>
+        <div className="max-w-7xl mx-auto px-6 py-2.5">
+          <p className="text-sm">
+            <span className="font-semibold">You&apos;re exploring AlwaysReady</span>
+            {', the inspection readiness platform. We launch when CQC publishes the new framework.'}
+          </p>
+          <p className="text-xs text-white/75 mt-0.5">
+            KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
+          </p>
         </div>
       </div>
     )
@@ -98,7 +80,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
             transition-colors
           "
         >
-          SUBSCRIBE HERE
+          Subscribe →
         </a>
       </div>
     </div>
