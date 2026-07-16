@@ -93,6 +93,20 @@ export default function DemoLeadForm() {
         />
       </div>
 
+      {/* Blog / newsletter opt-in — unticked by default (GDPR) */}
+      <label className="flex items-start gap-3 text-left cursor-pointer">
+        <input
+          type="checkbox"
+          name="marketing_consent"
+          disabled={pending}
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-white/30 bg-white/90 text-[#014D4E] focus:ring-2 focus:ring-[#ffd700] disabled:opacity-60"
+        />
+        <span className="text-xs text-white/70 leading-relaxed">
+          Keep me updated with CQC news, inspection tips, and resources from AlwaysReady.
+          You can unsubscribe at any time.
+        </span>
+      </label>
+
       {/* Submit */}
       <button
         type="submit"
