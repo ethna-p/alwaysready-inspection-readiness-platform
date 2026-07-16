@@ -7,7 +7,7 @@ export const metadata = { title: 'Subscribe — AlwaysReady' }
 
 export default function UpgradePage() {
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center px-6 py-16">
       <div className="max-w-lg w-full text-center">
 
         {/* Logo mark */}
