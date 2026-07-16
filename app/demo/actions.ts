@@ -14,7 +14,8 @@ export async function saveDemoLead(formData: FormData) {
   if (firstName && lastName && email) {
     try {
       const admin = createAdminClient()
-      await admin.from('demo_leads').insert({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (admin as any).from('demo_leads').insert({
         first_name: firstName,
         last_name: lastName,
         email,
