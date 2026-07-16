@@ -42,7 +42,6 @@ export default function UpgradePage() {
           </p>
           <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
             {[
-              'All 24 CQC KLOEs with compliance checklists',
               'Readiness dashboard and trend reports',
               'Exportable inspection pack (PDF)',
               'Built-in helpdesk support',
