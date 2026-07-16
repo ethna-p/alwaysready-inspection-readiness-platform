@@ -42,9 +42,7 @@ export default function UpgradePage() {
             <span className="text-4xl font-extrabold text-[#014D4E]">£75</span>
             <span className="text-sm text-gray-600">+ VAT / month</span>
           </div>
-          <p className="text-xs text-gray-600 mb-6">
-            All 24 CQC KLOEs · Full audit trail
-          </p>
+
           <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
             {[
               'Readiness dashboard with % score by key question area',
