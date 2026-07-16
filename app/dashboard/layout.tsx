@@ -46,7 +46,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen flex flex-col bg-[#faf9f6]">
-      <SiteHeader />
+      <SiteHeader isDemo={org?.is_demo ?? false} />
       <TrialBanner
         isDemo={org?.is_demo ?? false}
         demoExpiresAt={org?.demo_expires_at ?? null}

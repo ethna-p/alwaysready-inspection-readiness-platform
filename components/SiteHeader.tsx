@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import SignOutButton from './SignOutButton'
 
-export default async function SiteHeader() {
+export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean }) {
   const supabase = await createClient()
   const profile = await getCurrentUserProfile()
   const isAdmin = profile?.role === 'admin'
@@ -26,16 +26,26 @@ export default async function SiteHeader() {
     <header className="bg-white border-b border-gray-200 print:hidden">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo — links to dashboard */}
-        <a href="/dashboard" aria-label="AlwaysReady — go to dashboard">
-          <Image
-            src="/alwaysready-logo.svg"
-            alt="AlwaysReady"
-            width={180}
-            height={40}
-            style={{ height: 'auto' }}
-            priority
-          />
-        </a>
+        <div className="flex items-center gap-4">
+          <a href="/dashboard" aria-label="AlwaysReady — go to dashboard">
+            <Image
+              src="/alwaysready-logo.svg"
+              alt="AlwaysReady"
+              width={180}
+              height={40}
+              style={{ height: 'auto' }}
+              priority
+            />
+          </a>
+          {isDemo && (
+            <a
+              href="https://alwaysready.uk"
+              className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-[#014D4E]/70 hover:text-[#014D4E] border border-[#014D4E]/20 rounded-full px-3 py-1 hover:border-[#014D4E]/50 transition-colors"
+            >
+              ← alwaysready.uk
+            </a>
+          )}
+        </div>
 
         {/* Primary nav */}
         <nav aria-label="Main navigation" className="hidden sm:flex items-center gap-6">

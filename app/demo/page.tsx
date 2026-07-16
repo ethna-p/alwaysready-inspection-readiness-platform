@@ -29,7 +29,7 @@ export default async function DemoPage({ searchParams }: Props) {
 
       {/* Minimal header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <a href="/" aria-label="AlwaysReady home">
+        <a href="https://alwaysready.uk" aria-label="AlwaysReady home">
           <Image
             src="/alwaysready-logo.svg"
             alt="AlwaysReady"
