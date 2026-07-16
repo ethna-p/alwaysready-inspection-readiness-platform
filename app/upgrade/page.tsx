@@ -2,7 +2,7 @@
  * /upgrade — shown when a trial has expired.
  * Phase 1: mailto CTA. Phase 2: Stripe Checkout.
  */
-import Link from 'next/link'
+import SignOutButton from '@/components/SignOutButton'
 
 export const metadata = { title: 'Subscribe — AlwaysReady' }
 
@@ -27,6 +27,11 @@ export default function UpgradePage() {
           work is saved — nothing is lost. Subscribe today and pick up exactly
           where you left off.
         </p>
+
+        {/* Sign out link */}
+        <div className="text-left mb-6">
+          <SignOutButton />
+        </div>
 
         {/* Pricing card */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6 text-left shadow-sm">
@@ -84,15 +89,6 @@ export default function UpgradePage() {
         </a>
 
 
-        {/* Divider + back link */}
-        <div className="mt-10 pt-6 border-t border-gray-200">
-          <Link
-            href="/login"
-            className="text-xs text-gray-600 hover:text-[#014D4E] underline"
-          >
-            Back to login
-          </Link>
-        </div>
 
       </div>
     </div>
