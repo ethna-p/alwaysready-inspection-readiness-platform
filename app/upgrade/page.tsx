@@ -42,10 +42,17 @@ export default function UpgradePage() {
           </p>
           <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
             {[
-              'Readiness dashboard and trend reports',
-              'Exportable inspection pack (PDF)',
+              'Readiness dashboard with % score by key question area',
+              'Full KLOE tracker with RAG status and priority',
+              'Daily Review Report — what needs attention today',
+              'Audit trail — permanent, tamper-proof record of every update',
+              '8-week readiness trend chart',
+              'Exportable inspection pack',
+              'Role-based access — Admin, Staff, and Visitor',
+              'Visitor logins for CQC inspectors — temporary and expiring',
+              'Team management — add staff, assign KLOEs, reset passwords',
+              'Unlimited users',
               'Built-in helpdesk support',
-              'Role-based access (Admin / User / Viewer)',
             ].map(item => (
               <li key={item} className="flex items-start gap-2">
                 <span className="text-[#014D4E] font-bold mt-0.5">✓</span>
