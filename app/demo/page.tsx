@@ -6,7 +6,6 @@
  * and redirects them to the dashboard.
  */
 import Image from 'next/image'
-import Link from 'next/link'
 import DemoLeadForm from './DemoLeadForm'
 
 type Props = {
@@ -138,12 +137,6 @@ export default async function DemoPage({ searchParams }: Props) {
           Our tools are designed to support providers in preparing for CQC inspection.
           They do not constitute official CQC guidance and do not guarantee any
           particular inspection outcome.
-        </p>
-        <p className="text-xs text-gray-600 mt-3">
-          Already have an account?{' '}
-          <Link href="/login" className="text-[#014D4E] underline hover:no-underline">
-            Sign in
-          </Link>
         </p>
       </footer>
 
