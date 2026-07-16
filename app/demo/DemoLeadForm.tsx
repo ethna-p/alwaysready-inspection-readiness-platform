@@ -103,7 +103,15 @@ export default function DemoLeadForm() {
         />
         <span className="text-xs text-white/70 leading-relaxed">
           Keep me updated with CQC news, inspection tips, and resources from AlwaysReady.
-          You can unsubscribe at any time.
+          You can unsubscribe at any time.{' '}
+          <a
+            href="https://alwaysready.uk/legal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-white/90"
+          >
+            Privacy policy
+          </a>
         </span>
       </label>
 
