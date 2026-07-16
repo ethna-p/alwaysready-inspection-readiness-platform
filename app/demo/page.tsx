@@ -67,8 +67,8 @@ export default async function DemoPage({ searchParams }: Props) {
 
           <p className="text-sm text-white/60 mb-8">
             Enter your details below to get instant access. Your session is fully
-            isolated — no one else can see your data, and it is automatically
-            cleared after 7 days.
+            isolated — no one else can see your data. Demo environments are
+            reset each night at midnight (UTC).
           </p>
 
           {/* Error message */}
