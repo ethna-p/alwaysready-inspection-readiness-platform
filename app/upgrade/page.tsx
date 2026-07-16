@@ -35,7 +35,7 @@ export default function UpgradePage() {
 
         {/* Pricing card */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6 text-left shadow-sm">
-          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-2 text-center">
+          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-6 text-center">
             AlwaysReady Subscription
           </p>
           <div className="flex items-baseline gap-1 justify-center">
