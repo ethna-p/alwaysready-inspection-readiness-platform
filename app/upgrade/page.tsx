@@ -59,10 +59,17 @@ export default function UpgradePage() {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-600 mb-4">
             Registered charities receive a 20% discount — mention your charity
             number when you get in touch.
           </p>
+          <div className="border-t border-gray-200 pt-4">
+            <p className="text-xs text-gray-600">
+              <span className="font-semibold text-[#1a1a1a]">Need to export your data?</span> Your records are kept for 30 days after your trial ends. Email{' '}
+              <a href="mailto:hello@alwaysready.uk" className="underline hover:text-[#014D4E]">hello@alwaysready.uk</a>{' '}
+              and we'll send you a full export in CSV format within 5 working days.
+            </p>
+          </div>
         </div>
 
         {/* CTA */}
