@@ -28,10 +28,14 @@ export default function UpgradePage() {
         </p>
 
         {/* Pricing card */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6 text-left shadow-sm">
-          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-6 text-center">
-            AlwaysReady Subscription
-          </p>
+        <div className="bg-white border border-gray-200 rounded-2xl mb-6 text-left shadow-sm overflow-hidden">
+          {/* Coloured header band */}
+          <div className="bg-[#014D4E] px-8 py-5 text-center">
+            <p className="text-sm font-semibold text-white uppercase tracking-widest">
+              AlwaysReady Subscription
+            </p>
+          </div>
+          <div className="p-8">
           <div className="flex items-baseline gap-1 justify-center">
             <span className="text-6xl font-extrabold text-[#014D4E]">£75</span>
             <span className="text-base text-gray-600">+ VAT / month</span>
@@ -69,6 +73,7 @@ export default function UpgradePage() {
               <a href="mailto:hello@alwaysready.uk" className="underline hover:text-[#014D4E]">hello@alwaysready.uk</a>{' '}
               and we'll send you a full export in CSV format within 5 working days.
             </p>
+          </div>
           </div>
         </div>
 
