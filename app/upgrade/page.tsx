@@ -38,7 +38,7 @@ export default function UpgradePage() {
             <span className="text-sm text-gray-600">+ VAT / month</span>
           </div>
           <p className="text-xs text-gray-600 mb-6">
-            Unlimited users · Unlimited KLOEs · Full audit trail
+            Unlimited users · All 24 CQC KLOEs · Full audit trail
           </p>
           <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
             {[
