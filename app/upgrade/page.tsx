@@ -35,12 +35,12 @@ export default function UpgradePage() {
 
         {/* Pricing card */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6 text-left shadow-sm">
-          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-2">
+          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-2 text-center">
             AlwaysReady Subscription
           </p>
-          <div className="flex items-baseline gap-1 mb-1">
-            <span className="text-4xl font-extrabold text-[#014D4E]">£75</span>
-            <span className="text-sm text-gray-600">+ VAT / month</span>
+          <div className="flex items-baseline gap-1 mb-1 justify-center">
+            <span className="text-6xl font-extrabold text-[#014D4E]">£75</span>
+            <span className="text-base text-gray-600">+ VAT / month</span>
           </div>
 
           <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
