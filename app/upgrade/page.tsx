@@ -76,9 +76,6 @@ export default function UpgradePage() {
           Subscribe now — email us →
         </a>
 
-        <p className="text-xs text-gray-600">
-          We&apos;ll send you a secure payment link within one business day.
-        </p>
 
         {/* Divider + back link */}
         <div className="mt-10 pt-6 border-t border-gray-200">
