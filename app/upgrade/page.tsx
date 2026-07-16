@@ -38,12 +38,12 @@ export default function UpgradePage() {
           <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-2 text-center">
             AlwaysReady Subscription
           </p>
-          <div className="flex items-baseline gap-1 mb-1 justify-center">
+          <div className="flex items-baseline gap-1 mb-8 justify-center">
             <span className="text-6xl font-extrabold text-[#014D4E]">£75</span>
             <span className="text-base text-gray-600">+ VAT / month</span>
           </div>
 
-          <ul className="space-y-2 text-sm text-[#1a1a1a] mb-6">
+          <ul className="space-y-3 text-sm text-[#1a1a1a] mb-8">
             {[
               'Readiness dashboard with % score by key question area',
               'Full KLOE tracker with RAG status and priority',
