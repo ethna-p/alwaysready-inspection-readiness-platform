@@ -7,6 +7,7 @@
  */
 import Image from 'next/image'
 import Link from 'next/link'
+import DemoLeadForm from './DemoLeadForm'
 
 type Props = {
   searchParams: Promise<{ error?: string }>
@@ -65,8 +66,9 @@ export default async function DemoPage({ searchParams }: Props) {
           </p>
 
           <p className="text-sm text-white/60 mb-8">
-            No sign-up required. Your session is fully isolated — no one else
-            can see your data, and it is automatically cleared after 7 days.
+            Enter your details below to get instant access. Your session is fully
+            isolated — no one else can see your data, and it is automatically
+            cleared after 7 days.
           </p>
 
           {/* Error message */}
@@ -79,25 +81,8 @@ export default async function DemoPage({ searchParams }: Props) {
             </div>
           )}
 
-          {/* CTA */}
-          <a
-            href="/demo/start"
-            className="
-              inline-flex items-center justify-center gap-2
-              bg-[#ffd700] text-[#014D4E] text-base font-bold
-              px-8 py-4 rounded-xl
-              hover:bg-yellow-300
-              focus:outline-none focus:ring-4 focus:ring-[#ffd700]/50
-              transition-colors
-              w-full sm:w-auto
-            "
-            aria-label="Start your free demo of AlwaysReady"
-          >
-            Start your free demo
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
+          {/* Gated lead form */}
+          <DemoLeadForm />
 
           <p className="text-xs text-white/50 mt-4">
             Takes about 2 seconds to load. Nothing to install.
