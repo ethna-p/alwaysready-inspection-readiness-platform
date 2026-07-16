@@ -297,6 +297,10 @@ export default function HelpPage() {
               answer="No. AlwaysReady is a private tool for your service. The data you enter is only visible to people you give access to. It is not connected to any CQC systems. You choose what to share and with whom, by creating visitor logins."
             />
             <FAQ
+              question="How long is our data kept, and can we export it?"
+              answer="Your data is retained for as long as your subscription is active. If your subscription ends, your data is kept for 90 days before being permanently deleted — giving you time to export everything first. To request a full data export (KLOE records, audit trail, team list, and uploaded evidence), email hello@alwaysready.uk with your organisation name. Exports are delivered in CSV format within 5 working days."
+            />
+            <FAQ
               question="What should I do if something looks wrong in the system?"
               answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin can contact AlwaysReady support at hello@alwaysready.uk."
             />
