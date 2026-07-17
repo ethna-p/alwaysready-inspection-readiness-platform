@@ -225,7 +225,7 @@ export default function HelpPage() {
 
           <H3>Logging in</H3>
           <P>
-            Your manager will give you a login ID (it looks something like <code className="bg-gray-100 px-1 rounded text-xs">sarah.jones.f7a2e1</code>) and a temporary password. Go to the AlwaysReady login page, type your login ID into the box, and enter your password. You do not need an email address to log in.
+            Your manager will give you a login ID (it looks something like <code className="bg-gray-100 px-1 rounded text-xs">sarah.jones.f7a2e1</code>) and a temporary password. Go to the AlwaysReady login page, type your login ID into the box, and enter your password. You do not need an email address to log in. Once you are in, you can change your password at any time by going to <strong>Account</strong> in the navigation bar.
           </P>
 
           <H3>Your My KLOEs page</H3>
