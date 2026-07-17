@@ -32,6 +32,11 @@ export default function SuperadminLayout({
           <Link href="/dashboard" className="hover:text-white transition-colors">
             ← Dashboard
           </Link>
+          <form action="/auth/signout" method="POST">
+            <button type="submit" className="hover:text-white transition-colors">
+              Sign out
+            </button>
+          </form>
         </nav>
       </header>
 
