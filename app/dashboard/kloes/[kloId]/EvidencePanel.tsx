@@ -5,9 +5,11 @@
  *
  * Upload flow:
  *   1. User selects a file via the file input.
- *   2. Client uploads directly to Supabase Storage.
- *   3. On success, calls saveEvidenceRecord server action to log metadata.
- *   4. Page revalidates and the new file appears in the list.
+ *   2. File is sent to /api/upload-evidence (Next.js API route).
+ *   3. API route: authenticates, validates MIME type via magic bytes,
+ *      scans for malware via Cloudmersive, then uploads to Supabase Storage.
+ *   4. On success, calls saveEvidenceRecord server action to log metadata.
+ *   5. Page revalidates and the new file appears in the list.
  *
  * Governance note: displayed prominently per PROJECT_BRIEF constraint —
  * never store clinical or resident-specific documents.
@@ -79,11 +81,7 @@ export default function EvidencePanel({
 
     setUploadError(null)
 
-    // Client-side validation
-    if (!ACCEPTED_TYPES.includes(file.type)) {
-      setUploadError('File type not accepted. Please upload a PDF, Word document, Excel spreadsheet, or image.')
-      return
-    }
+    // Basic client-side size check (server enforces this too)
     if (file.size > MAX_SIZE_BYTES) {
       setUploadError('File is too large. Maximum size is 10 MB.')
       return
@@ -91,32 +89,53 @@ export default function EvidencePanel({
 
     setUploading(true)
 
-    const supabase = createClient()
-    // Path: {org_id}/{klo_id}/{timestamp}-{filename}
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-    const storagePath = `${organisationId}/${kloItemId}/${Date.now()}-${safeName}`
+    // Send to our API route — it validates MIME type, scans for malware,
+    // then uploads to Supabase Storage using the service role key
+    const form = new FormData()
+    form.append('file', file)
+    form.append('kloItemId', kloItemId)
 
-    const { error: uploadError } = await supabase.storage
-      .from('evidence')
-      .upload(storagePath, file, { upsert: false })
-
-    if (uploadError) {
-      setUploadError('Upload failed. Please try again.')
+    let uploadResponse: Response
+    try {
+      uploadResponse = await fetch('/api/upload-evidence', {
+        method: 'POST',
+        body: form,
+      })
+    } catch {
+      setUploadError('Upload failed. Please check your connection and try again.')
       setUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
 
+    const uploadData = await uploadResponse.json() as {
+      storagePath?: string
+      fileName?: string
+      fileSize?: number
+      mimeType?: string
+      error?: string
+    }
+
+    if (!uploadResponse.ok || !uploadData.storagePath) {
+      setUploadError(uploadData.error ?? 'Upload failed. Please try again.')
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+
+    const { storagePath, fileSize, mimeType } = uploadData
+
     const result = await saveEvidenceRecord(
       kloItemId,
       file.name,
       storagePath,
-      file.size,
-      file.type
+      fileSize ?? file.size,
+      mimeType ?? file.type
     )
 
     if (!result.success) {
-      // Clean up orphaned storage file
+      // Clean up orphaned storage file via admin (best effort)
+      const supabase = createClient()
       await supabase.storage.from('evidence').remove([storagePath])
       setUploadError(result.error)
       setUploading(false)

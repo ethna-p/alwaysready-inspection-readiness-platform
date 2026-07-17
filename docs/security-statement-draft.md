@@ -81,6 +81,18 @@ A formal Data Processing Agreement (DPA) is available on request and will be pro
 
 ---
 
+## Uploaded file protection
+
+AlwaysReady allows users to upload governance documents — policies, certificates, risk assessments, and similar records — as evidence against individual KLOEs. All uploaded files pass through a secure processing pipeline before being stored.
+
+**File type validation:** every uploaded file is inspected at the byte level before storage. We check the actual file signature (magic bytes), not just the file name or extension, ensuring that files cannot be disguised as a safe format to bypass type restrictions. Only PDFs, Word documents, Excel spreadsheets, and images (JPG and PNG) are accepted.
+
+**Malware scanning:** every uploaded file is scanned for viruses and malicious content by [Cloudmersive](https://cloudmersive.com), an enterprise-grade virus scanning service, before it is stored. Files that fail the scan are rejected immediately and never stored. This protects all users who might later download the file.
+
+**No direct browser-to-storage uploads:** files pass through AlwaysReady's secure server before reaching storage. This means validation and scanning cannot be bypassed by a technical user.
+
+---
+
 ## What we are working towards
 
 We are committed to continually improving our security posture. Planned steps include:
