@@ -31,6 +31,14 @@ function Section({
       </div>
       <div className="px-6 py-6 space-y-6 text-sm text-[#1a1a1a] leading-relaxed">
         {children}
+        <div className="pt-2 print:hidden">
+          <a
+            href="#"
+            className="text-xs text-[#014D4E] hover:underline focus:outline-none focus:ring-1 focus:ring-[#014D4E] rounded"
+          >
+            ↑ Back to top
+          </a>
+        </div>
       </div>
     </section>
   )
