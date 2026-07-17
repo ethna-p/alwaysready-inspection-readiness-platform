@@ -18,6 +18,8 @@ import KloeForm from './kloe-form'
 import AssignForm from './assign-form'
 import ChecklistPanel from './checklist-panel'
 import type { ItemWithCompletion } from './checklist-panel'
+import EvidencePanel from './EvidencePanel'
+import type { EvidenceFile } from './EvidencePanel'
 
 type Props = { params: Promise<{ kloId: string }> }
 
@@ -124,6 +126,36 @@ export default async function KloeDetailPage({ params }: Props) {
       }))
     }
   }
+
+  // ── Fetch evidence files for this KLOE ───────────────────────────────────
+  const { data: evidenceRows } = await supabase
+    .from('kloe_evidence')
+    .select('id, file_name, storage_path, file_size, mime_type, uploaded_at, uploaded_by')
+    .eq('klo_item_id', kloId)
+    .order('uploaded_at', { ascending: false })
+
+  // Resolve uploader display names
+  const uploaderIds = [...new Set((evidenceRows ?? []).map(e => e.uploaded_by))]
+  const { data: uploaderRows } = uploaderIds.length > 0
+    ? await supabase
+        .from('users')
+        .select('id, full_name, email')
+        .in('id', uploaderIds)
+    : { data: [] }
+
+  const uploaderNameById = new Map(
+    (uploaderRows ?? []).map(u => [u.id, u.full_name ?? u.email])
+  )
+
+  const evidenceFiles: EvidenceFile[] = (evidenceRows ?? []).map(e => ({
+    id: e.id,
+    file_name: e.file_name,
+    storage_path: e.storage_path,
+    file_size: e.file_size,
+    mime_type: e.mime_type,
+    uploaded_at: e.uploaded_at,
+    uploaded_by_name: uploaderNameById.get(e.uploaded_by) ?? null,
+  }))
 
   // ── Fetch all org team members (admins only, for assignment dropdown) ──
   const teamMembers: { id: string; email: string; full_name: string | null; role: string }[] = []
@@ -294,6 +326,26 @@ export default async function KloeDetailPage({ params }: Props) {
             />
           </section>
         )}
+
+        {/* Evidence files */}
+        <section
+          className="bg-white rounded-xl border border-gray-200 p-5"
+          aria-labelledby="evidence-heading"
+        >
+          <h2 id="evidence-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+            Evidence files
+          </h2>
+          <p className="text-xs text-gray-600 mb-4">
+            Upload supporting documents for this KLOE. All files are private and accessible only to your team.
+          </p>
+          <EvidencePanel
+            kloItemId={kloId}
+            organisationId={profile.organisation_id}
+            initialFiles={evidenceFiles}
+            isAdmin={isAdmin}
+            canUpload={!isViewer}
+          />
+        </section>
 
         {/* Edit form — hidden for viewers */}
         {!isViewer && (
