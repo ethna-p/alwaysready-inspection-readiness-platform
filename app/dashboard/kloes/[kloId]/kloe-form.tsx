@@ -16,6 +16,7 @@ import { useActionState } from 'react'
 import { updateKloCompliance } from '../actions'
 import type { ActionState } from '../actions'
 import type { ComplianceRecord } from '@/lib/types'
+import Tooltip from '@/components/Tooltip'
 
 const STATUS_OPTIONS = [
   { value: 'not_started', label: 'Not started' },
@@ -79,6 +80,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Status
+            <Tooltip text="Use this to track where you are with this KLOE. Set to In progress once you've started gathering evidence, and Completed once a formal review is recorded. CQC will look for evidence of active, ongoing compliance — not just a completed date." />
           </label>
           <select
             id="status"
@@ -98,6 +100,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             <label htmlFor="priority" className="block text-sm font-medium text-[#1a1a1a] mb-1">
               Priority
               <span className="ml-1 text-xs text-gray-600 font-normal">(how serious if non-compliant)</span>
+              <Tooltip text="How serious would it be if this KLOE was found non-compliant during an inspection? Priority 1 means the consequences are most severe (e.g. a safeguarding failure). Priority 5 means the risk is minimal. Set by the manager — staff cannot change this." />
             </label>
             <select
               id="priority"
@@ -117,6 +120,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <label htmlFor="date_reviewed" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Date of this review
             <span className="ml-1 text-xs text-gray-600 font-normal">(when you actually completed the review, not today's date)</span>
+            <Tooltip text="The date you actually completed the review — not today's date unless you reviewed it today. This date is used to calculate when the next review is due, and is permanently recorded in your audit trail." />
           </label>
           <input
             type="date"
@@ -137,6 +141,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             <label htmlFor="review_frequency_days" className="block text-sm font-medium text-[#1a1a1a] mb-1">
               Review frequency
               <span className="ml-1 text-xs text-gray-600 font-normal">(how often this KLOE should be reviewed)</span>
+              <Tooltip text="How often this KLOE needs to be reviewed. Some KLOEs (e.g. medication management) may need monthly attention; others (e.g. premises checks) may be fine quarterly. You can change this at any time — all changes are logged." />
             </label>
             <select
               id="review_frequency_days"
@@ -161,6 +166,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <label htmlFor="evidence_location" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Evidence location
             <span className="ml-1 text-xs text-gray-600 font-normal">(link, folder path, or physical location)</span>
+            <Tooltip text="Where can your evidence be found? Be as specific as possible — CQC inspectors may ask to see it on the spot. Examples: SharePoint › Policies › Safeguarding 2026, or Blue folder, office filing cabinet, top shelf." />
           </label>
           <input
             type="text"
@@ -177,6 +183,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <label htmlFor="notes" className="block text-sm font-medium text-[#1a1a1a] mb-1">
             Notes
             <span className="ml-1 text-xs text-gray-600 font-normal">(optional context for this entry)</span>
+            <Tooltip text="Any context about this update — what you reviewed, actions you've taken, or anything an inspector or your team should know. Notes are permanent and cannot be edited once saved." />
           </label>
           <textarea
             id="notes"
