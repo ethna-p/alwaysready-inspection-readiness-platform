@@ -242,6 +242,7 @@ export type Database = {
           file_size: number | null
           mime_type: string | null
           uploaded_at: string
+          scan_status: string
         }
         Insert: {
           id?: string
@@ -253,6 +254,7 @@ export type Database = {
           file_size?: number | null
           mime_type?: string | null
           uploaded_at?: string
+          scan_status?: string
         }
         Update: {
           id?: string
@@ -264,6 +266,7 @@ export type Database = {
           file_size?: number | null
           mime_type?: string | null
           uploaded_at?: string
+          scan_status?: string
         }
         Relationships: []
       }

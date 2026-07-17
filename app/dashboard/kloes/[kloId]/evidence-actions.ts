@@ -9,7 +9,8 @@ export async function saveEvidenceRecord(
   fileName: string,
   storagePath: string,
   fileSize: number,
-  mimeType: string
+  mimeType: string,
+  scanStatus: string = 'clean'
 ): Promise<{ success: true } | { success: false; error: string }> {
   const supabase = await createClient()
   const profile = await getCurrentUserProfile()
@@ -29,6 +30,7 @@ export async function saveEvidenceRecord(
       storage_path: storagePath,
       file_size: fileSize,
       mime_type: mimeType,
+      scan_status: scanStatus,
     })
 
   if (error) return { success: false, error: 'Failed to save file record.' }

@@ -44,7 +44,7 @@ async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{
 
   try {
     const form = new FormData()
-    form.append('inputFile', new Blob([buffer]), fileName)
+    form.append('inputFile', new Blob([new Uint8Array(buffer)]), fileName)
 
     const response = await fetch('https://api.cloudmersive.com/virus/scan/file', {
       method: 'POST',
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
 
   const { error: uploadError } = await adminSupabase.storage
     .from('evidence')
-    .upload(storagePath, buffer, {
+    .upload(storagePath, new Uint8Array(buffer), {
       contentType: actualMime,
       upsert: false,
     })
@@ -168,5 +168,6 @@ export async function POST(request: NextRequest) {
     fileName: file.name,
     fileSize: file.size,
     mimeType: actualMime,
+    scanStatus: scan.message === 'Clean' ? 'clean' : 'skipped',
   })
 }

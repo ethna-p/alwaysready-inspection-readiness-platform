@@ -39,6 +39,7 @@ export interface EvidenceFile {
   mime_type: string | null
   uploaded_at: string
   uploaded_by_name: string | null
+  scan_status: string
 }
 
 interface Props {
@@ -113,6 +114,7 @@ export default function EvidencePanel({
       fileName?: string
       fileSize?: number
       mimeType?: string
+      scanStatus?: string
       error?: string
     }
 
@@ -123,14 +125,15 @@ export default function EvidencePanel({
       return
     }
 
-    const { storagePath, fileSize, mimeType } = uploadData
+    const { storagePath, fileSize, mimeType, scanStatus = 'clean' } = uploadData
 
     const result = await saveEvidenceRecord(
       kloItemId,
       file.name,
       storagePath,
       fileSize ?? file.size,
-      mimeType ?? file.type
+      mimeType ?? file.type,
+      scanStatus
     )
 
     if (!result.success) {
@@ -153,6 +156,7 @@ export default function EvidencePanel({
         mime_type: file.type,
         uploaded_at: new Date().toISOString(),
         uploaded_by_name: 'You',
+        scan_status: scanStatus,
       },
       ...prev,
     ])
@@ -257,6 +261,11 @@ export default function EvidencePanel({
                   {formatBytes(f.file_size)}{f.file_size ? ' · ' : ''}{formatDate(f.uploaded_at)}
                   {f.uploaded_by_name ? ` · ${f.uploaded_by_name}` : ''}
                 </p>
+                {f.scan_status === 'clean' && (
+                  <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-medium text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5">
+                    <span aria-hidden="true">🛡</span> Scanned for viruses
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button

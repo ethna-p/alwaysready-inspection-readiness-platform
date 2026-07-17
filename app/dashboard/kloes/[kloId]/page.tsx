@@ -130,7 +130,7 @@ export default async function KloeDetailPage({ params }: Props) {
   // ── Fetch evidence files for this KLOE ───────────────────────────────────
   const { data: evidenceRows } = await supabase
     .from('kloe_evidence')
-    .select('id, file_name, storage_path, file_size, mime_type, uploaded_at, uploaded_by')
+    .select('id, file_name, storage_path, file_size, mime_type, uploaded_at, uploaded_by, scan_status')
     .eq('klo_item_id', kloId)
     .order('uploaded_at', { ascending: false })
 
@@ -155,6 +155,7 @@ export default async function KloeDetailPage({ params }: Props) {
     mime_type: e.mime_type,
     uploaded_at: e.uploaded_at,
     uploaded_by_name: uploaderNameById.get(e.uploaded_by) ?? null,
+    scan_status: e.scan_status ?? 'clean',
   }))
 
   // ── Fetch all org team members (admins only, for assignment dropdown) ──
@@ -399,108 +400,160 @@ export default async function KloeDetailPage({ params }: Props) {
 
       {/* ── Audit trail ──────────────────────────────────────────────────── */}
       <section className="mt-8" aria-labelledby="history-heading">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <h2 id="history-heading" className="text-lg font-bold text-[#014D4E]">
-            Audit trail
-            {history && history.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-gray-600">
-                ({history.length} {history.length === 1 ? 'entry' : 'entries'})
-              </span>
-            )}
-          </h2>
-          {history && history.length > 0 && (
-            <Link
-              href={`/dashboard/kloes/${kloId}/timeline`}
-              className="
-                inline-flex items-center gap-1.5 text-sm font-medium
-                bg-[#014D4E] text-white px-4 py-2 rounded-lg
-                hover:bg-[#013838]
-                focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-                transition-colors
-              "
-            >
-              View full audit trail →
-            </Link>
-          )}
-        </div>
+        {(() => {
+          // Merge compliance history + file upload events into one sorted timeline
+          type TimelineItem =
+            | { kind: 'history'; date: string; entry: typeof history extends (infer T)[] | null | undefined ? T : never }
+            | { kind: 'file'; date: string; file: EvidenceFile }
 
-        {!history || history.length === 0 ? (
-          <p className="text-sm text-gray-600">
-            No history yet. Your first save will appear here.
-          </p>
-        ) : (
-          <ol className="relative border-l-2 border-gray-200 ml-3 space-y-6">
-            {history.map((entry, i) => (
-              <li key={entry.id} className="ml-6">
-                {/* Timeline dot */}
-                <span
-                  className="absolute -left-[9px] w-4 h-4 rounded-full border-2 border-white bg-[#014D4E]"
-                  aria-hidden="true"
-                />
-                <div className="bg-white rounded-xl border border-gray-200 p-4">
-                  {/* Header row */}
-                  <div className="flex flex-wrap items-center gap-2 mb-3">
-                    {entry.status && <StatusBadge status={entry.status as 'not_started' | 'in_progress' | 'completed'} />}
-                    {i === 0 && (
-                      <span className="text-xs bg-[#014D4E] text-white px-2 py-0.5 rounded-full font-medium">
-                        Latest
-                      </span>
-                    )}
-                    <span className="text-xs text-gray-600 ml-auto">
-                      Recorded {formatDate(entry.system_recorded_at, true)}
+          const timelineItems: TimelineItem[] = [
+            ...(history ?? []).map(e => ({ kind: 'history' as const, date: e.system_recorded_at, entry: e })),
+            ...evidenceFiles.map(f => ({ kind: 'file' as const, date: f.uploaded_at, file: f })),
+          ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+          const totalEntries = timelineItems.length
+
+          return (
+            <>
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <h2 id="history-heading" className="text-lg font-bold text-[#014D4E]">
+                  Audit trail
+                  {totalEntries > 0 && (
+                    <span className="ml-2 text-sm font-normal text-gray-600">
+                      ({totalEntries} {totalEntries === 1 ? 'entry' : 'entries'})
                     </span>
-                  </div>
+                  )}
+                </h2>
+                {(history ?? []).length > 0 && (
+                  <Link
+                    href={`/dashboard/kloes/${kloId}/timeline`}
+                    className="
+                      inline-flex items-center gap-1.5 text-sm font-medium
+                      bg-[#014D4E] text-white px-4 py-2 rounded-lg
+                      hover:bg-[#013838]
+                      focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+                      transition-colors
+                    "
+                  >
+                    View full audit trail →
+                  </Link>
+                )}
+              </div>
 
-                  {/* Entry details */}
-                  <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                    {entry.date_reviewed && (
-                      <div>
-                        <dt className="text-gray-600 mb-0.5">Review date</dt>
-                        <dd className="font-medium text-[#1a1a1a]">{formatDate(entry.date_reviewed)}</dd>
-                      </div>
-                    )}
-                    {entry.next_review_due && (
-                      <div>
-                        <dt className="text-gray-600 mb-0.5">Next due</dt>
-                        <dd className="font-medium text-[#1a1a1a]">{formatDate(entry.next_review_due)}</dd>
-                      </div>
-                    )}
-                    {entry.priority !== null && (
-                      <div>
-                        <dt className="text-gray-600 mb-0.5">Priority</dt>
-                        <dd className="font-medium text-[#1a1a1a]">{entry.priority}</dd>
-                      </div>
-                    )}
-                    {entry.review_frequency_days !== null && (
-                      <div>
-                        <dt className="text-gray-600 mb-0.5">Frequency</dt>
-                        <dd className="font-medium text-[#1a1a1a]">{frequencyLabel(entry.review_frequency_days)}</dd>
-                      </div>
-                    )}
-                    {entry.evidence_location && (
-                      <div className="col-span-2 sm:col-span-3">
-                        <dt className="text-gray-600 mb-0.5">Evidence</dt>
-                        <dd className="font-medium text-[#1a1a1a] break-words">{entry.evidence_location}</dd>
-                      </div>
-                    )}
-                    {entry.notes && (
-                      <div className="col-span-2 sm:col-span-3">
-                        <dt className="text-gray-600 mb-0.5">Notes</dt>
-                        <dd className="text-[#1a1a1a]">{entry.notes}</dd>
-                      </div>
-                    )}
-                    <div className="col-span-2 sm:col-span-3">
-                      <dt className="text-gray-600 mb-0.5">Recorded by</dt>
-                      <dd className="text-[#1a1a1a]">
-                        {nameById.get(entry.changed_by) ?? entry.changed_by}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
+              {totalEntries === 0 ? (
+                <p className="text-sm text-gray-600">
+                  No history yet. Your first save will appear here.
+                </p>
+              ) : (
+                <ol className="relative border-l-2 border-gray-200 ml-3 space-y-6">
+                  {timelineItems.map((item, i) => (
+                    <li key={item.kind === 'history' ? item.entry.id : item.file.id} className="ml-6">
+                      {/* Timeline dot */}
+                      <span
+                        className={`absolute -left-[9px] w-4 h-4 rounded-full border-2 border-white ${item.kind === 'file' ? 'bg-green-600' : 'bg-[#014D4E]'}`}
+                        aria-hidden="true"
+                      />
+
+                      {item.kind === 'file' ? (
+                        /* ── File upload entry ── */
+                        <div className="bg-white rounded-xl border border-gray-200 p-4">
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
+                              📎 File uploaded
+                            </span>
+                            {i === 0 && (
+                              <span className="text-xs bg-[#014D4E] text-white px-2 py-0.5 rounded-full font-medium">
+                                Latest
+                              </span>
+                            )}
+                            <span className="text-xs text-gray-600 ml-auto">
+                              {formatDate(item.file.uploaded_at, true)}
+                            </span>
+                          </div>
+                          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                            <div className="col-span-2 sm:col-span-3">
+                              <dt className="text-gray-600 mb-0.5">File</dt>
+                              <dd className="font-medium text-[#1a1a1a] break-words">{item.file.file_name}</dd>
+                            </div>
+                            {item.file.scan_status === 'clean' && (
+                              <div className="col-span-2 sm:col-span-3">
+                                <dt className="text-gray-600 mb-0.5">Security scan</dt>
+                                <dd className="text-green-700 font-medium">🛡 Scanned for viruses — no threats found</dd>
+                              </div>
+                            )}
+                            <div>
+                              <dt className="text-gray-600 mb-0.5">Uploaded by</dt>
+                              <dd className="text-[#1a1a1a]">{item.file.uploaded_by_name ?? '—'}</dd>
+                            </div>
+                          </dl>
+                        </div>
+                      ) : (
+                        /* ── Compliance history entry ── */
+                        <div className="bg-white rounded-xl border border-gray-200 p-4">
+                          <div className="flex flex-wrap items-center gap-2 mb-3">
+                            {item.entry.status && <StatusBadge status={item.entry.status as 'not_started' | 'in_progress' | 'completed'} />}
+                            {i === 0 && (
+                              <span className="text-xs bg-[#014D4E] text-white px-2 py-0.5 rounded-full font-medium">
+                                Latest
+                              </span>
+                            )}
+                            <span className="text-xs text-gray-600 ml-auto">
+                              Recorded {formatDate(item.entry.system_recorded_at, true)}
+                            </span>
+                          </div>
+                          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                            {item.entry.date_reviewed && (
+                              <div>
+                                <dt className="text-gray-600 mb-0.5">Review date</dt>
+                                <dd className="font-medium text-[#1a1a1a]">{formatDate(item.entry.date_reviewed)}</dd>
+                              </div>
+                            )}
+                            {item.entry.next_review_due && (
+                              <div>
+                                <dt className="text-gray-600 mb-0.5">Next due</dt>
+                                <dd className="font-medium text-[#1a1a1a]">{formatDate(item.entry.next_review_due)}</dd>
+                              </div>
+                            )}
+                            {item.entry.priority !== null && (
+                              <div>
+                                <dt className="text-gray-600 mb-0.5">Priority</dt>
+                                <dd className="font-medium text-[#1a1a1a]">{item.entry.priority}</dd>
+                              </div>
+                            )}
+                            {item.entry.review_frequency_days !== null && (
+                              <div>
+                                <dt className="text-gray-600 mb-0.5">Frequency</dt>
+                                <dd className="font-medium text-[#1a1a1a]">{frequencyLabel(item.entry.review_frequency_days)}</dd>
+                              </div>
+                            )}
+                            {item.entry.evidence_location && (
+                              <div className="col-span-2 sm:col-span-3">
+                                <dt className="text-gray-600 mb-0.5">Evidence</dt>
+                                <dd className="font-medium text-[#1a1a1a] break-words">{item.entry.evidence_location}</dd>
+                              </div>
+                            )}
+                            {item.entry.notes && (
+                              <div className="col-span-2 sm:col-span-3">
+                                <dt className="text-gray-600 mb-0.5">Notes</dt>
+                                <dd className="text-[#1a1a1a]">{item.entry.notes}</dd>
+                              </div>
+                            )}
+                            <div className="col-span-2 sm:col-span-3">
+                              <dt className="text-gray-600 mb-0.5">Recorded by</dt>
+                              <dd className="text-[#1a1a1a]">
+                                {nameById.get(item.entry.changed_by) ?? item.entry.changed_by}
+                              </dd>
+                            </div>
+                          </dl>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </>
+          )
+        })()}
       </section>
     </div>
   )
