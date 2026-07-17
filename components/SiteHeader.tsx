@@ -102,6 +102,12 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           >
             Help
           </a>
+          <a
+            href="/dashboard/account"
+            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Account
+          </a>
         </nav>
 
         {/* Sign out */}
