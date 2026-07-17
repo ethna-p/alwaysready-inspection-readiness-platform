@@ -183,7 +183,7 @@ export default function HelpPage() {
 
           <H3>Resetting a team member&apos;s password</H3>
           <P>
-            Go to <strong>Team</strong>. Find the team member and click <strong>Reset password</strong>. A new temporary password will be generated and shown on screen. Give it to the team member and ask them to log in straight away.
+            Team members can change their own password at any time by going to <strong>Account</strong> in the navigation bar. If a team member has forgotten their password and cannot log in, go to <strong>Team</strong>, find their name, and click <strong>Reset password</strong>. A new temporary password will be generated and shown on screen — give it to them directly so they can log in and set their own.
           </P>
 
           <H3>Creating a visitor login before an inspection</H3>
@@ -287,7 +287,7 @@ export default function HelpPage() {
           <div className="space-y-4">
             <FAQ
               question="What happens if I forget my password?"
-              answer="You cannot reset your own password — ask your admin to reset it for you from the Team page. They will generate a new temporary password and give it to you directly."
+              answer="If you are logged in, go to Account in the navigation bar and change it there. If you have forgotten your password and cannot log in, ask your admin to reset it from the Team page — they will generate a new temporary password and give it to you directly."
             />
             <FAQ
               question="Can I change my own password?"
