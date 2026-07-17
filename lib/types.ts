@@ -225,6 +225,42 @@ export type Database = {
 
       // ── Compliance sub-checklist tables ───────────────────────────────
 
+      kloe_evidence: {
+        Row: {
+          id: string
+          organisation_id: string
+          klo_item_id: string
+          uploaded_by: string
+          file_name: string
+          storage_path: string
+          file_size: number | null
+          mime_type: string | null
+          uploaded_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          klo_item_id: string
+          uploaded_by: string
+          file_name: string
+          storage_path: string
+          file_size?: number | null
+          mime_type?: string | null
+          uploaded_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          klo_item_id?: string
+          uploaded_by?: string
+          file_name?: string
+          storage_path?: string
+          file_size?: number | null
+          mime_type?: string | null
+          uploaded_at?: string
+        }
+        Relationships: []
+      }
       klo_checklist_items: {
         Row: {
           id: string
@@ -654,3 +690,4 @@ export type KloChecklistCompletion = Database['public']['Tables']['klo_checklist
 export type SupportTicket          = Database['public']['Tables']['support_tickets']['Row']
 export type SupportTicketReply     = Database['public']['Tables']['support_ticket_replies']['Row']
 export type SubscriptionTier       = Organisation['subscription_tier']
+export type KloeEvidence           = Database['public']['Tables']['kloe_evidence']['Row']
