@@ -62,8 +62,10 @@ export async function createTeamMember(
     return { success: false, error: 'Only admins can add team members.' }
   }
 
-  const fullName = (formData.get('full_name') as string).trim()
-  const role     = formData.get('role') as 'admin' | 'user'
+  const fullName      = (formData.get('full_name') as string).trim()
+  const role          = formData.get('role') as 'admin' | 'user'
+  const personalEmail = (formData.get('personal_email') as string | null)?.trim() || null
+  const mobileNumber  = (formData.get('mobile_number') as string | null)?.trim() || null
 
   if (!fullName) return { success: false, error: 'Name is required.' }
   if (!['admin', 'user'].includes(role)) return { success: false, error: 'Invalid role.' }
@@ -115,6 +117,8 @@ export async function createTeamMember(
       full_name:       fullName,
       username,
       role,
+      personal_email:  personalEmail,
+      mobile_number:   mobileNumber,
     })
 
   if (insertError) {

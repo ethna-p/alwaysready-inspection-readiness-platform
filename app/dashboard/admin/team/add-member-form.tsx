@@ -95,6 +95,40 @@ export default function AddMemberForm() {
         </select>
       </div>
 
+      {/* Personal email */}
+      <div>
+        <label htmlFor="personal_email" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          Personal email <span className="text-gray-500 font-normal">(optional)</span>
+        </label>
+        <input
+          type="email"
+          id="personal_email"
+          name="personal_email"
+          placeholder="e.g. sarah@gmail.com"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+        />
+        <p className="text-xs text-gray-600 mt-1">
+          Used for password change notifications. The team member can also add this themselves from their Account page.
+        </p>
+      </div>
+
+      {/* Mobile number */}
+      <div>
+        <label htmlFor="mobile_number" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          Mobile number <span className="text-gray-500 font-normal">(optional)</span>
+        </label>
+        <input
+          type="tel"
+          id="mobile_number"
+          name="mobile_number"
+          placeholder="e.g. 07700 900123"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+        />
+        <p className="text-xs text-gray-600 mt-1">
+          Reserved for future WhatsApp notifications.
+        </p>
+      </div>
+
       {/* Error */}
       {state && !state.success && (
         <div role="alert" className="rounded-lg px-4 py-3 text-sm bg-red-50 text-red-800 border border-red-200">

@@ -1,11 +1,42 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
 export type ChangePasswordResult =
   | { success: true }
   | { success: false; error: string }
+
+export type UpdateContactResult =
+  | { success: true }
+  | { success: false; error: string }
+
+export async function updatePersonalContact(
+  _prev: UpdateContactResult | null,
+  formData: FormData
+): Promise<UpdateContactResult> {
+  const supabase = await createClient()
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) return { success: false, error: 'Not authenticated.' }
+
+  const personalEmail = (formData.get('personal_email') as string | null)?.trim() || null
+  const mobileNumber  = (formData.get('mobile_number') as string | null)?.trim() || null
+
+  const { error } = await supabase
+    .from('users')
+    .update({ personal_email: personalEmail, mobile_number: mobileNumber })
+    .eq('id', user.id)
+
+  if (error) {
+    console.error('[updatePersonalContact]', error)
+    return { success: false, error: 'Failed to save. Please try again.' }
+  }
+
+  revalidatePath('/dashboard/account')
+  return { success: true }
+}
 
 export async function changePassword(
   currentPassword: string,
@@ -58,6 +89,21 @@ export async function changePassword(
   // Send notification email (non-fatal — don't fail the password change if email fails)
   if (process.env.RESEND_API_KEY) {
     try {
+      // Determine who to notify:
+      // 1. personal_email if set (works for staff who have no real work inbox)
+      // 2. work email if it's a real address (not a generated @staff.alwaysready.uk one)
+      // 3. Otherwise skip
+      const { data: userRow } = await (await createClient())
+        .from('users')
+        .select('personal_email')
+        .eq('id', user.id)
+        .single()
+
+      const isStaffEmail = user.email?.endsWith('@staff.alwaysready.uk')
+      const notifyEmail  = userRow?.personal_email || (!isStaffEmail ? user.email : null)
+
+      if (!notifyEmail) return { success: true }
+
       const resend = new Resend(process.env.RESEND_API_KEY)
       const now = new Date().toLocaleString('en-GB', {
         dateStyle: 'long',
@@ -67,7 +113,7 @@ export async function changePassword(
 
       await resend.emails.send({
         from: 'AlwaysReady <onboarding@resend.dev>',
-        to: user.email,
+        to: notifyEmail,
         subject: 'Your AlwaysReady password has been changed',
         html: `
           <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">

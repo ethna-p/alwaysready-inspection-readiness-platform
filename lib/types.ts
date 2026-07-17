@@ -184,6 +184,8 @@ export type Database = {
           marketing_consent: boolean | null
           marketing_consent_at: string | null
           onboarding_complete: boolean
+          personal_email: string | null
+          mobile_number: string | null
           created_at: string
         }
         Insert: {
@@ -197,6 +199,8 @@ export type Database = {
           marketing_consent?: boolean | null
           marketing_consent_at?: string | null
           onboarding_complete?: boolean
+          personal_email?: string | null
+          mobile_number?: string | null
           created_at?: string
         }
         Update: {
@@ -210,6 +214,8 @@ export type Database = {
           marketing_consent?: boolean | null
           marketing_consent_at?: string | null
           onboarding_complete?: boolean
+          personal_email?: string | null
+          mobile_number?: string | null
           created_at?: string
         }
         Relationships: [
