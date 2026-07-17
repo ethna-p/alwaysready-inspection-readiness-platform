@@ -168,7 +168,12 @@ export default function HelpPage() {
             Open any KLOE from the KLOE tracker. At the top of the page you will see an <strong>Assign this KLOE</strong> panel. Select a team member from the dropdown and click Save. They will see this KLOE in their personal My KLOEs view when they log in. You can assign a KLOE to yourself as well as to other team members.
           </P>
 
-          <H3>Resetting a password</H3>
+          <H3>Changing your own password</H3>
+          <P>
+            Go to <strong>Account</strong> in the navigation bar. Enter your current password, choose a new one (at least 8 characters), and confirm it. Click <strong>Change password</strong>. Your new password takes effect immediately.
+          </P>
+
+          <H3>Resetting a team member&apos;s password</H3>
           <P>
             Go to <strong>Team</strong>. Find the team member and click <strong>Reset password</strong>. A new temporary password will be generated and shown on screen. Give it to the team member and ask them to log in straight away.
           </P>
@@ -181,6 +186,17 @@ export default function HelpPage() {
             <Step number={4}>The login ID and a temporary password will appear on screen. Share these with the inspector so they can log in on their own device.</Step>
             <Step number={5}>Access expires automatically after the number of days you chose. If you need to remove access early, click <strong>Revoke</strong> next to their name in the Visitor logins list.</Step>
           </div>
+
+          <H3>Uploading evidence files</H3>
+          <P>
+            Open any KLOE and scroll to the <strong>Evidence files</strong> section. Click <strong>Upload file</strong> and select a document from your device. Accepted formats are PDF, Word, Excel, and images (JPG or PNG), up to 10 MB per file. Files are private and can only be accessed by members of your organisation and any visitors you have given access to.
+          </P>
+          <P>
+            <strong>Important:</strong> only upload governance documents — policies, certificates, risk assessments, and similar records. Do not upload anything containing resident-specific clinical information, care plans, or personal health records.
+          </P>
+          <P>
+            Admins can delete uploaded files. Staff and visitors can download files but cannot delete them.
+          </P>
 
           <H3>Reading the dashboard</H3>
           <P>
@@ -217,6 +233,7 @@ export default function HelpPage() {
             <Step number={4}>Enter the date you carried out the review and when the next review should happen.</Step>
             <Step number={5}>Add any notes or the location of your evidence (for example, &ldquo;Folder B, shelf 2 in the office&rdquo; or a link to a shared drive).</Step>
             <Step number={6}>Click <strong>Save update</strong>. Your changes are saved immediately and added to the audit trail.</Step>
+            <Step number={7}>Optionally, scroll to <strong>Evidence files</strong> and upload a supporting document — a policy, certificate, or risk assessment relevant to this KLOE.</Step>
           </div>
 
           <H3>What the RAG colours mean</H3>
@@ -263,6 +280,14 @@ export default function HelpPage() {
             <FAQ
               question="What happens if I forget my password?"
               answer="You cannot reset your own password — ask your admin to reset it for you from the Team page. They will generate a new temporary password and give it to you directly."
+            />
+            <FAQ
+              question="Can I change my own password?"
+              answer="Yes — go to Account in the navigation bar. Enter your current password, choose a new one, and confirm it. Your new password takes effect immediately. If you have forgotten your current password and cannot log in, ask your admin to reset it for you."
+            />
+            <FAQ
+              question="Can I upload documents to a KLOE?"
+              answer="Yes. Open any KLOE and scroll to the Evidence files section. You can upload PDFs, Word documents, Excel files, and images up to 10 MB each. Only upload governance documents — policies, certificates, and risk assessments. Do not upload anything containing resident-specific clinical information or care plans."
             />
             <FAQ
               question="What does 'overdue' mean?"
