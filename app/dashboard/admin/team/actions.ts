@@ -103,7 +103,10 @@ export async function createTeamMember(
   }
 
   // ── Insert into public.users ─────────────────────────────────────────────
-  const { error: insertError } = await supabase
+  // Use adminSupabase (service role) — RLS on public.users has no INSERT
+  // policy for authenticated users; only the service role can insert rows
+  // for other users.
+  const { error: insertError } = await adminSupabase
     .from('users')
     .insert({
       id:              authData.user.id,
@@ -227,7 +230,8 @@ export async function createVisitorLogin(
   }
 
   // ── Insert into public.users ─────────────────────────────────────────────
-  const { error: insertError } = await supabase
+  // Use adminSupabase — RLS has no INSERT policy for authenticated users
+  const { error: insertError } = await adminSupabase
     .from('users')
     .insert({
       id:               authData.user.id,
