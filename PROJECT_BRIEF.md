@@ -412,6 +412,16 @@ Note: `next_review_due` is always calculated from `date_reviewed` at write time,
 
 ---
 
+## Live URLs
+
+| Environment | URL |
+|---|---|
+| Platform (production) | https://alwaysready-inspection-readiness-pl-three.vercel.app |
+| Login page | https://alwaysready-inspection-readiness-pl-three.vercel.app/login |
+| Superadmin | https://alwaysready-inspection-readiness-pl-three.vercel.app/superadmin |
+
+---
+
 ## Deploy Workflow (differs from the AlwaysReady website)
 
 Supabase deploys are **three separate things**, not one zip-and-go:
