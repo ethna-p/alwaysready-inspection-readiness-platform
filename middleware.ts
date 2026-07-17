@@ -1,5 +1,5 @@
 /**
- * Auth proxy (Next.js 16 — renamed from middleware.ts).
+ * Auth middleware.
  * Runs on every request to refresh the Supabase session cookie,
  * and redirects unauthenticated users away from protected routes.
  *
@@ -12,7 +12,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -42,6 +42,7 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
+  const superadminEmail = process.env.SUPERADMIN_EMAIL
 
   // ── Unauthenticated guards ──────────────────────────────────────────────
 
@@ -54,7 +55,6 @@ export async function proxy(request: NextRequest) {
   // ── Superadmin guard ───────────────────────────────────────────────────
   // Only the SUPERADMIN_EMAIL env var holder may access /superadmin/*
   if (pathname.startsWith('/superadmin')) {
-    const superadminEmail = process.env.SUPERADMIN_EMAIL
     if (!superadminEmail || user?.email !== superadminEmail) {
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard'
@@ -65,8 +65,10 @@ export async function proxy(request: NextRequest) {
   // ── First-login onboarding redirect ───────────────────────────────────
   // If the user hasn't completed onboarding, send them to /dashboard/welcome.
   // Skip if they're already on /dashboard/welcome (avoid loop).
+  // Also skip for superadmin — they have no profile row.
   if (
     user &&
+    user.email !== superadminEmail &&
     pathname.startsWith('/dashboard') &&
     pathname !== '/dashboard/welcome'
   ) {
@@ -86,11 +88,10 @@ export async function proxy(request: NextRequest) {
   }
 
   // ── Redirect authenticated users away from /login ──────────────────────
-  // Note: /signup is intentionally excluded — demo users land here to create
-  // a real account; the signup action replaces their session on completion.
+  // Superadmin goes to /superadmin; everyone else goes to /dashboard.
   if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = user.email === superadminEmail ? '/superadmin' : '/dashboard'
     return NextResponse.redirect(url)
   }
 
@@ -106,6 +107,6 @@ export const config = {
      * - favicon.ico, sitemap.xml, robots.txt
      * - public folder assets (logo, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webch)$).*)',
   ],
 }

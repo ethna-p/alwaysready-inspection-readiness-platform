@@ -26,7 +26,11 @@ export default async function DashboardLayout({
     .eq('id', user.id)
     .single()
 
-  if (!profile?.organisation_id) redirect('/login')
+  // Superadmin has no org — send them to /superadmin rather than looping
+  if (!profile?.organisation_id) {
+    const superadminEmail = process.env.SUPERADMIN_EMAIL
+    redirect(user.email === superadminEmail ? '/superadmin' : '/login')
+  }
 
   // Get org subscription state
   const { data: org } = await supabase
