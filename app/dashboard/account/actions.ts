@@ -122,8 +122,7 @@ export async function changePassword(
             </div>
             <div style="padding:32px">
               <p style="font-size:16px;margin:0 0 16px">Your password was successfully changed on <strong>${now}</strong>.</p>
-              <p style="font-size:14px;color:#555;margin:0 0 16px">If you made this change, no further action is needed.</p>
-              <p style="font-size:14px;color:#555;margin:0">If you did not make this change, please contact your administrator immediately or email us at <a href="mailto:hello@alwaysready.uk" style="color:#014D4E">hello@alwaysready.uk</a>.</p>
+              <p style="font-size:14px;color:#555;margin:0">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
             </div>
             <div style="border-top:1px solid #eee;padding:16px 32px">
               <p style="font-size:12px;color:#999;margin:0">AlwaysReady Inspection Readiness Platform</p>
