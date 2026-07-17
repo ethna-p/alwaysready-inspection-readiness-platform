@@ -303,6 +303,7 @@ export default async function KloeDetailPage({ params }: Props) {
               items={checklistItems}
               isViewer={isViewer}
               isDualReg={isDualReg}
+              kloItemId={kloId}
             />
           </section>
         )}

@@ -8,6 +8,7 @@
  * first call creates the row and subsequent calls update it.
  */
 
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 
@@ -25,6 +26,7 @@ export async function upsertChecklistCompletion(
   if (profile.role === 'viewer') return { success: false, error: 'Viewers cannot update checklists.' }
 
   const checklist_item_id = formData.get('checklist_item_id') as string
+  const klo_item_id       = formData.get('klo_item_id') as string | null
   const is_complete       = formData.get('is_complete') === 'true'
   const evidence_location = (formData.get('evidence_location') as string | null)?.trim() || null
 
@@ -51,5 +53,6 @@ export async function upsertChecklistCompletion(
     return { success: false, error: 'Failed to save. Please try again.' }
   }
 
+  if (klo_item_id) revalidatePath(`/dashboard/kloes/${klo_item_id}`, 'page')
   return { success: true }
 }

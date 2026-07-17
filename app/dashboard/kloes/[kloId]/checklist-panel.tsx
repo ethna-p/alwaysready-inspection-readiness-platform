@@ -29,6 +29,7 @@ interface Props {
   items: ItemWithCompletion[]
   isViewer: boolean
   isDualReg: boolean
+  kloItemId: string
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -242,7 +243,7 @@ function ItemGroup({
 
 // ─── Main panel ───────────────────────────────────────────────────────────────
 
-export default function ChecklistPanel({ items, isViewer, isDualReg }: Props) {
+export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }: Props) {
   const [isPending, startTransition] = useTransition()
 
   // Build optimistic completion map from props
@@ -268,6 +269,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg }: Props) {
       setOptimistic({ id: itemId, value: newState })
       const fd = new FormData()
       fd.set('checklist_item_id', itemId)
+      fd.set('klo_item_id', kloItemId)
       fd.set('is_complete', String(newState))
       fd.set('evidence_location', evidenceMap.get(itemId) ?? '')
       await upsertChecklistCompletion(null, fd)
@@ -277,6 +279,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg }: Props) {
   async function handleSaveEvidence(itemId: string, evidence: string) {
     const fd = new FormData()
     fd.set('checklist_item_id', itemId)
+    fd.set('klo_item_id', kloItemId)
     fd.set('is_complete', String(optimisticMap.get(itemId) ?? false))
     fd.set('evidence_location', evidence)
     await upsertChecklistCompletion(null, fd)
