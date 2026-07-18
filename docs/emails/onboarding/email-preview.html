@@ -28,15 +28,10 @@
       text-align: left;
       border-bottom: 4px solid #ffd700;
     }
-    .header span {
-      color: #ffffff;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    .header span em {
-      color: #00b8a6;
-      font-style: normal;
+    .header svg {
+      display: block;
+      height: 40px;
+      width: auto;
     }
     .body {
       padding: 40px 40px 32px;
@@ -119,7 +114,11 @@
 
   <div class="email-container">
     <div class="header">
-      <span>Always<em>Ready</em></span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" role="img" aria-label="AlwaysReady">
+        <circle cx="24" cy="24" r="22" fill="#ffd700"/>
+        <polyline points="13,24 21,32 35,16" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="54" y="32" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#00b8a6" letter-spacing="-0.3">AlwaysReady</text>
+      </svg>
     </div>
     <div class="body" id="email-body"></div>
     <div class="footer">
