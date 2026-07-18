@@ -11,7 +11,7 @@ Your AlwaysReady trial ended on [date] and your account has now been suspended.
 
 Your data is safe and will be retained for 30 days. If you'd like to reactivate your account, you can subscribe at any time at [link].
 
-If you have any feedback about your experience, or if there's anything we could have done better, we'd genuinely welcome hearing from you at hello@alwaysready.uk.
+If you have any feedback about your experience, or if there's anything we could have done better, we'd genuinely welcome hearing from you. You can reactivate your account at any time and use the Support tab to get in touch.
 
 Thank you for trying AlwaysReady.
 

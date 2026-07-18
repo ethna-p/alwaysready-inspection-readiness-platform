@@ -13,7 +13,6 @@ If you've had any difficulties or have questions about how to get the most from 
 
 - The **Help** tab in the top navigation covers the most common questions by role
 - The **Support** tab allows you to raise a query directly with our team
-- You can also reach us by email at hello@alwaysready.uk
 
 We're committed to making sure AlwaysReady works well for your service, and we welcome any feedback you have at this stage.
 

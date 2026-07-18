@@ -17,7 +17,7 @@ With five days of your trial remaining, we wanted to share a few features that a
 
 **The HR module** keeps your staff records, training certificates, DBS checks, supervision logs, and appraisal records in one place — all accessible during an inspection. CQC inspectors will want to see evidence that your team is properly trained and supported, and the HR module makes that straightforward to demonstrate. You'll find it under the **HR** tab in the top navigation.
 
-If you'd like any guidance on these features, please don't hesitate to get in touch at hello@alwaysready.uk.
+If you'd like any guidance on these features, the Support tab inside the platform is the best place to reach us.
 
 Kind regards,
 The AlwaysReady Team

@@ -15,7 +15,7 @@ Now that you've had a couple of days to settle in, we wanted to highlight three 
 
 **The Inspection Pack** generates a single downloadable document summarising your readiness across all KLOEs — useful as a teaching tool for your team or as a reference when preparing for review. You'll find it under **Inspection Pack** in the top navigation.
 
-If you have any questions, we're always happy to help at hello@alwaysready.uk.
+If you have any questions, the Support tab inside the platform is the best place to reach us.
 
 Kind regards,
 The AlwaysReady Team

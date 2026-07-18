@@ -16,7 +16,7 @@ Before your trial ends, it's worth making sure you've had a chance to:
 - Review your Daily Report and Readiness Dashboard
 - Share access with a colleague if you'd like a second opinion
 
-If there's anything you haven't had time to explore yet, the next seven days are a good opportunity. And if you have any questions, our team is available via the **Support** tab or at hello@alwaysready.uk.
+If there's anything you haven't had time to explore yet, the next seven days are a good opportunity. And if you have any questions, our team is available via the **Support** tab inside the platform.
 
 Kind regards,
 The AlwaysReady Team

@@ -13,7 +13,7 @@ If you're happy to continue, no action is needed — your subscription will acti
 
 If you'd prefer not to continue, you can end your trial at any time before [date] by visiting **Account Settings** within the platform and clicking "End Trial". You will not be charged.
 
-If you have any questions before then, please contact us at hello@alwaysready.uk — we're happy to help.
+If you have any questions before then, the Support tab inside the platform is the best place to reach us.
 
 Kind regards,
 The AlwaysReady Team

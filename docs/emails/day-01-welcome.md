@@ -13,7 +13,7 @@ AlwaysReady is designed to help care providers prepare for CQC inspection with c
 
 Over the coming days, we'll send you a short series of emails with tips and suggestions to help you get the most from your inspection readiness platform. There's no obligation to read them all, but we hope you find them useful.
 
-If you have any questions at any point, our support team is available via the Support section within the platform, or by emailing hello@alwaysready.uk.
+If you have any questions at any point, our support team is available via the Support tab within the platform.
 
 We're glad you're here.
 
