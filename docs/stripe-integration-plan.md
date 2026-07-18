@@ -79,18 +79,6 @@ An "End Trial" button visible in the platform during the trial period (e.g. in A
 
 ---
 
-## "Clear demo data" on upgrade
-
-After subscribing, admin sees a one-time prompt:
-
-> "Would you like to clear the example data, or keep what you've already entered?"
-
-- **Clear** — deletes seeded KLOE records, compliance records, and example evidence. Leaves the org, users, and any real data the admin entered during the trial.
-- **Keep** — no action. Everything stays as-is.
-
-This is a server action that deletes rows where `is_seed_data = true` (new flag to add to relevant tables, set when demo data is seeded).
-
----
 
 ## Trial expiry emails
 
@@ -108,12 +96,11 @@ Sent via Resend from `hello@alwaysready.uk`. Nightly cron checks `trial_ends_at`
 
 ## Build order (this platform)
 
-1. **Migration** — add `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status` to `organisations`; add `is_seed_data` flag to KLOE/compliance tables; update `lib/types.ts`
+1. **Migration** — add `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status` to `organisations`; update `lib/types.ts`
 2. **Webhook route** — `POST /api/stripe/webhook`, verify signature, handle the four events
 3. **"End Trial" cancellation** — button in trial banner + account settings, calls Stripe cancel API
-4. **"Clear demo data" action** — server action + one-time prompt shown after upgrade
-5. **Trial expiry emails** — extend nightly cron to send at 7 days / 3 days
-6. **Superadmin badge** — show subscription status (Trialing / Active / Cancelled / Past Due) in org list
+4. **Trial expiry emails** — extend nightly cron to send at 7 days / 3 days
+5. **Superadmin badge** — show subscription status (Trialing / Active / Cancelled / Past Due) in org list
 
 ---
 
