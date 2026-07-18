@@ -7,7 +7,7 @@
  *   /dashboard/*       — requires auth + onboarding complete
  *   /superadmin/*      — requires auth + SUPERADMIN_EMAIL match
  *
- * Public routes: /login, /auth/callback, /upgrade, static assets.
+ * Public routes: /login, /auth/callback, /upgrade, /unsubscribe, static assets.
  *
  * MFA:
  *   - If user has a TOTP factor enrolled (nextLevel === aal2) but session is
@@ -51,6 +51,9 @@ export async function middleware(request: NextRequest) {
   const superadminEmail = process.env.SUPERADMIN_EMAIL
 
   // ── Unauthenticated guards ──────────────────────────────────────────────
+
+  // Public routes that never require authentication
+  if (pathname === '/unsubscribe') return supabaseResponse
 
   if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/superadmin'))) {
     const url = request.nextUrl.clone()
