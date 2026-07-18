@@ -2,9 +2,11 @@
  * /dashboard/account — account settings page.
  * Available to all roles.
  */
+import { Suspense } from 'react'
 import { getCurrentUserProfile } from '@/lib/session'
 import ChangePasswordForm from './ChangePasswordForm'
 import PersonalContactForm from './PersonalContactForm'
+import MfaSection from './MfaSection'
 
 export const metadata = { title: 'Account Settings — AlwaysReady' }
 
@@ -19,6 +21,11 @@ export default async function AccountPage() {
           Signed in as <span className="font-medium text-[#1a1a1a]">{profile?.full_name ?? 'Unknown'}</span>
         </p>
       </div>
+
+      {/* ── Two-factor authentication ──────────────────────────────────── */}
+      <Suspense>
+        <MfaSection role={profile?.role ?? null} />
+      </Suspense>
 
       {/* ── Change password ────────────────────────────────────────────── */}
       <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">

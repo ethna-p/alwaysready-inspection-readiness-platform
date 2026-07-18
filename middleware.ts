@@ -8,6 +8,12 @@
  *   /superadmin/*      — requires auth + SUPERADMIN_EMAIL match
  *
  * Public routes: /login, /auth/callback, /upgrade, static assets.
+ *
+ * MFA:
+ *   - If user has a TOTP factor enrolled (nextLevel === aal2) but session is
+ *     only aal1, redirect to /login/mfa to complete verification.
+ *   - Admin users with no factor enrolled are redirected to
+ *     /dashboard/account/mfa/setup to force enrolment.
  */
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
@@ -62,6 +68,48 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // ── MFA guard ─────────────────────────────────────────────────────────
+  // Runs for authenticated users on protected routes only.
+  // Skip the MFA pages themselves to avoid redirect loops.
+  const isMfaVerifyPage = pathname === '/login/mfa'
+  const isMfaSetupPage  = pathname.startsWith('/dashboard/account/mfa')
+
+  if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/superadmin'))) {
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+
+    if (aal) {
+      // 1. User has a factor enrolled but hasn't verified this session → /login/mfa
+      if (aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2' && !isMfaVerifyPage) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login/mfa'
+        return NextResponse.redirect(url)
+      }
+
+      // 2. Admin with no factor enrolled → force enrolment
+      // (Only for /dashboard routes — superadmin has no profile row so skip for them)
+      if (
+        aal.nextLevel !== 'aal2' &&
+        user.email !== superadminEmail &&
+        pathname.startsWith('/dashboard') &&
+        !isMfaSetupPage &&
+        pathname !== '/dashboard/welcome'
+      ) {
+        // Fetch role to check if admin
+        const { data: profile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+
+        if (profile?.role === 'admin') {
+          const url = request.nextUrl.clone()
+          url.pathname = '/dashboard/account/mfa/setup'
+          return NextResponse.redirect(url)
+        }
+      }
+    }
+  }
+
   // ── First-login onboarding redirect ───────────────────────────────────
   // If the user hasn't completed onboarding, send them to /dashboard/welcome.
   // Skip if they're already on /dashboard/welcome (avoid loop).
@@ -70,7 +118,8 @@ export async function middleware(request: NextRequest) {
     user &&
     user.email !== superadminEmail &&
     pathname.startsWith('/dashboard') &&
-    pathname !== '/dashboard/welcome'
+    pathname !== '/dashboard/welcome' &&
+    !isMfaSetupPage
   ) {
     const { data: profile } = await supabase
       .from('users')
@@ -107,6 +156,6 @@ export const config = {
      * - favicon.ico, sitemap.xml, robots.txt
      * - public folder assets (logo, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webch)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
