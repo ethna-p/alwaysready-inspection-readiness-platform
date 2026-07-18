@@ -4,10 +4,13 @@ _Last updated: 18 July 2026_
 
 ---
 
-## Decisions
+## Key decisions
 
-- **14-day free trial** — care managers need time to configure the platform and see value before committing
-- **Stripe auto-creates the org** — no manual provisioning for paying customers; the webhook handles everything
+- **Demo IS the trial** — no separate sign-up flow. Visitors use the existing demo, then subscribe when ready. The demo org becomes their live org on payment.
+- **14-day free trial** — card collected at checkout, charged on day 14 unless cancelled
+- **"End Trial" self-service** — admins can cancel at any time via a button in the platform, without contacting AlwaysReady. Removes sign-up anxiety.
+- **"Clear demo data" option** — on upgrade, admins can choose to wipe seeded/example data or keep what they've entered
+- **Stripe flips the org, not creates it** — on payment, webhook sets `is_demo = false`, stops the midnight reset, activates the subscription
 - **Manual provisioning stays** in the superadmin for edge cases only (complimentary access, beta testers, bespoke deals)
 - **Single plan to start** — no tiers
 
@@ -15,15 +18,17 @@ _Last updated: 18 July 2026_
 
 ## Full customer journey
 
-1. Visitor lands on alwaysready.uk pricing page
-2. Clicks "Start free trial" → Stripe Checkout (14-day trial built into the Stripe subscription, card collected upfront)
-3. Trial starts → `checkout.session.completed` webhook fires
-4. Platform webhook receiver **auto-creates** the org and admin user, sets `trial_ends_at = now + 14 days`
-5. Welcome email sent to the new admin with login details and a temporary password
-6. Admin logs in, uses the platform for 14 days
-7. Nightly cron sends trial expiry reminder emails at 7 days and 3 days remaining
-8. On day 14, Stripe charges the card → `invoice.paid` webhook fires → org becomes fully active, trial banner removed
-9. If card fails or subscription is cancelled → `customer.subscription.deleted` → org deactivated, email sent
+1. Visitor lands on alwaysready.uk, clicks "Try it free" → goes to the demo
+2. Uses the demo for as long as they like (resets nightly)
+3. When ready, clicks "Subscribe" → Stripe Checkout (14-day trial, card collected upfront)
+4. Checkout session metadata includes: `{ org_id }` — the demo org they've been using
+5. Payment confirmed → `checkout.session.completed` webhook fires
+6. Platform webhook: sets `is_demo = false`, `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status = trialing`, `trial_ends_at = now + 14 days`, stops midnight reset
+7. Welcome email sent confirming their account is now live
+8. Admin logs in — sees option to clear demo seed data or keep everything
+9. Nightly cron sends trial reminder emails at 7 days and 3 days remaining
+10. On day 14, Stripe charges the card → `invoice.paid` fires → `stripe_subscription_status = active`, trial banner removed
+11. If card fails or admin cancels → org suspended, email sent with reactivation/cancellation confirmation
 
 ---
 
@@ -31,10 +36,10 @@ _Last updated: 18 July 2026_
 
 ### 1. Marketing site (alwaysready.uk — separate repo, not touched here)
 
-- Pricing page with "Start free trial" CTA
-- Stripe Checkout configured with 14-day trial period and card collection
-- Checkout session metadata must include: `{ org_name, admin_name, admin_email }` so the webhook can create the org
-- Success page: "Check your email — your account is being set up"
+- "Try it free" CTA → demo
+- "Subscribe" button on the demo → Stripe Checkout with 14-day trial
+- Checkout session metadata must include `{ org_id }` of the demo org
+- Success page: "Your account is now live — check your email"
 - **Webhook endpoint to configure in Stripe dashboard:** `https://alwaysready-inspection-readiness-pl-three.vercel.app/api/stripe/webhook`
 
 ### 2. This platform — webhook receiver
@@ -43,10 +48,10 @@ New route: `POST /api/stripe/webhook`
 
 | Stripe event | Action |
 |---|---|
-| `checkout.session.completed` | Create org row, create Supabase auth user, set `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status = trialing`, `trial_ends_at = now + 14 days`, send welcome email |
+| `checkout.session.completed` | Set `is_demo = false`, `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status = trialing`, `trial_ends_at = now + 14 days`, stop midnight reset, send welcome email |
 | `invoice.paid` | Set `stripe_subscription_status = active`, `is_active = true`, clear `trial_ends_at` |
-| `customer.subscription.deleted` | Set `stripe_subscription_status = cancelled`, `is_active = false`, send cancellation email |
-| `invoice.payment_failed` | Send payment failed email to admin with link to update card |
+| `customer.subscription.deleted` | Set `stripe_subscription_status = cancelled`, `is_active = false`, send cancellation confirmation email |
+| `invoice.payment_failed` | Send payment failed email with link to update card details |
 
 Webhook must verify the Stripe signature using `STRIPE_WEBHOOK_SECRET` before processing any event.
 
@@ -60,29 +65,57 @@ New columns on `organisations`:
 | `stripe_subscription_id` | `text` | Stripe subscription ID (`sub_...`) |
 | `stripe_subscription_status` | `text` | `trialing`, `active`, `cancelled`, `past_due` |
 
+`is_demo` already exists — webhook flips it to `false` on payment.
+
 ---
 
-## Trial expiry emails (nightly cron extension)
+## "End Trial" self-service cancellation
 
-Check `trial_ends_at` each night and send via Resend from `hello@alwaysready.uk`:
+An "End Trial" button visible in the platform during the trial period (e.g. in Account settings or the trial banner). Clicking it:
+1. Calls Stripe API to cancel the subscription
+2. Sets `is_active = false`, `stripe_subscription_status = cancelled`
+3. Sends a cancellation confirmation email
+4. Shows a confirmation screen with a link to re-subscribe if they change their mind
+
+---
+
+## "Clear demo data" on upgrade
+
+After subscribing, admin sees a one-time prompt:
+
+> "Would you like to clear the example data, or keep what you've already entered?"
+
+- **Clear** — deletes seeded KLOE records, compliance records, and example evidence. Leaves the org, users, and any real data the admin entered during the trial.
+- **Keep** — no action. Everything stays as-is.
+
+This is a server action that deletes rows where `is_seed_data = true` (new flag to add to relevant tables, set when demo data is seeded).
+
+---
+
+## Trial expiry emails
+
+Sent via Resend from `hello@alwaysready.uk`. Nightly cron checks `trial_ends_at`:
 
 | Trigger | Email |
 |---|---|
-| 7 days before expiry | "Your trial ends in 7 days" — reassure them the card won't be charged until day 14, link to pricing page |
-| 3 days before expiry | "Your trial ends in 3 days" — more urgent, highlight key features they may not have tried |
-| Day of expiry | Stripe handles the charge; if successful `invoice.paid` fires; if failed send payment failure email |
+| 7 days before expiry | "Your trial ends in 7 days" — reassure them, include "End Trial" link if they want to cancel |
+| 3 days before expiry | "Your trial ends in 3 days" — same, more urgent |
+| Day of expiry | Stripe handles the charge; `invoice.paid` or `invoice.payment_failed` webhook fires accordingly |
 
-**Dependency: DKIM for `hello@alwaysready.uk` must be live before any of these emails can send.**
+**Dependency: DKIM for `hello@alwaysready.uk` must be live before these emails can send.**
 
 ---
 
 ## Build order (this platform)
 
-1. **Migration** — add `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status` to `organisations`; update `lib/types.ts`
-2. **Webhook route** — `POST /api/stripe/webhook`, verify signature, handle the four events above
-3. **Auto-provisioning** — within `checkout.session.completed`: create org, create Supabase auth user, send welcome email via Resend
-4. **Trial expiry emails** — extend nightly cron to send at 7 days / 3 days
-5. **Superadmin badge** — show subscription status (Trialing / Active / Cancelled / Past Due) in org list
+1. **Migration** — add `stripe_customer_id`, `stripe_subscription_id`, `stripe_subscription_status` to `organisations`; add `is_seed_data` flag to KLOE/compliance tables; update `lib/types.ts`
+2. **Webhook route** — `POST /api/stripe/webhook`, verify signature, handle the four events
+3. **"End Trial" cancellation** — button in trial banner + account settings, calls Stripe cancel API
+4. **"Clear demo data" action** — server action + one-time prompt shown after upgrade
+5. **Trial expiry emails** — extend nightly cron to send at 7 days / 3 days
+6. **Superadmin badge** — show subscription status (Trialing / Active / Cancelled / Past Due) in org list
+
+---
 
 ## Environment variables needed
 
@@ -97,14 +130,14 @@ Both go in `.env.local` and Vercel Environment Variables. Never commit to git.
 
 ## Dependencies / blockers
 
-- **DKIM setup** must be complete before any transactional emails send from `hello@alwaysready.uk`
+- **DKIM setup** must be complete before trial expiry emails send from `hello@alwaysready.uk`
 - **Stripe account** must have a product and price configured (with 14-day trial) before end-to-end testing
-- **Marketing site pricing page** must be built before the checkout flow exists (separate work, separate repo)
+- **Marketing site** must wire the "Subscribe" button to Stripe Checkout with `org_id` in metadata
 
 ---
 
 ## Out of scope (for now)
 
 - Multiple pricing tiers
-- Stripe Customer Portal link in-platform (so admins can self-manage billing — nice to have later)
+- Stripe Customer Portal link in-platform (nice to have later — lets admins update card details self-service)
 - Promo codes / discounts
