@@ -31,6 +31,9 @@ export default function SuperadminLayout({
           <Link href="/superadmin/tickets" className="hover:text-white transition-colors">
             Support Tickets
           </Link>
+          <Link href="/superadmin/broadcast" className="hover:text-white transition-colors">
+            Broadcast
+          </Link>
           <Link href="/dashboard" className="hover:text-white transition-colors">
             ← Dashboard
           </Link>
