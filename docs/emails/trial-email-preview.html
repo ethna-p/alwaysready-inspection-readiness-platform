@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlwaysReady — Trial Email Preview</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #faf9f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+    .wrapper {
+      padding: 40px 20px;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(1,77,78,0.12);
+    }
+    .header {
+      background-color: #014D4E;
+      padding: 28px 40px;
+      text-align: left;
+      border-bottom: 4px solid #ffd700;
+    }
+    .header svg {
+      display: block;
+      height: 40px;
+      width: auto;
+    }
+    .body {
+      padding: 40px 40px 32px;
+      background-color: #ffffff;
+    }
+    .body p {
+      margin: 0 0 18px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1a1a1a;
+    }
+    .body p:last-child {
+      margin-bottom: 0;
+    }
+    .body strong {
+      color: #014D4E;
+    }
+    .body ul {
+      margin: 0 0 18px;
+      padding-left: 24px;
+    }
+    .body ul li {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .body ul li strong {
+      color: #014D4E;
+    }
+    .footer {
+      background-color: #faf9f6;
+      border-top: 1px solid #e8e6e0;
+      padding: 20px 40px;
+      text-align: center;
+    }
+    .footer p {
+      margin: 0;
+      font-size: 12px;
+      color: #888;
+      line-height: 1.6;
+    }
+    .preview-bar {
+      max-width: 600px;
+      margin: 0 auto 16px;
+      background: #014D4E;
+      border-radius: 6px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .preview-bar select {
+      flex: 1;
+      background: #00b8a6;
+      color: #014D4E;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .preview-bar label {
+      color: #ffd700;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="preview-bar">
+    <label>Preview email:</label>
+    <select id="emailSelector" onchange="showEmail(this.value)">
+      <option value="1">Day 1 — Welcome</option>
+      <option value="3">Day 3 — Three things worth exploring</option>
+      <option value="5">Day 5 — How are you getting on?</option>
+      <option value="7">Day 7 — Halfway reminder</option>
+      <option value="9">Day 9 — A few things you might not have tried</option>
+      <option value="11">Day 11 — Trial ends in 3 days</option>
+      <option value="13">Day 13 — Trial ends tomorrow</option>
+      <option value="14a">Day 14a — Subscription active</option>
+      <option value="14b">Day 14b — Trial lapsed</option>
+    </select>
+  </div>
+
+  <div id="subject-line" style="max-width:600px;margin:0 auto 8px;font-size:12px;color:#64748b;padding:0 4px;">
+    <strong>Subject:</strong> <span id="subject-text"></span>
+  </div>
+
+  <div class="email-container">
+    <div class="header">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" role="img" aria-label="AlwaysReady">
+        <circle cx="24" cy="24" r="22" fill="#ffd700"/>
+        <polyline points="13,24 21,32 35,16" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="54" y="32" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#00b8a6" letter-spacing="-0.3">AlwaysReady</text>
+      </svg>
+    </div>
+    <div class="body" id="email-body"></div>
+    <div class="footer">
+      <p>AlwaysReady is a product of Parker Digital &amp; Print Services Ltd<br>
+      82A James Carter Road, Mildenhall, IP28 7DE<br>
+      You are receiving this email because you started an AlwaysReady trial.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const emails = {
+  '1': {
+    subject: 'Welcome to AlwaysReady',
+    body: `<p>Dear [Name],</p>
+<p>Welcome to AlwaysReady. Your 14-day free trial is now active and your account is ready to use.</p>
+<p>AlwaysReady is designed to help care providers prepare for CQC inspection with confidence. Over the next two weeks, we hope you enjoy exploring the platform — but if you'd like a starting point, we suggest beginning with your KLOEs. Adding your current compliance status to even a handful of areas will give you an immediate picture of where you stand.</p>
+<p>Over the coming days, we'll send you a short series of emails with tips and suggestions to help you get the most from your inspection readiness platform. There's no obligation to read them all, but we hope you find them useful.</p>
+<p>If you have any questions at any point, our support team is available via the <strong>Support</strong> tab within the platform.</p>
+<p>We're glad you're here.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '3': {
+    subject: 'Three things worth exploring in AlwaysReady',
+    body: `<p>Dear [Name],</p>
+<p>Now that you've had a couple of days to settle in, we wanted to highlight three features that our users find particularly valuable.</p>
+<p><strong>The Daily Report</strong> gives you a snapshot of your current compliance position — which KLOEs need attention, what's overdue, and what's looking strong. You'll find it under <strong>Daily Report</strong> in the top navigation. It's designed to be the first thing a manager checks at the start of the day.</p>
+<p><strong>Evidence uploads</strong> allow you to attach documents directly to each KLOE — policies, audits, meeting minutes, certificates. Everything is stored securely and is accessible during an inspection. Open any KLOE under the <strong>KLOEs</strong> tab to find the evidence upload panel.</p>
+<p><strong>The Inspection Pack</strong> generates a single downloadable document summarising your readiness across all KLOEs — useful as a teaching tool for your team or as a reference when preparing for review. You'll find it under <strong>Inspection Pack</strong> in the top navigation.</p>
+<p>If you have any questions, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '5': {
+    subject: 'How are you getting on?',
+    body: `<p>Dear [Name],</p>
+<p>You're five days into your AlwaysReady trial — we hope it's been a useful start.</p>
+<p>If you've had any difficulties or have questions about how to get the most from the platform, there are a few ways we can help:</p>
+<ul>
+  <li>The <strong>Help</strong> tab in the top navigation covers the most common questions by role</li>
+  <li>The <strong>Support</strong> tab allows you to raise a query directly with our team</li>
+</ul>
+<p>We're committed to making sure AlwaysReady works well for your service, and we welcome any feedback you have at this stage.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '7': {
+    subject: "You're halfway through your trial — here's a quick checklist",
+    body: `<p>Dear [Name],</p>
+<p>You have 7 days remaining on your AlwaysReady trial. You're at the halfway point — a good moment to take stock.</p>
+<p>Before your trial ends, it's worth making sure you've had a chance to:</p>
+<ul>
+  <li>Add your compliance status across your key KLOEs</li>
+  <li>Upload at least one piece of supporting evidence</li>
+  <li>Review your Daily Report and Readiness Dashboard</li>
+  <li>Share access with a colleague if you'd like a second opinion</li>
+</ul>
+<p>If there's anything you haven't had time to explore yet, the next seven days are a good opportunity. And if you have any questions, our team is available via the <strong>Support</strong> tab inside the platform.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '9': {
+    subject: "A few things you might not have tried yet",
+    body: `<p>Dear [Name],</p>
+<p>With five days of your trial remaining, we wanted to share a few features that are easy to miss but genuinely useful in practice.</p>
+<p><strong>The Audit Trail</strong> keeps a complete record of every change made to a KLOE — who updated it, when, and what changed. This can be invaluable during an inspection when you need to demonstrate how your compliance position has developed over time. You'll find it under the <strong>Trend</strong> tab in the top navigation.</p>
+<p><strong>Visitor access</strong> allows you to grant a read-only login to an external reviewer, consultant, or responsible individual, without giving them editing rights. Access expires automatically. You'll find this under the <strong>Team</strong> tab.</p>
+<p><strong>The Trend Report</strong> shows your readiness score over time, so you can see at a glance whether your overall compliance position is improving. You'll find it under the <strong>Trend</strong> tab in the top navigation.</p>
+<p><strong>The HR module</strong> keeps your staff records, training certificates, DBS checks, supervision logs, and appraisal records in one place — all accessible during an inspection. CQC inspectors will want to see evidence that your team is properly trained and supported, and the HR module makes that straightforward to demonstrate. You'll find it under the <strong>HR</strong> tab in the top navigation.</p>
+<p>If you'd like any guidance on these features, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '11': {
+    subject: 'Your AlwaysReady trial ends in 3 days',
+    body: `<p>Dear [Name],</p>
+<p>Your free trial ends in 3 days, on [date].</p>
+<p>If you're happy to continue, no action is needed — your subscription will activate automatically and you won't experience any interruption to your access.</p>
+<p>If you'd prefer not to continue, you can end your trial at any time before [date] by visiting <strong>Account Settings</strong> within the platform and clicking "End Trial". You will not be charged.</p>
+<p>If you have any questions before then, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '13': {
+    subject: 'Your trial ends tomorrow',
+    body: `<p>Dear [Name],</p>
+<p>Your AlwaysReady trial ends tomorrow, on [date].</p>
+<p><strong>If you'd like to continue:</strong> no action is needed. Your subscription will activate automatically and your card will be charged [price] tomorrow. Your data and settings will remain exactly as they are.</p>
+<p><strong>If you'd like to cancel:</strong> visit <strong>Account Settings</strong> within the platform and click "End Trial" before midnight tonight. You will not be charged.</p>
+<p>Thank you for taking the time to try AlwaysReady. Whatever you decide, we hope it's been a useful experience.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '14a': {
+    subject: 'Your AlwaysReady subscription is now active',
+    body: `<p>Dear [Name],</p>
+<p>Thank you — your subscription is now active and your account will continue without interruption.</p>
+<p>We're delighted to have you on board. If there's anything we can do to help you get the most from AlwaysReady, please don't hesitate to reach out via the <strong>Support</strong> tab inside the platform.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  },
+  '14b': {
+    subject: 'Your AlwaysReady trial has ended',
+    body: `<p>Dear [Name],</p>
+<p>Your AlwaysReady trial ended on [date] and your account has now been suspended.</p>
+<p>Your data is safe and will be retained for 30 days. If you'd like to reactivate your account, you can subscribe at any time at [link].</p>
+<p>If you have any feedback about your experience, or if there's anything we could have done better, we'd genuinely welcome hearing from you. You can reactivate your account at any time and use the <strong>Support</strong> tab to get in touch.</p>
+<p>Thank you for trying AlwaysReady.</p>
+<p>Kind regards,<br>The AlwaysReady Team</p>`
+  }
+};
+
+function showEmail(key) {
+  const email = emails[key];
+  document.getElementById('email-body').innerHTML = email.body;
+  document.getElementById('subject-text').textContent = email.subject;
+}
+
+showEmail('1');
+</script>
+</body>
+</html>
