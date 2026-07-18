@@ -144,6 +144,26 @@ export async function updateKloCompliance(
     }
   }
 
+  // ── Reset checklist ticks when a new review date is recorded ──────────
+  // Completing a review cycle means the checklist needs to be re-ticked
+  // for the next cycle. Evidence location fields are preserved.
+  if (dateReviewed) {
+    // Get all checklist item IDs for this KLOE
+    const { data: checklistItems } = await supabase
+      .from('klo_checklist_items')
+      .select('id')
+      .eq('klo_item_id', kloItemId)
+
+    if (checklistItems && checklistItems.length > 0) {
+      const itemIds = checklistItems.map(ci => ci.id)
+      await supabase
+        .from('klo_checklist_completions')
+        .update({ is_complete: false })
+        .in('checklist_item_id', itemIds)
+        .eq('is_complete', true)
+    }
+  }
+
   // ── Revalidate pages that show this data ───────────────────
   revalidatePath('/dashboard/kloes')
   revalidatePath(`/dashboard/kloes/${kloItemId}`)

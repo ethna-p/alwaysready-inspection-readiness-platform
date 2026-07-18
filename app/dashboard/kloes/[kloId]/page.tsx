@@ -204,12 +204,12 @@ export default async function KloeDetailPage({ params }: Props) {
         </p>
         <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
         {klo.wording && (
-          <p className="mt-3 text-sm text-[#1a1a1a] leading-relaxed">
+          <p className="mt-3 text-base text-[#1a1a1a] leading-relaxed">
             {klo.wording}
           </p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-xs text-gray-600">
+          <p className="mt-2 text-sm text-gray-600">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}
@@ -384,177 +384,68 @@ export default async function KloeDetailPage({ params }: Props) {
           </div>
         )}
 
-        {/* Link to CQC rating characteristics */}
+        {/* CQC rating characteristics — prominent card */}
         {(klo.rating_outstanding || klo.rating_good || klo.rating_ri || klo.rating_inadequate) && (
-          <div className="text-sm">
-            <Link
-              href={`/dashboard/kloes/${kloId}/ratings`}
-              className="text-[#014D4E] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
-            >
-              View CQC rating characteristics for this KLOE →
-            </Link>
-          </div>
+          <Link
+            href={`/dashboard/kloes/${kloId}/ratings`}
+            className="
+              flex items-center justify-between gap-4
+              bg-[#014D4E] text-white
+              rounded-xl px-5 py-4
+              hover:bg-[#013838]
+              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+              transition-colors group
+            "
+          >
+            <div>
+              <p className="text-sm font-semibold">CQC Rating Characteristics</p>
+              <p className="text-xs text-[#a8d8d5] mt-0.5">
+                What Outstanding, Good, Requires Improvement and Inadequate look like for this KLOE
+              </p>
+            </div>
+            <span className="text-xl font-light shrink-0 group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
+          </Link>
         )}
 
       </div>
 
-      {/* ── Audit trail ──────────────────────────────────────────────────── */}
-      <section className="mt-8" aria-labelledby="history-heading">
-        {(() => {
-          // Merge compliance history + file upload events into one sorted timeline
-          type TimelineItem =
-            | { kind: 'history'; date: string; entry: typeof history extends (infer T)[] | null | undefined ? T : never }
-            | { kind: 'file'; date: string; file: EvidenceFile }
-
-          const timelineItems: TimelineItem[] = [
-            ...(history ?? []).map(e => ({ kind: 'history' as const, date: e.system_recorded_at, entry: e })),
-            ...evidenceFiles.map(f => ({ kind: 'file' as const, date: f.uploaded_at, file: f })),
-          ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-          const totalEntries = timelineItems.length
-
-          return (
-            <>
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <h2 id="history-heading" className="text-lg font-bold text-[#014D4E]">
-                  Audit trail
-                  {totalEntries > 0 && (
-                    <span className="ml-2 text-sm font-normal text-gray-600">
-                      ({totalEntries} {totalEntries === 1 ? 'entry' : 'entries'})
-                    </span>
-                  )}
-                </h2>
-                {(history ?? []).length > 0 && (
-                  <Link
-                    href={`/dashboard/kloes/${kloId}/timeline`}
-                    className="
-                      inline-flex items-center gap-1.5 text-sm font-medium
-                      bg-[#014D4E] text-white px-4 py-2 rounded-lg
-                      hover:bg-[#013838]
-                      focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-                      transition-colors
-                    "
-                  >
-                    View full audit trail →
-                  </Link>
-                )}
-              </div>
-
-              {totalEntries === 0 ? (
-                <p className="text-sm text-gray-600">
-                  No history yet. Your first save will appear here.
-                </p>
-              ) : (
-                <ol className="relative border-l-2 border-gray-200 ml-3 space-y-6">
-                  {timelineItems.map((item, i) => (
-                    <li key={item.kind === 'history' ? item.entry.id : item.file.id} className="ml-6">
-                      {/* Timeline dot */}
-                      <span
-                        className={`absolute -left-[9px] w-4 h-4 rounded-full border-2 border-white ${item.kind === 'file' ? 'bg-green-600' : 'bg-[#014D4E]'}`}
-                        aria-hidden="true"
-                      />
-
-                      {item.kind === 'file' ? (
-                        /* ── File upload entry ── */
-                        <div className="bg-white rounded-xl border border-gray-200 p-4">
-                          <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
-                              📎 File uploaded
-                            </span>
-                            {i === 0 && (
-                              <span className="text-xs bg-[#014D4E] text-white px-2 py-0.5 rounded-full font-medium">
-                                Latest
-                              </span>
-                            )}
-                            <span className="text-xs text-gray-600 ml-auto">
-                              {formatDate(item.file.uploaded_at, true)}
-                            </span>
-                          </div>
-                          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                            <div className="col-span-2 sm:col-span-3">
-                              <dt className="text-gray-600 mb-0.5">File</dt>
-                              <dd className="font-medium text-[#1a1a1a] break-words">{item.file.file_name}</dd>
-                            </div>
-                            {item.file.scan_status === 'clean' && (
-                              <div className="col-span-2 sm:col-span-3">
-                                <dt className="text-gray-600 mb-0.5">Security scan</dt>
-                                <dd className="text-green-700 font-medium">🛡 Scanned for viruses — no threats found</dd>
-                              </div>
-                            )}
-                            <div>
-                              <dt className="text-gray-600 mb-0.5">Uploaded by</dt>
-                              <dd className="text-[#1a1a1a]">{item.file.uploaded_by_name ?? '—'}</dd>
-                            </div>
-                          </dl>
-                        </div>
-                      ) : (
-                        /* ── Compliance history entry ── */
-                        <div className="bg-white rounded-xl border border-gray-200 p-4">
-                          <div className="flex flex-wrap items-center gap-2 mb-3">
-                            {item.entry.status && <StatusBadge status={item.entry.status as 'not_started' | 'in_progress' | 'completed'} />}
-                            {i === 0 && (
-                              <span className="text-xs bg-[#014D4E] text-white px-2 py-0.5 rounded-full font-medium">
-                                Latest
-                              </span>
-                            )}
-                            <span className="text-xs text-gray-600 ml-auto">
-                              Recorded {formatDate(item.entry.system_recorded_at, true)}
-                            </span>
-                          </div>
-                          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                            {item.entry.date_reviewed && (
-                              <div>
-                                <dt className="text-gray-600 mb-0.5">Review date</dt>
-                                <dd className="font-medium text-[#1a1a1a]">{formatDate(item.entry.date_reviewed)}</dd>
-                              </div>
-                            )}
-                            {item.entry.next_review_due && (
-                              <div>
-                                <dt className="text-gray-600 mb-0.5">Next due</dt>
-                                <dd className="font-medium text-[#1a1a1a]">{formatDate(item.entry.next_review_due)}</dd>
-                              </div>
-                            )}
-                            {item.entry.priority !== null && (
-                              <div>
-                                <dt className="text-gray-600 mb-0.5">Priority</dt>
-                                <dd className="font-medium text-[#1a1a1a]">{item.entry.priority}</dd>
-                              </div>
-                            )}
-                            {item.entry.review_frequency_days !== null && (
-                              <div>
-                                <dt className="text-gray-600 mb-0.5">Frequency</dt>
-                                <dd className="font-medium text-[#1a1a1a]">{frequencyLabel(item.entry.review_frequency_days)}</dd>
-                              </div>
-                            )}
-                            {item.entry.evidence_location && (
-                              <div className="col-span-2 sm:col-span-3">
-                                <dt className="text-gray-600 mb-0.5">Evidence</dt>
-                                <dd className="font-medium text-[#1a1a1a] break-words">{item.entry.evidence_location}</dd>
-                              </div>
-                            )}
-                            {item.entry.notes && (
-                              <div className="col-span-2 sm:col-span-3">
-                                <dt className="text-gray-600 mb-0.5">Notes</dt>
-                                <dd className="text-[#1a1a1a]">{item.entry.notes}</dd>
-                              </div>
-                            )}
-                            <div className="col-span-2 sm:col-span-3">
-                              <dt className="text-gray-600 mb-0.5">Recorded by</dt>
-                              <dd className="text-[#1a1a1a]">
-                                {nameById.get(item.entry.changed_by) ?? item.entry.changed_by}
-                              </dd>
-                            </div>
-                          </dl>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </>
-          )
-        })()}
-      </section>
+      {/* ── Audit trail summary ──────────────────────────────────────────── */}
+      {(() => {
+        const historyCount = (history ?? []).length
+        const fileCount    = evidenceFiles.length
+        const totalEntries = historyCount + fileCount
+        return (
+          <section
+            className="mt-6 bg-white rounded-xl border border-gray-200 p-5 flex flex-wrap items-center justify-between gap-4"
+            aria-labelledby="history-heading"
+          >
+            <div>
+              <h2 id="history-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide">
+                Audit trail
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {totalEntries === 0
+                  ? 'No entries yet. Your first save will appear here.'
+                  : `${historyCount} compliance ${historyCount === 1 ? 'update' : 'updates'} · ${fileCount} ${fileCount === 1 ? 'file' : 'files'} uploaded`}
+              </p>
+            </div>
+            {totalEntries > 0 && (
+              <Link
+                href={`/dashboard/kloes/${kloId}/timeline`}
+                className="
+                  inline-flex items-center gap-1.5 text-sm font-medium
+                  bg-[#014D4E] text-white px-4 py-2 rounded-lg
+                  hover:bg-[#013838]
+                  focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+                  transition-colors shrink-0
+                "
+              >
+                View full audit trail →
+              </Link>
+            )}
+          </section>
+        )
+      })()}
     </div>
   )
 }

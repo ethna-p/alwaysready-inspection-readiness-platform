@@ -101,7 +101,10 @@ export default async function DailyReportPage() {
     }
 
     if (!due) {
-      // Never reviewed — no date set at all
+      // Never reviewed — no review date set.
+      // Exclude KLOEs that are actively in progress or completed:
+      // these have been deliberately actioned and shouldn't clutter the unassessed list.
+      if (record?.status === 'in_progress' || record?.status === 'completed') continue
       unassessedItems.push({ ...item, rag: 'grey' })
       continue
     }
@@ -361,9 +364,9 @@ function ReportTable({
                   <Link
                     href={`/dashboard/kloes/${klo.id}`}
                     className="text-xs text-[#014D4E] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded whitespace-nowrap"
-                    aria-label={`Update ${klo.title}`}
+                    aria-label={`View ${klo.title}`}
                   >
-                    Update →
+                    View →
                   </Link>
                 </td>
               </tr>

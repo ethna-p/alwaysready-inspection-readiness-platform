@@ -138,13 +138,14 @@ function ChecklistItemRow({
           <button
             type="button"
             onClick={() => setShowEvidence(v => !v)}
-            className="text-[11px] text-[#014D4E] hover:underline focus:outline-none focus:ring-1 focus:ring-[#00b8a6] rounded"
+            className="inline-flex items-center gap-1 text-xs font-medium text-[#014D4E] bg-[#e6f7f5] hover:bg-[#ccf0ec] rounded px-2 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]"
           >
-            {showEvidence ? 'Hide evidence hint' : 'What evidence is needed?'}
+            <span aria-hidden="true">{showEvidence ? '▲' : '▼'}</span>
+            {showEvidence ? 'Hide evidence guide' : 'What evidence is needed?'}
           </button>
         )}
         {showEvidence && item.evidence_notes && (
-          <p className="text-[11px] text-gray-600 bg-gray-50 rounded px-2 py-1.5 leading-relaxed">
+          <p className="text-xs text-gray-700 bg-[#f0faf9] border border-[#c0eae5] rounded px-3 py-2 leading-relaxed">
             {item.evidence_notes}
           </p>
         )}
@@ -160,7 +161,7 @@ function ChecklistItemRow({
                 setLocalEvidence(e.target.value)
                 setSaved(false)
               }}
-              placeholder="Evidence location (optional)"
+              placeholder="Evidence location"
               className="
                 flex-1 text-xs rounded border border-gray-200 px-2 py-1.5
                 bg-white text-[#1a1a1a] placeholder:text-gray-600

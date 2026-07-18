@@ -23,28 +23,27 @@ const DUE_SOON_DAYS = 14
  * Calculate the RAG status for a compliance record.
  *
  * Priority order:
- *  1. Grey   — never reviewed (status not_started, no date_reviewed)
+ *  1. Grey   — never reviewed (no date_reviewed set)
  *  2. Red    — next_review_due has passed (overdue takes priority over all else)
- *  3. Amber  — status is in_progress, OR next review is within DUE_SOON_DAYS
- *  4. Green  — status is completed and not due soon
+ *  3. Amber  — next review is within DUE_SOON_DAYS
+ *  4. Green  — reviewed and not due soon
+ *
+ * Note: status (in_progress / completed) alone does NOT affect RAG.
+ * RAG is always date-driven — a KLOE with no review date is always grey,
+ * regardless of whether it has been marked "in progress".
  */
 export function calculateRAG(
   record: ComplianceRecord | null | undefined,
   now: Date = new Date()
 ): RAGStatus {
-  // Grey: no activity at all
-  if (!record || (record.status === 'not_started' && !record.date_reviewed)) {
+  // Grey: no review date ever recorded
+  if (!record || !record.date_reviewed) {
     return 'grey'
   }
 
-  // Red: overdue (takes priority over status)
+  // Red: overdue
   if (record.next_review_due && new Date(record.next_review_due) < now) {
     return 'red'
-  }
-
-  // Amber: actively in progress
-  if (record.status === 'in_progress') {
-    return 'amber'
   }
 
   // Amber: due soon
@@ -56,11 +55,6 @@ export function calculateRAG(
     }
   }
 
-  // Green: completed and not due soon
-  if (record.status === 'completed') {
-    return 'green'
-  }
-
-  // Edge case: not_started but has a date (unusual state) — surface as amber
-  return 'amber'
+  // Green: reviewed and not due soon
+  return 'green'
 }

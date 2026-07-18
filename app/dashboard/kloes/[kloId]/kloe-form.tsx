@@ -64,7 +64,6 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
   const defaultPriority  = String(currentRecord?.priority     ?? 3)
   const defaultFrequency = String(currentRecord?.review_frequency_days ?? 90)
   const defaultDate      = toDateInput(currentRecord?.date_reviewed ?? null)
-  const defaultEvidence  = currentRecord?.evidence_location   ?? ''
   const defaultNotes     = currentRecord?.notes               ?? ''
 
   // Get today's date as YYYY-MM-DD for the date input max attribute
@@ -160,23 +159,6 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             </p>
           </div>
         )}
-
-        {/* Evidence location */}
-        <div>
-          <label htmlFor="evidence_location" className="block text-sm font-medium text-[#1a1a1a] mb-1">
-            Evidence location
-            <span className="ml-1 text-xs text-gray-600 font-normal">(link, folder path, or physical location)</span>
-            <Tooltip text="Where can your evidence be found? Be as specific as possible — CQC inspectors may ask to see it on the spot. Examples: SharePoint › Policies › Safeguarding 2026, or Blue folder, office filing cabinet, top shelf." />
-          </label>
-          <input
-            type="text"
-            id="evidence_location"
-            name="evidence_location"
-            defaultValue={defaultEvidence}
-            placeholder="e.g. SharePoint › Policies › Safeguarding 2026, or Blue folder, top shelf"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
-          />
-        </div>
 
         {/* Notes */}
         <div>
