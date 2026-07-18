@@ -21,7 +21,7 @@ export default async function TicketThreadPage({ params }: Props) {
 
   const { data: ticket } = await supabase
     .from('support_tickets')
-    .select('id, reference, subject, message, status, created_at, submitted_by')
+    .select('id, reference, subject, message, status, staff_initiated, created_at, submitted_by')
     .eq('id', ticketId)
     .single()
 
@@ -70,10 +70,24 @@ export default async function TicketThreadPage({ params }: Props) {
             {status.label}
           </span>
         </div>
-        <p className="text-xs text-gray-600 mb-4">Submitted {createdAt}</p>
-        <div className="bg-gray-50 rounded-lg p-4 text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">
-          {ticket.message}
-        </div>
+        {!ticket.staff_initiated && (
+          <p className="text-xs text-gray-600 mb-4">Submitted {createdAt}</p>
+        )}
+
+        {ticket.staff_initiated ? (
+          /* Staff-initiated: render opening message as AlwaysReady staff reply */
+          <div className="rounded-lg p-4 bg-[#e6faf8] border border-[#00b8a6]/30">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-semibold text-[#014D4E]">AlwaysReady Support</span>
+              <span className="text-xs text-gray-600">{createdAt}</span>
+            </div>
+            <p className="text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">{ticket.message}</p>
+          </div>
+        ) : (
+          <div className="bg-gray-50 rounded-lg p-4 text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">
+            {ticket.message}
+          </div>
+        )}
       </div>
 
       {/* Replies thread */}

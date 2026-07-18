@@ -581,33 +581,36 @@ export type Database = {
         Row: {
           id: string
           organisation_id: string
-          submitted_by: string
+          submitted_by: string | null
           reference: string
           subject: string
           message: string
           status: 'open' | 'in_progress' | 'resolved'
+          staff_initiated: boolean
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           organisation_id: string
-          submitted_by: string
+          submitted_by?: string | null
           reference?: string
           subject: string
           message: string
           status?: 'open' | 'in_progress' | 'resolved'
+          staff_initiated?: boolean
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           organisation_id?: string
-          submitted_by?: string
+          submitted_by?: string | null
           reference?: string
           subject?: string
           message?: string
           status?: 'open' | 'in_progress' | 'resolved'
+          staff_initiated?: boolean
           created_at?: string
           updated_at?: string
         }

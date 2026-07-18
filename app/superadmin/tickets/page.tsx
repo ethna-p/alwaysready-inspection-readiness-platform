@@ -17,17 +17,27 @@ export default async function SuperadminTicketsPage() {
   const { data: tickets } = await supabase
     .from('support_tickets')
     .select(`
-      id, reference, subject, status, created_at,
+      id, reference, subject, status, staff_initiated, created_at,
       organisations ( name )
     `)
     .order('created_at', { ascending: false })
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-1">Support Tickets</h1>
-      <p className="text-sm text-gray-400 mb-8">
-        All tickets across all organisations.
-      </p>
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">Support Tickets</h1>
+          <p className="text-sm text-gray-400">
+            All tickets across all organisations.
+          </p>
+        </div>
+        <Link
+          href="/superadmin/tickets/new"
+          className="shrink-0 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-[#014D4E] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+        >
+          + New ticket
+        </Link>
+      </div>
 
       {!tickets || tickets.length === 0 ? (
         <p className="text-gray-500 text-sm">No tickets yet.</p>
@@ -57,6 +67,11 @@ export default async function SuperadminTicketsPage() {
                     <p className="text-xs text-gray-500 font-mono">{ticket.reference}</p>
                     <span className="text-xs text-gray-600">·</span>
                     <p className="text-xs text-gray-400">{orgName}</p>
+                    {(ticket as unknown as { staff_initiated: boolean }).staff_initiated && (
+                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[#014D4E]/40 text-[#00b8a6]">
+                        Staff
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm font-semibold text-white truncate">{ticket.subject}</p>
                   <p className="text-xs text-gray-500 mt-1">{created}</p>

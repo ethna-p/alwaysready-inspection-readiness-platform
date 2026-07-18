@@ -27,7 +27,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
   const { data: ticket } = await supabase
     .from('support_tickets')
     .select(`
-      id, reference, subject, message, status, created_at,
+      id, reference, subject, message, status, staff_initiated, created_at,
       organisations ( name ),
       submitted_by
     `)
@@ -42,12 +42,15 @@ export default async function SuperadminTicketPage({ params }: Props) {
     .eq('ticket_id', ticketId)
     .order('created_at', { ascending: true })
 
-  // Fetch submitter name
-  const { data: submitter } = await supabase
-    .from('users')
-    .select('full_name, email')
-    .eq('id', ticket.submitted_by)
-    .single()
+  // Fetch submitter name (only when ticket was submitted by a customer user)
+  const submitter = ticket.submitted_by
+    ? (await supabase
+        .from('users')
+        .select('full_name, email')
+        .eq('id', ticket.submitted_by)
+        .single()
+      ).data
+    : null
 
   const orgName = (ticket as unknown as { organisations: { name: string } | null }).organisations?.name ?? '—'
   const status  = ticket.status
@@ -79,11 +82,22 @@ export default async function SuperadminTicketPage({ params }: Props) {
 
         <dl className="text-xs text-gray-400 space-y-1 mb-4">
           <div className="flex gap-2"><dt className="text-gray-600">Organisation</dt><dd>{orgName}</dd></div>
-          <div className="flex gap-2"><dt className="text-gray-600">Submitted by</dt><dd>{submitter?.full_name ?? submitter?.email ?? ticket.submitted_by}</dd></div>
+          <div className="flex gap-2">
+            <dt className="text-gray-600">Submitted by</dt>
+            <dd>
+              {(ticket as unknown as { staff_initiated: boolean }).staff_initiated
+                ? <span className="text-[#00b8a6]">AlwaysReady (staff-initiated)</span>
+                : submitter?.full_name ?? submitter?.email ?? ticket.submitted_by ?? '—'}
+            </dd>
+          </div>
           <div className="flex gap-2"><dt className="text-gray-600">Submitted</dt><dd>{created}</dd></div>
         </dl>
 
-        <div className="bg-gray-800 rounded-lg p-4 text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">
+        <div className={`rounded-lg p-4 text-sm leading-relaxed whitespace-pre-wrap ${
+          (ticket as unknown as { staff_initiated: boolean }).staff_initiated
+            ? 'bg-[#014D4E]/30 border border-[#00b8a6]/20 text-gray-200'
+            : 'bg-gray-800 text-gray-200'
+        }`}>
           {ticket.message}
         </div>
       </div>
