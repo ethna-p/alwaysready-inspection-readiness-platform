@@ -4,6 +4,7 @@
  * This layout adds a simple top bar so it's clear you're in superadmin mode.
  */
 import Link from 'next/link'
+import IdleTimeout from '@/components/IdleTimeout'
 
 export default function SuperadminLayout({
   children,
@@ -12,6 +13,7 @@ export default function SuperadminLayout({
 }) {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      <IdleTimeout />
       {/* Top bar */}
       <header className="bg-gray-900 border-b border-gray-800 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">

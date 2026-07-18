@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
 import TrialBanner from '@/components/TrialBanner'
+import IdleTimeout from '@/components/IdleTimeout'
 
 export default async function DashboardLayout({
   children,
@@ -50,6 +51,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen flex flex-col bg-[#faf9f6]">
+      <IdleTimeout />
       <SiteHeader isDemo={org?.is_demo ?? false} />
       <TrialBanner
         isDemo={org?.is_demo ?? false}
