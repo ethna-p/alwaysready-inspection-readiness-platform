@@ -133,6 +133,7 @@ export type Database = {
           trial_expires_at: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          holiday_unit: 'days' | 'hours'
           created_at: string
         }
         Insert: {
@@ -146,6 +147,7 @@ export type Database = {
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          holiday_unit?: 'days' | 'hours'
           created_at?: string
         }
         Update: {
@@ -159,6 +161,7 @@ export type Database = {
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          holiday_unit?: 'days' | 'hours'
           created_at?: string
         }
         Relationships: [
@@ -655,6 +658,245 @@ export type Database = {
         ]
       }
 
+      // ── HR Module ─────────────────────────────────────────────────────
+
+      hr_staff_profiles: {
+        Row: {
+          id: string
+          organisation_id: string
+          user_id: string
+          ni_number: string | null
+          job_title: string | null
+          department: string | null
+          employee_type: 'full_time' | 'part_time' | 'zero_hours' | 'bank' | 'agency' | 'volunteer' | null
+          contracted_hours: number | null
+          employment_start: string | null
+          leaving_date: string | null
+          employment_status: 'active' | 'inactive' | 'on_leave'
+          date_of_birth: string | null
+          gender: string | null
+          ethnic_origin: string | null
+          disability: boolean | null
+          marital_status: string | null
+          next_of_kin_name: string | null
+          next_of_kin_phone: string | null
+          dbs_review_date: string | null
+          dbs_next_review_due: string | null
+          dbs_frequency_days: number | null
+          right_to_work_verified: boolean
+          references_obtained: boolean
+          supervision_review_date: string | null
+          supervision_next_due: string | null
+          supervision_frequency_days: number | null
+          appraisal_review_date: string | null
+          appraisal_next_due: string | null
+          appraisal_frequency_days: number | null
+          appraisal_notes: string | null
+          mandatory_training_complete: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          user_id: string
+          ni_number?: string | null
+          job_title?: string | null
+          department?: string | null
+          employee_type?: 'full_time' | 'part_time' | 'zero_hours' | 'bank' | 'agency' | 'volunteer' | null
+          contracted_hours?: number | null
+          employment_start?: string | null
+          leaving_date?: string | null
+          employment_status?: 'active' | 'inactive' | 'on_leave'
+          date_of_birth?: string | null
+          gender?: string | null
+          ethnic_origin?: string | null
+          disability?: boolean | null
+          marital_status?: string | null
+          next_of_kin_name?: string | null
+          next_of_kin_phone?: string | null
+          dbs_review_date?: string | null
+          dbs_next_review_due?: string | null
+          dbs_frequency_days?: number | null
+          right_to_work_verified?: boolean
+          references_obtained?: boolean
+          supervision_review_date?: string | null
+          supervision_next_due?: string | null
+          supervision_frequency_days?: number | null
+          appraisal_review_date?: string | null
+          appraisal_next_due?: string | null
+          appraisal_frequency_days?: number | null
+          appraisal_notes?: string | null
+          mandatory_training_complete?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          user_id?: string
+          ni_number?: string | null
+          job_title?: string | null
+          department?: string | null
+          employee_type?: 'full_time' | 'part_time' | 'zero_hours' | 'bank' | 'agency' | 'volunteer' | null
+          contracted_hours?: number | null
+          employment_start?: string | null
+          leaving_date?: string | null
+          employment_status?: 'active' | 'inactive' | 'on_leave'
+          date_of_birth?: string | null
+          gender?: string | null
+          ethnic_origin?: string | null
+          disability?: boolean | null
+          marital_status?: string | null
+          next_of_kin_name?: string | null
+          next_of_kin_phone?: string | null
+          dbs_review_date?: string | null
+          dbs_next_review_due?: string | null
+          dbs_frequency_days?: number | null
+          right_to_work_verified?: boolean
+          references_obtained?: boolean
+          supervision_review_date?: string | null
+          supervision_next_due?: string | null
+          supervision_frequency_days?: number | null
+          appraisal_review_date?: string | null
+          appraisal_next_due?: string | null
+          appraisal_frequency_days?: number | null
+          appraisal_notes?: string | null
+          mandatory_training_complete?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      hr_training_types: {
+        Row: {
+          id: string
+          organisation_id: string
+          name: string
+          is_mandatory: boolean
+          default_frequency_days: number
+          display_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          name: string
+          is_mandatory?: boolean
+          default_frequency_days?: number
+          display_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          name?: string
+          is_mandatory?: boolean
+          default_frequency_days?: number
+          display_order?: number
+        }
+        Relationships: []
+      }
+
+      hr_training_records: {
+        Row: {
+          id: string
+          organisation_id: string
+          user_id: string
+          training_type_id: string
+          date_completed: string | null
+          next_due: string | null
+          frequency_days: number
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          user_id: string
+          training_type_id: string
+          date_completed?: string | null
+          next_due?: string | null
+          frequency_days?: number
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          date_completed?: string | null
+          next_due?: string | null
+          frequency_days?: number
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      hr_training_certificates: {
+        Row: {
+          id: string
+          organisation_id: string
+          training_record_id: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          mime_type: string | null
+          scan_status: 'pending' | 'clean' | 'infected' | 'error'
+          uploaded_by: string | null
+          uploaded_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          training_record_id: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          mime_type?: string | null
+          scan_status?: 'pending' | 'clean' | 'infected' | 'error'
+          uploaded_by?: string | null
+          uploaded_at?: string
+        }
+        Update: {
+          scan_status?: 'pending' | 'clean' | 'infected' | 'error'
+        }
+        Relationships: []
+      }
+
+      hr_holiday_allowances: {
+        Row: {
+          id: string
+          organisation_id: string
+          user_id: string
+          leave_year_start: string
+          total_allowance: number
+          taken: number
+          carry_over: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          user_id: string
+          leave_year_start: string
+          total_allowance: number
+          taken?: number
+          carry_over?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          total_allowance?: number
+          taken?: number
+          carry_over?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
     }
     Views: Record<string, never>
     Functions: {
@@ -672,6 +914,10 @@ export type Database = {
       }
       cleanup_expired_demo_orgs: {
         Args: Record<string, never>
+        Returns: void
+      }
+      seed_default_training_types: {
+        Args: { p_organisation_id: string }
         Returns: void
       }
     }
@@ -700,3 +946,9 @@ export type SupportTicket          = Database['public']['Tables']['support_ticke
 export type SupportTicketReply     = Database['public']['Tables']['support_ticket_replies']['Row']
 export type SubscriptionTier       = Organisation['subscription_tier']
 export type KloeEvidence           = Database['public']['Tables']['kloe_evidence']['Row']
+export type HrStaffProfile         = Database['public']['Tables']['hr_staff_profiles']['Row']
+export type HrTrainingType         = Database['public']['Tables']['hr_training_types']['Row']
+export type HrTrainingRecord       = Database['public']['Tables']['hr_training_records']['Row']
+export type HrTrainingCertificate  = Database['public']['Tables']['hr_training_certificates']['Row']
+export type HrHolidayAllowance     = Database['public']['Tables']['hr_holiday_allowances']['Row']
+export type HolidayUnit            = Organisation['holiday_unit']
