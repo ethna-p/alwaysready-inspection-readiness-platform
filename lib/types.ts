@@ -189,6 +189,7 @@ export type Database = {
           onboarding_complete: boolean
           personal_email: string | null
           mobile_number: string | null
+          marketing_opt_out: boolean
           created_at: string
         }
         Insert: {
@@ -204,6 +205,7 @@ export type Database = {
           onboarding_complete?: boolean
           personal_email?: string | null
           mobile_number?: string | null
+          marketing_opt_out?: boolean
           created_at?: string
         }
         Update: {
@@ -219,6 +221,7 @@ export type Database = {
           onboarding_complete?: boolean
           personal_email?: string | null
           mobile_number?: string | null
+          marketing_opt_out?: boolean
           created_at?: string
         }
         Relationships: [
