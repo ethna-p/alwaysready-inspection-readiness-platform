@@ -1,21 +1,50 @@
-import { verifyUnsubscribeToken } from '@/lib/unsubscribe-token'
+import { verifyUnsubscribeToken, verifySubscriberToken } from '@/lib/unsubscribe-token'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Image from 'next/image'
 
 interface Props {
-  searchParams: Promise<{ uid?: string; token?: string }>
+  searchParams: Promise<{ uid?: string; email?: string; token?: string }>
 }
 
 export default async function UnsubscribePage({ searchParams }: Props) {
-  const { uid, token } = await searchParams
+  const { uid, email, token } = await searchParams
 
   let status: 'success' | 'already' | 'invalid' = 'invalid'
+  let isBlogSubscriber = false
 
-  if (uid && token && verifyUnsubscribeToken(uid, token)) {
+  if (email && token && verifySubscriberToken(email, token)) {
+    // ── Blog subscriber unsubscribe ──
+    isBlogSubscriber = true
     try {
       const supabase = createAdminClient()
 
-      // Check current state first
+      const { data: subscriber } = await supabase
+        .from('blog_subscribers')
+        .select('unsubscribed_at')
+        .eq('email', email.toLowerCase().trim())
+        .single()
+
+      if (!subscriber) {
+        status = 'invalid'
+      } else if (subscriber.unsubscribed_at) {
+        status = 'already'
+      } else {
+        const { error } = await supabase
+          .from('blog_subscribers')
+          .update({ unsubscribed_at: new Date().toISOString() })
+          .eq('email', email.toLowerCase().trim())
+
+        status = error ? 'invalid' : 'success'
+      }
+    } catch {
+      status = 'invalid'
+    }
+
+  } else if (uid && token && verifyUnsubscribeToken(uid, token)) {
+    // ── Platform user unsubscribe ──
+    try {
+      const supabase = createAdminClient()
+
       const { data: userRow } = await supabase
         .from('users')
         .select('marketing_opt_out')
@@ -40,7 +69,9 @@ export default async function UnsubscribePage({ searchParams }: Props) {
   const messages = {
     success: {
       heading: 'You have been unsubscribed.',
-      body: 'You will no longer receive tips and updates from AlwaysReady. You will still receive important account and billing notices.',
+      body: isBlogSubscriber
+        ? 'You will no longer receive blog updates from AlwaysReady.'
+        : 'You will no longer receive tips and updates from AlwaysReady. You will still receive important account and billing notices.',
     },
     already: {
       heading: 'You are already unsubscribed.',
@@ -48,7 +79,9 @@ export default async function UnsubscribePage({ searchParams }: Props) {
     },
     invalid: {
       heading: 'This link is not valid.',
-      body: 'The unsubscribe link may have expired or already been used. If you continue to receive unwanted emails, please contact us via the Support tab inside the platform.',
+      body: isBlogSubscriber
+        ? 'The unsubscribe link may have expired or already been used. If you continue to receive unwanted emails, please reply to any email from us and ask to be removed.'
+        : 'The unsubscribe link may have expired or already been used. If you continue to receive unwanted emails, please contact us via the Support tab inside the platform.',
     },
   }
 

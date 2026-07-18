@@ -10,24 +10,32 @@ export interface BroadcastResult {
 }
 
 /**
- * Returns the number of eligible broadcast recipients:
- * admin users with real (non-staff) email addresses,
- * in non-demo organisations, who have not opted out.
+ * Returns the total number of eligible broadcast recipients:
+ * - Platform admin users (non-demo orgs, not opted out, real email address)
+ * - Blog subscribers (not unsubscribed)
  */
 export async function getRecipientCount(): Promise<number> {
   const supabase = createAdminClient()
 
-  const { data, error } = await supabase
-    .from('users')
-    .select('id, email, organisations!inner(is_demo)')
-    .eq('role', 'admin')
-    .eq('marketing_opt_out', false)
-    .eq('organisations.is_demo', false)
+  const [usersResult, subscribersResult] = await Promise.all([
+    supabase
+      .from('users')
+      .select('id, email, organisations!inner(is_demo)')
+      .eq('role', 'admin')
+      .eq('marketing_opt_out', false)
+      .eq('organisations.is_demo', false),
+    supabase
+      .from('blog_subscribers')
+      .select('id')
+      .is('unsubscribed_at', null),
+  ])
 
-  if (error || !data) return 0
+  const userCount = (usersResult.data ?? [])
+    .filter(u => !u.email.endsWith('@staff.alwaysready.uk')).length
 
-  // Exclude generated staff placeholder emails
-  return data.filter(u => !u.email.endsWith('@staff.alwaysready.uk')).length
+  const subscriberCount = (subscribersResult.data ?? []).length
+
+  return userCount + subscriberCount
 }
 
 /**
@@ -48,18 +56,27 @@ export async function sendBroadcast(
 
   const supabase = createAdminClient()
 
-  const { data, error } = await supabase
-    .from('users')
-    .select('id, email, full_name, organisations!inner(is_demo)')
-    .eq('role', 'admin')
-    .eq('marketing_opt_out', false)
-    .eq('organisations.is_demo', false)
+  const [usersResult, subscribersResult] = await Promise.all([
+    supabase
+      .from('users')
+      .select('id, email, full_name, organisations!inner(is_demo)')
+      .eq('role', 'admin')
+      .eq('marketing_opt_out', false)
+      .eq('organisations.is_demo', false),
+    supabase
+      .from('blog_subscribers')
+      .select('id, email, full_name')
+      .is('unsubscribed_at', null),
+  ])
 
-  if (error || !data) {
+  if (usersResult.error) {
     return { sent: 0, skipped: 0, error: 'Failed to fetch recipients.' }
   }
 
-  const recipients = data.filter(u => !u.email.endsWith('@staff.alwaysready.uk'))
+  const userRecipients = (usersResult.data ?? [])
+    .filter(u => !u.email.endsWith('@staff.alwaysready.uk'))
+
+  const subscriberRecipients = subscribersResult.data ?? []
 
   // Convert newlines in intro to <p> tags
   const introHtml = intro
@@ -80,9 +97,10 @@ export async function sendBroadcast(
   let sent = 0
   let skipped = 0
 
-  for (const recipient of recipients) {
+  // ── Platform users ──
+  for (const recipient of userRecipients) {
     const firstName = recipient.full_name?.split(' ')[0] ?? null
-    const greeting = firstName ? `Dear ${firstName},` : 'Dear AlwaysReady customer,'
+    const greeting  = firstName ? `Dear ${firstName},` : 'Dear AlwaysReady customer,'
 
     const result = await sendEmail({
       to: recipient.email,
@@ -92,11 +110,23 @@ export async function sendBroadcast(
       userId: recipient.id,
     })
 
-    if (result.sent) {
-      sent++
-    } else {
-      skipped++
-    }
+    if (result.sent) sent++; else skipped++
+  }
+
+  // ── Blog subscribers ──
+  for (const subscriber of subscriberRecipients) {
+    const firstName = subscriber.full_name?.split(' ')[0] ?? null
+    const greeting  = firstName ? `Dear ${firstName},` : 'Dear reader,'
+
+    const result = await sendEmail({
+      to: subscriber.email,
+      subject,
+      bodyHtml: `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${greeting}</p>${bodyHtml}`,
+      type: 'marketing',
+      subscriberEmail: subscriber.email,
+    })
+
+    if (result.sent) sent++; else skipped++
   }
 
   return { sent, skipped }

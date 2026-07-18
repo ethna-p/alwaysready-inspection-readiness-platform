@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { buildUnsubscribeUrl } from '@/lib/unsubscribe-token'
+import { buildUnsubscribeUrl, buildSubscriberUnsubscribeUrl } from '@/lib/unsubscribe-token'
 
 /**
  * Email types.
@@ -23,10 +23,17 @@ export interface SendEmailOptions {
   type: EmailType
   /**
    * The Supabase user ID of the recipient.
-   * Required for marketing emails so we can check marketing_opt_out
-   * and generate the unsubscribe link.
+   * Required for marketing emails to platform users (checks marketing_opt_out).
+   * Not used for blog subscriber emails — use subscriberEmail instead.
    */
   userId?: string
+  /**
+   * The email address of a blog subscriber (not a platform user).
+   * When set, skips the users table opt-out check (caller already filtered
+   * by unsubscribed_at IS NULL) and generates a subscriber unsubscribe URL.
+   * Mutually exclusive with userId.
+   */
+  subscriberEmail?: string
 }
 
 export interface SendEmailResult {
@@ -42,10 +49,11 @@ const LOGO_SVG = `
   <text x="54" y="32" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#00b8a6" letter-spacing="-0.3">AlwaysReady</text>
 </svg>`
 
-function buildHtml(bodyHtml: string, unsubscribeUrl?: string): string {
+function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: string): string {
+  const note = footerNote ?? 'You are receiving this email because you have an active AlwaysReady account.'
   const unsubscribeFooter = unsubscribeUrl
     ? `<p style="margin:12px 0 0;font-size:12px;color:#888">
-         You are receiving this email because you have an active AlwaysReady account.
+         ${note}
          <a href="${unsubscribeUrl}" style="color:#014D4E">Unsubscribe</a> from non-essential emails.
        </p>`
     : ''
@@ -108,35 +116,47 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
 
   // --- Marketing opt-out check ---
   if (opts.type === 'marketing') {
-    if (!opts.userId) {
-      console.warn('[email] marketing email sent without userId — cannot check opt-out. Skipping.')
+    if (opts.subscriberEmail) {
+      // Blog subscriber path: caller already filtered by unsubscribed_at IS NULL,
+      // so no further opt-out check needed here.
+    } else if (!opts.userId) {
+      console.warn('[email] marketing email sent without userId or subscriberEmail — cannot check opt-out. Skipping.')
       return { sent: false, skipped: 'opted_out' }
-    }
+    } else {
+      // Platform user path: check marketing_opt_out in users table
+      try {
+        const supabase = createAdminClient()
+        const { data } = await supabase
+          .from('users')
+          .select('marketing_opt_out')
+          .eq('id', opts.userId)
+          .single()
 
-    try {
-      const supabase = createAdminClient()
-      const { data } = await supabase
-        .from('users')
-        .select('marketing_opt_out')
-        .eq('id', opts.userId)
-        .single()
-
-      if (data?.marketing_opt_out) {
-        return { sent: false, skipped: 'opted_out' }
+        if (data?.marketing_opt_out) {
+          return { sent: false, skipped: 'opted_out' }
+        }
+      } catch (err) {
+        console.error('[email] opt-out check failed:', err)
+        // Fail safe — do not send if we cannot confirm opt-out status
+        return { sent: false, error: 'Opt-out check failed.' }
       }
-    } catch (err) {
-      console.error('[email] opt-out check failed:', err)
-      // Fail safe — do not send if we cannot confirm opt-out status
-      return { sent: false, error: 'Opt-out check failed.' }
     }
   }
 
   // --- Build HTML ---
-  const unsubscribeUrl = opts.type === 'marketing' && opts.userId
-    ? buildUnsubscribeUrl(opts.userId)
-    : undefined
+  let unsubscribeUrl: string | undefined
+  let footerNote: string | undefined
 
-  const html = buildHtml(opts.bodyHtml, unsubscribeUrl)
+  if (opts.type === 'marketing') {
+    if (opts.subscriberEmail) {
+      unsubscribeUrl = buildSubscriberUnsubscribeUrl(opts.subscriberEmail)
+      footerNote = 'You are receiving this because you signed up for the AlwaysReady blog.'
+    } else if (opts.userId) {
+      unsubscribeUrl = buildUnsubscribeUrl(opts.userId)
+    }
+  }
+
+  const html = buildHtml(opts.bodyHtml, unsubscribeUrl, footerNote)
 
   // --- Build headers ---
   const headers: Record<string, string> = {}

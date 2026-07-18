@@ -664,6 +664,36 @@ export type Database = {
         ]
       }
 
+      // ── Blog subscribers ───────────────────────────────────────────────
+
+      blog_subscribers: {
+        Row: {
+          id: string
+          email: string
+          full_name: string | null
+          source: string
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          id?: string
+          email: string
+          full_name?: string | null
+          source?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          id?: string
+          email?: string
+          full_name?: string | null
+          source?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
+
       // ── HR Module ─────────────────────────────────────────────────────
 
       hr_staff_profiles: {
