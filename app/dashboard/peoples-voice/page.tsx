@@ -65,7 +65,7 @@ export default async function PeoplesVoicePage() {
   const unassessed = total - (evidenceRows ?? []).filter(e => e.confidence !== 'not_assessed').length
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
+    <div className="space-y-8">
 
       {/* Page header */}
       <div>
