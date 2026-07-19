@@ -12,10 +12,10 @@ export default function SuperadminLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-[#faf9f6] text-[#1a1a1a]">
       <IdleTimeout />
       {/* Top bar */}
-      <header className="bg-gray-900 border-b border-gray-800 px-6 py-3 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <span className="font-extrabold tracking-tight text-[#00b8a6]">
             AlwaysReady
@@ -24,21 +24,21 @@ export default function SuperadminLayout({
             Superadmin
           </span>
         </div>
-        <nav className="flex items-center gap-6 text-sm text-gray-400">
-          <Link href="/superadmin/provision" className="hover:text-white transition-colors">
+        <nav className="flex items-center gap-6 text-sm text-gray-500">
+          <Link href="/superadmin/provision" className="hover:text-[#014D4E] transition-colors">
             Provision
           </Link>
-          <Link href="/superadmin/tickets" className="hover:text-white transition-colors">
+          <Link href="/superadmin/tickets" className="hover:text-[#014D4E] transition-colors">
             Support Tickets
           </Link>
-          <Link href="/superadmin/broadcast" className="hover:text-white transition-colors">
+          <Link href="/superadmin/broadcast" className="hover:text-[#014D4E] transition-colors">
             Broadcast
           </Link>
-          <Link href="/dashboard" className="hover:text-white transition-colors">
+          <Link href="/dashboard" className="hover:text-[#014D4E] transition-colors">
             ← Dashboard
           </Link>
           <form action="/auth/signout" method="POST">
-            <button type="submit" className="hover:text-white transition-colors">
+            <button type="submit" className="hover:text-[#014D4E] transition-colors">
               Sign out
             </button>
           </form>

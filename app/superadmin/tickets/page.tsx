@@ -6,9 +6,9 @@ import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 const STATUS_LABELS: Record<string, { label: string; colour: string }> = {
-  open:        { label: 'Open',        colour: 'bg-blue-500/20 text-blue-300' },
-  in_progress: { label: 'In progress', colour: 'bg-amber-500/20 text-amber-300' },
-  resolved:    { label: 'Resolved',    colour: 'bg-green-500/20 text-green-300' },
+  open:        { label: 'Open',        colour: 'bg-blue-100 text-blue-700' },
+  in_progress: { label: 'In progress', colour: 'bg-amber-100 text-amber-700' },
+  resolved:    { label: 'Resolved',    colour: 'bg-green-100 text-green-700' },
 }
 
 export default async function SuperadminTicketsPage() {
@@ -27,8 +27,8 @@ export default async function SuperadminTicketsPage() {
     <div>
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Support Tickets</h1>
-          <p className="text-sm text-gray-400">
+          <h1 className="text-2xl font-bold text-[#1a1a1a] mb-1">Support Tickets</h1>
+          <p className="text-sm text-gray-500">
             All tickets across all organisations.
           </p>
         </div>
@@ -65,7 +65,7 @@ export default async function SuperadminTicketsPage() {
                 href={`/superadmin/tickets/${ticket.id}`}
                 className="
                   flex items-center justify-between gap-4
-                  bg-gray-900 border border-gray-800 rounded-xl
+                  bg-white border border-gray-200 rounded-xl
                   px-5 py-4
                   hover:border-[#00b8a6]
                   focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
@@ -75,20 +75,20 @@ export default async function SuperadminTicketsPage() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <p className="text-xs text-gray-500 font-mono">{ticket.reference}</p>
-                    <span className="text-xs text-gray-600">·</span>
-                    <p className="text-xs text-gray-400">{orgName}</p>
+                    <span className="text-xs text-gray-400">·</span>
+                    <p className="text-xs text-gray-500">{orgName}</p>
                     {t.staff_initiated && (
                       <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[#014D4E]/40 text-[#00b8a6]">
                         Staff
                       </span>
                     )}
                     {isWebsite && (
-                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">
+                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
                         Website
                       </span>
                     )}
                   </div>
-                  <p className="text-sm font-semibold text-white truncate">{ticket.subject}</p>
+                  <p className="text-sm font-semibold text-[#1a1a1a] truncate">{ticket.subject}</p>
                   <p className="text-xs text-gray-500 mt-1">{created}</p>
                 </div>
                 <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${status.colour}`}>

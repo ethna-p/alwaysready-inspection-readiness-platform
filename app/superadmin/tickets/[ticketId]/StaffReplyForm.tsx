@@ -29,7 +29,7 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
   return (
     <div className="space-y-6">
       {/* Status controls */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
         <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Update status</p>
         <div className="flex gap-2 flex-wrap">
           {STATUS_OPTIONS.map(opt => (
@@ -43,7 +43,7 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
                   focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
                   ${opt.value === currentStatus
                     ? 'bg-[#00b8a6] text-white cursor-default'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-[#1a1a1a]'
                   }
                 `}
               >
@@ -55,11 +55,11 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
       </div>
 
       {/* Reply form */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+      <div className="bg-white border border-gray-200 rounded-xl p-5">
         <p className="text-xs text-gray-500 uppercase tracking-wide mb-4">Reply to customer</p>
 
         {state.status === 'error' && (
-          <div className="bg-red-900/40 border border-red-600 rounded-lg p-3 text-sm text-red-300 mb-4">
+          <div className="bg-red-50 border border-red-300 rounded-lg p-3 text-sm text-red-700 mb-4">
             {state.message}
           </div>
         )}
@@ -71,8 +71,8 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
             rows={6}
             placeholder="Type your reply here…"
             className="
-              w-full bg-gray-800 border border-gray-700 rounded-lg
-              px-4 py-3 text-sm text-white placeholder-gray-500
+              w-full bg-white border border-gray-300 rounded-lg
+              px-4 py-3 text-sm text-[#1a1a1a] placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               resize-y
             "
@@ -84,7 +84,7 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
               bg-[#00b8a6] text-white font-semibold text-sm
               px-5 py-2.5 rounded-lg
               hover:bg-[#009d8e]
-              focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2 focus:ring-offset-gray-900
+              focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2 focus:ring-offset-white
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors
             "
