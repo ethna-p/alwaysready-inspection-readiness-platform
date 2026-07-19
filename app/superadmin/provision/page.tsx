@@ -55,6 +55,12 @@ export default function ProvisionPage() {
             Send the admin their email and password. They will be prompted to set
             preferences on first login.
           </p>
+          <a
+            href="/superadmin/provision"
+            className="inline-block mt-4 text-sm font-semibold text-[#014D4E] hover:underline"
+          >
+            + Add another provider
+          </a>
         </div>
       )}
 
