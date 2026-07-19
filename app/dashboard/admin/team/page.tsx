@@ -66,7 +66,7 @@ export default async function TeamPage() {
           {members.length === 0 ? (
             <p className="text-sm text-gray-600">No team members yet. Add your first below.</p>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">

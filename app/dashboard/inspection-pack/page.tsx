@@ -269,6 +269,7 @@ export default async function InspectionPackPage() {
             Summary by Key Question
           </h2>
 
+          <div className="overflow-x-auto print:overflow-visible">
           <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden print:border print:border-gray-300">
             <thead>
               <tr className="bg-[#014D4E] text-white">
@@ -319,6 +320,7 @@ export default async function InspectionPackPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </section>
 
         {/* ── Full KLOE detail — one section per key question ───────────── */}
@@ -350,6 +352,7 @@ export default async function InspectionPackPage() {
               </div>
 
               {/* KLOE table */}
+              <div className="overflow-x-auto print:overflow-visible">
               <table className="w-full text-xs border border-gray-200 print:border-gray-300">
                 <thead>
                   <tr className="bg-gray-50 print:bg-gray-100 border-b border-gray-200">
@@ -433,6 +436,7 @@ export default async function InspectionPackPage() {
                   })}
                 </tbody>
               </table>
+              </div>
             </section>
           ))}
         </div>

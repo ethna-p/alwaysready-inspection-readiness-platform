@@ -253,7 +253,7 @@ function ReportTable({
   kloById: Map<string, KloItem>
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">

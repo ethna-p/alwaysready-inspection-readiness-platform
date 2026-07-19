@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import SignOutButton from './SignOutButton'
+import MobileNav from './MobileNav'
 
 export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean }) {
   const supabase = await createClient()
@@ -124,8 +125,11 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           </a>
         </nav>
 
-        {/* Sign out */}
-        <SignOutButton />
+        {/* Desktop: sign out | Mobile: hamburger */}
+        <div className="flex items-center gap-3">
+          <SignOutButton />
+          <MobileNav isAdmin={isAdmin} isDemo={isDemo} hasUnread={hasUnread} />
+        </div>
       </div>
     </header>
   )
