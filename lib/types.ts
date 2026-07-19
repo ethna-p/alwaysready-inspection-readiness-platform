@@ -175,6 +175,36 @@ export type Database = {
         ]
       }
 
+      organisation_sub_services: {
+        Row: {
+          id: string
+          organisation_id: string
+          sub_service: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          sub_service: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          sub_service?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'organisation_sub_services_organisation_id_fkey'
+            columns: ['organisation_id']
+            isOneToOne: false
+            referencedRelation: 'organisations'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
       users: {
         Row: {
           id: string
@@ -1061,6 +1091,7 @@ export type PriorityHistory         = Database['public']['Tables']['priority_his
 
 export type UserRole         = User['role']
 export type ComplianceStatus = ComplianceRecord['status']
+export type OrganisationSubService = Database['public']['Tables']['organisation_sub_services']['Row']
 export type KloChecklistItem       = Database['public']['Tables']['klo_checklist_items']['Row']
 export type KloChecklistCompletion = Database['public']['Tables']['klo_checklist_completions']['Row']
 export type SupportTicket          = Database['public']['Tables']['support_tickets']['Row']
