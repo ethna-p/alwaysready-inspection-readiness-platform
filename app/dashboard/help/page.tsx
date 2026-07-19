@@ -310,10 +310,6 @@ export default function HelpPage() {
               answer="No. The audit trail is permanent and cannot be altered or deleted. This is by design — it protects the service by proving that records are genuine and have not been tampered with. If you make a mistake, simply save a corrected update and it will appear as the latest entry."
             />
             <FAQ
-              question="Why can I only see certain KLOEs?"
-              answer="AlwaysReady shows you only the KLOEs that apply to your service type. This keeps your tracker focused and avoids confusion. If you think a KLOE is missing or has been incorrectly filtered for your service, contact your admin."
-            />
-            <FAQ
               question="Who can see my updates?"
               answer="All admins in your organisation can see all updates. Staff can view all KLOEs but can only edit the ones assigned to them. Visitors can read everything but cannot change anything. Nobody outside your organisation can see your data."
             />
@@ -335,7 +331,7 @@ export default function HelpPage() {
             />
             <FAQ
               question="What should I do if something looks wrong in the system?"
-              answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin can contact AlwaysReady support at hello@alwaysready.uk."
+              answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin should raise a support ticket using the Support link in the navigation bar."
             />
           </div>
         </Section>
