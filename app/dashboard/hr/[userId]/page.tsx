@@ -94,7 +94,7 @@ export default async function HrStaffDetailPage({
   }
 
   return (
-    <div className="max-w-3xl">
+    <div>
       {/* Back link */}
       <Link
         href="/dashboard/hr"

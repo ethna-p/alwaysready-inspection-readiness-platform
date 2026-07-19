@@ -171,7 +171,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       {/* ── Employment ─────────────────────────────────────────────────── */}
       <section className="bg-white rounded-xl border border-gray-200 p-6">
         <SectionHeading title="Employment" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="NI Number">
             <input className={inputClass} value={niNumber} onChange={e => setNiNumber(e.target.value)} placeholder="e.g. AB123456C" />
           </Field>
@@ -217,7 +217,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
           title="Personal Information"
           subtitle="Held for equality monitoring under the Equality Act 2010. Access is restricted to admin users only."
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Date of Birth">
             <input className={inputClass} type="date" value={dob} onChange={e => setDob(e.target.value)} />
           </Field>
@@ -287,7 +287,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       {/* ── Emergency Contact ──────────────────────────────────────────── */}
       <section className="bg-white rounded-xl border border-gray-200 p-6">
         <SectionHeading title="Emergency Contact" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Next of Kin Name">
             <input className={inputClass} value={nokName} onChange={e => setNokName(e.target.value)} placeholder="Full name" />
           </Field>
@@ -300,7 +300,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       {/* ── Compliance ─────────────────────────────────────────────────── */}
       <section className="bg-white rounded-xl border border-gray-200 p-6">
         <SectionHeading title="Compliance" subtitle="DBS, right to work, and references" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <Field label="DBS Check Date">
             <input
               className={inputClass}
@@ -364,7 +364,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       {/* ── Supervision ────────────────────────────────────────────────── */}
       <section className="bg-white rounded-xl border border-gray-200 p-6">
         <SectionHeading title="Supervision" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Last Supervision Date">
             <input
               className={inputClass}
@@ -401,7 +401,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       {/* ── Appraisal ──────────────────────────────────────────────────── */}
       <section className="bg-white rounded-xl border border-gray-200 p-6">
         <SectionHeading title="Appraisal" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <Field label="Last Appraisal Date">
             <input
               className={inputClass}
