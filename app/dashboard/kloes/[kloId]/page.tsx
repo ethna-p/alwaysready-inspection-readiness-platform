@@ -99,14 +99,29 @@ export default async function KloeDetailPage({ params }: Props) {
     (org as unknown as { service_types: { name: string } | null })?.service_types?.name ?? ''
   const isDualReg = orgServiceTypeName === 'Dual-Registered Care Home'
 
+  // ── Fetch this org's enabled sub-services ────────────────────────────────
+  const { data: subServiceRows } = await supabase
+    .from('organisation_sub_services')
+    .select('sub_service')
+    .eq('organisation_id', profile.organisation_id)
+  const enabledSubServices = (subServiceRows ?? []).map(r => r.sub_service)
+
   // ── Fetch checklist items for this KLOE + this org's service type ────────
   let checklistItems: ItemWithCompletion[] = []
   if (org?.service_type_id) {
+    // Build sub-service filter:
+    // Always include Core items (sub_service IS NULL).
+    // Also include items for any sub-service the org has opted into.
+    const subServiceFilter = enabledSubServices.length > 0
+      ? `sub_service.is.null,sub_service.in.(${enabledSubServices.join(',')})`
+      : 'sub_service.is.null'
+
     const { data: ciRows } = await supabase
       .from('klo_checklist_items')
       .select('*')
       .eq('klo_item_id', kloId)
       .or(`service_type_id.eq.${org.service_type_id},service_type_id.is.null`)
+      .or(subServiceFilter)
       .order('display_order', { ascending: true })
 
     if (ciRows && ciRows.length > 0) {

@@ -4,6 +4,41 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
+// ── Sub-services ──────────────────────────────────────────────────────────────
+
+export async function toggleSubService(
+  subService: string,
+  enable: boolean
+): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { data: profile } = await supabase
+    .from('users')
+    .select('organisation_id, role')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || profile.role !== 'admin') return
+
+  if (enable) {
+    await supabase
+      .from('organisation_sub_services')
+      .insert({ organisation_id: profile.organisation_id, sub_service: subService })
+      .select()
+  } else {
+    await supabase
+      .from('organisation_sub_services')
+      .delete()
+      .eq('organisation_id', profile.organisation_id)
+      .eq('sub_service', subService)
+  }
+
+  revalidatePath('/dashboard/account')
+  revalidatePath('/dashboard/kloes')
+}
+
 export type ChangePasswordResult =
   | { success: true }
   | { success: false; error: string }
