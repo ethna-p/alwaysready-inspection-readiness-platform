@@ -157,6 +157,17 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
         </div>
       )}
 
+      {/* Save — top */}
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={isPending}
+          className="rounded-lg bg-[#014D4E] text-white text-sm font-semibold px-6 py-2.5 hover:bg-[#013a3b] disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]"
+        >
+          {isPending ? 'Saving…' : 'Save staff record'}
+        </button>
+      </div>
+
       {/* ── Employment ─────────────────────────────────────────────────── */}
       <section className="bg-white rounded-xl border border-gray-200 p-6">
         <SectionHeading title="Employment" />
