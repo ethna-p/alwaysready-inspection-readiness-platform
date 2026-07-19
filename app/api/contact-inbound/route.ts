@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON.' }, { status: 400, headers })
   }
 
-  const { name, email, message } = body as Record<string, unknown>
+  const { name, email, subject, message, blogSignup } = body as Record<string, unknown>
 
   // ── Validate ────────────────────────────────────────────────────────────────
   if (!name || typeof name !== 'string' || !name.trim()) {
@@ -50,17 +50,22 @@ export async function POST(req: NextRequest) {
   if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400, headers })
   }
+  if (!subject || typeof subject !== 'string' || !subject.trim()) {
+    return NextResponse.json({ error: 'Subject is required.' }, { status: 400, headers })
+  }
   if (!message || typeof message !== 'string' || !message.trim()) {
     return NextResponse.json({ error: 'Message is required.' }, { status: 400, headers })
   }
 
   const cleanName    = name.trim()
   const cleanEmail   = email.trim().toLowerCase()
+  const cleanSubject = subject.trim()
   const cleanMessage = message.trim()
+  const wantsBlog    = blogSignup === true || blogSignup === 'true'
 
-  // ── Create ticket ────────────────────────────────────────────────────────────
   const supabase = createAdminClient()
 
+  // ── Create ticket ────────────────────────────────────────────────────────────
   const { error } = await supabase
     .from('support_tickets')
     .insert({
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
       source:          'website',
       external_name:   cleanName,
       external_email:  cleanEmail,
-      subject:         `Website enquiry from ${cleanName}`,
+      subject:         cleanSubject,
       message:         cleanMessage,
       status:          'open',
     })
@@ -78,6 +83,25 @@ export async function POST(req: NextRequest) {
   if (error) {
     console.error('[contact-inbound] insert error:', error.message)
     return NextResponse.json({ error: 'Could not submit your enquiry. Please try again.' }, { status: 500, headers })
+  }
+
+  // ── Blog subscriber signup (if checkbox ticked) ───────────────────────────
+  if (wantsBlog) {
+    const { error: subError } = await supabase
+      .from('blog_subscribers')
+      .upsert(
+        {
+          email:            cleanEmail,
+          full_name:        cleanName,
+          source:           'contact_form',
+          unsubscribed_at:  null,   // re-activate if previously unsubscribed
+        },
+        { onConflict: 'email' }
+      )
+    if (subError) {
+      console.error('[contact-inbound] blog subscriber upsert error:', subError.message)
+      // Non-fatal — ticket was already created successfully
+    }
   }
 
   return NextResponse.json({ success: true }, { status: 200, headers })

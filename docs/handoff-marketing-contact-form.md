@@ -13,10 +13,12 @@ Content-Type: application/json
 ```
 
 ## Required fields
-The form must send three fields:
+The form must send four fields, plus one optional:
 - `name` — the sender's full name
 - `email` — the sender's email address
+- `subject` — whatever the sender types in the Subject field
 - `message` — their message
+- `blogSignup` — boolean (`true` / `false`); set to `true` if the blog signup checkbox is ticked. When true, the sender is also added to the blog_subscribers table automatically.
 
 ## Recommended implementation
 Use a `fetch` call so the page does not navigate away on submission. Replace the existing form submit handler with something like this:
