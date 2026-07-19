@@ -375,6 +375,21 @@ Inspector accounts expire automatically when their duration window closes. The s
 
 ---
 
+## Customer Support Protocol
+
+**Convention (agreed July 2026):** all customer support is conducted via screen share (Teams or Google Meet). AJ joins the call, observes the customer's screen, diagnoses the issue, and then makes any required changes through Claude — not directly in the customer's session.
+
+**Why this matters:**
+- Changes go through the normal build-and-test flow rather than being ad-hoc edits that could break something
+- The audit trail remains accurate — no compliance record is ever attributed to the wrong user
+- The customer retains full control of their own session throughout the call
+
+**"View as admin"** (`/superadmin/organisations`) is still useful in this workflow — use it to verify what the customer's dashboard looks like before and after a fix, without needing them still on the call.
+
+**Rule:** never make changes to a customer's data or KLOEs while impersonating their admin account. If a data correction is needed, do it via Claude (which will be tested and version-controlled) or directly via the Supabase dashboard with a clear note of what was changed and why.
+
+---
+
 ## Recommended Build Order
 
 1. `organisations` + `users` + auth

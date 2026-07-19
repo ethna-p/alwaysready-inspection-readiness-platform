@@ -25,6 +25,9 @@ export default function SuperadminLayout({
           </span>
         </div>
         <nav className="flex items-center gap-6 text-sm text-gray-500">
+          <Link href="/superadmin/organisations" className="hover:text-[#014D4E] transition-colors">
+            Organisations
+          </Link>
           <Link href="/superadmin/provision" className="hover:text-[#014D4E] transition-colors">
             Provision
           </Link>

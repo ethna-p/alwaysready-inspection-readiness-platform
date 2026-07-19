@@ -703,6 +703,82 @@ export type Database = {
         Relationships: []
       }
 
+      // ── People's Voice ───────────────────────────────────────────────
+
+      i_statements: {
+        Row: {
+          id: string
+          key_question: string
+          statement_order: number
+          statement_text: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          key_question: string
+          statement_order: number
+          statement_text: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          key_question?: string
+          statement_order?: number
+          statement_text?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+
+      i_statement_evidence: {
+        Row: {
+          id: string
+          organisation_id: string
+          i_statement_id: string
+          confidence: 'green' | 'amber' | 'red' | 'not_assessed'
+          evidence_summary: string | null
+          action_needed: string | null
+          last_updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          i_statement_id: string
+          confidence?: 'green' | 'amber' | 'red' | 'not_assessed'
+          evidence_summary?: string | null
+          action_needed?: string | null
+          last_updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          i_statement_id?: string
+          confidence?: 'green' | 'amber' | 'red' | 'not_assessed'
+          evidence_summary?: string | null
+          action_needed?: string | null
+          last_updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'i_statement_evidence_organisation_id_fkey'
+            columns: ['organisation_id']
+            isOneToOne: false
+            referencedRelation: 'organisations'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'i_statement_evidence_i_statement_id_fkey'
+            columns: ['i_statement_id']
+            isOneToOne: false
+            referencedRelation: 'i_statements'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
       // ── HR Module ─────────────────────────────────────────────────────
 
       hr_staff_profiles: {
@@ -997,3 +1073,6 @@ export type HrTrainingRecord       = Database['public']['Tables']['hr_training_r
 export type HrTrainingCertificate  = Database['public']['Tables']['hr_training_certificates']['Row']
 export type HrHolidayAllowance     = Database['public']['Tables']['hr_holiday_allowances']['Row']
 export type HolidayUnit            = Organisation['holiday_unit']
+export type IStatement             = Database['public']['Tables']['i_statements']['Row']
+export type IStatementEvidence     = Database['public']['Tables']['i_statement_evidence']['Row']
+export type IStatementConfidence   = IStatementEvidence['confidence']

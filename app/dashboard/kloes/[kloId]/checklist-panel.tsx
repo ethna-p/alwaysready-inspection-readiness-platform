@@ -43,7 +43,7 @@ function RegBadge({ reg }: { reg: string | null }) {
   )
 }
 
-function RefBadge({ ref: itemRef, itemType }: { ref: string; itemType: string }) {
+function RefBadge({ displayOrder, itemType }: { displayOrder: number; itemType: string }) {
   const isDementia = itemType === 'Dementia Care'
   return (
     <span className={`
@@ -53,7 +53,7 @@ function RefBadge({ ref: itemRef, itemType }: { ref: string; itemType: string })
         : 'bg-[#e6f7f5] text-[#014D4E]'
       }
     `}>
-      {itemRef}
+      K{displayOrder}
     </span>
   )
 }
@@ -126,7 +126,7 @@ function ChecklistItemRow({
       <div className="flex-1 min-w-0 space-y-1.5">
         {/* Top row: ref + text + regulation */}
         <div className="flex flex-wrap items-start gap-2">
-          <RefBadge ref={item.ref} itemType={item.item_type} />
+          <RefBadge displayOrder={item.display_order} itemType={item.item_type} />
           <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-gray-600' : 'text-[#1a1a1a]'}`}>
             {item.checklist_item}
           </p>

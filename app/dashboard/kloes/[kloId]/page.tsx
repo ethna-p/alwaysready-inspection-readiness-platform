@@ -296,9 +296,13 @@ export default async function KloeDetailPage({ params }: Props) {
             <h2 id="checklist-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
               Compliance checklist
             </h2>
-            <p className="text-xs text-gray-600 mb-4">
+            <p className="text-xs text-gray-600 mb-1">
               Tick each item as your team gathers the required evidence. This does not affect the RAG status — that reflects
-              how recently this KLOE was reviewed, not checklist completion.
+              how recently this KLOE was formally reviewed, not checklist completion.
+            </p>
+            <p className="text-xs text-gray-500 mb-4 italic">
+              CQC does not publish a prescribed list of evidence types. The evidence suggestions shown here are derived from
+              the evidence statements published by CQC and are intended to guide your preparation — they are not CQC requirements.
             </p>
             <ChecklistPanel
               items={checklistItems}
