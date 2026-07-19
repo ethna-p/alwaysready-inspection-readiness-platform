@@ -580,37 +580,46 @@ export type Database = {
       support_tickets: {
         Row: {
           id: string
-          organisation_id: string
+          organisation_id: string | null
           submitted_by: string | null
           reference: string
           subject: string
           message: string
           status: 'open' | 'in_progress' | 'resolved'
           staff_initiated: boolean
+          source: string
+          external_email: string | null
+          external_name: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          organisation_id: string
+          organisation_id?: string | null
           submitted_by?: string | null
           reference?: string
           subject: string
           message: string
           status?: 'open' | 'in_progress' | 'resolved'
           staff_initiated?: boolean
+          source?: string
+          external_email?: string | null
+          external_name?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          organisation_id?: string
+          organisation_id?: string | null
           submitted_by?: string | null
           reference?: string
           subject?: string
           message?: string
           status?: 'open' | 'in_progress' | 'resolved'
           staff_initiated?: boolean
+          source?: string
+          external_email?: string | null
+          external_name?: string | null
           created_at?: string
           updated_at?: string
         }

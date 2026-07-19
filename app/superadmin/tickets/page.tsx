@@ -17,7 +17,8 @@ export default async function SuperadminTicketsPage() {
   const { data: tickets } = await supabase
     .from('support_tickets')
     .select(`
-      id, reference, subject, status, staff_initiated, created_at,
+      id, reference, subject, status, staff_initiated, source,
+      external_name, created_at,
       organisations ( name )
     `)
     .order('created_at', { ascending: false })
@@ -45,7 +46,16 @@ export default async function SuperadminTicketsPage() {
         <div className="space-y-3">
           {tickets.map(ticket => {
             const status = STATUS_LABELS[ticket.status] ?? STATUS_LABELS.open
-            const orgName = (ticket as unknown as { organisations: { name: string } | null }).organisations?.name ?? '—'
+            const t = ticket as unknown as {
+              staff_initiated: boolean
+              source: string
+              external_name: string | null
+              organisations: { name: string } | null
+            }
+            const isWebsite = t.source === 'website'
+            const orgName   = isWebsite
+              ? (t.external_name ?? 'Website enquiry')
+              : (t.organisations?.name ?? '—')
             const created = new Date(ticket.created_at).toLocaleDateString('en-GB', {
               day: 'numeric', month: 'short', year: 'numeric',
             })
@@ -67,9 +77,14 @@ export default async function SuperadminTicketsPage() {
                     <p className="text-xs text-gray-500 font-mono">{ticket.reference}</p>
                     <span className="text-xs text-gray-600">·</span>
                     <p className="text-xs text-gray-400">{orgName}</p>
-                    {(ticket as unknown as { staff_initiated: boolean }).staff_initiated && (
+                    {t.staff_initiated && (
                       <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[#014D4E]/40 text-[#00b8a6]">
                         Staff
+                      </span>
+                    )}
+                    {isWebsite && (
+                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">
+                        Website
                       </span>
                     )}
                   </div>

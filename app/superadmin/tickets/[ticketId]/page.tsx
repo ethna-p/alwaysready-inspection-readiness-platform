@@ -27,7 +27,8 @@ export default async function SuperadminTicketPage({ params }: Props) {
   const { data: ticket } = await supabase
     .from('support_tickets')
     .select(`
-      id, reference, subject, message, status, staff_initiated, created_at,
+      id, reference, subject, message, status, staff_initiated, source,
+      external_name, external_email, created_at,
       organisations ( name ),
       submitted_by
     `)
@@ -52,8 +53,18 @@ export default async function SuperadminTicketPage({ params }: Props) {
       ).data
     : null
 
-  const orgName = (ticket as unknown as { organisations: { name: string } | null }).organisations?.name ?? '—'
-  const status  = ticket.status
+  const t         = ticket as unknown as {
+    staff_initiated: boolean
+    source: string
+    external_name: string | null
+    external_email: string | null
+    organisations: { name: string } | null
+  }
+  const isWebsite = t.source === 'website'
+  const orgName   = isWebsite
+    ? (t.external_name ?? 'Website enquiry')
+    : (t.organisations?.name ?? '—')
+  const status    = ticket.status
   const created = new Date(ticket.created_at).toLocaleString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   })
@@ -81,20 +92,40 @@ export default async function SuperadminTicketPage({ params }: Props) {
         </div>
 
         <dl className="text-xs text-gray-400 space-y-1 mb-4">
-          <div className="flex gap-2"><dt className="text-gray-600">Organisation</dt><dd>{orgName}</dd></div>
-          <div className="flex gap-2">
-            <dt className="text-gray-600">Submitted by</dt>
-            <dd>
-              {(ticket as unknown as { staff_initiated: boolean }).staff_initiated
-                ? <span className="text-[#00b8a6]">AlwaysReady (staff-initiated)</span>
-                : submitter?.full_name ?? submitter?.email ?? ticket.submitted_by ?? '—'}
-            </dd>
-          </div>
+          {isWebsite ? (
+            <>
+              <div className="flex gap-2">
+                <dt className="text-gray-600">Source</dt>
+                <dd><span className="font-semibold text-amber-300">Website enquiry</span></dd>
+              </div>
+              <div className="flex gap-2"><dt className="text-gray-600">Name</dt><dd>{t.external_name ?? '—'}</dd></div>
+              <div className="flex gap-2">
+                <dt className="text-gray-600">Email</dt>
+                <dd>
+                  <a href={`mailto:${t.external_email}`} className="text-[#00b8a6] hover:underline">
+                    {t.external_email ?? '—'}
+                  </a>
+                </dd>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex gap-2"><dt className="text-gray-600">Organisation</dt><dd>{orgName}</dd></div>
+              <div className="flex gap-2">
+                <dt className="text-gray-600">Submitted by</dt>
+                <dd>
+                  {t.staff_initiated
+                    ? <span className="text-[#00b8a6]">AlwaysReady (staff-initiated)</span>
+                    : submitter?.full_name ?? submitter?.email ?? ticket.submitted_by ?? '—'}
+                </dd>
+              </div>
+            </>
+          )}
           <div className="flex gap-2"><dt className="text-gray-600">Submitted</dt><dd>{created}</dd></div>
         </dl>
 
         <div className={`rounded-lg p-4 text-sm leading-relaxed whitespace-pre-wrap ${
-          (ticket as unknown as { staff_initiated: boolean }).staff_initiated
+          t.staff_initiated
             ? 'bg-[#014D4E]/30 border border-[#00b8a6]/20 text-gray-200'
             : 'bg-gray-800 text-gray-200'
         }`}>
