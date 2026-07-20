@@ -9,6 +9,11 @@ const AVAILABLE_SUB_SERVICES: { value: string; label: string; description: strin
     label: 'Dementia care',
     description: 'Adds dementia-specific checklist items across all KLOEs, covering behaviour support, MCA/DoLS, life history, adapted activities, dementia-friendly environment, and specialist links.',
   },
+  {
+    value: 'Autism',
+    label: 'Autism support',
+    description: 'Adds autism-specific checklist items across all KLOEs, covering individual autism profiles, sensory needs, communication support, Oliver McGowan training, PBS and restrictive practice governance, and Right Support, Right Care, Right Culture (RSRCC).',
+  },
 ]
 
 interface Props {
