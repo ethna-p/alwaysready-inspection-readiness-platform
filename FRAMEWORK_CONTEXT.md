@@ -14,12 +14,14 @@ This is **not** the Single Assessment Framework (SAF). The SAF is CQC's cross-se
 The authoritative reference for all framework content in this build is:
 
 ```
-REFERENCE/AlwaysReady_CQC_KLOE_KeyQuestion_Mapping.csv
+REFERENCE/CQC_Draft_Assessment_Framework_ASC_v9.docx
 ```
 
-The last row of that CSV explicitly states: *"Adult social care assessment framework – draft1"*
+This is the full, unabridged CQC draft framework document (v9), containing the complete KLOE questions, scope notes, and Outstanding / Good / Requires Improvement / Inadequate rating characteristics for all 24 KLOEs. When there is any doubt about a KLOE title, scope, or rating descriptor, this document is the final word.
 
-No other document, website, or CQC publication should override this file unless AJ explicitly instructs a full framework revision (see Publication Timeline below).
+The CSV file (`REFERENCE/AlwaysReady_CQC_KLOE_KeyQuestion_Mapping.csv`) is a derived summary useful for database seeding, but the .docx is the primary source. If the two ever conflict, the .docx wins.
+
+No other document, website, or CQC publication should override the .docx unless AJ explicitly instructs a full framework revision (see Publication Timeline below).
 
 ---
 

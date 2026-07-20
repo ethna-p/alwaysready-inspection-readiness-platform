@@ -138,7 +138,7 @@ The demo build only needs one of these active/selectable — **confirmed: Reside
 
 **CRITICAL: This platform is built on the CQC Adult Social Care sector-differentiated assessment framework (draft). It is NOT built on the Single Assessment Framework (SAF).** The SAF is CQC's cross-sector framework used for NHS and other providers. Adult social care has its own differentiated framework, and every piece of content in this build must reference only that framework.
 
-The authoritative document is: `REFERENCE/AlwaysReady_CQC_KLOE_KeyQuestion_Mapping.csv` — the final row explicitly states *"Adult social care assessment framework – draft1"*. This is the only document to reference for framework content.
+The authoritative document is: `REFERENCE/CQC_Draft_Assessment_Framework_ASC_v9.docx` — the full, unabridged CQC draft framework (v9) containing all KLOE questions, scope notes, and rating characteristics. This is the final word on any point of framework content. The CSV file in the REFERENCE folder is a useful derived summary for database seeding, but the .docx overrides it if they ever conflict.
 
 For the full correct list of 24 KLOE titles, the 5 key questions, publication timeline, and common error terms to avoid, see `FRAMEWORK_CONTEXT.md` in the project root. That document must be read at the start of any session involving framework content.
 
