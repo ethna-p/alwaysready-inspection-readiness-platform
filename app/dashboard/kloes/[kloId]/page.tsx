@@ -208,15 +208,15 @@ export default async function KloeDetailPage({ params }: Props) {
     ?.key_questions?.name ?? '—'
 
   return (
-    <div>
+    <div className="max-w-4xl">
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
-        <ol className="flex gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
-          <li aria-hidden="true">/</li>
-          <li><Link href="/dashboard/kloes" className="hover:text-[#014D4E] underline">KLOEs</Link></li>
-          <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">{klo.title}</li>
+        <ol className="flex gap-1 min-w-0">
+          <li className="shrink-0"><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li aria-hidden="true" className="shrink-0">/</li>
+          <li className="shrink-0"><Link href="/dashboard/kloes" className="hover:text-[#014D4E] underline">KLOEs</Link></li>
+          <li aria-hidden="true" className="shrink-0">/</li>
+          <li className="text-[#1a1a1a] truncate min-w-0" aria-current="page">{klo.title}</li>
         </ol>
       </nav>
 

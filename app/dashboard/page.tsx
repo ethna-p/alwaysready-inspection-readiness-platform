@@ -178,10 +178,10 @@ export default async function DashboardPage() {
       {/* ── Overall readiness ────────────────────────────────────────────── */}
       <section aria-labelledby="overall-heading" className="mb-8">
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <div className="flex flex-wrap items-center gap-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
 
             {/* Big number */}
-            <div className="text-center min-w-[120px]">
+            <div className="text-center sm:text-left shrink-0">
               <p
                 className="text-6xl font-bold text-[#014D4E] tabular-nums"
                 aria-label={`${overallPct} percent overall readiness`}
@@ -192,7 +192,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* Progress bar + breakdown */}
-            <div className="flex-1 min-w-[220px]">
+            <div className="flex-1 min-w-0">
               <div className="flex justify-between text-xs text-gray-600 mb-1">
                 <span>{compliantKlos} of {totalKlos} KLOEs up to date</span>
                 <span>{overallPct}%</span>

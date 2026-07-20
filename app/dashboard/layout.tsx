@@ -59,7 +59,7 @@ export default async function DashboardLayout({
         subscriptionTier={org?.subscription_tier ?? 'trial'}
         trialExpiresAt={org?.trial_expires_at ?? null}
       />
-      <main className="flex-1 w-full px-6 py-8">
+      <main className="flex-1 w-full px-4 py-6 sm:px-6 sm:py-8">
         {children}
       </main>
       <SiteFooter />
