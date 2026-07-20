@@ -134,7 +134,13 @@ The demo build only needs one of these active/selectable — **confirmed: Reside
 
 ---
 
-## KLOE Structure — Draft Framework Note
+## KLOE Structure — Framework Identity and Draft Status
+
+**CRITICAL: This platform is built on the CQC Adult Social Care sector-differentiated assessment framework (draft). It is NOT built on the Single Assessment Framework (SAF).** The SAF is CQC's cross-sector framework used for NHS and other providers. Adult social care has its own differentiated framework, and every piece of content in this build must reference only that framework.
+
+The authoritative document is: `REFERENCE/AlwaysReady_CQC_KLOE_KeyQuestion_Mapping.csv` — the final row explicitly states *"Adult social care assessment framework – draft1"*. This is the only document to reference for framework content.
+
+For the full correct list of 24 KLOE titles, the 5 key questions, publication timeline, and common error terms to avoid, see `FRAMEWORK_CONTEXT.md` in the project root. That document must be read at the start of any session involving framework content.
 
 CQC's KLOE framework is still in draft as of mid-2026 and won't be finalised until Autumn 2026. The 5 key questions (Safe, Effective, Caring, Responsive, Well-led) are stable; what may still shift is which key question some of the ~24 KLOEs fall under.
 
