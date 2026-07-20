@@ -16,7 +16,7 @@
 | 8 | Supported Living | `20260719000011_supported_living.sql` | ✅ Done |
 | 9 | Specialist College | `20260719000012_specialist_college.sql` | ✅ Done |
 | 10 | Residential Rehabilitation Service | `20260719000013_residential_rehab.sql` | ✅ Done |
-| 11 | Community Drug and Alcohol Service | — | ⬜ To do |
+| 11 | Community Drug and Alcohol Service | `20260719000014_community_drug_alcohol.sql` | ✅ Done |
 
 ## Notes
 
