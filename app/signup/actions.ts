@@ -12,10 +12,14 @@ const SERVICE_TYPES = [
   'Residential Care Home',
   'Nursing Home',
   'Dual-Registered Care Home',
-  'Domiciliary Care',
-  'Supported Living',
+  'ARBD Specialist Care Home',
+  'Homecare Agency',
   'Extra Care Housing',
-  'Shared Lives',
+  'Shared Lives Scheme',
+  'Supported Living',
+  'Specialist College',
+  'Residential Rehabilitation Service',
+  'Community Drug and Alcohol Service',
 ]
 
 export async function signUp(

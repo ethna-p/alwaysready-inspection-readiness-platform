@@ -7,6 +7,14 @@ const ACTIVE_SERVICE_TYPES = [
   'Residential Care Home',
   'Nursing Home',
   'Dual-Registered Care Home',
+  'ARBD Specialist Care Home',
+  'Homecare Agency',
+  'Extra Care Housing',
+  'Shared Lives Scheme',
+  'Supported Living',
+  'Specialist College',
+  'Residential Rehabilitation Service',
+  'Community Drug and Alcohol Service',
 ] as const
 
 export type TrialSignupInput = {

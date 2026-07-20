@@ -17,6 +17,14 @@ const SERVICE_TYPES = [
   'Residential Care Home',
   'Nursing Home',
   'Dual-Registered Care Home',
+  'ARBD Specialist Care Home',
+  'Homecare Agency',
+  'Extra Care Housing',
+  'Shared Lives Scheme',
+  'Supported Living',
+  'Specialist College',
+  'Residential Rehabilitation Service',
+  'Community Drug and Alcohol Service',
 ] as const
 
 const FEATURES = [
@@ -160,9 +168,6 @@ export default function TrialPage() {
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  More service types coming soon.
-                </p>
               </div>
 
               {/* Divider */}
