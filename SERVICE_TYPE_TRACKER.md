@@ -13,9 +13,9 @@
 | 5 | Homecare Agency | `20260719000008_homecare_agency.sql` | ✅ Done |
 | 6 | Extra Care Housing | `20260719000009_extra_care_housing.sql` | ✅ Done |
 | 7 | Shared Lives Scheme | `20260719000010_shared_lives_scheme.sql` | ✅ Done |
-| 8 | Supported Living | — | ⬜ To do |
-| 9 | Specialist College | — | ⬜ To do |
-| 10 | Residential Rehabilitation Service | — | ⬜ To do |
+| 8 | Supported Living | `20260719000011_supported_living.sql` | ✅ Done |
+| 9 | Specialist College | `20260719000012_specialist_college.sql` | ✅ Done |
+| 10 | Residential Rehabilitation Service | `20260719000013_residential_rehab.sql` | ✅ Done |
 | 11 | Community Drug and Alcohol Service | — | ⬜ To do |
 
 ## Notes
