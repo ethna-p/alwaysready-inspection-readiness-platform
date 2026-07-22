@@ -61,8 +61,10 @@ export default async function SuperadminTicketPage({ params }: Props) {
     organisations: { name: string } | null
   }
   const isWebsite = t.source === 'website'
-  const orgName   = isWebsite
-    ? (t.external_name ?? 'Website enquiry')
+  const isEmail   = t.source === 'email'
+  const isExternal = isWebsite || isEmail
+  const orgName   = isExternal
+    ? (t.external_name ?? (isEmail ? 'Sales enquiry' : 'Website enquiry'))
     : (t.organisations?.name ?? '—')
   const status    = ticket.status
   const created = new Date(ticket.created_at).toLocaleString('en-GB', {
@@ -92,11 +94,16 @@ export default async function SuperadminTicketPage({ params }: Props) {
         </div>
 
         <dl className="text-xs text-gray-500 space-y-1 mb-4">
-          {isWebsite ? (
+          {isExternal ? (
             <>
               <div className="flex gap-2">
                 <dt className="text-gray-400">Source</dt>
-                <dd><span className="font-semibold text-amber-300">Website enquiry</span></dd>
+                <dd>
+                  {isEmail
+                    ? <span className="font-semibold text-purple-700">Sales email (sales@alwaysready.uk)</span>
+                    : <span className="font-semibold text-amber-700">Website enquiry</span>
+                  }
+                </dd>
               </div>
               <div className="flex gap-2"><dt className="text-gray-400">Name</dt><dd>{t.external_name ?? '—'}</dd></div>
               <div className="flex gap-2">

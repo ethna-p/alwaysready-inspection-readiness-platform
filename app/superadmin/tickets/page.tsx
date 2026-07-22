@@ -53,8 +53,9 @@ export default async function SuperadminTicketsPage() {
               organisations: { name: string } | null
             }
             const isWebsite = t.source === 'website'
-            const orgName   = isWebsite
-              ? (t.external_name ?? 'Website enquiry')
+            const isEmail   = t.source === 'email'
+            const orgName   = isWebsite || isEmail
+              ? (t.external_name ?? (isEmail ? 'Sales enquiry' : 'Website enquiry'))
               : (t.organisations?.name ?? '—')
             const created = new Date(ticket.created_at).toLocaleDateString('en-GB', {
               day: 'numeric', month: 'short', year: 'numeric',
@@ -85,6 +86,11 @@ export default async function SuperadminTicketsPage() {
                     {isWebsite && (
                       <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
                         Website
+                      </span>
+                    )}
+                    {isEmail && (
+                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">
+                        Email
                       </span>
                     )}
                   </div>
