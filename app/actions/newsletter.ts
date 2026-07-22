@@ -43,7 +43,8 @@ export async function generateNewsletter(input: NewsletterInput): Promise<Genera
   const supabase = await createClient()
 
   // ── Check monthly limit ────────────────────────────────────────────────────
-  const { count } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { count } = await (supabase as any)
     .from('newsletter_generations')
     .select('id', { count: 'exact', head: true })
     .eq('organisation_id', profile.organisation_id)
@@ -98,7 +99,8 @@ Write newsletter drafts that feel human and natural. Follow these rules:
   }
 
   // ── Record the generation ──────────────────────────────────────────────────
-  await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase as any)
     .from('newsletter_generations')
     .insert({ organisation_id: profile.organisation_id })
 
@@ -115,7 +117,8 @@ export async function getNewsletterUsage(): Promise<{ used: number; remaining: n
 
   const supabase = await createClient()
 
-  const { count } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { count } = await (supabase as any)
     .from('newsletter_generations')
     .select('id', { count: 'exact', head: true })
     .eq('organisation_id', profile.organisation_id)
