@@ -302,6 +302,7 @@ Never use `supabase db push` against the production database. Always use the SQL
 | 135 | Obtain DPA from solicitor | AJ |
 | 136 | Upgrade Resend to Pro plan before go-live | AJ |
 | 137 | Add auto-email to superadmin provision flow for Beta users | Claude |
+| 163 | Complete sales@ inbound email wiring (Resend inbound domain + webhook secret in Vercel + Gmail forward) — deferred until Resend Pro upgrade | AJ + Claude |
 
 ---
 
