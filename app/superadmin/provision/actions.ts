@@ -46,7 +46,7 @@ export async function provisionOrganisation(
     const trialExpiresAt = new Date()
     trialExpiresAt.setDate(trialExpiresAt.getDate() + trialDays)
 
-    const { data: org, error: orgError } = await supabase
+    const { data: org, error: orgError } = await (supabase as any)
       .from('organisations')
       .insert({
         name: orgName,
