@@ -39,10 +39,12 @@ export async function createCheckoutSession(): Promise<never> {
 
   if (!org) redirect('/login')
 
-  // Reuse existing Stripe customer or let Stripe create one
+  // Reuse existing Stripe customer if we have one.
+  // In subscription mode, customer_creation is not allowed — Stripe
+  // creates the customer automatically when none is supplied.
   const customerParams = org.stripe_customer_id
     ? { customer: org.stripe_customer_id }
-    : { customer_creation: 'always' as const }
+    : {}
 
   const session = await stripe.checkout.sessions.create({
     mode:               'subscription',
