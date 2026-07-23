@@ -88,6 +88,11 @@ export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
                 Newsletter
               </a>
             )}
+            {isAdmin && (
+              <a href="/dashboard/mock-inspections" className={NAV_LINK} onClick={() => setOpen(false)}>
+                Mock Inspection
+              </a>
+            )}
             <a href="/dashboard/peoples-voice" className={NAV_LINK} onClick={() => setOpen(false)}>
               People&apos;s Voice
             </a>

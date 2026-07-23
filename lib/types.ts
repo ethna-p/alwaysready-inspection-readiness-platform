@@ -1107,3 +1107,41 @@ export type HolidayUnit            = Organisation['holiday_unit']
 export type IStatement             = Database['public']['Tables']['i_statements']['Row']
 export type IStatementEvidence     = Database['public']['Tables']['i_statement_evidence']['Row']
 export type IStatementConfidence   = IStatementEvidence['confidence']
+
+// ── Mock Inspections ──────────────────────────────────────────────────────────
+export type MockInspectionType   = 'full' | 'partial'
+export type MockInspectionStatus = 'in_progress' | 'completed'
+export type MockInspectionRating = 'outstanding' | 'good' | 'requires_improvement' | 'inadequate'
+export type MockChecklistResponse = 'met' | 'partial' | 'not_met'
+
+export interface MockInspection {
+  id: string
+  organisation_id: string
+  type: MockInspectionType
+  key_question_id: string | null
+  status: MockInspectionStatus
+  conducted_by: string | null
+  started_at: string
+  completed_at: string | null
+  created_at: string
+}
+
+export interface MockInspectionFinding {
+  id: string
+  mock_inspection_id: string
+  klo_item_id: string
+  rating: MockInspectionRating
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface MockInspectionChecklistResponse {
+  id: string
+  mock_inspection_id: string
+  checklist_item_id: string
+  response: MockChecklistResponse
+  note: string | null
+  created_at: string
+  updated_at: string
+}

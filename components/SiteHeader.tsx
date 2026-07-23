@@ -104,6 +104,14 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
               Newsletter
             </a>
           )}
+          {isAdmin && (
+            <a
+              href="/dashboard/mock-inspections"
+              className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            >
+              Mock Inspection
+            </a>
+          )}
           <a
             href="/dashboard/peoples-voice"
             className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
