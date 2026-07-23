@@ -48,6 +48,37 @@ export default async function AccountPage() {
         </p>
       </div>
 
+      {/* ── Subscription (admin only) ──────────────────────────────────── */}
+      {profile?.role === 'admin' && (
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-[#014D4E] mb-1">Subscription</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            {subscriptionTier === 'active'
+              ? 'Your subscription is active — £75 + VAT per month.'
+              : subscriptionTier === 'past_due'
+              ? 'Your last payment failed. Please update your payment details to restore full access.'
+              : 'You are currently on a free trial.'}
+          </p>
+          {hasStripeCustomer ? (
+            <form action={createBillingPortalSession}>
+              <button
+                type="submit"
+                className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors cursor-pointer"
+              >
+                Manage subscription →
+              </button>
+            </form>
+          ) : subscriptionTier !== 'active' ? (
+            <a
+              href="/upgrade"
+              className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors"
+            >
+              Subscribe now →
+            </a>
+          ) : null}
+        </div>
+      )}
+
       {/* ── Sub-services (admin only) ──────────────────────────────────── */}
       {profile?.role === 'admin' && (
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
@@ -85,36 +116,6 @@ export default async function AccountPage() {
         />
       </div>
 
-      {/* ── Subscription (admin only) ──────────────────────────────────── */}
-      {profile?.role === 'admin' && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-[#014D4E] mb-1">Subscription</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            {subscriptionTier === 'active'
-              ? 'Your subscription is active — £75 + VAT per month.'
-              : subscriptionTier === 'past_due'
-              ? 'Your last payment failed. Please update your payment details to restore full access.'
-              : 'You are currently on a free trial.'}
-          </p>
-          {hasStripeCustomer ? (
-            <form action={createBillingPortalSession}>
-              <button
-                type="submit"
-                className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors cursor-pointer"
-              >
-                Manage subscription →
-              </button>
-            </form>
-          ) : subscriptionTier !== 'active' ? (
-            <a
-              href="/upgrade"
-              className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors"
-            >
-              Subscribe now →
-            </a>
-          ) : null}
-        </div>
-      )}
     </div>
   )
 }
