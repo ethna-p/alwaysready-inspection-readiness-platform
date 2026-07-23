@@ -97,7 +97,7 @@ export default async function OrganisationsPage() {
         <>
           <p className="text-xs text-gray-400 mb-4">{orgs.length} organisation{orgs.length !== 1 ? 's' : ''}</p>
           <div className="space-y-3">
-            {orgs.map(org => {
+            {orgs.map((org: any) => {
               const serviceType = (org as any).service_types?.name ?? '—'
               const tier = org.subscription_tier ?? 'trial'
               const tierStyle = TIER_STYLES[tier] ?? 'bg-gray-100 text-gray-500'
