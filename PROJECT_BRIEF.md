@@ -251,6 +251,7 @@ Before the platform is opened to real paying customers:
 7. Upgrade Resend to Pro plan
 8. Point a real domain at the Vercel deployment (DNS at FastHosts)
 9. Configure Supabase custom domain (Pro plan)
+10. Set up Cloudflare in front of the domain (free plan) — DDoS protection, CDN, hides Vercel origin
 
 ---
 
