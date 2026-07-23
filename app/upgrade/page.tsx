@@ -1,7 +1,9 @@
 /**
  * /upgrade — shown when a trial has expired.
- * Phase 1: mailto CTA. Phase 2: Stripe Checkout.
+ * Offers Stripe Checkout for self-service subscription.
  */
+
+import { createCheckoutSession } from '@/app/actions/stripe'
 
 export const metadata = { title: 'Subscribe — AlwaysReady' }
 
@@ -77,22 +79,25 @@ export default function UpgradePage() {
           </div>
         </div>
 
-        {/* CTA */}
-        <a
-          href="mailto:hello@alwaysready.uk?subject=AlwaysReady%20Subscription&body=Hi%2C%0A%0AI%27d%20like%20to%20subscribe%20to%20AlwaysReady.%0A%0AOrganisation%3A%20%0AContact%20name%3A%20%0APhone%20(optional)%3A%20"
-          className="
-            block w-full
-            bg-[#ffd700] text-[#014D4E]
-            font-bold text-sm
-            py-4 rounded-xl
-            hover:bg-yellow-300
-            focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-            transition-colors
-            mb-4
-          "
-        >
-          Subscribe Now
-        </a>
+        {/* CTA — Stripe Checkout */}
+        <form action={createCheckoutSession}>
+          <button
+            type="submit"
+            className="
+              block w-full
+              bg-[#ffd700] text-[#014D4E]
+              font-bold text-sm
+              py-4 rounded-xl
+              hover:bg-yellow-300
+              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+              transition-colors
+              mb-4
+              cursor-pointer
+            "
+          >
+            Subscribe Now — £75 + VAT / month
+          </button>
+        </form>
 
 
 

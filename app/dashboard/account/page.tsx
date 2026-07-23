@@ -5,6 +5,7 @@
 import { Suspense } from 'react'
 import { getCurrentUserProfile } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
+import { createBillingPortalSession } from '@/app/actions/stripe'
 import ChangePasswordForm from './ChangePasswordForm'
 import PersonalContactForm from './PersonalContactForm'
 import MfaSection from './MfaSection'
@@ -15,15 +16,27 @@ export const metadata = { title: 'Account Settings — AlwaysReady' }
 export default async function AccountPage() {
   const profile = await getCurrentUserProfile()
 
-  // Fetch enabled sub-services for this org (admin-only UI, but we fetch for all)
+  // Fetch org data (subscription tier + sub-services) for admin sections
   let enabledSubServices: string[] = []
-  if (profile?.role === 'admin') {
+  let subscriptionTier = 'trial'
+  let hasStripeCustomer = false
+
+  if (profile?.role === 'admin' && profile.organisation_id) {
     const supabase = await createClient()
-    const { data } = await supabase
-      .from('organisation_sub_services')
-      .select('sub_service')
-      .eq('organisation_id', profile.organisation_id)
-    enabledSubServices = (data ?? []).map(r => r.sub_service)
+    const [{ data: subServices }, { data: org }] = await Promise.all([
+      supabase
+        .from('organisation_sub_services')
+        .select('sub_service')
+        .eq('organisation_id', profile.organisation_id),
+      supabase
+        .from('organisations')
+        .select('subscription_tier, stripe_customer_id')
+        .eq('id', profile.organisation_id)
+        .single(),
+    ])
+    enabledSubServices = (subServices ?? []).map(r => r.sub_service)
+    subscriptionTier   = org?.subscription_tier ?? 'trial'
+    hasStripeCustomer  = !!org?.stripe_customer_id
   }
 
   return (
@@ -71,6 +84,37 @@ export default async function AccountPage() {
           mobileNumber={profile?.mobile_number ?? null}
         />
       </div>
+
+      {/* ── Subscription (admin only) ──────────────────────────────────── */}
+      {profile?.role === 'admin' && (
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-[#014D4E] mb-1">Subscription</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            {subscriptionTier === 'active'
+              ? 'Your subscription is active — £75 + VAT per month.'
+              : subscriptionTier === 'past_due'
+              ? 'Your last payment failed. Please update your payment details to restore full access.'
+              : 'You are currently on a free trial.'}
+          </p>
+          {hasStripeCustomer ? (
+            <form action={createBillingPortalSession}>
+              <button
+                type="submit"
+                className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors cursor-pointer"
+              >
+                Manage subscription →
+              </button>
+            </form>
+          ) : subscriptionTier !== 'active' ? (
+            <a
+              href="/upgrade"
+              className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors"
+            >
+              Subscribe now →
+            </a>
+          ) : null}
+        </div>
+      )}
     </div>
   )
 }
