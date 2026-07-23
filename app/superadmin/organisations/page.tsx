@@ -40,7 +40,7 @@ export default async function OrganisationsPage() {
   const supabase = createAdminClient()
 
   // ── 1. Fetch all real orgs (exclude demo/shadow orgs) ──────────────────
-  const { data: orgs, error: orgsError } = await supabase
+  const { data: orgs, error: orgsError } = await (supabase as any)
     .from('organisations')
     .select(`
       id, name, subscription_tier, trial_expires_at, created_at, is_beta,
