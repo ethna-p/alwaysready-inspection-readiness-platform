@@ -43,7 +43,7 @@ export default async function OrganisationsPage() {
   const { data: orgs, error: orgsError } = await supabase
     .from('organisations')
     .select(`
-      id, name, subscription_tier, trial_expires_at, created_at,
+      id, name, subscription_tier, trial_expires_at, created_at, is_beta,
       service_types ( name )
     `)
     .eq('is_demo', false)
@@ -121,6 +121,11 @@ export default async function OrganisationsPage() {
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${tierStyle}`}>
                         {tierLabel}
                       </span>
+                      {(org as any).is_beta && (
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                          Beta
+                        </span>
+                      )}
                       {trial && (
                         <span className={`text-xs font-medium ${trial.urgent ? 'text-red-600' : 'text-gray-400'}`}>
                           · {trial.label}

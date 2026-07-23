@@ -18,6 +18,7 @@ export async function provisionOrganisation(
   const adminPassword  = (formData.get('admin_password') as string | null)?.trim()
   const trialDays      = parseInt(formData.get('trial_days') as string ?? '90', 10)
   const isCharity      = formData.get('is_charity') === 'on'
+  const isBeta         = formData.get('is_beta') === 'on'
 
   // Validate inputs
   if (!orgName || !serviceTypeKey || !adminEmail || !adminName || !adminPassword) {
@@ -53,6 +54,7 @@ export async function provisionOrganisation(
         subscription_tier: 'trial',
         trial_expires_at: trialExpiresAt.toISOString(),
         is_demo: false,
+        is_beta: isBeta,
       })
       .select('id')
       .single()
