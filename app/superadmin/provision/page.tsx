@@ -158,7 +158,7 @@ export default function ProvisionPage() {
               type="number"
               min={1}
               max={365}
-              defaultValue={14}
+              defaultValue={90}
               className="
                 w-32 bg-white border border-gray-300 rounded-lg
                 px-4 py-2.5 text-sm text-[#1a1a1a]
