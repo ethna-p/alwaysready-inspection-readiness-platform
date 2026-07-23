@@ -58,7 +58,7 @@ export default async function OrganisationsPage() {
   }
 
   // ── 2. Fetch admin users for those orgs ────────────────────────────────
-  const orgIds = (orgs ?? []).map(o => o.id)
+  const orgIds = (orgs ?? []).map((o: any) => o.id)
 
   const { data: admins } = orgIds.length > 0
     ? await supabase
