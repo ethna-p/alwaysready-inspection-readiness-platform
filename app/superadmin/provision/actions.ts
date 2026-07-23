@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendEmail } from '@/lib/email'
 
 export type ProvisionResult =
   | { success: true; orgId: string; userId: string; reference: string }
@@ -127,7 +128,62 @@ export async function provisionOrganisation(
       }
     }
 
-    // ── 6. Done ─────────────────────────────────────────────────────────
+    // ── 6. Send beta welcome email ───────────────────────────────────────
+    const platformUrl = process.env.NEXT_PUBLIC_BASE_URL
+      ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
+
+    const trialExpiryFormatted = trialExpiresAt.toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+
+    await sendEmail({
+      to: adminEmail,
+      subject: 'Welcome to AlwaysReady — your login details',
+      type: 'transactional',
+      bodyHtml: `
+        <p style="margin:0 0 16px">Hi ${adminName},</p>
+
+        <p style="margin:0 0 16px">
+          Welcome to the AlwaysReady Beta. Your account for
+          <strong>${orgName}</strong> is ready — you can log in right now.
+        </p>
+
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+          style="background:#f5f5f0;border-radius:6px;padding:20px 24px;margin:0 0 24px;width:100%">
+          <tr>
+            <td style="font-size:14px;line-height:2">
+              <strong>Login URL:</strong>
+              <a href="${platformUrl}/login" style="color:#014D4E">${platformUrl}/login</a><br>
+              <strong>Email:</strong> ${adminEmail}<br>
+              <strong>Password:</strong> ${adminPassword}<br>
+              <strong>Trial expires:</strong> ${trialExpiryFormatted}
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0 0 16px">
+          As the account admin, you can add your team, assign KLOEs, and start
+          building your inspection readiness from day one. If you have any
+          questions, just reply to this email or open a support ticket from
+          within the platform.
+        </p>
+
+        <p style="margin:0 0 24px">
+          <a href="${platformUrl}/login"
+            style="display:inline-block;background:#ffd700;color:#014D4E;font-weight:700;
+                   font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none">
+            Log in to AlwaysReady →
+          </a>
+        </p>
+
+        <p style="margin:0;color:#555">
+          AJ Parker<br>
+          <span style="color:#888;font-size:13px">AlwaysReady · hello@alwaysready.uk</span>
+        </p>
+      `,
+    })
+
+    // ── 7. Done ─────────────────────────────────────────────────────────
     const reference = `ORG-${org.id.slice(0, 8).toUpperCase()}`
 
     return {
