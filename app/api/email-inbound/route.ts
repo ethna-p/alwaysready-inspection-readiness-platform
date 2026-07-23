@@ -7,11 +7,35 @@
  *
  * Security: verifies the Resend webhook signature using RESEND_WEBHOOK_SECRET.
  * Only processes email.received events addressed to sales@alwaysready.uk.
+ *
+ * Rate limiting: 20 requests per minute per IP (module-level Map, per instance).
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
+
+// ── Rate limiter ───────────────────────────────────────────────────────────
+const INBOUND_WINDOW_MS = 60_000 // 1 minute
+const INBOUND_MAX       = 20     // requests per IP per window
+
+const inboundAttempts = new Map<string, number[]>()
+
+function checkInboundRateLimit(ip: string): boolean {
+  const now    = Date.now()
+  const window = (inboundAttempts.get(ip) ?? []).filter(t => now - t < INBOUND_WINDOW_MS)
+  if (window.length >= INBOUND_MAX) return false
+  window.push(now)
+  inboundAttempts.set(ip, window)
+  if (inboundAttempts.size > 2_000) {
+    for (const [k, v] of inboundAttempts) {
+      if (v.every(t => now - t >= INBOUND_WINDOW_MS)) inboundAttempts.delete(k)
+    }
+  }
+  return true
+}
+
+// ──────────────────────────────────────────────────────────────────────────
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -25,6 +49,14 @@ function parseFrom(from: string): { name: string | null; email: string } {
 }
 
 export async function POST(req: NextRequest) {
+  // ── Rate limiting ──────────────────────────────────────────────────────────
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim()
+          ?? req.headers.get('x-real-ip')
+          ?? 'unknown'
+  if (!checkInboundRateLimit(ip)) {
+    return NextResponse.json({ error: 'Too many requests.' }, { status: 429 })
+  }
+
   // ── Verify webhook signature ───────────────────────────────────────────────
   const webhookSecret = process.env.RESEND_WEBHOOK_SECRET
   if (!webhookSecret) {

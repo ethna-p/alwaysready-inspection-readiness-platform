@@ -14,12 +14,77 @@
  *     only aal1, redirect to /login/mfa to complete verification.
  *   - Admin users with no factor enrolled are redirected to
  *     /dashboard/account/mfa/setup to force enrolment.
+ *
+ * Rate limiting:
+ *   - /login POST: max 10 attempts per IP per 10-minute window.
+ *     Uses a module-level Map (in-memory, per function instance).
+ *     This catches burst brute-force attacks within the same serverless instance.
  */
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// ── Rate limiter (login brute-force protection) ────────────────────────────
+//
+// Vercel spins up a new function instance per cold start, so this Map resets
+// on each cold start. That's acceptable — it still stops rapid burst attacks,
+// which are the most common form of brute-forcing.
+
+const LOGIN_WINDOW_MS = 10 * 60 * 1000 // 10 minutes
+const LOGIN_MAX       = 10             // max POST attempts per IP per window
+
+const loginAttempts = new Map<string, number[]>()
+
+function getClientIp(req: NextRequest): string {
+  return (
+    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    req.headers.get('x-real-ip') ??
+    'unknown'
+  )
+}
+
+/** Returns true if the request is allowed; false if it should be rate-limited. */
+function checkLoginRateLimit(ip: string): boolean {
+  const now    = Date.now()
+  const window = (loginAttempts.get(ip) ?? []).filter(t => now - t < LOGIN_WINDOW_MS)
+
+  if (window.length >= LOGIN_MAX) return false // blocked
+
+  window.push(now)
+  loginAttempts.set(ip, window)
+
+  // Prune stale entries periodically to prevent unbounded Map growth
+  if (loginAttempts.size > 5_000) {
+    for (const [k, v] of loginAttempts) {
+      if (v.every(t => now - t >= LOGIN_WINDOW_MS)) loginAttempts.delete(k)
+    }
+  }
+
+  return true // allowed
+}
+
+// ── Middleware ─────────────────────────────────────────────────────────────
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
+
+  const { pathname } = request.nextUrl
+
+  // ── Rate limit: login POST ────────────────────────────────────────────────
+  if (pathname === '/login' && request.method === 'POST') {
+    const ip = getClientIp(request)
+    if (!checkLoginRateLimit(ip)) {
+      return new NextResponse(
+        'Too many sign-in attempts. Please wait 10 minutes and try again.',
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'text/plain',
+            'Retry-After':  '600',
+          },
+        }
+      )
+    }
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -47,7 +112,6 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
   const superadminEmail = process.env.SUPERADMIN_EMAIL
 
   // ── Unauthenticated guards ──────────────────────────────────────────────
