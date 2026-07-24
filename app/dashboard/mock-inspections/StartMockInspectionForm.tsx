@@ -49,7 +49,7 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
             `}
           >
             <p className="text-sm font-semibold text-[#1a1a1a]">Partial inspection</p>
-            <p className="text-xs text-gray-500 mt-1">One key question and its linked KLOEs. Recommended for providers rated Good or above.</p>
+            <p className="text-xs text-gray-500 mt-1">One key question and its linked KLOEs. Ideal for running a quick audit of a specific area.</p>
           </button>
           <button
             type="button"
