@@ -13,9 +13,12 @@ export default async function MockInspectionSessionPage({
   params,
   searchParams,
 }: {
-  params: { id: string }
-  searchParams: { kloe?: string }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ kloe?: string }>
 }) {
+  const { id } = await params
+  const { kloe } = await searchParams
+
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') redirect('/dashboard')
 
@@ -25,12 +28,12 @@ export default async function MockInspectionSessionPage({
   const { data: inspection } = await (supabase as any)
     .from('mock_inspections')
     .select('id, type, status, key_question_id, key_questions ( id, name )')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!inspection) notFound()
   if (inspection.status === 'completed') {
-    redirect(`/dashboard/mock-inspections/${params.id}/report`)
+    redirect(`/dashboard/mock-inspections/${id}/report`)
   }
 
   // Load KLOEs — scoped to key question if partial
@@ -71,21 +74,21 @@ export default async function MockInspectionSessionPage({
   const { data: existingFindings } = await (supabase as any)
     .from('mock_inspection_findings')
     .select('klo_item_id, rating, notes')
-    .eq('mock_inspection_id', params.id)
+    .eq('mock_inspection_id', id)
 
   const { data: existingResponses } = await (supabase as any)
     .from('mock_inspection_checklist_responses')
     .select('checklist_item_id, response, note')
-    .eq('mock_inspection_id', params.id)
+    .eq('mock_inspection_id', id)
 
   // Determine current KLOE index from URL param
-  const currentKloeIndex = searchParams.kloe
-    ? Math.max(0, Math.min(parseInt(searchParams.kloe, 10), klos.length - 1))
+  const currentKloeIndex = kloe
+    ? Math.max(0, Math.min(parseInt(kloe, 10), klos.length - 1))
     : 0
 
   return (
     <MockInspectionSession
-      inspectionId={params.id}
+      inspectionId={id}
       inspectionType={inspection.type}
       keyQuestionName={(inspection.key_questions as any)?.name ?? null}
       klos={klos ?? []}

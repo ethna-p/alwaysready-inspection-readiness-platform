@@ -40,7 +40,9 @@ function formatDate(iso: string) {
   })
 }
 
-export default async function MockInspectionReportPage({ params }: { params: { id: string } }) {
+export default async function MockInspectionReportPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') redirect('/dashboard')
 
@@ -50,12 +52,12 @@ export default async function MockInspectionReportPage({ params }: { params: { i
   const { data: inspection } = await (supabase as any)
     .from('mock_inspections')
     .select('id, type, status, started_at, completed_at, key_questions ( name )')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!inspection) notFound()
   if (inspection.status !== 'completed') {
-    redirect(`/dashboard/mock-inspections/${params.id}`)
+    redirect(`/dashboard/mock-inspections/${id}`)
   }
 
   // Load findings with KLOE details
@@ -65,7 +67,7 @@ export default async function MockInspectionReportPage({ params }: { params: { i
       klo_item_id, rating, notes,
       klo_items ( id, title, wording, key_question_id, key_questions ( name ) )
     `)
-    .eq('mock_inspection_id', params.id)
+    .eq('mock_inspection_id', id)
 
   // Load checklist responses with item detail
   const { data: responses } = await (supabase as any)
@@ -74,7 +76,7 @@ export default async function MockInspectionReportPage({ params }: { params: { i
       checklist_item_id, response, note,
       klo_checklist_items ( id, ref, checklist_item, klo_item_id )
     `)
-    .eq('mock_inspection_id', params.id)
+    .eq('mock_inspection_id', id)
 
   // Load org name
   const { data: org } = await supabase
