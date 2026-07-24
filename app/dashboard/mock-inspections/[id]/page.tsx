@@ -34,17 +34,19 @@ export default async function MockInspectionSessionPage({
   }
 
   // Load KLOEs — scoped to key question if partial
-  let kloQuery = supabase
-    .from('klo_items')
-    .select('id, title, wording, key_question_id, key_questions ( name )')
-    .order('key_question_id')
-    .order('display_order')
+  const isPartial = inspection.type === 'partial' && inspection.key_question_id
 
-  if (inspection.type === 'partial' && inspection.key_question_id) {
-    kloQuery = kloQuery.eq('key_question_id', inspection.key_question_id)
-  }
-
-  const { data: klos } = await kloQuery
+  const { data: klos } = isPartial
+    ? await supabase
+        .from('klo_items')
+        .select('id, title, wording, key_question_id, key_questions ( name )')
+        .eq('key_question_id', inspection.key_question_id)
+        .order('display_order')
+    : await supabase
+        .from('klo_items')
+        .select('id, title, wording, key_question_id, key_questions ( name )')
+        .order('key_question_id')
+        .order('display_order')
 
   if (!klos || klos.length === 0) notFound()
 
