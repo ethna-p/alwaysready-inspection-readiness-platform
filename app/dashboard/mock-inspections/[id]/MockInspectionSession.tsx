@@ -198,7 +198,7 @@ export default function MockInspectionSession({
         {kloChecklist.length > 0 && (
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-3">
-              I statements — how well does your service meet each one?
+              Evidence checklist — how well does your service meet each one?
             </h3>
             <div className="space-y-4">
               {kloChecklist.map(ci => (
