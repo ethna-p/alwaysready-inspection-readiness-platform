@@ -46,7 +46,7 @@ export default async function MockInspectionsPage() {
       <div>
         <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Mock Inspections</h1>
         <p className="text-sm text-gray-600">
-          Run a self-assessment mock inspection to identify areas for improvement before a real CQC visit.
+          Run a mock inspection to identify areas for improvement before a real CQC visit.
         </p>
       </div>
 
