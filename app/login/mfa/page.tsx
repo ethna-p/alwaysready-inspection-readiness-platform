@@ -82,6 +82,11 @@ export default function MfaVerifyPage() {
       return
     }
 
+    // Flush the upgraded aal2 session to cookies BEFORE navigating.
+    // Without this, the middleware may still read the old aal1 cookie on the
+    // next request and redirect back here, causing an infinite loop.
+    await supabase.auth.refreshSession()
+
     // Session is now aal2 — redirect based on role
     const { data: { user } } = await supabase.auth.getUser()
     if (user?.email === process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
@@ -89,7 +94,6 @@ export default function MfaVerifyPage() {
     } else {
       router.replace('/dashboard')
     }
-    router.refresh()
   }
 
   return (
