@@ -62,7 +62,7 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
             `}
           >
             <p className="text-sm font-semibold text-[#1a1a1a]">Full inspection</p>
-            <p className="text-xs text-gray-500 mt-1">All five key questions and every KLOE. Recommended for providers rated Requires Improvement or Inadequate.</p>
+            <p className="text-xs text-gray-500 mt-1">All five key questions and every KLOE. Recommended when you have time to run a more comprehensive self-assessment.</p>
           </button>
         </div>
       </div>
