@@ -40,12 +40,12 @@ export default async function MockInspectionSessionPage({
   const isPartial = inspection.type === 'partial' && inspection.key_question_id
 
   const { data: klos } = isPartial
-    ? await supabase
+    ? await (supabase as any)
         .from('klo_items')
         .select('id, title, wording, key_question_id, key_questions ( name )')
         .eq('key_question_id', inspection.key_question_id)
         .order('display_order')
-    : await supabase
+    : await (supabase as any)
         .from('klo_items')
         .select('id, title, wording, key_question_id, key_questions ( name )')
         .order('key_question_id')
@@ -60,9 +60,9 @@ export default async function MockInspectionSessionPage({
     .eq('id', profile!.organisation_id!)
     .single()
 
-  const kloIds = klos.map((k: any) => k.id)
+  const kloIds = (klos as any[]).map((k: any) => k.id)
 
-  const { data: checklistItems } = await supabase
+  const { data: checklistItems } = await (supabase as any)
     .from('klo_checklist_items')
     .select('id, klo_item_id, ref, checklist_item, item_type, display_order')
     .in('klo_item_id', kloIds)
