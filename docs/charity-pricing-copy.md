@@ -28,7 +28,7 @@ Because we verify each charity individually, we don't use a discount code. Inste
    - Their email address
    - Your CQC Location ID
    - Your charity registration number
-3. We'll set up your account directly and send you your login details within one working day
+3. We'll set up your account directly and send you your login details as soon as possible
 
 Your 20% discount is applied automatically from your very first payment — there's nothing to enter at checkout.
 
