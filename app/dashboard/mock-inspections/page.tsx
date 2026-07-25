@@ -44,8 +44,8 @@ export default async function MockInspectionsPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Mock Inspections</h1>
-        <p className="text-sm text-gray-600">
+        <h1 className="text-2xl font-bold text-brand mb-1">Mock Inspections</h1>
+        <p className="text-sm text-ink-dim">
           Run a mock inspection to identify areas for improvement before a real CQC visit.
         </p>
       </div>
@@ -56,22 +56,22 @@ export default async function MockInspectionsPage() {
       </div>
 
       {/* Start new */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-[#014D4E] mb-4">Start a new mock inspection</h2>
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+        <h2 className="text-base font-semibold text-brand mb-4">Start a new mock inspection</h2>
         <StartMockInspectionForm keyQuestions={keyQuestions ?? []} />
       </div>
 
       {/* Past inspections */}
       {inspections && inspections.length > 0 && (
         <div>
-          <h2 className="text-base font-semibold text-[#014D4E] mb-3">Previous inspections</h2>
+          <h2 className="text-base font-semibold text-brand mb-3">Previous inspections</h2>
           <div className="space-y-3">
             {inspections.map((insp: any) => {
               const label = insp.type === 'full'
                 ? 'Full inspection'
                 : `Partial — ${(insp.key_questions as any)?.name ?? 'Unknown'}`
               const statusLabel = insp.status === 'completed' ? 'Completed' : 'In progress'
-              const statusStyle = STATUS_STYLE[insp.status] ?? 'bg-gray-100 text-gray-500'
+              const statusStyle = STATUS_STYLE[insp.status] ?? 'bg-fill-dim text-ink-muted'
               const target = insp.status === 'completed'
                 ? `/dashboard/mock-inspections/${insp.id}/report`
                 : `/dashboard/mock-inspections/${insp.id}`
@@ -80,17 +80,17 @@ export default async function MockInspectionsPage() {
                 <a
                   key={insp.id}
                   href={target}
-                  className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-5 py-4 hover:border-[#00b8a6] transition-colors group"
+                  className="flex items-center justify-between bg-card border border-line rounded-xl px-5 py-4 hover:border-[#00b8a6] transition-colors group"
                 >
                   <div>
-                    <p className="text-sm font-semibold text-[#1a1a1a] group-hover:text-[#014D4E]">{label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Started {formatDate(insp.started_at)}</p>
+                    <p className="text-sm font-semibold text-ink group-hover:text-brand">{label}</p>
+                    <p className="text-xs text-ink-muted mt-0.5">Started {formatDate(insp.started_at)}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyle}`}>
                       {statusLabel}
                     </span>
-                    <span className="text-gray-400 group-hover:text-[#014D4E] text-sm">→</span>
+                    <span className="text-ink-muted group-hover:text-brand text-sm">→</span>
                   </div>
                 </a>
               )

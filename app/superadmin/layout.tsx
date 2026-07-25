@@ -12,10 +12,10 @@ export default function SuperadminLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-[#faf9f6] text-[#1a1a1a]">
+    <div className="min-h-screen bg-canvas text-ink">
       <IdleTimeout />
       {/* Top bar */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+      <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <span className="font-extrabold tracking-tight text-[#00b8a6]">
             AlwaysReady
@@ -24,24 +24,24 @@ export default function SuperadminLayout({
             Superadmin
           </span>
         </div>
-        <nav className="flex items-center gap-6 text-sm text-gray-500">
-          <Link href="/superadmin/organisations" className="hover:text-[#014D4E] transition-colors">
+        <nav className="flex items-center gap-6 text-sm text-ink-muted">
+          <Link href="/superadmin/organisations" className="hover:text-brand transition-colors">
             Organisations
           </Link>
-          <Link href="/superadmin/provision" className="hover:text-[#014D4E] transition-colors">
+          <Link href="/superadmin/provision" className="hover:text-brand transition-colors">
             Provision
           </Link>
-          <Link href="/superadmin/tickets" className="hover:text-[#014D4E] transition-colors">
+          <Link href="/superadmin/tickets" className="hover:text-brand transition-colors">
             Support Tickets
           </Link>
-          <Link href="/superadmin/broadcast" className="hover:text-[#014D4E] transition-colors">
+          <Link href="/superadmin/broadcast" className="hover:text-brand transition-colors">
             Broadcast
           </Link>
-          <Link href="/dashboard" className="hover:text-[#014D4E] transition-colors">
+          <Link href="/dashboard" className="hover:text-brand transition-colors">
             ← Dashboard
           </Link>
           <form action="/auth/signout" method="POST">
-            <button type="submit" className="hover:text-[#014D4E] transition-colors">
+            <button type="submit" className="hover:text-brand transition-colors">
               Sign out
             </button>
           </form>

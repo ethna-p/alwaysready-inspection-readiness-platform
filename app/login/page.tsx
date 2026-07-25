@@ -109,7 +109,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+    <div className="min-h-screen bg-canvas flex flex-col">
       {/* Top bar with logo */}
       <header className="px-6 py-4">
         <Image
@@ -125,7 +125,7 @@ function LoginForm() {
       {/* Card — centred */}
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-card rounded-2xl shadow-sm border border-line p-8">
 
             {/* ── Idle logout notice ─────────────────────────────────────── */}
             {idleReason && !showReset && (
@@ -140,8 +140,8 @@ function LoginForm() {
             {/* ── Login form ─────────────────────────────────────────────── */}
             {!showReset && (
               <>
-                <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Sign in</h1>
-                <p className="text-sm text-[#1a1a1a] mb-6">Inspection Readiness Platform</p>
+                <h1 className="text-2xl font-bold text-brand mb-1">Sign in</h1>
+                <p className="text-sm text-ink mb-6">Inspection Readiness Platform</p>
 
                 <form onSubmit={handleLogin} noValidate>
                   {error && (
@@ -156,7 +156,7 @@ function LoginForm() {
                   <div className="mb-4">
                     <label
                       htmlFor="login"
-                      className="block text-sm font-medium text-[#1a1a1a] mb-1"
+                      className="block text-sm font-medium text-ink mb-1"
                     >
                       Email or login ID
                     </label>
@@ -169,12 +169,12 @@ function LoginForm() {
                       onChange={e => setLogin(e.target.value)}
                       placeholder="e.g. sarah.jones.f7a2e1"
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-[#1a1a1a] text-sm bg-white placeholder:text-gray-600
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-ink text-sm bg-card placeholder:text-ink-dim
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="text-xs text-ink-dim mt-1">
                       Managers: use your email address. Staff: use the login ID given to you.
                     </p>
                   </div>
@@ -182,7 +182,7 @@ function LoginForm() {
                   <div className="mb-2">
                     <label
                       htmlFor="password"
-                      className="block text-sm font-medium text-[#1a1a1a] mb-1"
+                      className="block text-sm font-medium text-ink mb-1"
                     >
                       Password
                     </label>
@@ -194,8 +194,8 @@ function LoginForm() {
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-[#1a1a1a] text-sm bg-white
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-ink text-sm bg-card
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
@@ -206,7 +206,7 @@ function LoginForm() {
                     <button
                       type="button"
                       onClick={() => { setShowReset(true); setError(null) }}
-                      className="text-xs text-[#014D4E] hover:underline focus:outline-none focus:underline"
+                      className="text-xs text-brand hover:underline focus:outline-none focus:underline"
                     >
                       Forgot your password?
                     </button>
@@ -236,14 +236,14 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => { setShowReset(false); setResetError(null); setResetInput('') }}
-                  className="mb-4 flex items-center gap-1 text-sm text-gray-500 hover:text-[#014D4E] focus:outline-none focus:underline"
+                  className="mb-4 flex items-center gap-1 text-sm text-ink-muted hover:text-brand focus:outline-none focus:underline"
                   aria-label="Back to sign in"
                 >
                   <span aria-hidden="true">←</span> Back to sign in
                 </button>
 
-                <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Reset password</h1>
-                <p className="text-sm text-gray-600 mb-6">
+                <h1 className="text-2xl font-bold text-brand mb-1">Reset password</h1>
+                <p className="text-sm text-ink-dim mb-6">
                   Enter your email or login ID and we&apos;ll send you a reset link.
                 </p>
 
@@ -260,7 +260,7 @@ function LoginForm() {
                   <div className="mb-6">
                     <label
                       htmlFor="reset-login"
-                      className="block text-sm font-medium text-[#1a1a1a] mb-1"
+                      className="block text-sm font-medium text-ink mb-1"
                     >
                       Email or login ID
                     </label>
@@ -273,12 +273,12 @@ function LoginForm() {
                       onChange={e => setResetInput(e.target.value)}
                       placeholder="e.g. hello@yourorg.com or sarah.jones.f7a2e1"
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-[#1a1a1a] text-sm bg-white placeholder:text-gray-600
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-ink text-sm bg-card placeholder:text-ink-dim
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="text-xs text-ink-dim mt-1">
                       Staff: if you don&apos;t have a personal email on your account, ask your manager to reset your password.
                     </p>
                   </div>
@@ -316,18 +316,18 @@ function LoginForm() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="text-lg font-bold text-[#014D4E] mb-2">Check your inbox</h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <h2 className="text-lg font-bold text-brand mb-2">Check your inbox</h2>
+                <p className="text-sm text-ink-dim mb-6">
                   If an account exists for that email or login ID, you&apos;ll receive a reset link shortly.
                   The link expires in 1 hour.
                 </p>
-                <p className="text-xs text-gray-500 mb-6">
+                <p className="text-xs text-ink-muted mb-6">
                   Staff: check the personal email address on your account, not your work one.
                 </p>
                 <button
                   type="button"
                   onClick={() => { setShowReset(false); setResetSent(false); setResetInput('') }}
-                  className="text-sm text-[#014D4E] hover:underline focus:outline-none focus:underline"
+                  className="text-sm text-brand hover:underline focus:outline-none focus:underline"
                 >
                   ← Back to sign in
                 </button>
@@ -345,12 +345,12 @@ function LoginForm() {
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-gray-200 bg-[#faf9f6] px-6 py-6 text-center">
-      <p className="text-xs text-[#1a1a1a]">
+    <footer className="border-t border-line bg-canvas px-6 py-6 text-center">
+      <p className="text-xs text-ink">
         © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
         Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
       </p>
-      <p className="text-xs text-[#1a1a1a] mt-1 max-w-2xl mx-auto">
+      <p className="text-xs text-ink mt-1 max-w-2xl mx-auto">
         Our tools are designed to support providers in preparing for CQC inspection.
         They do not constitute official CQC guidance and do not guarantee any
         particular inspection outcome.

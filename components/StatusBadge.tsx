@@ -4,7 +4,7 @@
 import type { ComplianceStatus } from '@/lib/types'
 
 const STYLES: Record<ComplianceStatus, string> = {
-  not_started: 'bg-gray-100 text-gray-600',
+  not_started: 'bg-fill-dim text-ink-dim',
   in_progress: 'bg-blue-50  text-blue-700',
   completed:   'bg-green-50 text-green-700',
 }

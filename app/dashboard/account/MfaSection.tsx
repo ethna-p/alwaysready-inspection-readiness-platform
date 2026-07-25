@@ -74,14 +74,14 @@ export default function MfaSection({ role }: Props) {
   const hasFactor = factors.length > 0
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+    <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
       <div className="flex items-start justify-between mb-1">
-        <h2 className="text-base font-semibold text-[#014D4E]">Two-factor authentication</h2>
+        <h2 className="text-base font-semibold text-brand">Two-factor authentication</h2>
         {hasFactor && (
           <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full">Active</span>
         )}
       </div>
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-sm text-ink-dim mb-4">
         {isAdmin
           ? 'Required for manager accounts. Uses a one-time code from your authenticator app each time you sign in.'
           : 'Adds a second layer of security. Uses a one-time code from your authenticator app each time you sign in.'}
@@ -100,16 +100,16 @@ export default function MfaSection({ role }: Props) {
       )}
 
       {loading ? (
-        <p className="text-sm text-gray-400">Loading…</p>
+        <p className="text-sm text-ink-muted">Loading…</p>
       ) : hasFactor ? (
         <div className="space-y-3">
           {factors.map(factor => (
-            <div key={factor.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3">
+            <div key={factor.id} className="flex items-center justify-between bg-fill rounded-lg px-4 py-3">
               <div className="flex items-center gap-3">
-                <svg className="w-4 h-4 text-[#014D4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                <span className="text-sm text-[#1a1a1a]">{factor.friendly_name ?? 'Authenticator app'}</span>
+                <span className="text-sm text-ink">{factor.friendly_name ?? 'Authenticator app'}</span>
               </div>
               <button
                 type="button"

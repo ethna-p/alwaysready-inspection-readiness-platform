@@ -24,8 +24,8 @@ const SERVICE_TYPES = [
 ]
 
 const inputClass = `
-  w-full border border-gray-300 rounded-lg
-  px-4 py-2.5 text-sm text-[#1a1a1a]
+  w-full border border-line rounded-lg
+  px-4 py-2.5 text-sm text-ink
   focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
 `
 
@@ -36,24 +36,24 @@ export default function SignUpPage() {
   )
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-canvas flex items-center justify-center px-6 py-12">
       <div className="max-w-lg w-full">
 
         {/* Logo */}
         <div className="mb-8 text-center">
           <a href="https://alwaysready.uk">
-            <span className="inline-block text-3xl font-extrabold tracking-tight text-[#014D4E]">
-              Always<span className="text-[#014D4E]">Ready</span>
+            <span className="inline-block text-3xl font-extrabold tracking-tight text-brand">
+              Always<span className="text-brand">Ready</span>
             </span>
           </a>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-          <h1 className="text-2xl font-bold text-[#014D4E] mb-1">
+        <div className="bg-card rounded-2xl border border-line shadow-sm p-8">
+          <h1 className="text-2xl font-bold text-brand mb-1">
             Start your free trial
           </h1>
-          <p className="text-sm text-gray-600 mb-6">
+          <p className="text-sm text-ink-dim mb-6">
             7 days free. No credit card required.
           </p>
 
@@ -67,7 +67,7 @@ export default function SignUpPage() {
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="full_name">
+              <label className="block text-sm font-medium text-ink mb-1" htmlFor="full_name">
                 Your full name <span className="text-red-500">*</span>
               </label>
               <input
@@ -83,7 +83,7 @@ export default function SignUpPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="email">
+              <label className="block text-sm font-medium text-ink mb-1" htmlFor="email">
                 Work email address <span className="text-red-500">*</span>
               </label>
               <input
@@ -99,7 +99,7 @@ export default function SignUpPage() {
 
             {/* Organisation name */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="org_name">
+              <label className="block text-sm font-medium text-ink mb-1" htmlFor="org_name">
                 Organisation name <span className="text-red-500">*</span>
               </label>
               <input
@@ -114,7 +114,7 @@ export default function SignUpPage() {
 
             {/* Service type */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="service_type">
+              <label className="block text-sm font-medium text-ink mb-1" htmlFor="service_type">
                 Service type <span className="text-red-500">*</span>
               </label>
               <select
@@ -132,7 +132,7 @@ export default function SignUpPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="password">
+              <label className="block text-sm font-medium text-ink mb-1" htmlFor="password">
                 Password <span className="text-red-500">*</span>
               </label>
               <input
@@ -149,7 +149,7 @@ export default function SignUpPage() {
 
             {/* Confirm password */}
             <div>
-              <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="password2">
+              <label className="block text-sm font-medium text-ink mb-1" htmlFor="password2">
                 Confirm password <span className="text-red-500">*</span>
               </label>
               <input
@@ -164,13 +164,13 @@ export default function SignUpPage() {
             </div>
 
             {/* Terms notice */}
-            <p className="text-xs text-gray-600 leading-relaxed pt-1">
+            <p className="text-xs text-ink-dim leading-relaxed pt-1">
               By creating an account you agree to our{' '}
               <a
                 href="https://alwaysready.uk/terms"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-[#014D4E]"
+                className="underline hover:text-brand"
               >
                 Terms of Service
               </a>
@@ -179,7 +179,7 @@ export default function SignUpPage() {
                 href="https://alwaysready.uk/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-[#014D4E]"
+                className="underline hover:text-brand"
               >
                 Privacy Policy
               </a>
@@ -207,9 +207,9 @@ export default function SignUpPage() {
         </div>
 
         {/* Login link */}
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-sm text-ink-dim mt-6">
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-[#014D4E] hover:underline">
+          <Link href="/login" className="font-medium text-brand hover:underline">
             Log in
           </Link>
         </p>

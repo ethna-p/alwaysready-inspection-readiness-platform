@@ -31,8 +31,8 @@ export default function ProvisionPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#1a1a1a] mb-1">Provision New Organisation</h1>
-      <p className="text-sm text-gray-500 mb-8">
+      <h1 className="text-2xl font-bold text-ink mb-1">Provision New Organisation</h1>
+      <p className="text-sm text-ink-muted mb-8">
         Creates the org, admin user, and seeds 24 compliance records. The admin
         receives login credentials directly — no email verification required.
       </p>
@@ -41,27 +41,27 @@ export default function ProvisionPage() {
       {result?.success && (
         <div className="bg-green-50 border border-green-300 rounded-xl p-6 mb-8">
           <p className="font-semibold text-green-700 mb-3">✓ Organisation provisioned</p>
-          <dl className="space-y-1 text-sm text-gray-700">
+          <dl className="space-y-1 text-sm text-ink">
             <div className="flex gap-3">
-              <dt className="text-gray-500 w-28 shrink-0">Reference</dt>
+              <dt className="text-ink-muted w-28 shrink-0">Reference</dt>
               <dd className="font-mono">{result.reference}</dd>
             </div>
             <div className="flex gap-3">
-              <dt className="text-gray-500 w-28 shrink-0">Org ID</dt>
+              <dt className="text-ink-muted w-28 shrink-0">Org ID</dt>
               <dd className="font-mono text-xs">{result.orgId}</dd>
             </div>
             <div className="flex gap-3">
-              <dt className="text-gray-500 w-28 shrink-0">User ID</dt>
+              <dt className="text-ink-muted w-28 shrink-0">User ID</dt>
               <dd className="font-mono text-xs">{result.userId}</dd>
             </div>
           </dl>
-          <p className="mt-4 text-xs text-gray-500">
+          <p className="mt-4 text-xs text-ink-muted">
             Send the admin their email and password. They will be prompted to set
             preferences on first login.
           </p>
           <a
             href="/superadmin/provision"
-            className="inline-block mt-4 text-sm font-semibold text-[#014D4E] hover:underline"
+            className="inline-block mt-4 text-sm font-semibold text-brand hover:underline"
           >
             + Add another provider
           </a>
@@ -80,12 +80,12 @@ export default function ProvisionPage() {
 
         {/* Organisation */}
         <fieldset className="space-y-4">
-          <legend className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+          <legend className="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-2">
             Organisation
           </legend>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1" htmlFor="org_name">
+            <label className="block text-sm text-ink mb-1" htmlFor="org_name">
               Organisation name <span className="text-red-400">*</span>
             </label>
             <input
@@ -95,15 +95,15 @@ export default function ProvisionPage() {
               required
               placeholder="Sunrise Care Home"
               className="
-                w-full bg-white border border-gray-300 rounded-lg
-                px-4 py-2.5 text-sm text-[#1a1a1a] placeholder-gray-400
+                w-full bg-card border border-line rounded-lg
+                px-4 py-2.5 text-sm text-ink placeholder-gray-400
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1" htmlFor="service_type">
+            <label className="block text-sm text-ink mb-1" htmlFor="service_type">
               Service type <span className="text-red-400">*</span>
             </label>
             <select
@@ -111,8 +111,8 @@ export default function ProvisionPage() {
               name="service_type"
               required
               className="
-                w-full bg-white border border-gray-300 rounded-lg
-                px-4 py-2.5 text-sm text-[#1a1a1a]
+                w-full bg-card border border-line rounded-lg
+                px-4 py-2.5 text-sm text-ink
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             >
@@ -131,7 +131,7 @@ export default function ProvisionPage() {
               defaultChecked
               className="h-4 w-4 accent-[#00b8a6] rounded"
             />
-            <label htmlFor="is_beta" className="text-sm text-gray-700">
+            <label htmlFor="is_beta" className="text-sm text-ink">
               Beta user (manually invited — shown with Beta badge in Organisations list)
             </label>
           </div>
@@ -143,13 +143,13 @@ export default function ProvisionPage() {
               type="checkbox"
               className="h-4 w-4 accent-[#00b8a6] rounded"
             />
-            <label htmlFor="is_charity" className="text-sm text-gray-700">
+            <label htmlFor="is_charity" className="text-sm text-ink">
               Registered charity (20% discount applies — note only, no billing effect yet)
             </label>
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1" htmlFor="trial_days">
+            <label className="block text-sm text-ink mb-1" htmlFor="trial_days">
               Trial length (days)
             </label>
             <input
@@ -160,24 +160,24 @@ export default function ProvisionPage() {
               max={365}
               defaultValue={90}
               className="
-                w-32 bg-white border border-gray-300 rounded-lg
-                px-4 py-2.5 text-sm text-[#1a1a1a]
+                w-32 bg-card border border-line rounded-lg
+                px-4 py-2.5 text-sm text-ink
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
           </div>
         </fieldset>
 
-        <hr className="border-gray-200" />
+        <hr className="border-line" />
 
         {/* Admin user */}
         <fieldset className="space-y-4">
-          <legend className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+          <legend className="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-2">
             Admin user (RCM)
           </legend>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1" htmlFor="admin_name">
+            <label className="block text-sm text-ink mb-1" htmlFor="admin_name">
               Full name <span className="text-red-400">*</span>
             </label>
             <input
@@ -187,15 +187,15 @@ export default function ProvisionPage() {
               required
               placeholder="Jane Smith"
               className="
-                w-full bg-white border border-gray-300 rounded-lg
-                px-4 py-2.5 text-sm text-[#1a1a1a] placeholder-gray-400
+                w-full bg-card border border-line rounded-lg
+                px-4 py-2.5 text-sm text-ink placeholder-gray-400
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1" htmlFor="admin_email">
+            <label className="block text-sm text-ink mb-1" htmlFor="admin_email">
               Email address <span className="text-red-400">*</span>
             </label>
             <input
@@ -205,15 +205,15 @@ export default function ProvisionPage() {
               required
               placeholder="jane@example.com"
               className="
-                w-full bg-white border border-gray-300 rounded-lg
-                px-4 py-2.5 text-sm text-[#1a1a1a] placeholder-gray-400
+                w-full bg-card border border-line rounded-lg
+                px-4 py-2.5 text-sm text-ink placeholder-gray-400
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1" htmlFor="admin_password">
+            <label className="block text-sm text-ink mb-1" htmlFor="admin_password">
               Temporary password <span className="text-red-400">*</span>
             </label>
             <input
@@ -229,7 +229,7 @@ export default function ProvisionPage() {
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-ink-muted mt-1">
               Shown in plain text so you can copy it. Share securely with the admin — they can change it via account settings.
             </p>
           </div>

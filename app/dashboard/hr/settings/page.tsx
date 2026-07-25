@@ -89,7 +89,7 @@ export default function HrSettingsPage() {
     })
   }
 
-  if (loading) return <div className="text-sm text-gray-500">Loading…</div>
+  if (loading) return <div className="text-sm text-ink-muted">Loading…</div>
 
   return (
     <div className="max-w-2xl">
@@ -97,11 +97,11 @@ export default function HrSettingsPage() {
         <button
           type="button"
           onClick={() => router.push('/dashboard/hr')}
-          className="text-sm text-gray-500 hover:text-[#014D4E] mb-4 flex items-center gap-1"
+          className="text-sm text-ink-muted hover:text-brand mb-4 flex items-center gap-1"
         >
           ← Back to HR Records
         </button>
-        <h1 className="text-2xl font-bold text-[#014D4E]">HR Settings</h1>
+        <h1 className="text-2xl font-bold text-brand">HR Settings</h1>
       </div>
 
       {message && (
@@ -116,9 +116,9 @@ export default function HrSettingsPage() {
       )}
 
       {/* Holiday unit */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h2 className="text-base font-semibold text-[#014D4E] mb-1">Holiday allowance unit</h2>
-        <p className="text-sm text-gray-600 mb-4">
+      <section className="bg-card rounded-xl border border-line p-6 mb-6">
+        <h2 className="text-base font-semibold text-brand mb-1">Holiday allowance unit</h2>
+        <p className="text-sm text-ink-dim mb-4">
           Choose whether holiday entitlement is measured in days or hours across your organisation.
           This applies to all staff records.
         </p>
@@ -133,7 +133,7 @@ export default function HrSettingsPage() {
                 onChange={() => setHolidayUnit(unit)}
                 className="accent-[#014D4E]"
               />
-              <span className="text-sm capitalize text-[#1a1a1a]">{unit}</span>
+              <span className="text-sm capitalize text-ink">{unit}</span>
             </label>
           ))}
         </div>
@@ -148,9 +148,9 @@ export default function HrSettingsPage() {
       </section>
 
       {/* Training types */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-base font-semibold text-[#014D4E] mb-1">Training types</h2>
-        <p className="text-sm text-gray-600 mb-4">
+      <section className="bg-card rounded-xl border border-line p-6">
+        <h2 className="text-base font-semibold text-brand mb-1">Training types</h2>
+        <p className="text-sm text-ink-dim mb-4">
           These are the training categories tracked for your staff. The defaults below are
           standard for care homes — add any additional types specific to your organisation.
         </p>
@@ -159,14 +159,14 @@ export default function HrSettingsPage() {
           {trainingTypes.map(t => (
             <div key={t.id} className="py-3 flex items-center justify-between">
               <div>
-                <span className="text-sm font-medium text-[#1a1a1a]">{t.name}</span>
+                <span className="text-sm font-medium text-ink">{t.name}</span>
                 {t.is_mandatory && (
-                  <span className="ml-2 text-xs bg-[#014D4E]/10 text-[#014D4E] px-1.5 py-0.5 rounded">
+                  <span className="ml-2 text-xs bg-[#014D4E]/10 text-brand px-1.5 py-0.5 rounded">
                     Mandatory
                   </span>
                 )}
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-ink-muted">
                 Every {t.default_frequency_days === 365 ? 'year'
                   : t.default_frequency_days === 1095 ? '3 years'
                   : `${t.default_frequency_days} days`}
@@ -176,8 +176,8 @@ export default function HrSettingsPage() {
         </div>
 
         {/* Add new type */}
-        <form onSubmit={handleAddType} className="border-t border-gray-100 pt-5">
-          <h3 className="text-sm font-semibold text-[#014D4E] mb-3">Add training type</h3>
+        <form onSubmit={handleAddType} className="border-t border-line pt-5">
+          <h3 className="text-sm font-semibold text-brand mb-3">Add training type</h3>
           <div className="flex flex-col gap-3">
             <input
               type="text"
@@ -185,7 +185,7 @@ export default function HrSettingsPage() {
               onChange={e => setNewTypeName(e.target.value)}
               placeholder="e.g. Moving and Positioning"
               required
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+              className="w-full rounded-lg border border-line px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
             />
             <div className="flex items-center gap-6">
               <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -198,13 +198,13 @@ export default function HrSettingsPage() {
                 Mandatory
               </label>
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-700">Frequency (days):</label>
+                <label className="text-sm text-ink">Frequency (days):</label>
                 <input
                   type="number"
                   min={1}
                   value={newTypeFrequency}
                   onChange={e => setNewTypeFrequency(Number(e.target.value))}
-                  className="w-20 rounded-lg border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+                  className="w-20 rounded-lg border border-line px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
                 />
               </div>
             </div>

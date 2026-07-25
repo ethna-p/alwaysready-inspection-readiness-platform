@@ -68,22 +68,22 @@ export default async function MyKloesPage() {
     <div className="max-w-3xl">
       {/* Heading */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#014D4E]">My KLOEs</h1>
-        <p className="text-sm text-gray-600 mt-1">
+        <h1 className="text-2xl font-bold text-brand">My KLOEs</h1>
+        <p className="text-sm text-ink-dim mt-1">
           Welcome, {displayName}. Here are the KLOEs assigned to you.
         </p>
       </div>
 
       {sorted.length === 0 ? (
         /* Empty state */
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <div className="bg-card rounded-xl border border-line p-8 text-center">
+          <div className="w-12 h-12 rounded-full bg-fill-dim flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-ink-dim" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           </div>
-          <h2 className="font-semibold text-[#014D4E] mb-1">Nothing assigned to you yet</h2>
-          <p className="text-sm text-gray-600">
+          <h2 className="font-semibold text-brand mb-1">Nothing assigned to you yet</h2>
+          <p className="text-sm text-ink-dim">
             Your admin will assign KLOEs to you. Check back after speaking to your manager.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default async function MyKloesPage() {
             return (
               <div
                 key={record.id}
-                className="bg-white rounded-xl border border-gray-200 p-4"
+                className="bg-card rounded-xl border border-line p-4"
               >
                 <div className="flex items-start gap-3">
                   {/* RAG dot */}
@@ -107,17 +107,17 @@ export default async function MyKloesPage() {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-[#014D4E] uppercase tracking-wide mb-0.5">
+                    <p className="text-xs font-medium text-brand uppercase tracking-wide mb-0.5">
                       {kqName}
                     </p>
                     <Link
                       href={`/dashboard/kloes/${record.klo_item_id}`}
-                      className="font-semibold text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+                      className="font-semibold text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
                     >
                       {klo?.title ?? 'KLOE'}
                     </Link>
 
-                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-600">
+                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-ink-dim">
                       <StatusBadge status={record.status} />
                       <span>
                         Next due:{' '}
@@ -165,7 +165,7 @@ export default async function MyKloesPage() {
         <div className="mt-6 text-sm text-center">
           <Link
             href="/dashboard/kloes"
-            className="text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+            className="text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
           >
             View all KLOEs →
           </Link>

@@ -36,14 +36,14 @@ export default function AssignForm({ kloItemId, currentAssignedTo, teamMembers }
 
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex-1 min-w-[200px]">
-          <label htmlFor="assigned_to" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          <label htmlFor="assigned_to" className="block text-sm font-medium text-ink mb-1">
             Assigned to
           </label>
           <select
             id="assigned_to"
             name="assigned_to"
             defaultValue={currentAssignedTo ?? ''}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           >
             <option value="">— Unassigned —</option>
             {teamMembers.map(m => (

@@ -109,7 +109,7 @@ export default function IdleTimeout() {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
 
       {/* Dialog */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+      <div className="relative bg-card rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
         {/* Icon */}
         <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
           <svg
@@ -128,15 +128,15 @@ export default function IdleTimeout() {
           </svg>
         </div>
 
-        <h2 id="idle-warning-title" className="text-lg font-bold text-[#1a1a1a] mb-2">
+        <h2 id="idle-warning-title" className="text-lg font-bold text-ink mb-2">
           Still there?
         </h2>
-        <p id="idle-warning-desc" className="text-sm text-gray-600 mb-1">
+        <p id="idle-warning-desc" className="text-sm text-ink-dim mb-1">
           You&apos;ve been inactive for 14 minutes.
         </p>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-ink-dim mb-6">
           For security, you&apos;ll be logged out in{' '}
-          <span className="font-bold text-[#014D4E]">
+          <span className="font-bold text-brand">
             {secondsLeft} {secondsLeft === 1 ? 'second' : 'seconds'}
           </span>.
         </p>
@@ -159,9 +159,9 @@ export default function IdleTimeout() {
             type="button"
             onClick={signOut}
             className="
-              w-full text-sm text-gray-600
+              w-full text-sm text-ink-dim
               px-5 py-2.5 rounded-lg
-              hover:text-[#1a1a1a] hover:bg-gray-50
+              hover:text-ink hover:bg-fill
               focus:outline-none focus:ring-2 focus:ring-gray-300
               transition-colors
             "

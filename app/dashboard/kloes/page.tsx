@@ -81,31 +81,31 @@ export default async function KloesPage() {
     <div>
       {/* Page heading */}
       <div className="mb-8">
-        <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+        <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
           <ol className="flex gap-1">
-            <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+            <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
             <li aria-hidden="true">/</li>
-            <li className="text-[#1a1a1a]" aria-current="page">KLOEs</li>
+            <li className="text-ink" aria-current="page">KLOEs</li>
           </ol>
         </nav>
-        <h1 className="text-2xl font-bold text-[#014D4E]">KLOE Compliance Tracker</h1>
-        <p className="text-sm text-gray-600 mt-1">
+        <h1 className="text-2xl font-bold text-brand">KLOE Compliance Tracker</h1>
+        <p className="text-sm text-ink-dim mt-1">
           Select any KLOE to update its status or view its audit trail.
         </p>
       </div>
 
       {/* Summary strip */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
-        <div className="col-span-2 sm:col-span-1 bg-white rounded-xl border border-gray-200 p-4">
-          <p className="text-xs text-gray-600 font-medium mb-1">Overall</p>
-          <p className="text-3xl font-bold text-[#014D4E]">{pctComplete}<span className="text-lg">%</span></p>
-          <p className="text-xs text-gray-600">Completed</p>
+        <div className="col-span-2 sm:col-span-1 bg-card rounded-xl border border-line p-4">
+          <p className="text-xs text-ink-dim font-medium mb-1">Overall</p>
+          <p className="text-3xl font-bold text-brand">{pctComplete}<span className="text-lg">%</span></p>
+          <p className="text-xs text-ink-dim">Completed</p>
         </div>
         {([ 'green', 'amber', 'red', 'grey'] as const).map(rag => (
-          <div key={rag} className="bg-white rounded-xl border border-gray-200 p-4">
+          <div key={rag} className="bg-card rounded-xl border border-line p-4">
             <RagBadge status={rag} compact />
-            <p className="text-2xl font-bold text-[#1a1a1a] mt-2">{ragCounts[rag]}</p>
-            <p className="text-xs text-gray-600">KLOEs</p>
+            <p className="text-2xl font-bold text-ink mt-2">{ragCounts[rag]}</p>
+            <p className="text-xs text-ink-dim">KLOEs</p>
           </div>
         ))}
       </div>
@@ -124,27 +124,27 @@ export default async function KloesPage() {
 
           return (
             <section key={kq.id} aria-labelledby={`kq-${kq.id}`}>
-              <div className="mb-3 pb-2 border-b border-gray-200">
+              <div className="mb-3 pb-2 border-b border-line">
                 <h2
                   id={`kq-${kq.id}`}
-                  className="text-lg font-bold text-[#014D4E]"
+                  className="text-lg font-bold text-brand"
                 >
                   {kq.name}
-                  <span className="ml-2 text-sm font-normal text-gray-600">
+                  <span className="ml-2 text-sm font-normal text-ink-dim">
                     ({groupKlos.length} KLOEs)
                   </span>
                 </h2>
                 {kq.description && (
-                  <p className="text-sm text-gray-600 mt-0.5 italic">
+                  <p className="text-sm text-ink-dim mt-0.5 italic">
                     "{kq.description}"
                   </p>
                 )}
               </div>
 
-              <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+              <div className="bg-card rounded-xl border border-line overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
+                    <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                       <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">Status</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">RAG</th>
@@ -164,13 +164,13 @@ export default async function KloesPage() {
                       return (
                         <tr
                           key={klo.id}
-                          className="hover:bg-[#faf9f6] transition-colors"
+                          className="hover:bg-canvas transition-colors"
                         >
                           {/* KLOE title */}
                           <td className="px-4 py-3">
                             <Link
                               href={`/dashboard/kloes/${klo.id}`}
-                              className="font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1 rounded"
+                              className="font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1 rounded"
                             >
                               {klo.title}
                             </Link>
@@ -185,7 +185,7 @@ export default async function KloesPage() {
                           <td className="px-4 py-3 hidden sm:table-cell">
                             {record
                               ? <StatusBadge status={record.status} />
-                              : <span className="text-gray-600 text-xs">—</span>
+                              : <span className="text-ink-dim text-xs">—</span>
                             }
                           </td>
 
@@ -202,17 +202,17 @@ export default async function KloesPage() {
                                   {record.priority}
                                 </span>
                               )
-                              : <span className="text-gray-600 text-xs">—</span>
+                              : <span className="text-ink-dim text-xs">—</span>
                             }
                           </td>
 
                           {/* Next due */}
-                          <td className="px-4 py-3 hidden lg:table-cell text-gray-600">
+                          <td className="px-4 py-3 hidden lg:table-cell text-ink-dim">
                             {formatDate(record?.next_review_due ?? null)}
                           </td>
 
                           {/* Assigned to */}
-                          <td className="px-4 py-3 hidden lg:table-cell text-gray-600 text-xs">
+                          <td className="px-4 py-3 hidden lg:table-cell text-ink-dim text-xs">
                             {record?.assigned_to
                               ? nameByUserId.get(record.assigned_to) ?? '—'
                               : <span className="text-gray-300">Unassigned</span>
@@ -223,7 +223,7 @@ export default async function KloesPage() {
                           <td className="px-4 py-3 text-right">
                             <Link
                               href={`/dashboard/kloes/${klo.id}`}
-                              className="text-xs text-[#014D4E] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+                              className="text-xs text-brand font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
                               aria-label={`Update ${klo.title}`}
                             >
                               Update →

@@ -36,7 +36,7 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Type selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Inspection type</label>
+        <label className="block text-sm font-medium text-ink mb-2">Inspection type</label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             type="button"
@@ -45,11 +45,11 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
               text-left border rounded-xl p-4 transition-colors
               ${type === 'partial'
                 ? 'border-[#00b8a6] bg-[#f0faf9]'
-                : 'border-gray-200 bg-white hover:border-gray-300'}
+                : 'border-line bg-card hover:border-line'}
             `}
           >
-            <p className="text-sm font-semibold text-[#1a1a1a]">Partial inspection</p>
-            <p className="text-xs text-gray-500 mt-1">One key question and its linked KLOEs. Ideal for running a quick audit of a specific area.</p>
+            <p className="text-sm font-semibold text-ink">Partial inspection</p>
+            <p className="text-xs text-ink-muted mt-1">One key question and its linked KLOEs. Ideal for running a quick audit of a specific area.</p>
           </button>
           <button
             type="button"
@@ -58,11 +58,11 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
               text-left border rounded-xl p-4 transition-colors
               ${type === 'full'
                 ? 'border-[#00b8a6] bg-[#f0faf9]'
-                : 'border-gray-200 bg-white hover:border-gray-300'}
+                : 'border-line bg-card hover:border-line'}
             `}
           >
-            <p className="text-sm font-semibold text-[#1a1a1a]">Full inspection</p>
-            <p className="text-xs text-gray-500 mt-1">All five key questions and every KLOE. Recommended when you have time to run a more comprehensive self-assessment.</p>
+            <p className="text-sm font-semibold text-ink">Full inspection</p>
+            <p className="text-xs text-ink-muted mt-1">All five key questions and every KLOE. Recommended when you have time to run a more comprehensive self-assessment.</p>
           </button>
         </div>
       </div>
@@ -70,14 +70,14 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
       {/* Key question selector — partial only */}
       {type === 'partial' && (
         <div>
-          <label htmlFor="key_question" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="key_question" className="block text-sm font-medium text-ink mb-1">
             Key question to inspect
           </label>
           <select
             id="key_question"
             value={keyQuestionId}
             onChange={e => setKeyQuestionId(e.target.value)}
-            className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent"
+            className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent"
           >
             {keyQuestions.map(kq => (
               <option key={kq.id} value={kq.id}>{kq.name}</option>

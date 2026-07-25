@@ -44,11 +44,11 @@ export default function VisitorRow({ visitor }: Props) {
   const expiry = formatExpiry(visitor.viewer_expires_at)
 
   return (
-    <tr className="hover:bg-[#faf9f6] transition-colors">
+    <tr className="hover:bg-canvas transition-colors">
       <td className="px-4 py-3">
-        <p className="font-medium text-[#1a1a1a]">{displayName}</p>
+        <p className="font-medium text-ink">{displayName}</p>
         {visitor.username && (
-          <p className="text-xs font-mono text-gray-600 mt-0.5">{visitor.username}</p>
+          <p className="text-xs font-mono text-ink-dim mt-0.5">{visitor.username}</p>
         )}
       </td>
 
@@ -59,7 +59,7 @@ export default function VisitorRow({ visitor }: Props) {
               ? 'text-red-600 font-medium'
               : expiry.isExpiringSoon
               ? 'text-amber-600 font-medium'
-              : 'text-gray-600'
+              : 'text-ink-dim'
           }`}
         >
           {expiry.label}

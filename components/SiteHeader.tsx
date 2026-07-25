@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import SignOutButton from './SignOutButton'
 import MobileNav from './MobileNav'
+import ThemeToggle from './ThemeToggle'
 
 export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean }) {
   const supabase = await createClient()
@@ -24,7 +25,7 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
   const hasUnread = (unreadCount ?? 0) > 0
 
   return (
-    <header className="bg-white border-b border-gray-200 print:hidden">
+    <header className="bg-card border-b border-line print:hidden">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo — links to dashboard */}
         <div className="flex items-center gap-4">
@@ -41,7 +42,7 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           {isDemo && (
             <a
               href="https://alwaysready.uk"
-              className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-[#014D4E]/70 hover:text-[#014D4E] border border-[#014D4E]/20 rounded-full px-3 py-1 hover:border-[#014D4E]/50 transition-colors"
+              className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-brand/70 hover:text-brand border border-[#014D4E]/20 rounded-full px-3 py-1 hover:border-[#014D4E]/50 transition-colors"
             >
               ← alwaysready.uk
             </a>
@@ -52,38 +53,38 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
         <nav aria-label="Main navigation" className="hidden sm:flex items-center gap-6">
           <a
             href="/dashboard"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Dashboard
           </a>
           <a
             href="/dashboard/kloes"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             KLOEs
           </a>
           <a
             href="/dashboard/daily-report"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Daily Report
           </a>
           <a
             href="/dashboard/trend"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Trend
           </a>
           <a
             href="/dashboard/inspection-pack"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Inspection Pack
           </a>
           {isAdmin && (
             <a
               href="/dashboard/admin/team"
-              className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+              className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               Team
             </a>
@@ -91,7 +92,7 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           {isAdmin && (
             <a
               href="/dashboard/hr"
-              className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+              className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               HR
             </a>
@@ -99,7 +100,7 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           {isAdmin && (
             <a
               href="/dashboard/newsletter"
-              className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+              className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               Newsletter
             </a>
@@ -107,20 +108,20 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           {isAdmin && (
             <a
               href="/dashboard/mock-inspections"
-              className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+              className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               Mock Inspection
             </a>
           )}
           <a
             href="/dashboard/peoples-voice"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             People's Voice
           </a>
           <a
             href="/dashboard/support"
-            className="relative text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="relative text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Support
             {hasUnread && (
@@ -129,20 +130,21 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           </a>
           <a
             href="/dashboard/help"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Help
           </a>
           <a
             href="/dashboard/account"
-            className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Account
           </a>
         </nav>
 
-        {/* Desktop: sign out | Mobile: hamburger */}
+        {/* Desktop: theme toggle + sign out | Mobile: hamburger */}
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <SignOutButton />
           <MobileNav isAdmin={isAdmin} isDemo={isDemo} hasUnread={hasUnread} />
         </div>

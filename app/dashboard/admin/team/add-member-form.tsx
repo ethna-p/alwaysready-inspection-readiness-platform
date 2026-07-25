@@ -17,10 +17,10 @@ const ROLE_OPTIONS = [
 ]
 
 const inputClass = `
-  w-full border border-gray-300 rounded-lg px-3 py-2
-  text-sm text-[#1a1a1a] placeholder:text-gray-400
+  w-full border border-line rounded-lg px-3 py-2
+  text-sm text-ink placeholder:text-ink-muted
   focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
-  bg-white
+  bg-card
 `
 
 export default function AddMemberForm() {
@@ -37,7 +37,7 @@ export default function AddMemberForm() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="mt-4 text-sm font-medium text-[#014D4E] hover:underline"
+          className="mt-4 text-sm font-medium text-brand hover:underline"
         >
           ← Invite another team member
         </button>
@@ -49,7 +49,7 @@ export default function AddMemberForm() {
     <form action={formAction} className="space-y-4">
       {/* Full name */}
       <div>
-        <label htmlFor="full_name" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+        <label htmlFor="full_name" className="block text-sm font-medium text-ink mb-1">
           Full name
         </label>
         <input
@@ -65,7 +65,7 @@ export default function AddMemberForm() {
 
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+        <label htmlFor="email" className="block text-sm font-medium text-ink mb-1">
           Email address
         </label>
         <input
@@ -76,14 +76,14 @@ export default function AddMemberForm() {
           placeholder="e.g. sarah@example.com"
           className={inputClass}
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-ink-muted mt-1">
           The invite link will be sent to this address. It becomes their login email.
         </p>
       </div>
 
       {/* Role */}
       <div>
-        <label htmlFor="role" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+        <label htmlFor="role" className="block text-sm font-medium text-ink mb-1">
           Role
         </label>
         <select

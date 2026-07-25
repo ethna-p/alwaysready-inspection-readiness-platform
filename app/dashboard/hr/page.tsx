@@ -56,12 +56,12 @@ function HrSummaryCard({
   const accentClass = hasOverdue  ? 'border-red-300   bg-red-50'
                     : hasDueSoon  ? 'border-amber-300 bg-amber-50'
                     : okCount > 0 ? 'border-green-300 bg-green-50'
-                    :               'border-gray-200  bg-gray-50'
+                    :               'border-line  bg-fill'
 
   const headlineColour = hasOverdue  ? 'text-red-700'
                        : hasDueSoon  ? 'text-amber-700'
                        : okCount > 0 ? 'text-green-700'
-                       :               'text-gray-500'
+                       :               'text-ink-muted'
 
   // Headline shows the most urgent stat, not always "% current"
   const headlinePct   = hasOverdue ? overduePct : hasDueSoon ? dueSoonPct : okPct
@@ -69,14 +69,14 @@ function HrSummaryCard({
 
   return (
     <div className={`rounded-xl border p-4 ${accentClass}`}>
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold mb-3 ${headlineColour}`}>
         {headlinePct}<span className="text-lg font-medium">%</span>
-        <span className="ml-1 text-xs font-normal text-gray-500">{headlineLabel}</span>
+        <span className="ml-1 text-xs font-normal text-ink-muted">{headlineLabel}</span>
       </p>
 
       {/* Stacked RAG bar */}
-      <div className="flex h-2 rounded-full overflow-hidden mb-3 bg-gray-200">
+      <div className="flex h-2 rounded-full overflow-hidden mb-3 bg-fill-dim">
         {overdueCount  > 0 && <div className="bg-red-500"   style={{ width: `${overduePct}%`  }} />}
         {dueSoonCount  > 0 && <div className="bg-amber-400" style={{ width: `${dueSoonPct}%`  }} />}
         {okCount       > 0 && <div className="bg-green-500" style={{ width: `${okPct}%`       }} />}
@@ -103,7 +103,7 @@ function HrSummaryCard({
           </span>
         )}
         {notSetCount > 0 && (
-          <span className="flex items-center gap-1 text-gray-500">
+          <span className="flex items-center gap-1 text-ink-muted">
             <span className="h-2 w-2 rounded-full bg-gray-300 shrink-0" aria-hidden="true" />
             {notSetCount} not set
           </span>
@@ -173,12 +173,12 @@ function AttentionSection({
   const countStyle = variant === 'overdue' ? 'text-red-700' : 'text-amber-700'
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-card rounded-xl border border-line overflow-hidden">
       <div className={`flex items-center gap-2 px-5 py-3 border-b ${headerStyle}`}>
         <span className={`text-sm ${iconStyle}`} aria-hidden="true">
           {variant === 'overdue' ? '●' : '◑'}
         </span>
-        <p className="text-sm font-semibold text-[#1a1a1a]">{title}</p>
+        <p className="text-sm font-semibold text-ink">{title}</p>
         <span className={`ml-auto text-xs font-medium ${countStyle}`}>
           {people.length} {people.length === 1 ? 'staff member' : 'staff members'}
         </span>
@@ -187,8 +187,8 @@ function AttentionSection({
         {people.map(person => (
           <div key={person.userId} className="flex items-center gap-3 px-5 py-3">
             <div className="min-w-0">
-              <p className="text-sm font-medium text-[#1a1a1a]">{person.name}</p>
-              <p className="text-xs text-gray-500 capitalize">{person.role}</p>
+              <p className="text-sm font-medium text-ink">{person.name}</p>
+              <p className="text-xs text-ink-muted capitalize">{person.role}</p>
             </div>
             <div className="ml-4 flex flex-wrap gap-1.5">
               {person.fields.map(f => (
@@ -197,7 +197,7 @@ function AttentionSection({
             </div>
             <Link
               href={`/dashboard/hr/${person.userId}`}
-              className="ml-auto shrink-0 text-sm font-medium text-[#014D4E] hover:underline"
+              className="ml-auto shrink-0 text-sm font-medium text-brand hover:underline"
             >
               View →
             </Link>
@@ -215,7 +215,7 @@ function StatusPill({ status, label }: { status: StatusBadge; label: string }) {
     overdue:  'bg-red-100 text-red-700',
     due_soon: 'bg-amber-100 text-amber-700',
     ok:       'bg-green-100 text-green-700',
-    not_set:  'bg-gray-100 text-gray-500',
+    not_set:  'bg-fill-dim text-ink-muted',
   }
   const icons: Record<StatusBadge, string> = {
     overdue:  '●',
@@ -337,14 +337,14 @@ export default async function HrOverviewPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#014D4E]">HR Records</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold text-brand">HR Records</h1>
+          <p className="text-sm text-ink-dim mt-1">
             Staff employment, training, and compliance records.
           </p>
         </div>
         <Link
           href="/dashboard/hr/settings"
-          className="text-sm text-[#014D4E] hover:underline"
+          className="text-sm text-brand hover:underline"
         >
           HR Settings
         </Link>
@@ -352,10 +352,10 @@ export default async function HrOverviewPage() {
 
       {/* Holiday unit notice */}
       <div className="mb-6 bg-[#e6f7f5] border border-[#00b8a6]/30 rounded-xl px-5 py-4 flex items-center justify-between">
-        <p className="text-sm text-[#014D4E]">
+        <p className="text-sm text-brand">
           Holiday allowances are tracked in <strong>{org?.holiday_unit ?? 'days'}</strong>.
         </p>
-        <Link href="/dashboard/hr/settings" className="text-xs text-[#014D4E] hover:underline">
+        <Link href="/dashboard/hr/settings" className="text-xs text-brand hover:underline">
           Change →
         </Link>
       </div>
@@ -414,23 +414,23 @@ export default async function HrOverviewPage() {
 
       {/* Staff table */}
       {staffList.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
-          <p className="text-gray-500 text-sm">No staff members found. Add staff via the Team page first.</p>
-          <Link href="/dashboard/admin/team" className="mt-3 inline-block text-sm text-[#014D4E] hover:underline">
+        <div className="bg-card rounded-xl border border-line p-10 text-center">
+          <p className="text-ink-muted text-sm">No staff members found. Add staff via the Team page first.</p>
+          <Link href="/dashboard/admin/team" className="mt-3 inline-block text-sm text-brand hover:underline">
             Go to Team →
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+        <div className="bg-card rounded-xl border border-line overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left px-5 py-3 font-semibold text-[#014D4E]">Name</th>
-                <th className="text-left px-5 py-3 font-semibold text-[#014D4E]">Job Title</th>
-                <th className="text-left px-5 py-3 font-semibold text-[#014D4E]">DBS</th>
-                <th className="text-left px-5 py-3 font-semibold text-[#014D4E]">Supervision</th>
-                <th className="text-left px-5 py-3 font-semibold text-[#014D4E]">Appraisal</th>
-                <th className="text-left px-5 py-3 font-semibold text-[#014D4E]">Training</th>
+              <tr className="border-b border-line bg-fill">
+                <th className="text-left px-5 py-3 font-semibold text-brand">Name</th>
+                <th className="text-left px-5 py-3 font-semibold text-brand">Job Title</th>
+                <th className="text-left px-5 py-3 font-semibold text-brand">DBS</th>
+                <th className="text-left px-5 py-3 font-semibold text-brand">Supervision</th>
+                <th className="text-left px-5 py-3 font-semibold text-brand">Appraisal</th>
+                <th className="text-left px-5 py-3 font-semibold text-brand">Training</th>
                 <th className="px-5 py-3" />
               </tr>
             </thead>
@@ -438,13 +438,13 @@ export default async function HrOverviewPage() {
               {staffList.map(user => {
                 const hr = profileMap.get(user.id)
                 return (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={user.id} className="hover:bg-fill transition-colors">
                     <td className="px-5 py-4">
-                      <p className="font-medium text-[#1a1a1a]">{user.full_name ?? user.username}</p>
-                      <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                      <p className="font-medium text-ink">{user.full_name ?? user.username}</p>
+                      <p className="text-xs text-ink-muted capitalize">{user.role}</p>
                     </td>
-                    <td className="px-5 py-4 text-gray-700">
-                      {hr?.job_title ?? <span className="text-gray-400">—</span>}
+                    <td className="px-5 py-4 text-ink">
+                      {hr?.job_title ?? <span className="text-ink-muted">—</span>}
                     </td>
                     <td className="px-5 py-4">
                       {hr
@@ -454,7 +454,7 @@ export default async function HrOverviewPage() {
                             : getDateStatus(hr.dbs_next_review_due) === 'ok' ? 'Current'
                             : 'Not set'
                           } />
-                        : <span className="text-xs text-gray-400">No record</span>
+                        : <span className="text-xs text-ink-muted">No record</span>
                       }
                     </td>
                     <td className="px-5 py-4">
@@ -465,7 +465,7 @@ export default async function HrOverviewPage() {
                             : getDateStatus(hr.supervision_next_due) === 'ok' ? 'Current'
                             : 'Not set'
                           } />
-                        : <span className="text-xs text-gray-400">No record</span>
+                        : <span className="text-xs text-ink-muted">No record</span>
                       }
                     </td>
                     <td className="px-5 py-4">
@@ -476,7 +476,7 @@ export default async function HrOverviewPage() {
                             : getDateStatus(hr.appraisal_next_due) === 'ok' ? 'Current'
                             : 'Not set'
                           } />
-                        : <span className="text-xs text-gray-400">No record</span>
+                        : <span className="text-xs text-ink-muted">No record</span>
                       }
                     </td>
                     <td className="px-5 py-4">
@@ -488,7 +488,7 @@ export default async function HrOverviewPage() {
                     <td className="px-5 py-4 text-right">
                       <Link
                         href={`/dashboard/hr/${user.id}`}
-                        className="text-sm font-medium text-[#014D4E] hover:underline"
+                        className="text-sm font-medium text-brand hover:underline"
                       >
                         View →
                       </Link>

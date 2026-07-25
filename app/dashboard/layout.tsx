@@ -50,7 +50,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf9f6]">
+    <div className="min-h-screen flex flex-col bg-canvas">
       <IdleTimeout />
       <SiteHeader isDemo={org?.is_demo ?? false} />
       <TrialBanner

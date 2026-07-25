@@ -205,34 +205,34 @@ export default async function TimelinePage({ params }: Props) {
   return (
     <div className="max-w-3xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href="/dashboard/kloes" className="hover:text-[#014D4E] underline">KLOEs</Link></li>
+          <li><Link href="/dashboard/kloes" className="hover:text-brand underline">KLOEs</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href={`/dashboard/kloes/${kloId}`} className="hover:text-[#014D4E] underline">{klo.title}</Link></li>
+          <li><Link href={`/dashboard/kloes/${kloId}`} className="hover:text-brand underline">{klo.title}</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">Audit trail</li>
+          <li className="text-ink" aria-current="page">Audit trail</li>
         </ol>
       </nav>
 
       {/* Heading */}
       <div className="mb-8">
-        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-brand uppercase tracking-widest mb-1">
           {kqName}
         </p>
-        <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
-        <p className="text-sm text-gray-600 mt-1">
+        <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
+        <p className="text-sm text-ink-dim mt-1">
           Complete audit trail — every change, in order, with who made it and when.
         </p>
       </div>
 
       {/* Summary bar */}
       <div className="flex flex-wrap gap-4 mb-8">
-        <div className="bg-white border border-gray-200 rounded-xl px-5 py-3 flex items-center gap-3">
-          <span className="text-2xl font-bold text-[#014D4E]">{totalEntries}</span>
-          <span className="text-sm text-gray-600">total {totalEntries === 1 ? 'entry' : 'entries'}</span>
+        <div className="bg-card border border-line rounded-xl px-5 py-3 flex items-center gap-3">
+          <span className="text-2xl font-bold text-brand">{totalEntries}</span>
+          <span className="text-sm text-ink-dim">total {totalEntries === 1 ? 'entry' : 'entries'}</span>
         </div>
         {(['review', 'frequency', 'priority'] as const).map(type => {
           const count = entries.filter(e => e.type === type).length
@@ -248,11 +248,11 @@ export default async function TimelinePage({ params }: Props) {
 
       {/* Empty state */}
       {totalEntries === 0 && (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
-          <p className="text-sm text-gray-600">No history yet for this KLOE.</p>
+        <div className="bg-fill border border-line rounded-xl p-8 text-center">
+          <p className="text-sm text-ink-dim">No history yet for this KLOE.</p>
           <Link
             href={`/dashboard/kloes/${kloId}`}
-            className="inline-block mt-3 text-sm font-medium text-[#014D4E] underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+            className="inline-block mt-3 text-sm font-medium text-brand underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
           >
             Log the first review →
           </Link>
@@ -261,7 +261,7 @@ export default async function TimelinePage({ params }: Props) {
 
       {/* Timeline */}
       {totalEntries > 0 && (
-        <ol className="relative border-l-2 border-gray-200 ml-3 space-y-0" aria-label="Audit trail timeline">
+        <ol className="relative border-l-2 border-line ml-3 space-y-0" aria-label="Audit trail timeline">
           {entries.map((entry, i) => {
             const { label, badge, dot } = TYPE_CONFIG[entry.type]
             const isFirst = i === 0
@@ -274,7 +274,7 @@ export default async function TimelinePage({ params }: Props) {
                   aria-hidden="true"
                 />
 
-                <div className={`bg-white rounded-xl border p-5 ${isFirst ? 'border-[#014D4E] shadow-sm' : 'border-gray-200'}`}>
+                <div className={`bg-card rounded-xl border p-5 ${isFirst ? 'border-[#014D4E] shadow-sm' : 'border-line'}`}>
 
                   {/* Entry header */}
                   <div className="flex flex-wrap items-start justify-between gap-2 mb-4">
@@ -289,10 +289,10 @@ export default async function TimelinePage({ params }: Props) {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="text-xs font-medium text-[#1a1a1a]">
+                      <p className="text-xs font-medium text-ink">
                         {formatDateTime(entry.timestamp)}
                       </p>
-                      <p className="text-xs text-gray-600 mt-0.5">
+                      <p className="text-xs text-ink-dim mt-0.5">
                         by {entry.changedByEmail}
                       </p>
                     </div>
@@ -318,10 +318,10 @@ export default async function TimelinePage({ params }: Props) {
       )}
 
       {/* Back link */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t border-line">
         <Link
           href={`/dashboard/kloes/${kloId}`}
-          className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+          className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
         >
           ← Back to {klo.title}
         </Link>
@@ -344,16 +344,16 @@ function ReviewEntryBody({ entry }: {
 
       {/* Status — highlight if changed */}
       <div>
-        <dt className="text-xs text-gray-600 mb-1 flex items-center gap-1">
+        <dt className="text-xs text-ink-dim mb-1 flex items-center gap-1">
           Status
           {statusChanged && <ChangedPill />}
         </dt>
         <dd>
           {entry.status
             ? <StatusBadge status={entry.status} />
-            : <span className="text-gray-600">—</span>}
+            : <span className="text-ink-dim">—</span>}
           {statusChanged && entry.prevStatus && (
-            <p className="text-xs text-gray-600 mt-0.5">
+            <p className="text-xs text-ink-dim mt-0.5">
               was: <StatusBadge status={entry.prevStatus} />
             </p>
           )}
@@ -362,11 +362,11 @@ function ReviewEntryBody({ entry }: {
 
       {/* Date reviewed */}
       <div>
-        <dt className="text-xs text-gray-600 mb-1 flex items-center gap-1">
+        <dt className="text-xs text-ink-dim mb-1 flex items-center gap-1">
           Date of review
           {dateChanged && <ChangedPill />}
         </dt>
-        <dd className="font-medium text-[#1a1a1a]">
+        <dd className="font-medium text-ink">
           {formatDate(entry.dateReviewed)}
         </dd>
       </div>
@@ -374,28 +374,28 @@ function ReviewEntryBody({ entry }: {
       {/* Next review due */}
       {entry.nextReviewDue && (
         <div>
-          <dt className="text-xs text-gray-600 mb-1">Next review due</dt>
-          <dd className="font-medium text-[#1a1a1a]">{formatDate(entry.nextReviewDue)}</dd>
+          <dt className="text-xs text-ink-dim mb-1">Next review due</dt>
+          <dd className="font-medium text-ink">{formatDate(entry.nextReviewDue)}</dd>
         </div>
       )}
 
       {/* Review frequency */}
       {entry.reviewFrequencyDays && (
         <div>
-          <dt className="text-xs text-gray-600 mb-1">Review frequency</dt>
-          <dd className="text-[#1a1a1a]">{frequencyLabel(entry.reviewFrequencyDays)}</dd>
+          <dt className="text-xs text-ink-dim mb-1">Review frequency</dt>
+          <dd className="text-ink">{frequencyLabel(entry.reviewFrequencyDays)}</dd>
         </div>
       )}
 
       {/* Evidence location */}
       {(entry.evidenceLocation || evidenceChanged) && (
         <div className="sm:col-span-2">
-          <dt className="text-xs text-gray-600 mb-1 flex items-center gap-1">
+          <dt className="text-xs text-ink-dim mb-1 flex items-center gap-1">
             Evidence location
             {evidenceChanged && <ChangedPill />}
           </dt>
-          <dd className="text-[#1a1a1a] break-words">
-            {entry.evidenceLocation ?? <span className="text-gray-600 italic">Cleared</span>}
+          <dd className="text-ink break-words">
+            {entry.evidenceLocation ?? <span className="text-ink-dim italic">Cleared</span>}
           </dd>
         </div>
       )}
@@ -403,8 +403,8 @@ function ReviewEntryBody({ entry }: {
       {/* Notes */}
       {entry.notes && (
         <div className="sm:col-span-2">
-          <dt className="text-xs text-gray-600 mb-1">Notes</dt>
-          <dd className="text-[#1a1a1a]">{entry.notes}</dd>
+          <dt className="text-xs text-ink-dim mb-1">Notes</dt>
+          <dd className="text-ink">{entry.notes}</dd>
         </div>
       )}
     </dl>
@@ -418,13 +418,13 @@ function FrequencyEntryBody({ entry }: {
     <div className="flex items-center gap-3 text-sm flex-wrap">
       {entry.oldFrequencyDays !== null ? (
         <>
-          <span className="text-gray-600 line-through">{frequencyLabel(entry.oldFrequencyDays)}</span>
-          <span className="text-gray-600" aria-hidden="true">→</span>
+          <span className="text-ink-dim line-through">{frequencyLabel(entry.oldFrequencyDays)}</span>
+          <span className="text-ink-dim" aria-hidden="true">→</span>
         </>
       ) : (
-        <span className="text-xs text-gray-600 italic mr-1">First set:</span>
+        <span className="text-xs text-ink-dim italic mr-1">First set:</span>
       )}
-      <span className="font-semibold text-[#014D4E]">{frequencyLabel(entry.newFrequencyDays)}</span>
+      <span className="font-semibold text-brand">{frequencyLabel(entry.newFrequencyDays)}</span>
     </div>
   )
 }
@@ -437,13 +437,13 @@ function PriorityEntryBody({ entry }: {
       {entry.oldPriority !== null ? (
         <>
           <PriorityDot value={entry.oldPriority} muted />
-          <span className="text-gray-600" aria-hidden="true">→</span>
+          <span className="text-ink-dim" aria-hidden="true">→</span>
         </>
       ) : (
-        <span className="text-xs text-gray-600 italic mr-1">First set:</span>
+        <span className="text-xs text-ink-dim italic mr-1">First set:</span>
       )}
       <PriorityDot value={entry.newPriority} />
-      <span className="text-xs text-gray-600">
+      <span className="text-xs text-ink-dim">
         {entry.newPriority === 1 ? '(Critical — most serious if non-compliant)'
           : entry.newPriority === 2 ? '(High)'
           : entry.newPriority === 3 ? '(Medium)'
@@ -459,7 +459,7 @@ function PriorityDot({ value, muted = false }: { value: number; muted?: boolean 
     <span
       className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${
         muted
-          ? 'bg-gray-200 text-gray-600 line-through'
+          ? 'bg-fill-dim text-ink-dim line-through'
           : 'bg-[#014D4E] text-white'
       }`}
       aria-label={`Priority ${value}`}

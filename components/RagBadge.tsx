@@ -10,7 +10,7 @@ import type { RAGStatus } from '@/lib/rag'
 import { RAG_LABELS } from '@/lib/rag'
 
 const STYLES: Record<RAGStatus, { dot: string; pill: string }> = {
-  grey:  { dot: 'bg-gray-400',  pill: 'bg-gray-100  text-gray-600' },
+  grey:  { dot: 'bg-gray-400',  pill: 'bg-fill-dim  text-ink-dim' },
   red:   { dot: 'bg-red-500',   pill: 'bg-red-50    text-red-700'  },
   amber: { dot: 'bg-amber-400', pill: 'bg-amber-50  text-amber-700' },
   green: { dot: 'bg-green-500', pill: 'bg-green-50  text-green-700' },

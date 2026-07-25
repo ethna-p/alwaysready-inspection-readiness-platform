@@ -47,7 +47,7 @@ export default function EvidencePackButton() {
         disabled={loading}
         className="
           inline-flex items-center gap-2
-          bg-white border border-[#014D4E] text-[#014D4E]
+          bg-card border border-[#014D4E] text-brand
           text-sm font-semibold
           px-4 py-2 rounded-lg
           hover:bg-[#014D4E] hover:text-white

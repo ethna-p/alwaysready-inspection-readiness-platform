@@ -234,7 +234,7 @@ export default function EvidencePanel({
               aria-label="Upload evidence file"
             />
           </label>
-          <p className="mt-1.5 text-xs text-gray-500">
+          <p className="mt-1.5 text-xs text-ink-muted">
             PDF, Word, Excel, or image. Maximum 10 MB.
           </p>
           {uploadError && (
@@ -247,17 +247,17 @@ export default function EvidencePanel({
 
       {/* File list */}
       {files.length === 0 ? (
-        <p className="text-sm text-gray-500">No files uploaded yet.</p>
+        <p className="text-sm text-ink-muted">No files uploaded yet.</p>
       ) : (
         <ul className="space-y-2" aria-label="Uploaded evidence files">
           {files.map(f => (
             <li
               key={f.id}
-              className="flex items-center justify-between gap-3 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3"
+              className="flex items-center justify-between gap-3 bg-fill border border-line rounded-lg px-4 py-3"
             >
               <div className="min-w-0">
-                <p className="text-sm font-medium text-[#1a1a1a] truncate">{f.file_name}</p>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-sm font-medium text-ink truncate">{f.file_name}</p>
+                <p className="text-xs text-ink-muted mt-0.5">
                   {formatBytes(f.file_size)}{f.file_size ? ' · ' : ''}{formatDate(f.uploaded_at)}
                   {f.uploaded_by_name ? ` · ${f.uploaded_by_name}` : ''}
                 </p>
@@ -271,7 +271,7 @@ export default function EvidencePanel({
                 <button
                   type="button"
                   onClick={() => handleDownload(f.storage_path, f.file_name)}
-                  className="text-xs font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+                  className="text-xs font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
                 >
                   Download
                 </button>

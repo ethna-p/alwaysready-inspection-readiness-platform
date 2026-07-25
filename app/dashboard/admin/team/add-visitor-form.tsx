@@ -24,14 +24,14 @@ export default function AddVisitorForm() {
           {state.message}
         </div>
 
-        <div className="bg-[#faf9f6] border border-gray-200 rounded-lg p-4 space-y-3">
-          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-wide">
+        <div className="bg-canvas border border-line rounded-lg p-4 space-y-3">
+          <p className="text-xs font-semibold text-brand uppercase tracking-wide">
             Login credentials — share these now
           </p>
           <div>
-            <p className="text-xs text-gray-600 mb-0.5">Login ID</p>
+            <p className="text-xs text-ink-dim mb-0.5">Login ID</p>
             <p
-              className="font-mono text-sm bg-white border border-gray-200 rounded px-3 py-2 select-all cursor-text"
+              className="font-mono text-sm bg-card border border-line rounded px-3 py-2 select-all cursor-text"
               onClick={e => {
                 const range = document.createRange()
                 range.selectNodeContents(e.currentTarget)
@@ -43,9 +43,9 @@ export default function AddVisitorForm() {
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-600 mb-0.5">Temporary password</p>
+            <p className="text-xs text-ink-dim mb-0.5">Temporary password</p>
             <p
-              className="font-mono text-sm bg-white border border-gray-200 rounded px-3 py-2 select-all cursor-text"
+              className="font-mono text-sm bg-card border border-line rounded px-3 py-2 select-all cursor-text"
               onClick={e => {
                 const range = document.createRange()
                 range.selectNodeContents(e.currentTarget)
@@ -56,7 +56,7 @@ export default function AddVisitorForm() {
               {state.credentials.password}
             </p>
           </div>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-ink-dim">
             Click either field to select all. These credentials will not be shown again.
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function AddVisitorForm() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+          className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
         >
           Create another visitor login →
         </button>
@@ -82,7 +82,7 @@ export default function AddVisitorForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="visitor_full_name" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          <label htmlFor="visitor_full_name" className="block text-sm font-medium text-ink mb-1">
             Visitor name
           </label>
           <input
@@ -91,12 +91,12 @@ export default function AddVisitorForm() {
             type="text"
             required
             placeholder="e.g. Sarah Thompson"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-card text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
         </div>
 
         <div>
-          <label htmlFor="duration_days" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          <label htmlFor="duration_days" className="block text-sm font-medium text-ink mb-1">
             Access duration (days)
           </label>
           <input
@@ -107,9 +107,9 @@ export default function AddVisitorForm() {
             min={1}
             max={365}
             placeholder="e.g. 7"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-card text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
-          <p className="text-xs text-gray-600 mt-1">
+          <p className="text-xs text-ink-dim mt-1">
             Login will stop working automatically after this many days.
           </p>
         </div>

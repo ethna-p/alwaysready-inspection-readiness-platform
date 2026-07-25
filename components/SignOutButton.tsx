@@ -17,7 +17,7 @@ export default function SignOutButton() {
     <button
       onClick={handleSignOut}
       className="
-        text-sm font-medium text-[#014D4E]
+        text-sm font-medium text-brand
         hover:underline
         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
         rounded

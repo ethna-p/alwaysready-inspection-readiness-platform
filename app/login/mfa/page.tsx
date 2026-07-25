@@ -98,7 +98,7 @@ export default function MfaVerifyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+    <div className="min-h-screen bg-canvas flex flex-col">
       <header className="px-6 py-4">
         <Image
           src="/alwaysready-logo.svg"
@@ -112,22 +112,22 @@ export default function MfaVerifyPage() {
 
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-card rounded-2xl shadow-sm border border-line p-8">
 
             {initialising ? (
               <div className="text-center py-6">
-                <p className="text-sm text-gray-500">Setting up verification…</p>
+                <p className="text-sm text-ink-muted">Setting up verification…</p>
               </div>
             ) : (
               <>
                 <div className="mb-6 text-center">
                   <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-[#014D4E]/10 flex items-center justify-center">
-                    <svg className="w-6 h-6 text-[#014D4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-6 h-6 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Two-step verification</h1>
-                  <p className="text-sm text-gray-600">
+                  <h1 className="text-2xl font-bold text-brand mb-1">Two-step verification</h1>
+                  <p className="text-sm text-ink-dim">
                     Enter the 6-digit code from your authenticator app.
                   </p>
                 </div>
@@ -140,7 +140,7 @@ export default function MfaVerifyPage() {
                   )}
 
                   <div className="mb-6">
-                    <label htmlFor="code" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+                    <label htmlFor="code" className="block text-sm font-medium text-ink mb-1">
                       Verification code
                     </label>
                     <input
@@ -154,8 +154,8 @@ export default function MfaVerifyPage() {
                       onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
                       placeholder="000000"
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-[#1a1a1a] text-sm bg-white text-center tracking-widest text-lg font-mono
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-ink text-sm bg-card text-center tracking-widest text-lg font-mono
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
@@ -180,7 +180,7 @@ export default function MfaVerifyPage() {
                 <div className="mt-4 text-center">
                   <a
                     href="/login"
-                    className="text-xs text-gray-500 hover:text-[#014D4E] hover:underline"
+                    className="text-xs text-ink-muted hover:text-brand hover:underline"
                   >
                     ← Sign in with a different account
                   </a>

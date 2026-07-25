@@ -57,7 +57,7 @@ export default function AccountSetupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+    <div className="min-h-screen bg-canvas flex flex-col">
       <header className="px-6 py-4">
         <Image
           src="/alwaysready-logo.svg"
@@ -71,7 +71,7 @@ export default function AccountSetupPage() {
 
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-card rounded-2xl shadow-sm border border-line p-8">
 
             {done ? (
               <div className="text-center py-4">
@@ -80,14 +80,14 @@ export default function AccountSetupPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-base font-semibold text-[#014D4E]">Password set</p>
-                <p className="text-sm text-gray-500 mt-1">Taking you to the platform…</p>
+                <p className="text-base font-semibold text-brand">Password set</p>
+                <p className="text-sm text-ink-muted mt-1">Taking you to the platform…</p>
               </div>
             ) : (
               <>
                 <div className="mb-6 text-center">
-                  <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Welcome to AlwaysReady</h1>
-                  <p className="text-sm text-gray-600">
+                  <h1 className="text-2xl font-bold text-brand mb-1">Welcome to AlwaysReady</h1>
+                  <p className="text-sm text-ink-dim">
                     Set a password to complete your account setup.
                   </p>
                 </div>
@@ -100,7 +100,7 @@ export default function AccountSetupPage() {
                   )}
 
                   <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+                    <label htmlFor="password" className="block text-sm font-medium text-ink mb-1">
                       Password
                     </label>
                     <input
@@ -112,15 +112,15 @@ export default function AccountSetupPage() {
                       onChange={e => setPassword(e.target.value)}
                       placeholder="At least 8 characters"
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-sm text-[#1a1a1a] bg-white
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-sm text-ink bg-card
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="confirm" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+                    <label htmlFor="confirm" className="block text-sm font-medium text-ink mb-1">
                       Confirm password
                     </label>
                     <input
@@ -132,8 +132,8 @@ export default function AccountSetupPage() {
                       onChange={e => setConfirm(e.target.value)}
                       placeholder="Repeat your password"
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-sm text-[#1a1a1a] bg-white
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-sm text-ink bg-card
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />

@@ -30,13 +30,13 @@ export default function ChangePasswordForm() {
   }
 
   const inputClass =
-    'block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-[#1a1a1a] placeholder-gray-400 focus:border-[#014D4E] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1'
+    'block w-full rounded-lg border border-line px-4 py-2.5 text-sm text-ink placeholder-gray-400 focus:border-[#014D4E] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1'
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
       <div>
-        <label htmlFor="current-password" className="block text-sm font-medium text-[#1a1a1a] mb-1.5">
+        <label htmlFor="current-password" className="block text-sm font-medium text-ink mb-1.5">
           Current password
         </label>
         <input
@@ -51,7 +51,7 @@ export default function ChangePasswordForm() {
       </div>
 
       <div>
-        <label htmlFor="new-password" className="block text-sm font-medium text-[#1a1a1a] mb-1.5">
+        <label htmlFor="new-password" className="block text-sm font-medium text-ink mb-1.5">
           New password
         </label>
         <input
@@ -64,11 +64,11 @@ export default function ChangePasswordForm() {
           onChange={e => setNewPassword(e.target.value)}
           className={inputClass}
         />
-        <p className="mt-1.5 text-xs text-gray-500">Minimum 8 characters.</p>
+        <p className="mt-1.5 text-xs text-ink-muted">Minimum 8 characters.</p>
       </div>
 
       <div>
-        <label htmlFor="confirm-password" className="block text-sm font-medium text-[#1a1a1a] mb-1.5">
+        <label htmlFor="confirm-password" className="block text-sm font-medium text-ink mb-1.5">
           Confirm new password
         </label>
         <input

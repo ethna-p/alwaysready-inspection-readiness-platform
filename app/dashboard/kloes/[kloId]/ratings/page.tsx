@@ -37,29 +37,29 @@ export default async function RatingsPage({ params }: Props) {
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href="/dashboard/kloes" className="hover:text-[#014D4E] underline">KLOEs</Link></li>
+          <li><Link href="/dashboard/kloes" className="hover:text-brand underline">KLOEs</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href={`/dashboard/kloes/${kloId}`} className="hover:text-[#014D4E] underline">{klo.title}</Link></li>
+          <li><Link href={`/dashboard/kloes/${kloId}`} className="hover:text-brand underline">{klo.title}</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">Rating characteristics</li>
+          <li className="text-ink" aria-current="page">Rating characteristics</li>
         </ol>
       </nav>
 
       {/* Heading */}
       <div className="mb-8">
-        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-brand uppercase tracking-widest mb-1">
           {kqName}
         </p>
-        <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
+        <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
         {klo.wording && (
-          <p className="mt-3 text-sm text-[#1a1a1a] leading-relaxed">{klo.wording}</p>
+          <p className="mt-3 text-sm text-ink leading-relaxed">{klo.wording}</p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-xs text-gray-600">
+          <p className="mt-2 text-xs text-ink-dim">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}
@@ -68,7 +68,7 @@ export default async function RatingsPage({ params }: Props) {
       {/* Rating cards */}
       {hasAnyRating ? (
         <div className="space-y-4">
-          <p className="text-xs text-gray-600 uppercase tracking-wide font-medium">
+          <p className="text-xs text-ink-dim uppercase tracking-wide font-medium">
             CQC rating characteristics
           </p>
           {RATINGS.map(({ key, label, colour, heading }) => {
@@ -80,22 +80,22 @@ export default async function RatingsPage({ params }: Props) {
                 className={`rounded-xl border p-5 ${colour}`}
               >
                 <h2 className={`text-sm font-bold mb-2 ${heading}`}>{label}</h2>
-                <p className="text-sm text-gray-700 leading-relaxed">{text}</p>
+                <p className="text-sm text-ink leading-relaxed">{text}</p>
               </div>
             )
           })}
         </div>
       ) : (
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-ink-dim">
           No rating characteristics are recorded for this KLOE yet.
         </p>
       )}
 
       {/* Back link */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t border-line">
         <Link
           href={`/dashboard/kloes/${kloId}`}
-          className="text-sm font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+          className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
         >
           ← Back to {klo.title}
         </Link>

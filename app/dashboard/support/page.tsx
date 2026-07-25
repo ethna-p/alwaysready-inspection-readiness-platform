@@ -28,8 +28,8 @@ export default async function SupportPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#014D4E]">Support</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold text-brand">Support</h1>
+          <p className="text-sm text-ink-dim mt-1">
             We aim to respond within three business days.
           </p>
         </div>
@@ -49,9 +49,9 @@ export default async function SupportPage() {
 
       {/* Ticket list */}
       {!tickets || tickets.length === 0 ? (
-        <div className="text-center py-16 text-gray-600 text-sm">
+        <div className="text-center py-16 text-ink-dim text-sm">
           <p className="text-4xl mb-4">💬</p>
-          <p className="font-medium text-[#014D4E] mb-1">No tickets yet</p>
+          <p className="font-medium text-brand mb-1">No tickets yet</p>
           <p>If you need help, we&apos;re here. Submit a ticket and we&apos;ll get back to you.</p>
         </div>
       ) : (
@@ -66,7 +66,7 @@ export default async function SupportPage() {
                 key={ticket.id}
                 href={`/dashboard/support/${ticket.id}`}
                 className="
-                  block bg-white border border-gray-200 rounded-xl
+                  block bg-card border border-line rounded-xl
                   px-5 py-4
                   hover:border-[#00b8a6] hover:shadow-sm
                   focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
@@ -75,9 +75,9 @@ export default async function SupportPage() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-xs text-gray-600 font-mono mb-1">{ticket.reference}</p>
-                    <p className="text-sm font-semibold text-[#014D4E] truncate">{ticket.subject}</p>
-                    <p className="text-xs text-gray-600 mt-1">Submitted {created}</p>
+                    <p className="text-xs text-ink-dim font-mono mb-1">{ticket.reference}</p>
+                    <p className="text-sm font-semibold text-brand truncate">{ticket.subject}</p>
+                    <p className="text-xs text-ink-dim mt-1">Submitted {created}</p>
                   </div>
                   <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${status.colour}`}>
                     {status.label}

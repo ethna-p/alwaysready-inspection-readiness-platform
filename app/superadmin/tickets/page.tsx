@@ -27,21 +27,21 @@ export default async function SuperadminTicketsPage() {
     <div>
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#1a1a1a] mb-1">Support Tickets</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-ink mb-1">Support Tickets</h1>
+          <p className="text-sm text-ink-muted">
             All tickets across all organisations.
           </p>
         </div>
         <Link
           href="/superadmin/tickets/new"
-          className="shrink-0 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-[#014D4E] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+          className="shrink-0 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-brand text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
         >
           + New ticket
         </Link>
       </div>
 
       {!tickets || tickets.length === 0 ? (
-        <p className="text-gray-500 text-sm">No tickets yet.</p>
+        <p className="text-ink-muted text-sm">No tickets yet.</p>
       ) : (
         <div className="space-y-3">
           {tickets.map(ticket => {
@@ -66,7 +66,7 @@ export default async function SuperadminTicketsPage() {
                 href={`/superadmin/tickets/${ticket.id}`}
                 className="
                   flex items-center justify-between gap-4
-                  bg-white border border-gray-200 rounded-xl
+                  bg-card border border-line rounded-xl
                   px-5 py-4
                   hover:border-[#00b8a6]
                   focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
@@ -75,9 +75,9 @@ export default async function SuperadminTicketsPage() {
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="text-xs text-gray-500 font-mono">{ticket.reference}</p>
-                    <span className="text-xs text-gray-400">·</span>
-                    <p className="text-xs text-gray-500">{orgName}</p>
+                    <p className="text-xs text-ink-muted font-mono">{ticket.reference}</p>
+                    <span className="text-xs text-ink-muted">·</span>
+                    <p className="text-xs text-ink-muted">{orgName}</p>
                     {t.staff_initiated && (
                       <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[#014D4E]/40 text-[#00b8a6]">
                         Staff
@@ -94,8 +94,8 @@ export default async function SuperadminTicketsPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm font-semibold text-[#1a1a1a] truncate">{ticket.subject}</p>
-                  <p className="text-xs text-gray-500 mt-1">{created}</p>
+                  <p className="text-sm font-semibold text-ink truncate">{ticket.subject}</p>
+                  <p className="text-xs text-ink-muted mt-1">{created}</p>
                 </div>
                 <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${status.colour}`}>
                   {status.label}

@@ -103,10 +103,10 @@ export default function TrialPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+    <div className="min-h-screen bg-canvas flex flex-col">
 
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-card border-b border-line px-6 py-4">
         <a href="https://www.alwaysready.uk" aria-label="AlwaysReady home">
           <Image
             src="/alwaysready-logo.svg"
@@ -128,10 +128,10 @@ export default function TrialPage() {
               <span className="inline-block text-xs font-bold text-[#00b8a6] bg-[#00b8a6]/10 border border-[#00b8a6]/20 px-3 py-1 rounded-full uppercase tracking-widest mb-4">
                 14-day free trial
               </span>
-              <h1 className="text-3xl font-bold text-[#014D4E] leading-tight mb-3">
+              <h1 className="text-3xl font-bold text-brand leading-tight mb-3">
                 Start your free trial
               </h1>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-ink-dim leading-relaxed">
                 Set up your account in under a minute. No payment required.
                 Your data is private, persistent, and yours from day one.
               </p>
@@ -141,7 +141,7 @@ export default function TrialPage() {
 
               {/* Service Name */}
               <div>
-                <label htmlFor="service-name" className="block text-sm font-semibold text-[#1a1a1a] mb-1">
+                <label htmlFor="service-name" className="block text-sm font-semibold text-ink mb-1">
                   Service name
                 </label>
                 <input
@@ -152,13 +152,13 @@ export default function TrialPage() {
                   placeholder="e.g. Sunrise Residential Care Home"
                   required
                   disabled={isPending}
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-[#1a1a1a] bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
               </div>
 
               {/* CQC Location ID */}
               <div>
-                <label htmlFor="cqc-id" className="block text-sm font-semibold text-[#1a1a1a] mb-1">
+                <label htmlFor="cqc-id" className="block text-sm font-semibold text-ink mb-1">
                   CQC Location ID
                 </label>
                 <input
@@ -175,13 +175,13 @@ export default function TrialPage() {
                   required
                   disabled={isPending}
                   aria-describedby="cqc-id-hint cqc-id-feedback"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-[#1a1a1a] bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
 
                 {/* Inline CQC lookup feedback */}
                 <div id="cqc-id-feedback" aria-live="polite" className="mt-1.5 text-xs min-h-[1.25rem]">
                   {cqcLookupStatus === 'loading' && (
-                    <span className="text-gray-500 flex items-center gap-1.5">
+                    <span className="text-ink-muted flex items-center gap-1.5">
                       <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
@@ -215,9 +215,9 @@ export default function TrialPage() {
                   )}
                 </div>
 
-                <p id="cqc-id-hint" className="text-xs text-gray-500 mt-1">
+                <p id="cqc-id-hint" className="text-xs text-ink-muted mt-1">
                   Found on your CQC registration certificate or at{' '}
-                  <a href="https://www.cqc.org.uk/search-care-services" target="_blank" rel="noopener noreferrer" className="text-[#014D4E] underline">
+                  <a href="https://www.cqc.org.uk/search-care-services" target="_blank" rel="noopener noreferrer" className="text-brand underline">
                     cqc.org.uk
                   </a>.
                 </p>
@@ -225,7 +225,7 @@ export default function TrialPage() {
 
               {/* Service Type */}
               <div>
-                <label htmlFor="service-type" className="block text-sm font-semibold text-[#1a1a1a] mb-1">
+                <label htmlFor="service-type" className="block text-sm font-semibold text-ink mb-1">
                   Service type
                 </label>
                 <select
@@ -234,7 +234,7 @@ export default function TrialPage() {
                   onChange={e => setServiceType(e.target.value)}
                   required
                   disabled={isPending}
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-[#1a1a1a] bg-white focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 >
                   <option value="">— Select your service type —</option>
                   {SERVICE_TYPES.map(t => (
@@ -244,11 +244,11 @@ export default function TrialPage() {
               </div>
 
               {/* Divider */}
-              <div className="pt-1 pb-1 border-t border-gray-200" />
+              <div className="pt-1 pb-1 border-t border-line" />
 
               {/* Manager Name */}
               <div>
-                <label htmlFor="manager-name" className="block text-sm font-semibold text-[#1a1a1a] mb-1">
+                <label htmlFor="manager-name" className="block text-sm font-semibold text-ink mb-1">
                   Registered Manager&apos;s name
                 </label>
                 <input
@@ -260,13 +260,13 @@ export default function TrialPage() {
                   required
                   disabled={isPending}
                   autoComplete="name"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-[#1a1a1a] bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
               </div>
 
               {/* Manager Email */}
               <div>
-                <label htmlFor="manager-email" className="block text-sm font-semibold text-[#1a1a1a] mb-1">
+                <label htmlFor="manager-email" className="block text-sm font-semibold text-ink mb-1">
                   Registered Manager&apos;s email address
                 </label>
                 <input
@@ -278,9 +278,9 @@ export default function TrialPage() {
                   required
                   disabled={isPending}
                   autoComplete="email"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-[#1a1a1a] bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-ink-muted mt-1">
                   This will be your login email. We will send your password setup link here.
                 </p>
               </div>
@@ -292,16 +292,16 @@ export default function TrialPage() {
                   checked={marketingConsent}
                   onChange={e => setMarketingConsent(e.target.checked)}
                   disabled={isPending}
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-[#014D4E] focus:ring-2 focus:ring-[#014D4E] disabled:opacity-60"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-line text-brand focus:ring-2 focus:ring-[#014D4E] disabled:opacity-60"
                 />
-                <span className="text-sm text-gray-600 leading-relaxed">
+                <span className="text-sm text-ink-dim leading-relaxed">
                   Keep me updated with CQC news, inspection tips, and AlwaysReady resources.
                   You can unsubscribe at any time.{' '}
                   <a
                     href="https://www.alwaysready.uk/legal"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#014D4E] underline"
+                    className="text-brand underline"
                   >
                     Privacy policy
                   </a>
@@ -347,7 +347,7 @@ export default function TrialPage() {
                 )}
               </button>
 
-              <p className="text-xs text-gray-500 text-center">
+              <p className="text-xs text-ink-muted text-center">
                 No credit card required. Cancel any time.
               </p>
 
@@ -356,20 +356,20 @@ export default function TrialPage() {
 
           {/* ── Right: what's included ──────────────────────────────────── */}
           <div className="lg:pt-[7.5rem]">
-            <div className="bg-white rounded-2xl border border-gray-200 p-7 shadow-sm">
-              <h2 className="text-sm font-bold text-[#014D4E] uppercase tracking-widest mb-5">
+            <div className="bg-card rounded-2xl border border-line p-7 shadow-sm">
+              <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-5">
                 What&apos;s included in your trial
               </h2>
               <ul className="space-y-4">
                 {FEATURES.map(([title, desc]) => (
                   <li key={title} className="flex items-start gap-3">
                     <span className="mt-0.5 w-5 h-5 rounded-full bg-[#014D4E]/10 flex items-center justify-center shrink-0" aria-hidden="true">
-                      <svg className="w-3 h-3 text-[#014D4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
-                    <span className="text-sm text-gray-700">
-                      <span className="font-semibold text-[#1a1a1a]">{title}</span>
+                    <span className="text-sm text-ink">
+                      <span className="font-semibold text-ink">{title}</span>
                       {' — '}
                       {desc}
                     </span>
@@ -377,8 +377,8 @@ export default function TrialPage() {
                 ))}
               </ul>
 
-              <div className="mt-6 pt-5 border-t border-gray-100">
-                <p className="text-xs text-gray-500 leading-relaxed">
+              <div className="mt-6 pt-5 border-t border-line">
+                <p className="text-xs text-ink-muted leading-relaxed">
                   Your trial is fully featured — no functions are locked or limited.
                   Data you enter during the trial is yours to keep if you subscribe.
                 </p>
@@ -386,9 +386,9 @@ export default function TrialPage() {
             </div>
 
             <div className="mt-4 text-center">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-ink-muted">
                 Already have an account?{' '}
-                <a href="/login" className="text-[#014D4E] font-semibold hover:underline">
+                <a href="/login" className="text-brand font-semibold hover:underline">
                   Sign in
                 </a>
               </p>
@@ -399,12 +399,12 @@ export default function TrialPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-[#faf9f6] px-6 py-6 text-center">
-        <p className="text-xs text-[#1a1a1a]">
+      <footer className="border-t border-line bg-canvas px-6 py-6 text-center">
+        <p className="text-xs text-ink">
           &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
           Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
         </p>
-        <p className="text-xs text-gray-500 mt-1 max-w-2xl mx-auto">
+        <p className="text-xs text-ink-muted mt-1 max-w-2xl mx-auto">
           Our tools are designed to support providers in preparing for CQC inspection.
           They do not constitute official CQC guidance and do not guarantee any
           particular inspection outcome.

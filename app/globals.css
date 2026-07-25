@@ -1,10 +1,52 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────
-   Brand CSS variables — AlwaysReady palette
-   (PROJECT_BRIEF.md §Brand Colours)
+   Dark mode — activated by .dark on <html>
+   Managed by next-themes (ThemeProvider)
 ───────────────────────────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────
+   Semantic design tokens — light & dark
+   These drive all theming in the app.
+   Tailwind utilities (bg-canvas, text-ink, etc.)
+   are generated from the --color-* names below.
+───────────────────────────────────────────── */
+@theme inline {
+  /* Backgrounds */
+  --color-canvas:    var(--canvas);      /* page background        */
+  --color-card:      var(--card);        /* card / surface         */
+  --color-fill:      var(--fill);        /* subtle grey (gray-50)  */
+  --color-fill-dim:  var(--fill-dim);    /* muted grey (gray-100)  */
+
+  /* Text */
+  --color-ink:       var(--ink);         /* primary body text      */
+  --color-ink-dim:   var(--ink-dim);     /* secondary text         */
+  --color-ink-muted: var(--ink-muted);   /* muted / placeholder    */
+
+  /* Borders */
+  --color-line:      var(--line);        /* card / section borders */
+
+  /* Brand */
+  --color-brand:     var(--brand);       /* teal text / links      */
+}
+
+/* ── Light mode (default) ────────────────────────────────────────── */
 :root {
+  --canvas:    #faf9f6;
+  --card:      #ffffff;
+  --fill:      #f9fafb;
+  --fill-dim:  #f3f4f6;
+
+  --ink:       #1a1a1a;
+  --ink-dim:   #4b5563;
+  --ink-muted: #6b7280;
+
+  --line:      #e5e7eb;
+
+  --brand:     #014D4E;
+
+  /* Legacy brand variables kept for components that reference them directly */
   --color-teal:       #00b8a6;
   --color-dark-teal:  #014D4E;
   --color-gold:       #ffd700;
@@ -12,14 +54,37 @@
   --color-body-text:  #1a1a1a;
 }
 
-/* Global base */
+/* ── Dark mode ───────────────────────────────────────────────────── */
+.dark {
+  --canvas:    #0f1117;
+  --card:      #1a1f2e;
+  --fill:      #1e2535;
+  --fill-dim:  #252d40;
+
+  --ink:       #f1f5f9;
+  --ink-dim:   #94a3b8;
+  --ink-muted: #64748b;
+
+  --line:      #2d3748;
+
+  /* Brand teal in dark mode uses the lighter teal for readability */
+  --brand:     #00b8a6;
+
+  /* Legacy overrides */
+  --color-body-text: #f1f5f9;
+  --color-off-white: #0f1117;
+}
+
+/* ─────────────────────────────────────────────
+   Global base
+───────────────────────────────────────────── */
 html {
   font-size: 112.5%; /* 18px base — scales all rem units up from the default 16px */
 }
 
 body {
-  background-color: var(--color-off-white);
-  color: var(--color-body-text);
+  background-color: var(--canvas);
+  color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -29,6 +94,6 @@ body {
    A clear, consistent ring for keyboard users.
 ───────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--color-dark-teal);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }

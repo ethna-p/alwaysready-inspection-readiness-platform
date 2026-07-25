@@ -22,17 +22,17 @@ export default async function NewsletterPage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-muted mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">Newsletter drafting</li>
+          <li className="text-ink" aria-current="page">Newsletter drafting</li>
         </ol>
       </nav>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#014D4E] mb-2">Newsletter drafting</h1>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <h1 className="text-2xl font-bold text-brand mb-2">Newsletter drafting</h1>
+        <p className="text-sm text-ink-dim leading-relaxed">
           Generate a draft newsletter for your staff or families. Copy the finished text and send it
           however you like — email, print, or message. AlwaysReady doesn&apos;t send on your behalf.
         </p>

@@ -39,26 +39,26 @@ export default function SubServicesForm({ enabledSubServices }: Props) {
             className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
               isEnabled
                 ? 'border-[#00b8a6] bg-[#f0fdfb]'
-                : 'border-gray-200 bg-white hover:border-gray-300'
+                : 'border-line bg-card hover:border-line'
             } ${isPending ? 'opacity-60 pointer-events-none' : ''}`}
           >
             <input
               type="checkbox"
-              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#014D4E] focus:ring-[#00b8a6]"
+              className="mt-0.5 h-4 w-4 rounded border-line text-brand focus:ring-[#00b8a6]"
               checked={isEnabled}
               onChange={e => handleChange(ss.value, e.target.checked)}
               disabled={isPending}
               aria-label={ss.label}
             />
             <div>
-              <p className="text-sm font-medium text-[#1a1a1a]">{ss.label}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{ss.description}</p>
+              <p className="text-sm font-medium text-ink">{ss.label}</p>
+              <p className="text-xs text-ink-muted mt-0.5">{ss.description}</p>
             </div>
           </label>
         )
       })}
       {isPending && (
-        <p className="text-xs text-gray-400">Saving…</p>
+        <p className="text-xs text-ink-muted">Saving…</p>
       )}
     </div>
   )

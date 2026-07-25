@@ -17,8 +17,8 @@ type Props = {
 function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-4">
-      <h2 className="text-base font-semibold text-[#014D4E]">{title}</h2>
-      {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
+      <h2 className="text-base font-semibold text-brand">{title}</h2>
+      {subtitle && <p className="text-xs text-ink-muted mt-0.5">{subtitle}</p>}
     </div>
   )
 }
@@ -26,21 +26,21 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-[#1a1a1a] mb-1">{label}</label>
+      <label className="block text-sm font-medium text-ink mb-1">{label}</label>
       {children}
     </div>
   )
 }
 
 const inputClass = `
-  w-full rounded-lg border border-gray-300 px-3 py-2
-  text-sm text-[#1a1a1a] bg-white
+  w-full rounded-lg border border-line px-3 py-2
+  text-sm text-ink bg-card
   focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
 `
 
 const selectClass = `
-  w-full rounded-lg border border-gray-300 px-3 py-2
-  text-sm text-[#1a1a1a] bg-white
+  w-full rounded-lg border border-line px-3 py-2
+  text-sm text-ink bg-card
   focus:outline-none focus:ring-2 focus:ring-[#014D4E]
 `
 
@@ -169,7 +169,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       </div>
 
       {/* ── Employment ─────────────────────────────────────────────────── */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Employment" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="NI Number">
@@ -212,7 +212,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       </section>
 
       {/* ── Personal ───────────────────────────────────────────────────── */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading
           title="Personal Information"
           subtitle="Held for equality monitoring under the Equality Act 2010. Access is restricted to admin users only."
@@ -285,7 +285,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       </section>
 
       {/* ── Emergency Contact ──────────────────────────────────────────── */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Emergency Contact" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Next of Kin Name">
@@ -298,7 +298,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       </section>
 
       {/* ── Compliance ─────────────────────────────────────────────────── */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Compliance" subtitle="DBS, right to work, and references" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <Field label="DBS Check Date">
@@ -338,7 +338,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
               onChange={e => setRightToWork(e.target.checked)}
               className="w-4 h-4 accent-[#014D4E]"
             />
-            <span className="text-sm text-[#1a1a1a]">Right to Work verified</span>
+            <span className="text-sm text-ink">Right to Work verified</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
             <input
@@ -347,7 +347,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
               onChange={e => setReferences(e.target.checked)}
               className="w-4 h-4 accent-[#014D4E]"
             />
-            <span className="text-sm text-[#1a1a1a]">References obtained</span>
+            <span className="text-sm text-ink">References obtained</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
             <input
@@ -356,13 +356,13 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
               onChange={e => setMandatoryComplete(e.target.checked)}
               className="w-4 h-4 accent-[#014D4E]"
             />
-            <span className="text-sm text-[#1a1a1a]">Mandatory training complete</span>
+            <span className="text-sm text-ink">Mandatory training complete</span>
           </label>
         </div>
       </section>
 
       {/* ── Supervision ────────────────────────────────────────────────── */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Supervision" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Last Supervision Date">
@@ -399,7 +399,7 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       </section>
 
       {/* ── Appraisal ──────────────────────────────────────────────────── */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Appraisal" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <Field label="Last Appraisal Date">

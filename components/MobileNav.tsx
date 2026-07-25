@@ -13,7 +13,7 @@ type Props = {
   hasUnread: boolean
 }
 
-const NAV_LINK = 'block text-base font-medium text-[#014D4E] py-3 border-b border-gray-100 hover:text-[#00b8a6] transition-colors'
+const NAV_LINK = 'block text-base font-medium text-brand py-3 border-b border-line hover:text-[#00b8a6] transition-colors'
 
 export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
   const [open, setOpen] = useState(false)
@@ -37,7 +37,7 @@ export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
     <>
       {/* Hamburger button — mobile only */}
       <button
-        className="sm:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+        className="sm:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-lg hover:bg-fill-dim transition-colors focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
         onClick={() => setOpen(o => !o)}
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
@@ -49,7 +49,7 @@ export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
 
       {/* Mobile menu panel */}
       {open && (
-        <div className="sm:hidden fixed inset-x-0 top-[65px] bottom-0 z-50 bg-white border-t border-gray-200 overflow-y-auto">
+        <div className="sm:hidden fixed inset-x-0 top-[65px] bottom-0 z-50 bg-card border-t border-line overflow-y-auto">
           <nav className="px-6 py-2" aria-label="Mobile navigation">
 
             {isDemo && (

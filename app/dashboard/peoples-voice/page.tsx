@@ -69,14 +69,14 @@ export default async function PeoplesVoicePage() {
 
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#1a1a1a] mb-2">People's Voice</h1>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <h1 className="text-2xl font-bold text-ink mb-2">People's Voice</h1>
+        <p className="text-sm text-ink-dim leading-relaxed">
           These are the <strong>"I" statements</strong> published by CQC as part of the draft 2026 assessment
           framework, drawn from the Think Local Act Personal (TLAP) standards. During inspections, CQC gathers
           evidence directly from residents, families, and carers to assess whether each statement is met.
           Use this page to record what evidence you hold and identify gaps before an inspection.
         </p>
-        <p className="text-xs text-gray-400 mt-2 italic">
+        <p className="text-xs text-ink-muted mt-2 italic">
           Source: CQC draft assessment framework v9 (2026). Well-Led has no published "I" statements in the
           current draft.
         </p>
@@ -88,7 +88,7 @@ export default async function PeoplesVoicePage() {
           { label: 'Green',        value: green,      style: 'bg-green-50 text-green-700 border-green-200' },
           { label: 'Amber',        value: amber,      style: 'bg-amber-50 text-amber-700 border-amber-200' },
           { label: 'Red',          value: red,        style: 'bg-red-50   text-red-700   border-red-200'   },
-          { label: 'Not assessed', value: unassessed, style: 'bg-gray-50  text-gray-500  border-gray-200'  },
+          { label: 'Not assessed', value: unassessed, style: 'bg-fill  text-ink-muted  border-line'  },
         ].map(({ label, value, style }) => (
           <div key={label} className={`rounded-xl border px-4 py-3 text-center ${style}`}>
             <p className="text-2xl font-bold">{value}</p>
@@ -99,7 +99,7 @@ export default async function PeoplesVoicePage() {
 
       {/* Viewer notice */}
       {isViewer && (
-        <div className="bg-[#e6f7f5] border border-[#c0eae5] rounded-xl px-4 py-3 text-sm text-[#014D4E]">
+        <div className="bg-[#e6f7f5] border border-[#c0eae5] rounded-xl px-4 py-3 text-sm text-brand">
           You are viewing People's Voice in read-only mode.
         </div>
       )}

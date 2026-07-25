@@ -16,24 +16,24 @@ export default function NewTicketPage() {
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-6" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href="/dashboard/support" className="hover:text-[#014D4E] underline">Support</Link></li>
+          <li><Link href="/dashboard/support" className="hover:text-brand underline">Support</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">New ticket</li>
+          <li className="text-ink" aria-current="page">New ticket</li>
         </ol>
       </nav>
 
-      <h1 className="text-2xl font-bold text-[#014D4E] mb-2">Get in touch</h1>
-      <p className="text-sm text-[#1a1a1a] mb-6">
+      <h1 className="text-2xl font-bold text-brand mb-2">Get in touch</h1>
+      <p className="text-sm text-ink mb-6">
         We aim to respond within three business days. You can track your ticket here once it&apos;s submitted.
       </p>
 
-      <div className="bg-teal-50 border border-teal-200 rounded-xl px-4 py-3 text-sm text-[#014D4E] mb-8">
+      <div className="bg-teal-50 border border-teal-200 rounded-xl px-4 py-3 text-sm text-brand mb-8">
         Before submitting, it&apos;s worth checking our{' '}
-        <a href="/dashboard/help" className="font-semibold underline hover:text-[#014D4E]">
+        <a href="/dashboard/help" className="font-semibold underline hover:text-brand">
           Help page
         </a>
         {' '}— it covers common questions about KLOEs, roles, and using the platform.
@@ -47,7 +47,7 @@ export default function NewTicketPage() {
 
       <form action={action} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="subject">
+          <label className="block text-sm font-medium text-ink mb-1" htmlFor="subject">
             Subject <span className="text-red-500">*</span>
           </label>
           <input
@@ -58,15 +58,15 @@ export default function NewTicketPage() {
             maxLength={200}
             placeholder="e.g. I can't update my KLOE status"
             className="
-              w-full border border-gray-300 rounded-lg
-              px-4 py-2.5 text-sm text-[#1a1a1a]
+              w-full border border-line rounded-lg
+              px-4 py-2.5 text-sm text-ink
               focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
             "
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[#1a1a1a] mb-1" htmlFor="message">
+          <label className="block text-sm font-medium text-ink mb-1" htmlFor="message">
             Message <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -76,8 +76,8 @@ export default function NewTicketPage() {
             rows={7}
             placeholder="Please describe what you need help with, including any steps you've already tried."
             className="
-              w-full border border-gray-300 rounded-lg
-              px-4 py-2.5 text-sm text-[#1a1a1a]
+              w-full border border-line rounded-lg
+              px-4 py-2.5 text-sm text-ink
               focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               resize-y
             "
@@ -102,9 +102,9 @@ export default function NewTicketPage() {
           <Link
             href="/dashboard/support"
             className="
-              border border-gray-300 text-sm font-medium text-[#1a1a1a]
+              border border-line text-sm font-medium text-ink
               px-6 py-2.5 rounded-lg
-              hover:bg-gray-50
+              hover:bg-fill
               focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2
               transition-colors
             "

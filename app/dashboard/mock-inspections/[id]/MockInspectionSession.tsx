@@ -141,15 +141,15 @@ export default function MockInspectionSession({
 
       {/* Header */}
       <div>
-        <a href="/dashboard/mock-inspections" className="text-sm text-[#014D4E] hover:underline">
+        <a href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
           ← Mock Inspections
         </a>
         <div className="flex items-center justify-between mt-2">
           <div>
-            <h1 className="text-xl font-bold text-[#014D4E]">
+            <h1 className="text-xl font-bold text-brand">
               {inspectionType === 'partial' ? `Mock Inspection — ${keyQuestionName}` : 'Full Mock Inspection'}
             </h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <p className="text-sm text-ink-muted mt-0.5">
               KLOE {currentKloeIndex + 1} of {klos.length}
             </p>
           </div>
@@ -163,7 +163,7 @@ export default function MockInspectionSession({
                     ? 'bg-[#014D4E]'
                     : completedIds.has(k.id)
                     ? 'bg-[#00b8a6]'
-                    : 'bg-gray-200'
+                    : 'bg-fill-dim'
                 }`}
                 title={k.title}
               />
@@ -171,7 +171,7 @@ export default function MockInspectionSession({
           </div>
         </div>
         {/* Progress bar */}
-        <div className="mt-3 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div className="mt-3 h-1.5 bg-fill-dim rounded-full overflow-hidden">
           <div
             className="h-full bg-[#00b8a6] transition-all duration-300"
             style={{ width: `${((currentKloeIndex + 1) / klos.length) * 100}%` }}
@@ -186,26 +186,26 @@ export default function MockInspectionSession({
       </div>
 
       {/* KLOE card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6">
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm space-y-6">
         <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
+          <p className="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-1">
             {(klo as any).key_questions?.name ?? ''}
           </p>
-          <h2 className="text-lg font-bold text-[#1a1a1a]">{klo.title}</h2>
-          <p className="text-sm text-gray-600 mt-2 leading-relaxed">{klo.wording}</p>
+          <h2 className="text-lg font-bold text-ink">{klo.title}</h2>
+          <p className="text-sm text-ink-dim mt-2 leading-relaxed">{klo.wording}</p>
         </div>
 
         {/* I statements */}
         {kloChecklist.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+            <h3 className="text-sm font-semibold text-ink mb-3">
               Evidence checklist — how well does your service meet each one?
             </h3>
             <div className="space-y-4">
               {kloChecklist.map(ci => (
-                <div key={ci.id} className="border border-gray-100 rounded-lg p-4 bg-gray-50">
-                  <p className="text-sm text-gray-800 mb-3">
-                    <span className="font-mono text-xs text-gray-400 mr-2">{ci.ref}</span>
+                <div key={ci.id} className="border border-line rounded-lg p-4 bg-fill">
+                  <p className="text-sm text-ink mb-3">
+                    <span className="font-mono text-xs text-ink-muted mr-2">{ci.ref}</span>
                     {ci.checklist_item}
                   </p>
                   <div className="flex gap-2 flex-wrap mb-2">
@@ -220,7 +220,7 @@ export default function MockInspectionSession({
                             ? opt.value === 'met'     ? 'border-green-500 bg-green-100 text-green-700'
                             : opt.value === 'partial' ? 'border-amber-500 bg-amber-100 text-amber-700'
                                                       : 'border-red-500 bg-red-100 text-red-700'
-                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                            : 'border-line bg-card text-ink-dim hover:border-line'
                           }
                         `}
                       >
@@ -234,7 +234,7 @@ export default function MockInspectionSession({
                       value={responses[ci.id]?.note ?? ''}
                       onChange={e => setResponse(ci.id, 'note', e.target.value)}
                       placeholder="Note what needs to improve (optional)"
-                      className="w-full text-xs bg-white border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#00b8a6] mt-1"
+                      className="w-full text-xs bg-card border border-line rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#00b8a6] mt-1"
                     />
                   )}
                 </div>
@@ -245,7 +245,7 @@ export default function MockInspectionSession({
 
         {/* Overall KLOE rating */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Overall rating for this KLOE</h3>
+          <h3 className="text-sm font-semibold text-ink mb-3">Overall rating for this KLOE</h3>
           <div className="grid grid-cols-2 gap-2">
             {RATINGS.map(r => (
               <button
@@ -254,7 +254,7 @@ export default function MockInspectionSession({
                 onClick={() => setRating(r.value)}
                 className={`
                   text-sm font-semibold py-3 px-4 rounded-xl border-2 transition-colors
-                  ${rating === r.value ? r.colour + ' border-current' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}
+                  ${rating === r.value ? r.colour + ' border-current' : 'border-line bg-card text-ink-dim hover:border-line'}
                 `}
               >
                 {r.label}
@@ -265,15 +265,15 @@ export default function MockInspectionSession({
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Inspector notes <span className="text-gray-400 font-normal">(optional)</span>
+          <label className="block text-sm font-semibold text-ink mb-2">
+            Inspector notes <span className="text-ink-muted font-normal">(optional)</span>
           </label>
           <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={3}
             placeholder="What did you observe? What evidence did you review?"
-            className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm text-[#1a1a1a] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] resize-none"
+            className="w-full bg-card border border-line rounded-lg px-4 py-3 text-sm text-ink placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] resize-none"
           />
         </div>
 
@@ -288,7 +288,7 @@ export default function MockInspectionSession({
               type="button"
               onClick={() => router.push(`/dashboard/mock-inspections/${inspectionId}?kloe=${currentKloeIndex - 1}`)}
               disabled={isPending}
-              className="flex-1 border border-gray-300 text-gray-700 font-semibold text-sm py-3 rounded-xl hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              className="flex-1 border border-line text-ink font-semibold text-sm py-3 rounded-xl hover:bg-fill disabled:opacity-50 transition-colors"
             >
               ← Previous
             </button>

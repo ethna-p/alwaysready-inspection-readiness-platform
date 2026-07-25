@@ -41,12 +41,12 @@ export default function NewTicketPage() {
 
   return (
     <div className="max-w-2xl">
-      <Link href="/superadmin/tickets" className="text-sm text-gray-400 hover:text-white mb-6 block">
+      <Link href="/superadmin/tickets" className="text-sm text-ink-muted hover:text-white mb-6 block">
         ← All tickets
       </Link>
 
       <h1 className="text-2xl font-bold text-white mb-1">New ticket</h1>
-      <p className="text-sm text-gray-400 mb-8">
+      <p className="text-sm text-ink-muted mb-8">
         Open a support ticket on behalf of a customer. The message will appear as an AlwaysReady staff message in their helpdesk.
       </p>
 
@@ -72,7 +72,7 @@ export default function NewTicketPage() {
           </select>
 
           {selectedOrg && (
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-ink-muted">
               {selectedOrg.adminName
                 ? `Admin: ${selectedOrg.adminName}${selectedOrg.adminEmail ? ` · ${selectedOrg.adminEmail}` : ''}`
                 : selectedOrg.adminEmail
@@ -101,7 +101,7 @@ export default function NewTicketPage() {
           <label className="block text-sm font-medium text-gray-300 mb-1">
             Message
           </label>
-          <p className="text-xs text-gray-500 mb-2">
+          <p className="text-xs text-ink-muted mb-2">
             This will appear as the first message from AlwaysReady Support in the customer&apos;s ticket thread.
           </p>
           <textarea
@@ -116,7 +116,7 @@ export default function NewTicketPage() {
         {/* Preview */}
         {(subject.trim() || message.trim()) && (
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-3">
               Customer will see
             </p>
             {subject.trim() && (
@@ -127,7 +127,7 @@ export default function NewTicketPage() {
                 <span className="text-xs font-semibold text-[#00b8a6]">AlwaysReady Support</span>
               </div>
               <p className="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">
-                {message || <span className="text-gray-600 italic">Your message will appear here…</span>}
+                {message || <span className="text-ink-dim italic">Your message will appear here…</span>}
               </p>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default function NewTicketPage() {
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="flex-1 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-[#014D4E] text-white font-semibold py-3 rounded-lg transition-colors text-sm disabled:opacity-50"
+            className="flex-1 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-brand text-white font-semibold py-3 rounded-lg transition-colors text-sm disabled:opacity-50"
           >
             {isPending ? 'Opening ticket…' : 'Open ticket'}
           </button>

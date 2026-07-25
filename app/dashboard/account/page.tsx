@@ -42,17 +42,17 @@ export default async function AccountPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Account settings</h1>
-        <p className="text-sm text-gray-600">
-          Signed in as <span className="font-medium text-[#1a1a1a]">{profile?.full_name ?? 'Unknown'}</span>
+        <h1 className="text-2xl font-bold text-brand mb-1">Account settings</h1>
+        <p className="text-sm text-ink-dim">
+          Signed in as <span className="font-medium text-ink">{profile?.full_name ?? 'Unknown'}</span>
         </p>
       </div>
 
       {/* ── Subscription (admin only) ──────────────────────────────────── */}
       {profile?.role === 'admin' && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-[#014D4E] mb-1">Subscription</h2>
-          <p className="text-sm text-gray-600 mb-4">
+        <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-brand mb-1">Subscription</h2>
+          <p className="text-sm text-ink-dim mb-4">
             {subscriptionTier === 'active'
               ? 'Your subscription is active — £75 + VAT per month.'
               : subscriptionTier === 'past_due'
@@ -64,7 +64,7 @@ export default async function AccountPage() {
               <form action={createBillingPortalSession}>
                 <button
                   type="submit"
-                  className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors cursor-pointer"
+                  className="text-sm font-medium text-brand underline hover:text-[#00b8a6] transition-colors cursor-pointer"
                 >
                   Manage subscription →
                 </button>
@@ -83,7 +83,7 @@ export default async function AccountPage() {
           ) : subscriptionTier !== 'active' ? (
             <a
               href="/upgrade"
-              className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors"
+              className="text-sm font-medium text-brand underline hover:text-[#00b8a6] transition-colors"
             >
               Subscribe now →
             </a>
@@ -93,9 +93,9 @@ export default async function AccountPage() {
 
       {/* ── Sub-services (admin only) ──────────────────────────────────── */}
       {profile?.role === 'admin' && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-[#014D4E] mb-1">Sub-services we provide</h2>
-          <p className="text-sm text-gray-600 mb-4">
+        <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-brand mb-1">Sub-services we provide</h2>
+          <p className="text-sm text-ink-dim mb-4">
             Enable additional checklist items for specialist care your service provides. Changes take effect immediately across all KLOEs.
           </p>
           <SubServicesForm enabledSubServices={enabledSubServices} />
@@ -108,18 +108,18 @@ export default async function AccountPage() {
       </Suspense>
 
       {/* ── Change password ────────────────────────────────────────────── */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-[#014D4E] mb-1">Change password</h2>
-        <p className="text-sm text-gray-600 mb-6">
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+        <h2 className="text-base font-semibold text-brand mb-1">Change password</h2>
+        <p className="text-sm text-ink-dim mb-6">
           Enter your current password, then choose a new one.
         </p>
         <ChangePasswordForm />
       </div>
 
       {/* ── Personal contact details ───────────────────────────────────── */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-[#014D4E] mb-1">Notification contact details</h2>
-        <p className="text-sm text-gray-600 mb-6">
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+        <h2 className="text-base font-semibold text-brand mb-1">Notification contact details</h2>
+        <p className="text-sm text-ink-dim mb-6">
           Add a personal email or mobile number to receive notifications. These are separate from your login credentials.
         </p>
         <PersonalContactForm

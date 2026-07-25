@@ -155,15 +155,15 @@ export default async function InspectionPackPage() {
 
       {/* ── Screen-only controls ─────────────────────────────────────────── */}
       <div className="print:hidden">
-        <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+        <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
           <ol className="flex gap-1">
             <li>
-              <Link href="/dashboard" className="hover:text-[#014D4E] underline">
+              <Link href="/dashboard" className="hover:text-brand underline">
                 Dashboard
               </Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li className="text-[#1a1a1a]" aria-current="page">
+            <li className="text-ink" aria-current="page">
               Inspection Pack
             </li>
           </ol>
@@ -171,8 +171,8 @@ export default async function InspectionPackPage() {
 
         <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#014D4E]">Inspection Pack</h1>
-            <p className="text-sm text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-brand">Inspection Pack</h1>
+            <p className="text-sm text-ink-dim mt-1">
               A printable snapshot of your current readiness — ready to share
               with an inspector or board member.
             </p>
@@ -180,42 +180,42 @@ export default async function InspectionPackPage() {
           <PrintButton />
         </div>
 
-        <p className="text-xs text-gray-600 mb-6 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
-          Click <strong className="text-gray-600">Print / Save as PDF</strong> above, then choose{' '}
-          <strong className="text-gray-600">Save as PDF</strong> in your browser's print dialog.
+        <p className="text-xs text-ink-dim mb-6 bg-fill border border-line rounded-lg px-4 py-3">
+          Click <strong className="text-ink-dim">Print / Save as PDF</strong> above, then choose{' '}
+          <strong className="text-ink-dim">Save as PDF</strong> in your browser's print dialog.
           The navigation and this message will not appear in the output.
         </p>
       </div>
 
       {/* ── Report (visible on screen and in print) ──────────────────────── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 print:border-0 print:rounded-none print:p-0 print:shadow-none">
+      <div className="bg-card rounded-2xl border border-line p-8 print:border-0 print:rounded-none print:p-0 print:shadow-none">
 
         {/* Print-only header — hidden on screen */}
         <div className="hidden print:flex print:items-start print:justify-between print:mb-8 print:pb-6 print:border-b-2 print:border-[#014D4E]">
           <div>
-            <p className="text-xs font-bold text-[#014D4E] uppercase tracking-widest mb-1">
+            <p className="text-xs font-bold text-brand uppercase tracking-widest mb-1">
               AlwaysReady
             </p>
-            <h1 className="text-2xl font-bold text-[#1a1a1a]">
+            <h1 className="text-2xl font-bold text-ink">
               CQC Inspection Readiness Pack
             </h1>
-            <p className="text-base font-semibold text-[#014D4E] mt-1">{orgName}</p>
+            <p className="text-base font-semibold text-brand mt-1">{orgName}</p>
           </div>
-          <div className="text-right text-xs text-gray-600">
+          <div className="text-right text-xs text-ink-dim">
             <p>Prepared: {generatedDate}</p>
             <p className="mt-1">alwaysready.co.uk</p>
           </div>
         </div>
 
         {/* Screen header (hidden when printing) */}
-        <div className="print:hidden mb-8 pb-6 border-b border-gray-200">
-          <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
+        <div className="print:hidden mb-8 pb-6 border-b border-line">
+          <p className="text-xs font-semibold text-brand uppercase tracking-widest mb-1">
             {orgName}
           </p>
-          <h2 className="text-xl font-bold text-[#014D4E]">
+          <h2 className="text-xl font-bold text-brand">
             CQC Inspection Readiness Pack
           </h2>
-          <p className="text-sm text-gray-600 mt-1">Prepared: {generatedDate}</p>
+          <p className="text-sm text-ink-dim mt-1">Prepared: {generatedDate}</p>
         </div>
 
         {/* ── Overall readiness ─────────────────────────────────────────── */}
@@ -230,7 +230,7 @@ export default async function InspectionPackPage() {
               >
                 {overallPct}%
               </div>
-              <div className="text-xs text-gray-600 mt-2 uppercase tracking-wide font-medium">
+              <div className="text-xs text-ink-dim mt-2 uppercase tracking-wide font-medium">
                 Overall readiness
               </div>
             </div>
@@ -238,7 +238,7 @@ export default async function InspectionPackPage() {
             {/* Progress bar */}
             <div className="flex-1 min-w-[200px]">
               <div
-                className="w-full bg-gray-100 rounded-full h-4 overflow-hidden"
+                className="w-full bg-fill-dim rounded-full h-4 overflow-hidden"
                 role="progressbar"
                 aria-valuenow={overallPct}
                 aria-valuemin={0}
@@ -253,7 +253,7 @@ export default async function InspectionPackPage() {
                   }}
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2">
+              <p className="text-xs text-ink-dim mt-2">
                 {totalCompliant} of {totalKlos} KLOEs currently up to date
               </p>
             </div>
@@ -264,13 +264,13 @@ export default async function InspectionPackPage() {
         <section aria-labelledby="summary-heading" className="mb-8">
           <h2
             id="summary-heading"
-            className="text-xs font-bold text-[#014D4E] uppercase tracking-widest mb-3"
+            className="text-xs font-bold text-brand uppercase tracking-widest mb-3"
           >
             Summary by Key Question
           </h2>
 
           <div className="overflow-x-auto print:overflow-visible">
-          <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden print:border print:border-gray-300">
+          <table className="w-full text-sm border border-line rounded-lg overflow-hidden print:border print:border-line">
             <thead>
               <tr className="bg-[#014D4E] text-white">
                 <th scope="col" className="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wide">
@@ -292,10 +292,10 @@ export default async function InspectionPackPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {kqSummaries.map(kq => (
-                <tr key={kq.id} className="hover:bg-gray-50 print:hover:bg-transparent">
-                  <td className="px-4 py-2.5 font-medium text-[#1a1a1a]">{kq.name}</td>
+                <tr key={kq.id} className="hover:bg-fill print:hover:bg-transparent">
+                  <td className="px-4 py-2.5 font-medium text-ink">{kq.name}</td>
                   <td className="px-4 py-2.5 text-center tabular-nums">{kq.compliant}</td>
-                  <td className="px-4 py-2.5 text-center tabular-nums text-gray-600">{kq.total}</td>
+                  <td className="px-4 py-2.5 text-center tabular-nums text-ink-dim">{kq.total}</td>
                   <td
                     className="px-4 py-2.5 text-center font-bold tabular-nums"
                     style={{ color: pctColour(kq.pct) }}
@@ -304,7 +304,7 @@ export default async function InspectionPackPage() {
                   </td>
                   <td className="px-4 py-2.5">
                     <div
-                      className="w-full bg-gray-100 rounded-full h-2"
+                      className="w-full bg-fill-dim rounded-full h-2"
                       role="presentation"
                     >
                       <div
@@ -325,7 +325,7 @@ export default async function InspectionPackPage() {
 
         {/* ── Full KLOE detail — one section per key question ───────────── */}
         <div>
-          <h2 className="text-xs font-bold text-[#014D4E] uppercase tracking-widest mb-4">
+          <h2 className="text-xs font-bold text-brand uppercase tracking-widest mb-4">
             Full KLOE Detail
           </h2>
 
@@ -339,7 +339,7 @@ export default async function InspectionPackPage() {
               <div className="flex items-center justify-between mb-3 pb-2 border-b-2 border-[#014D4E]">
                 <h3
                   id={`kq-${kq.id}-heading`}
-                  className="font-bold text-[#014D4E] text-base"
+                  className="font-bold text-brand text-base"
                 >
                   {kq.name}
                 </h3>
@@ -353,28 +353,28 @@ export default async function InspectionPackPage() {
 
               {/* KLOE table */}
               <div className="overflow-x-auto print:overflow-visible">
-              <table className="w-full text-xs border border-gray-200 print:border-gray-300">
+              <table className="w-full text-xs border border-line print:border-line">
                 <thead>
-                  <tr className="bg-gray-50 print:bg-gray-100 border-b border-gray-200">
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-gray-600 w-12">
+                  <tr className="bg-fill print:bg-fill-dim border-b border-line">
+                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-12">
                       Code
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-gray-600">
+                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim">
                       KLOE
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-gray-600 w-24">
+                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24">
                       Status
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-gray-600 w-24">
+                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24">
                       RAG
                     </th>
-                    <th scope="col" className="text-center px-3 py-2 font-semibold text-gray-600 w-16">
+                    <th scope="col" className="text-center px-3 py-2 font-semibold text-ink-dim w-16">
                       Priority
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-gray-600 w-24 hidden sm:table-cell print:table-cell">
+                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24 hidden sm:table-cell print:table-cell">
                       Last Review
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-gray-600 w-24 hidden sm:table-cell print:table-cell">
+                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24 hidden sm:table-cell print:table-cell">
                       Next Due
                     </th>
                   </tr>
@@ -391,27 +391,27 @@ export default async function InspectionPackPage() {
                         <tr
                           className={compliant ? 'bg-green-50 print:bg-transparent' : ''}
                         >
-                          <td className="px-3 py-2.5 font-bold text-[#014D4E] align-top">
+                          <td className="px-3 py-2.5 font-bold text-brand align-top">
                             {code}
                           </td>
-                          <td className="px-3 py-2.5 font-medium text-[#1a1a1a] align-top">
+                          <td className="px-3 py-2.5 font-medium text-ink align-top">
                             {klo.title}
                           </td>
-                          <td className="px-3 py-2.5 text-gray-700 align-top">
+                          <td className="px-3 py-2.5 text-ink align-top">
                             {statusLabel(record?.status ?? null)}
                           </td>
                           <td className="px-3 py-2.5 align-top">
                             <RagCell status={rag} />
                           </td>
-                          <td className="px-3 py-2.5 text-center align-top font-semibold text-[#014D4E]">
+                          <td className="px-3 py-2.5 text-center align-top font-semibold text-brand">
                             {record?.priority ?? '—'}
                           </td>
-                          <td className="px-3 py-2.5 text-gray-600 align-top hidden sm:table-cell print:table-cell">
+                          <td className="px-3 py-2.5 text-ink-dim align-top hidden sm:table-cell print:table-cell">
                             {formatDateShort(record?.date_reviewed)}
                           </td>
                           <td
                             className={`px-3 py-2.5 align-top hidden sm:table-cell print:table-cell font-medium ${
-                              rag === 'red' ? 'text-red-700' : 'text-gray-600'
+                              rag === 'red' ? 'text-red-700' : 'text-ink-dim'
                             }`}
                           >
                             {formatDateShort(record?.next_review_due)}
@@ -425,7 +425,7 @@ export default async function InspectionPackPage() {
                             <td />
                             <td
                               colSpan={6}
-                              className="px-3 pb-2.5 text-gray-600 text-xs italic"
+                              className="px-3 pb-2.5 text-ink-dim text-xs italic"
                             >
                               Evidence: {record.evidence_location}
                             </td>
@@ -442,7 +442,7 @@ export default async function InspectionPackPage() {
         </div>
 
         {/* ── Print footer — disclaimer (hidden on screen; SiteFooter covers it) */}
-        <div className="hidden print:block mt-10 pt-6 border-t border-gray-200 text-xs text-gray-600 space-y-1">
+        <div className="hidden print:block mt-10 pt-6 border-t border-line text-xs text-ink-dim space-y-1">
           <p>
             © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
             Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE

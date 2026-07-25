@@ -58,7 +58,7 @@ export default function Tooltip({ text, label = 'More information' }: TooltipPro
           inline-flex items-center justify-center
           w-4 h-4 rounded-full
           text-[10px] font-bold leading-none
-          text-[#014D4E] border border-[#014D4E]/40
+          text-brand border border-[#014D4E]/40
           hover:bg-[#014D4E]/10
           focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1
           transition-colors

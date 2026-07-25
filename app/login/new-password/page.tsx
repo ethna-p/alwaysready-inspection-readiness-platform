@@ -79,14 +79,14 @@ export default function NewPasswordPage() {
   // Still checking session
   if (hasSession === null) {
     return (
-      <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center">
-        <p className="text-sm text-gray-500">Loading…</p>
+      <div className="min-h-screen bg-canvas flex items-center justify-center">
+        <p className="text-sm text-ink-muted">Loading…</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+    <div className="min-h-screen bg-canvas flex flex-col">
       {/* Top bar with logo */}
       <header className="px-6 py-4">
         <Image
@@ -101,7 +101,7 @@ export default function NewPasswordPage() {
 
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-card rounded-2xl shadow-sm border border-line p-8">
 
             {/* ── Success state ──────────────────────────────────────────── */}
             {done && (
@@ -118,8 +118,8 @@ export default function NewPasswordPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="text-lg font-bold text-[#014D4E] mb-2">Password updated</h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <h2 className="text-lg font-bold text-brand mb-2">Password updated</h2>
+                <p className="text-sm text-ink-dim mb-6">
                   Your new password has been saved. You can now sign in with it.
                 </p>
                 <a
@@ -140,8 +140,8 @@ export default function NewPasswordPage() {
             {/* ── New password form ──────────────────────────────────────── */}
             {!done && (
               <>
-                <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Set new password</h1>
-                <p className="text-sm text-gray-600 mb-6">
+                <h1 className="text-2xl font-bold text-brand mb-1">Set new password</h1>
+                <p className="text-sm text-ink-dim mb-6">
                   Choose a new password for your account.
                 </p>
 
@@ -158,7 +158,7 @@ export default function NewPasswordPage() {
                   <div className="mb-4">
                     <label
                       htmlFor="new-password"
-                      className="block text-sm font-medium text-[#1a1a1a] mb-1"
+                      className="block text-sm font-medium text-ink mb-1"
                     >
                       New password
                     </label>
@@ -170,18 +170,18 @@ export default function NewPasswordPage() {
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-[#1a1a1a] text-sm bg-white
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-ink text-sm bg-card
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-xs text-gray-600 mt-1">At least 8 characters.</p>
+                    <p className="text-xs text-ink-dim mt-1">At least 8 characters.</p>
                   </div>
 
                   <div className="mb-6">
                     <label
                       htmlFor="confirm-password"
-                      className="block text-sm font-medium text-[#1a1a1a] mb-1"
+                      className="block text-sm font-medium text-ink mb-1"
                     >
                       Confirm new password
                     </label>
@@ -193,8 +193,8 @@ export default function NewPasswordPage() {
                       value={confirm}
                       onChange={e => setConfirm(e.target.value)}
                       className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        text-[#1a1a1a] text-sm bg-white
+                        w-full rounded-lg border border-line px-3 py-2
+                        text-ink text-sm bg-card
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
@@ -229,12 +229,12 @@ export default function NewPasswordPage() {
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-gray-200 bg-[#faf9f6] px-6 py-6 text-center">
-      <p className="text-xs text-[#1a1a1a]">
+    <footer className="border-t border-line bg-canvas px-6 py-6 text-center">
+      <p className="text-xs text-ink">
         © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
         Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
       </p>
-      <p className="text-xs text-[#1a1a1a] mt-1 max-w-2xl mx-auto">
+      <p className="text-xs text-ink mt-1 max-w-2xl mx-auto">
         Our tools are designed to support providers in preparing for CQC inspection.
         They do not constitute official CQC guidance and do not guarantee any
         particular inspection outcome.

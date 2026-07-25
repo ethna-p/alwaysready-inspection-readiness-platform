@@ -102,7 +102,7 @@ function MfaSetupForm() {
   // Standalone layout (outside dashboard layout) for mandatory setup
   if (isMandatory) {
     return (
-      <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+      <div className="min-h-screen bg-canvas flex flex-col">
         <header className="px-6 py-4">
           <Image src="/alwaysready-logo.svg" alt="AlwaysReady" width={220} height={48} style={{ height: 'auto' }} priority />
         </header>
@@ -129,8 +129,8 @@ function MfaSetupForm() {
   return (
     <div className="max-w-lg">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#014D4E] mb-1">Set up two-factor authentication</h1>
-        <p className="text-sm text-gray-600">Adds a second layer of security to your account.</p>
+        <h1 className="text-2xl font-bold text-brand mb-1">Set up two-factor authentication</h1>
+        <p className="text-sm text-ink-dim">Adds a second layer of security to your account.</p>
       </div>
       <SetupCard
         initialising={initialising}
@@ -170,7 +170,7 @@ function SetupCard({
   code, setCode, error, loading, onSubmit, mandatory,
 }: CardProps) {
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+    <div className="w-full max-w-md bg-card rounded-2xl shadow-sm border border-line p-8">
       {mandatory && (
         <div className="mb-6 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
           <strong>Action required.</strong> Two-factor authentication is mandatory for manager accounts. Please set it up to continue.
@@ -179,13 +179,13 @@ function SetupCard({
 
       {initialising ? (
         <div className="text-center py-8">
-          <p className="text-sm text-gray-500">Preparing setup…</p>
+          <p className="text-sm text-ink-muted">Preparing setup…</p>
         </div>
       ) : (
         <>
           <div className="mb-6">
-            <h2 className="text-base font-semibold text-[#014D4E] mb-1">Step 1 — Scan the QR code</h2>
-            <p className="text-sm text-gray-600 mb-4">
+            <h2 className="text-base font-semibold text-brand mb-1">Step 1 — Scan the QR code</h2>
+            <p className="text-sm text-ink-dim mb-4">
               Open your authenticator app (Google Authenticator, Authy, or similar) and scan this code.
             </p>
 
@@ -193,29 +193,29 @@ function SetupCard({
               <div className="flex justify-center mb-3">
                 {/* QR code is returned as a data URI SVG */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrCode} alt="MFA QR code" className="w-48 h-48 border border-gray-200 rounded-lg p-1" />
+                <img src={qrCode} alt="MFA QR code" className="w-48 h-48 border border-line rounded-lg p-1" />
               </div>
             )}
 
             <button
               type="button"
               onClick={() => setShowSecret(!showSecret)}
-              className="text-xs text-[#014D4E] hover:underline"
+              className="text-xs text-brand hover:underline"
             >
               {showSecret ? 'Hide' : 'Can\'t scan? Enter code manually'}
             </button>
 
             {showSecret && secret && (
-              <div className="mt-2 bg-gray-50 rounded-lg px-3 py-2">
-                <p className="text-xs text-gray-500 mb-1">Manual entry key:</p>
-                <p className="font-mono text-sm text-[#1a1a1a] break-all">{secret}</p>
+              <div className="mt-2 bg-fill rounded-lg px-3 py-2">
+                <p className="text-xs text-ink-muted mb-1">Manual entry key:</p>
+                <p className="font-mono text-sm text-ink break-all">{secret}</p>
               </div>
             )}
           </div>
 
           <div className="mb-6">
-            <h2 className="text-base font-semibold text-[#014D4E] mb-1">Step 2 — Enter the code</h2>
-            <p className="text-sm text-gray-600 mb-4">
+            <h2 className="text-base font-semibold text-brand mb-1">Step 2 — Enter the code</h2>
+            <p className="text-sm text-ink-dim mb-4">
               Enter the 6-digit code shown in your authenticator app to confirm setup.
             </p>
 
@@ -227,7 +227,7 @@ function SetupCard({
               )}
 
               <div className="mb-4">
-                <label htmlFor="totp-code" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+                <label htmlFor="totp-code" className="block text-sm font-medium text-ink mb-1">
                   Verification code
                 </label>
                 <input
@@ -241,8 +241,8 @@ function SetupCard({
                   onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
                   placeholder="000000"
                   className="
-                    w-full rounded-lg border border-gray-300 px-3 py-2
-                    text-[#1a1a1a] text-sm bg-white text-center tracking-widest text-lg font-mono
+                    w-full rounded-lg border border-line px-3 py-2
+                    text-ink text-sm bg-card text-center tracking-widest text-lg font-mono
                     focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                   "
                 />

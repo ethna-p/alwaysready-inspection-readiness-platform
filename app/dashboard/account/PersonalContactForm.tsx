@@ -24,7 +24,7 @@ export default function PersonalContactForm({ personalEmail, mobileNumber }: Pro
     <form action={formAction} className="space-y-4">
       {/* Personal email */}
       <div>
-        <label htmlFor="personal_email" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+        <label htmlFor="personal_email" className="block text-sm font-medium text-ink mb-1">
           Personal email
         </label>
         <input
@@ -33,16 +33,16 @@ export default function PersonalContactForm({ personalEmail, mobileNumber }: Pro
           name="personal_email"
           defaultValue={personalEmail ?? ''}
           placeholder="e.g. yourname@gmail.com"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+          className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-ink-muted mt-1">
           We&apos;ll send password change notifications here.
         </p>
       </div>
 
       {/* Mobile number */}
       <div>
-        <label htmlFor="mobile_number" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+        <label htmlFor="mobile_number" className="block text-sm font-medium text-ink mb-1">
           Mobile number
         </label>
         <input
@@ -51,9 +51,9 @@ export default function PersonalContactForm({ personalEmail, mobileNumber }: Pro
           name="mobile_number"
           defaultValue={mobileNumber ?? ''}
           placeholder="e.g. 07700 900123"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+          className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-ink-muted mt-1">
           Reserved for future WhatsApp notifications.
         </p>
       </div>

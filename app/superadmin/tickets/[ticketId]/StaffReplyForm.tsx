@@ -29,8 +29,8 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
   return (
     <div className="space-y-6">
       {/* Status controls */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4">
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Update status</p>
+      <div className="bg-card border border-line rounded-xl p-4">
+        <p className="text-xs text-ink-muted uppercase tracking-wide mb-3">Update status</p>
         <div className="flex gap-2 flex-wrap">
           {STATUS_OPTIONS.map(opt => (
             <form key={opt.value} action={updateTicketStatus.bind(null, ticketId, opt.value)}>
@@ -43,7 +43,7 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
                   focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
                   ${opt.value === currentStatus
                     ? 'bg-[#00b8a6] text-white cursor-default'
-                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-[#1a1a1a]'
+                    : 'bg-fill-dim text-ink-muted hover:bg-fill-dim hover:text-ink'
                   }
                 `}
               >
@@ -55,8 +55,8 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
       </div>
 
       {/* Reply form */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-4">Reply to customer</p>
+      <div className="bg-card border border-line rounded-xl p-5">
+        <p className="text-xs text-ink-muted uppercase tracking-wide mb-4">Reply to customer</p>
 
         {state.status === 'error' && (
           <div className="bg-red-50 border border-red-300 rounded-lg p-3 text-sm text-red-700 mb-4">
@@ -71,8 +71,8 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
             rows={6}
             placeholder="Type your reply here…"
             className="
-              w-full bg-white border border-gray-300 rounded-lg
-              px-4 py-3 text-sm text-[#1a1a1a] placeholder-gray-400
+              w-full bg-card border border-line rounded-lg
+              px-4 py-3 text-sm text-ink placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               resize-y
             "

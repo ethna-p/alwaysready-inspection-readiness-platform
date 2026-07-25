@@ -77,7 +77,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
 
         {/* Status */}
         <div>
-          <label htmlFor="status" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          <label htmlFor="status" className="block text-sm font-medium text-ink mb-1">
             Status
             <Tooltip text="Use this to track where you are with this KLOE. Set to In progress once you've started gathering evidence, and Completed once a formal review is recorded. CQC will look for evidence of active, ongoing compliance — not just a completed date." />
           </label>
@@ -85,7 +85,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             id="status"
             name="status"
             defaultValue={defaultStatus}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           >
             {STATUS_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -96,16 +96,16 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         {/* Priority — admins only */}
         {isAdmin && (
           <div>
-            <label htmlFor="priority" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+            <label htmlFor="priority" className="block text-sm font-medium text-ink mb-1">
               Priority
-              <span className="ml-1 text-xs text-gray-600 font-normal">(how serious if non-compliant)</span>
+              <span className="ml-1 text-xs text-ink-dim font-normal">(how serious if non-compliant)</span>
               <Tooltip text="How serious would it be if this KLOE was found non-compliant during an inspection? Priority 1 means the consequences are most severe (e.g. a safeguarding failure). Priority 5 means the risk is minimal. Set by the manager — staff cannot change this." />
             </label>
             <select
               id="priority"
               name="priority"
               defaultValue={defaultPriority}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+              className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
             >
               {PRIORITY_OPTIONS.map(o => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -116,9 +116,9 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
 
         {/* Date reviewed */}
         <div>
-          <label htmlFor="date_reviewed" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          <label htmlFor="date_reviewed" className="block text-sm font-medium text-ink mb-1">
             Date of this review
-            <span className="ml-1 text-xs text-gray-600 font-normal">(when you actually completed the review, not today's date)</span>
+            <span className="ml-1 text-xs text-ink-dim font-normal">(when you actually completed the review, not today's date)</span>
             <Tooltip text="The date you actually completed the review — not today's date unless you reviewed it today. This date is used to calculate when the next review is due, and is permanently recorded in your audit trail." />
           </label>
           <input
@@ -127,9 +127,9 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             name="date_reviewed"
             defaultValue={defaultDate}
             max={todayStr}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+            className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
-          <p className="text-xs text-gray-600 mt-1">
+          <p className="text-xs text-ink-dim mt-1">
             Leave blank if you are only updating status{isAdmin ? ' or priority' : ''} without completing a review.
           </p>
         </div>
@@ -137,9 +137,9 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         {/* Review frequency — admins only */}
         {isAdmin && (
           <div>
-            <label htmlFor="review_frequency_days" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+            <label htmlFor="review_frequency_days" className="block text-sm font-medium text-ink mb-1">
               Review frequency
-              <span className="ml-1 text-xs text-gray-600 font-normal">(how often this KLOE should be reviewed)</span>
+              <span className="ml-1 text-xs text-ink-dim font-normal">(how often this KLOE should be reviewed)</span>
               <Tooltip text="How often this KLOE needs to be reviewed. Some KLOEs (e.g. medication management) may need monthly attention; others (e.g. premises checks) may be fine quarterly. You can change this at any time — all changes are logged." />
             </label>
             <select
@@ -148,13 +148,13 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
               defaultValue={FREQUENCY_OPTIONS.some(o => o.value === defaultFrequency)
                 ? defaultFrequency
                 : '90'}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+              className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
             >
               {FREQUENCY_OPTIONS.map(o => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="text-xs text-ink-dim mt-1">
               Changes to review frequency are logged in your audit trail.
             </p>
           </div>
@@ -162,9 +162,9 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
 
         {/* Notes */}
         <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          <label htmlFor="notes" className="block text-sm font-medium text-ink mb-1">
             Notes
-            <span className="ml-1 text-xs text-gray-600 font-normal">(optional context for this entry)</span>
+            <span className="ml-1 text-xs text-ink-dim font-normal">(optional context for this entry)</span>
             <Tooltip text="Any context about this update — what you reviewed, actions you've taken, or anything an inspector or your team should know. Notes are permanent and cannot be edited once saved." />
           </label>
           <textarea
@@ -173,7 +173,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             rows={3}
             defaultValue={defaultNotes}
             placeholder="Any context about this review entry — actions taken, issues noted, etc."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] resize-y"
+            className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] resize-y"
           />
         </div>
 
@@ -209,14 +209,14 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             {isPending ? 'Saving…' : 'Save to audit trail'}
           </button>
           {isPending && (
-            <span className="text-sm text-gray-600" aria-live="polite">
+            <span className="text-sm text-ink-dim" aria-live="polite">
               Saving your update…
             </span>
           )}
           <Link
             href="/dashboard/kloes"
             className="
-              text-sm font-medium text-[#014D4E]
+              text-sm font-medium text-brand
               hover:underline
               focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
               rounded

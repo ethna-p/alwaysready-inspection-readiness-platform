@@ -14,7 +14,7 @@ const TIER_STYLES: Record<string, string> = {
   trial:     'bg-blue-100 text-blue-700',
   active:    'bg-green-100 text-green-700',
   cancelled: 'bg-red-100 text-red-700',
-  expired:   'bg-gray-100 text-gray-500',
+  expired:   'bg-fill-dim text-ink-muted',
 }
 
 function formatDate(iso: string) {
@@ -79,28 +79,28 @@ export default async function OrganisationsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#1a1a1a] mb-1">Organisations</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-2xl font-bold text-ink mb-1">Organisations</h1>
+        <p className="text-sm text-ink-muted">
           All provisioned organisations.{' '}
           <span className="font-medium">"View as admin"</span> opens their dashboard in a new tab — your superadmin session stays open here.
         </p>
       </div>
 
       {!orgs || orgs.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-sm text-gray-400">
+        <div className="bg-card border border-line rounded-xl p-8 text-center text-sm text-ink-muted">
           No organisations provisioned yet.{' '}
-          <a href="/superadmin/provision" className="text-[#014D4E] hover:underline font-semibold">
+          <a href="/superadmin/provision" className="text-brand hover:underline font-semibold">
             Provision one →
           </a>
         </div>
       ) : (
         <>
-          <p className="text-xs text-gray-400 mb-4">{orgs.length} organisation{orgs.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs text-ink-muted mb-4">{orgs.length} organisation{orgs.length !== 1 ? 's' : ''}</p>
           <div className="space-y-3">
             {orgs.map((org: any) => {
               const serviceType = (org as any).service_types?.name ?? '—'
               const tier = org.subscription_tier ?? 'trial'
-              const tierStyle = TIER_STYLES[tier] ?? 'bg-gray-100 text-gray-500'
+              const tierStyle = TIER_STYLES[tier] ?? 'bg-fill-dim text-ink-muted'
               const tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1)
               const admin = adminByOrg[org.id]
               const trial = tier === 'trial' ? trialStatus(org.trial_expires_at) : null
@@ -108,14 +108,14 @@ export default async function OrganisationsPage() {
               return (
                 <div
                   key={org.id}
-                  className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex items-center justify-between gap-6"
+                  className="bg-card border border-line rounded-xl px-5 py-4 flex items-center justify-between gap-6"
                 >
                   {/* Left: org info */}
                   <div className="min-w-0">
                     {/* Name + badges */}
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <p className="text-sm font-semibold text-[#1a1a1a]">{org.name}</p>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                      <p className="text-sm font-semibold text-ink">{org.name}</p>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-fill-dim text-ink-muted">
                         {serviceType}
                       </span>
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${tierStyle}`}>
@@ -127,17 +127,17 @@ export default async function OrganisationsPage() {
                         </span>
                       )}
                       {trial && (
-                        <span className={`text-xs font-medium ${trial.urgent ? 'text-red-600' : 'text-gray-400'}`}>
+                        <span className={`text-xs font-medium ${trial.urgent ? 'text-red-600' : 'text-ink-muted'}`}>
                           · {trial.label}
                         </span>
                       )}
                     </div>
 
                     {/* Admin + dates */}
-                    <div className="text-xs text-gray-500 space-y-0.5">
+                    <div className="text-xs text-ink-muted space-y-0.5">
                       {admin ? (
                         <p>
-                          <span className="font-medium text-gray-700">{admin.full_name ?? 'Unknown'}</span>
+                          <span className="font-medium text-ink">{admin.full_name ?? 'Unknown'}</span>
                           {' · '}
                           <span className="font-mono">{admin.email}</span>
                         </p>
@@ -161,7 +161,7 @@ export default async function OrganisationsPage() {
                         adminName={admin.full_name}
                       />
                     ) : (
-                      <span className="text-xs text-gray-400">—</span>
+                      <span className="text-xs text-ink-muted">—</span>
                     )}
                   </div>
                 </div>

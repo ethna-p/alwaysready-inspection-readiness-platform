@@ -49,42 +49,42 @@ export default async function TicketThreadPage({ params }: Props) {
   return (
     <div className="max-w-2xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-6" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href="/dashboard/support" className="hover:text-[#014D4E] underline">Support</Link></li>
+          <li><Link href="/dashboard/support" className="hover:text-brand underline">Support</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">{ticket.reference}</li>
+          <li className="text-ink" aria-current="page">{ticket.reference}</li>
         </ol>
       </nav>
 
       {/* Ticket header */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+      <div className="bg-card border border-line rounded-xl p-6 mb-6">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <p className="text-xs text-gray-600 font-mono mb-1">{ticket.reference}</p>
-            <h1 className="text-xl font-bold text-[#014D4E]">{ticket.subject}</h1>
+            <p className="text-xs text-ink-dim font-mono mb-1">{ticket.reference}</p>
+            <h1 className="text-xl font-bold text-brand">{ticket.subject}</h1>
           </div>
           <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${status.colour}`}>
             {status.label}
           </span>
         </div>
         {!ticket.staff_initiated && (
-          <p className="text-xs text-gray-600 mb-4">Submitted {createdAt}</p>
+          <p className="text-xs text-ink-dim mb-4">Submitted {createdAt}</p>
         )}
 
         {ticket.staff_initiated ? (
           /* Staff-initiated: render opening message as AlwaysReady staff reply */
           <div className="rounded-lg p-4 bg-[#e6faf8] border border-[#00b8a6]/30">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-semibold text-[#014D4E]">AlwaysReady Support</span>
-              <span className="text-xs text-gray-600">{createdAt}</span>
+              <span className="text-xs font-semibold text-brand">AlwaysReady Support</span>
+              <span className="text-xs text-ink-dim">{createdAt}</span>
             </div>
-            <p className="text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">{ticket.message}</p>
+            <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{ticket.message}</p>
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg p-4 text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">
+          <div className="bg-fill rounded-lg p-4 text-sm text-ink leading-relaxed whitespace-pre-wrap">
             {ticket.message}
           </div>
         )}
@@ -104,16 +104,16 @@ export default async function TicketThreadPage({ params }: Props) {
                 className={`rounded-xl p-4 ${
                   isStaff
                     ? 'bg-[#e6faf8] border border-[#00b8a6]/30'
-                    : 'bg-white border border-gray-200'
+                    : 'bg-card border border-line'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#014D4E]' : 'text-gray-600'}`}>
+                  <span className={`text-xs font-semibold ${isStaff ? 'text-brand' : 'text-ink-dim'}`}>
                     {isStaff ? 'AlwaysReady Support' : 'You'}
                   </span>
-                  <span className="text-xs text-gray-600">{replyAt}</span>
+                  <span className="text-xs text-ink-dim">{replyAt}</span>
                 </div>
-                <p className="text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">
                   {reply.message}
                 </p>
               </div>
@@ -132,15 +132,15 @@ export default async function TicketThreadPage({ params }: Props) {
           .
         </div>
       ) : (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
+        <div className="bg-fill border border-line rounded-xl p-4 text-sm text-ink-dim">
           We&apos;ll reply here as soon as possible. You&apos;ll be able to see our response on this page.
         </div>
       )}
 
-      <div className="mt-6 pt-4 border-t border-gray-200">
+      <div className="mt-6 pt-4 border-t border-line">
         <Link
           href="/dashboard/support"
-          className="text-sm font-medium text-[#014D4E] hover:underline"
+          className="text-sm font-medium text-brand hover:underline"
         >
           ← Back to support
         </Link>

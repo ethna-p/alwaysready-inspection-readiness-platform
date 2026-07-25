@@ -36,7 +36,7 @@ function statusColour(s: ReturnType<typeof getStatus>) {
     overdue:  'text-red-600 bg-red-50',
     due_soon: 'text-amber-600 bg-amber-50',
     ok:       'text-green-700 bg-green-50',
-    not_set:  'text-gray-500 bg-gray-50',
+    not_set:  'text-ink-muted bg-fill',
   }[s]
 }
 
@@ -139,7 +139,7 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
 
   return (
     <section className="mb-8">
-      <h2 className="text-base font-semibold text-[#014D4E] mb-4">Training Records</h2>
+      <h2 className="text-base font-semibold text-brand mb-4">Training Records</h2>
 
       <div className="space-y-3">
         {trainingTypes.map(type => {
@@ -150,22 +150,22 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
           const local = localRecords[type.id]
 
           return (
-            <div key={type.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div key={type.id} className="bg-card rounded-xl border border-line overflow-hidden">
               {/* Row header */}
               <button
                 type="button"
                 onClick={() => setExpandedType(isOpen ? null : type.id)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-fill transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-[#1a1a1a]">{type.name}</span>
+                  <span className="text-sm font-medium text-ink">{type.name}</span>
                   {type.is_mandatory && (
-                    <span className="text-xs bg-[#014D4E]/10 text-[#014D4E] px-1.5 py-0.5 rounded">
+                    <span className="text-xs bg-[#014D4E]/10 text-brand px-1.5 py-0.5 rounded">
                       Mandatory
                     </span>
                   )}
                   {typeCerts.length > 0 && (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-ink-muted">
                       📎 {typeCerts.length} cert{typeCerts.length > 1 ? 's' : ''}
                     </span>
                   )}
@@ -175,17 +175,17 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                     {statusLabel(status)}
                   </span>
                   {rec?.next_due && (
-                    <span className="text-xs text-gray-500 hidden sm:block">
+                    <span className="text-xs text-ink-muted hidden sm:block">
                       Due {new Date(rec.next_due).toLocaleDateString('en-GB')}
                     </span>
                   )}
-                  <span className="text-gray-400 text-xs">{isOpen ? '▲' : '▼'}</span>
+                  <span className="text-ink-muted text-xs">{isOpen ? '▲' : '▼'}</span>
                 </div>
               </button>
 
               {/* Expanded panel */}
               {isOpen && (
-                <div ref={el => { panelRefs.current[type.id] = el }} className="border-t border-gray-100 px-5 py-5">
+                <div ref={el => { panelRefs.current[type.id] = el }} className="border-t border-line px-5 py-5">
                   {messages[type.id] && (
                     <div className="mb-3 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">
                       {messages[type.id]}
@@ -199,20 +199,20 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Date Completed</label>
+                      <label className="block text-sm font-medium text-ink mb-1">Date Completed</label>
                       <input
                         type="date"
                         value={local.dateCompleted}
                         onChange={e => setField(type.id, 'dateCompleted', e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+                        className="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Frequency</label>
+                      <label className="block text-sm font-medium text-ink mb-1">Frequency</label>
                       <select
                         value={local.frequencyDays}
                         onChange={e => setField(type.id, 'frequencyDays', e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+                        className="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
                       >
                         <option value="180">Every 6 Months</option>
                         <option value="365">Annual</option>
@@ -222,21 +222,21 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Next Due (calculated)</label>
-                      <p className="text-sm text-gray-700 pt-2">
+                      <label className="block text-sm font-medium text-ink mb-1">Next Due (calculated)</label>
+                      <p className="text-sm text-ink pt-2">
                         {calcNext(local.dateCompleted, local.frequencyDays)
                           ? new Date(calcNext(local.dateCompleted, local.frequencyDays)).toLocaleDateString('en-GB')
                           : '—'}
                       </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Notes</label>
+                      <label className="block text-sm font-medium text-ink mb-1">Notes</label>
                       <input
                         type="text"
                         value={local.notes}
                         onChange={e => setField(type.id, 'notes', e.target.value)}
                         placeholder="Any notes…"
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+                        className="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
                       />
                     </div>
                   </div>
@@ -253,13 +253,13 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                   </div>
 
                   {/* Certificates */}
-                  <div className="border-t border-gray-100 pt-4">
-                    <p className="text-sm font-medium text-[#014D4E] mb-3">Training certificates</p>
+                  <div className="border-t border-line pt-4">
+                    <p className="text-sm font-medium text-brand mb-3">Training certificates</p>
 
                     {typeCerts.length > 0 ? (
                       <ul className="space-y-2 mb-3">
                         {typeCerts.map(cert => (
-                          <li key={cert.id} className="flex items-center justify-between text-sm bg-gray-50 rounded-lg px-3 py-2">
+                          <li key={cert.id} className="flex items-center justify-between text-sm bg-fill rounded-lg px-3 py-2">
                             <div className="flex items-center gap-2">
                               <span>📄</span>
                               {certUrls[cert.id] ? (
@@ -267,12 +267,12 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                                   href={certUrls[cert.id]}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-[#014D4E] hover:underline"
+                                  className="text-brand hover:underline"
                                 >
                                   {cert.file_name}
                                 </a>
                               ) : (
-                                <span className="text-gray-700">{cert.file_name}</span>
+                                <span className="text-ink">{cert.file_name}</span>
                               )}
                               {cert.scan_status === 'clean' && (
                                 <span className="text-xs text-green-600 bg-green-50 px-1.5 py-0.5 rounded">✓ Scanned</span>
@@ -290,7 +290,7 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs text-gray-500 mb-3">No certificates uploaded yet.</p>
+                      <p className="text-xs text-ink-muted mb-3">No certificates uploaded yet.</p>
                     )}
 
                     <div className="flex items-center gap-3">
@@ -298,18 +298,18 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                         type="file"
                         accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                         ref={el => { fileInputRefs.current[type.id] = el }}
-                        className="text-sm text-gray-700"
+                        className="text-sm text-ink"
                       />
                       <button
                         type="button"
                         onClick={() => handleUpload(type.id)}
                         disabled={isPending}
-                        className="rounded-lg border border-[#014D4E] text-[#014D4E] text-sm font-medium px-3 py-1.5 hover:bg-[#014D4E] hover:text-white disabled:opacity-60 transition-colors"
+                        className="rounded-lg border border-[#014D4E] text-brand text-sm font-medium px-3 py-1.5 hover:bg-[#014D4E] hover:text-white disabled:opacity-60 transition-colors"
                       >
                         Upload
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">PDF, Word, Excel, JPG or PNG — max 10 MB.</p>
+                    <p className="text-xs text-ink-muted mt-1">PDF, Word, Excel, JPG or PNG — max 10 MB.</p>
                   </div>
                 </div>
               )}

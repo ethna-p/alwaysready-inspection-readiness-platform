@@ -76,28 +76,28 @@ export default async function SuperadminTicketPage({ params }: Props) {
       {/* Back */}
       <Link
         href="/superadmin/tickets"
-        className="text-sm text-gray-500 hover:text-[#014D4E] mb-6 block"
+        className="text-sm text-ink-muted hover:text-brand mb-6 block"
       >
         ← All tickets
       </Link>
 
       {/* Header */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+      <div className="bg-card border border-line rounded-xl p-6 mb-6">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <p className="text-xs text-gray-500 font-mono mb-1">{ticket.reference}</p>
-            <h1 className="text-xl font-bold text-[#1a1a1a]">{ticket.subject}</h1>
+            <p className="text-xs text-ink-muted font-mono mb-1">{ticket.reference}</p>
+            <h1 className="text-xl font-bold text-ink">{ticket.subject}</h1>
           </div>
           <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_COLOURS[status] ?? ''}`}>
             {STATUS_OPTIONS.find(s => s.value === status)?.label ?? status}
           </span>
         </div>
 
-        <dl className="text-xs text-gray-500 space-y-1 mb-4">
+        <dl className="text-xs text-ink-muted space-y-1 mb-4">
           {isExternal ? (
             <>
               <div className="flex gap-2">
-                <dt className="text-gray-400">Source</dt>
+                <dt className="text-ink-muted">Source</dt>
                 <dd>
                   {isEmail
                     ? <span className="font-semibold text-purple-700">Sales email (sales@alwaysready.uk)</span>
@@ -105,9 +105,9 @@ export default async function SuperadminTicketPage({ params }: Props) {
                   }
                 </dd>
               </div>
-              <div className="flex gap-2"><dt className="text-gray-400">Name</dt><dd>{t.external_name ?? '—'}</dd></div>
+              <div className="flex gap-2"><dt className="text-ink-muted">Name</dt><dd>{t.external_name ?? '—'}</dd></div>
               <div className="flex gap-2">
-                <dt className="text-gray-400">Email</dt>
+                <dt className="text-ink-muted">Email</dt>
                 <dd>
                   <a href={`mailto:${t.external_email}`} className="text-[#00b8a6] hover:underline">
                     {t.external_email ?? '—'}
@@ -117,9 +117,9 @@ export default async function SuperadminTicketPage({ params }: Props) {
             </>
           ) : (
             <>
-              <div className="flex gap-2"><dt className="text-gray-400">Organisation</dt><dd>{orgName}</dd></div>
+              <div className="flex gap-2"><dt className="text-ink-muted">Organisation</dt><dd>{orgName}</dd></div>
               <div className="flex gap-2">
-                <dt className="text-gray-400">Submitted by</dt>
+                <dt className="text-ink-muted">Submitted by</dt>
                 <dd>
                   {t.staff_initiated
                     ? <span className="text-[#00b8a6]">AlwaysReady (staff-initiated)</span>
@@ -128,13 +128,13 @@ export default async function SuperadminTicketPage({ params }: Props) {
               </div>
             </>
           )}
-          <div className="flex gap-2"><dt className="text-gray-400">Submitted</dt><dd>{created}</dd></div>
+          <div className="flex gap-2"><dt className="text-ink-muted">Submitted</dt><dd>{created}</dd></div>
         </dl>
 
         <div className={`rounded-lg p-4 text-sm leading-relaxed whitespace-pre-wrap ${
           t.staff_initiated
-            ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30 text-[#1a1a1a]'
-            : 'bg-gray-50 border border-gray-200 text-[#1a1a1a]'
+            ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30 text-ink'
+            : 'bg-fill border border-line text-ink'
         }`}>
           {ticket.message}
         </div>
@@ -154,16 +154,16 @@ export default async function SuperadminTicketPage({ params }: Props) {
                 className={`rounded-xl p-4 ${
                   isStaff
                     ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30'
-                    : 'bg-gray-50 border border-gray-200'
+                    : 'bg-fill border border-line'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#00b8a6]' : 'text-gray-500'}`}>
+                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#00b8a6]' : 'text-ink-muted'}`}>
                     {isStaff ? 'You (AlwaysReady)' : 'Customer'}
                   </span>
-                  <span className="text-xs text-gray-400">{replyAt}</span>
+                  <span className="text-xs text-ink-muted">{replyAt}</span>
                 </div>
-                <p className="text-sm text-[#1a1a1a] leading-relaxed whitespace-pre-wrap">{reply.message}</p>
+                <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{reply.message}</p>
               </div>
             )
           })}

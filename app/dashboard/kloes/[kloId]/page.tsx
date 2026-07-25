@@ -212,32 +212,32 @@ export default async function KloeDetailPage({ params }: Props) {
   return (
     <div className="max-w-4xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1 min-w-0">
-          <li className="shrink-0"><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li className="shrink-0"><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true" className="shrink-0">/</li>
-          <li className="shrink-0"><Link href="/dashboard/kloes" className="hover:text-[#014D4E] underline">KLOEs</Link></li>
+          <li className="shrink-0"><Link href="/dashboard/kloes" className="hover:text-brand underline">KLOEs</Link></li>
           <li aria-hidden="true" className="shrink-0">/</li>
-          <li className="text-[#1a1a1a] truncate min-w-0" aria-current="page">{klo.title}</li>
+          <li className="text-ink truncate min-w-0" aria-current="page">{klo.title}</li>
         </ol>
       </nav>
 
       {/* KLOE heading */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-brand uppercase tracking-widest mb-1">
           {kqName}
         </p>
         {kqDescription && (
-          <p className="text-xs text-gray-600 italic mb-2">"{kqDescription}"</p>
+          <p className="text-xs text-ink-dim italic mb-2">"{kqDescription}"</p>
         )}
-        <h1 className="text-2xl font-bold text-[#014D4E]">{klo.title}</h1>
+        <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
         {klo.wording && (
-          <p className="mt-3 text-base text-[#1a1a1a] leading-relaxed">
+          <p className="mt-3 text-base text-ink leading-relaxed">
             {klo.wording}
           </p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-ink-dim">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}
@@ -270,25 +270,25 @@ export default async function KloeDetailPage({ params }: Props) {
 
         {/* Current status card */}
         <section
-          className="bg-white rounded-xl border border-gray-200 p-5"
+          className="bg-card rounded-xl border border-line p-5"
           aria-labelledby="current-status-heading"
         >
-          <h2 id="current-status-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-4">
+          <h2 id="current-status-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-4">
             Current status
           </h2>
 
           {record ? (
             <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
               <div>
-                <dt className="text-xs text-gray-600 mb-1">RAG</dt>
+                <dt className="text-xs text-ink-dim mb-1">RAG</dt>
                 <dd><RagBadge status={rag} /></dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-600 mb-1">Status</dt>
+                <dt className="text-xs text-ink-dim mb-1">Status</dt>
                 <dd><StatusBadge status={record.status} /></dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-600 mb-1">Priority</dt>
+                <dt className="text-xs text-ink-dim mb-1">Priority</dt>
                 <dd>
                   <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#014D4E] text-white text-sm font-bold" aria-label={`Priority ${record.priority}`}>
                     {record.priority}
@@ -296,42 +296,42 @@ export default async function KloeDetailPage({ params }: Props) {
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-600 mb-1">Last reviewed</dt>
-                <dd className="text-[#1a1a1a]">{formatDate(record.date_reviewed)}</dd>
+                <dt className="text-xs text-ink-dim mb-1">Last reviewed</dt>
+                <dd className="text-ink">{formatDate(record.date_reviewed)}</dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-600 mb-1">Next due</dt>
-                <dd className={`font-medium ${rag === 'red' ? 'text-red-600' : 'text-[#1a1a1a]'}`}>
+                <dt className="text-xs text-ink-dim mb-1">Next due</dt>
+                <dd className={`font-medium ${rag === 'red' ? 'text-red-600' : 'text-ink'}`}>
                   {formatDate(record.next_review_due)}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-gray-600 mb-1">Review frequency</dt>
-                <dd className="text-[#1a1a1a]">{frequencyLabel(record.review_frequency_days)}</dd>
+                <dt className="text-xs text-ink-dim mb-1">Review frequency</dt>
+                <dd className="text-ink">{frequencyLabel(record.review_frequency_days)}</dd>
               </div>
               {record.assigned_to && (
                 <div className="col-span-2 sm:col-span-3">
-                  <dt className="text-xs text-gray-600 mb-1">Assigned to</dt>
-                  <dd className="text-[#1a1a1a]">{assignedToName ?? record.assigned_to}</dd>
+                  <dt className="text-xs text-ink-dim mb-1">Assigned to</dt>
+                  <dd className="text-ink">{assignedToName ?? record.assigned_to}</dd>
                 </div>
               )}
               {record.evidence_location && (
                 <div className="col-span-2 sm:col-span-3">
-                  <dt className="text-xs text-gray-600 mb-1">Evidence location</dt>
-                  <dd className="text-[#1a1a1a] break-words">{record.evidence_location}</dd>
+                  <dt className="text-xs text-ink-dim mb-1">Evidence location</dt>
+                  <dd className="text-ink break-words">{record.evidence_location}</dd>
                 </div>
               )}
               {record.notes && (
                 <div className="col-span-2 sm:col-span-3">
-                  <dt className="text-xs text-gray-600 mb-1">Notes</dt>
-                  <dd className="text-[#1a1a1a]">{record.notes}</dd>
+                  <dt className="text-xs text-ink-dim mb-1">Notes</dt>
+                  <dd className="text-ink">{record.notes}</dd>
                 </div>
               )}
             </dl>
           ) : (
             <div className="flex items-center gap-3">
               <RagBadge status="grey" />
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-ink-dim">
                 No review recorded yet.{!isViewer && ' Use the form below to log your first entry.'}
               </p>
             </div>
@@ -341,17 +341,17 @@ export default async function KloeDetailPage({ params }: Props) {
         {/* Pre-inspection checklist */}
         {checklistItems.length > 0 && (
           <section
-            className="bg-white rounded-xl border border-gray-200 p-5"
+            className="bg-card rounded-xl border border-line p-5"
             aria-labelledby="checklist-heading"
           >
-            <h2 id="checklist-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+            <h2 id="checklist-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
               Pre-inspection checklist
             </h2>
-            <p className="text-xs text-gray-600 mb-1">
+            <p className="text-xs text-ink-dim mb-1">
               Tick each item as your team gathers the required evidence. This does not affect the RAG status — that reflects
               how recently this KLOE was formally reviewed, not checklist completion.
             </p>
-            <p className="text-xs text-gray-500 mb-4 italic">
+            <p className="text-xs text-ink-muted mb-4 italic">
               CQC does not publish a prescribed list of evidence types. The evidence suggestions shown here are derived from
               the evidence statements published by CQC and are intended to guide your preparation — they are not CQC requirements.
               Item reference codes (K1, K2, etc.) are generated by AlwaysReady to help quickly identify checklist items within the platform — they are not CQC codes.
@@ -368,13 +368,13 @@ export default async function KloeDetailPage({ params }: Props) {
         {/* Assignment panel — admins only */}
         {isAdmin && (
           <section
-            className="bg-white rounded-xl border border-gray-200 p-5"
+            className="bg-card rounded-xl border border-line p-5"
             aria-labelledby="assign-heading"
           >
-            <h2 id="assign-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+            <h2 id="assign-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
               Assign this KLOE
             </h2>
-            <p className="text-xs text-gray-600 mb-4">
+            <p className="text-xs text-ink-dim mb-4">
               Assign a team member to own this KLOE. They will be able to update status, evidence, and notes.
             </p>
             <AssignForm
@@ -387,13 +387,13 @@ export default async function KloeDetailPage({ params }: Props) {
 
         {/* Evidence files */}
         <section
-          className="bg-white rounded-xl border border-gray-200 p-5"
+          className="bg-card rounded-xl border border-line p-5"
           aria-labelledby="evidence-heading"
         >
-          <h2 id="evidence-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+          <h2 id="evidence-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
             Evidence files
           </h2>
-          <p className="text-xs text-gray-600 mb-4">
+          <p className="text-xs text-ink-dim mb-4">
             Upload supporting documents for this KLOE. All files are private and accessible only to your team.
           </p>
           <EvidencePanel
@@ -408,10 +408,10 @@ export default async function KloeDetailPage({ params }: Props) {
         {/* Edit form — hidden for viewers */}
         {!isViewer && (
           <section
-            className="bg-white rounded-xl border border-gray-200 p-5"
+            className="bg-card rounded-xl border border-line p-5"
             aria-labelledby="update-heading"
           >
-            <h2 id="update-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-4">
+            <h2 id="update-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-4">
               {record ? 'Update this KLOE' : 'Log first review'}
             </h2>
             {/* Non-admin users: show a note if this KLOE isn't assigned to them */}
@@ -435,7 +435,7 @@ export default async function KloeDetailPage({ params }: Props) {
 
         {/* Viewer notice */}
         {isViewer && (
-          <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 text-sm text-gray-600">
+          <div className="bg-fill border border-line rounded-xl px-5 py-4 text-sm text-ink-dim">
             You have view-only access. Contact your admin to make changes.
           </div>
         )}
@@ -472,14 +472,14 @@ export default async function KloeDetailPage({ params }: Props) {
         const totalEntries = historyCount + fileCount
         return (
           <section
-            className="mt-6 bg-white rounded-xl border border-gray-200 p-5 flex flex-wrap items-center justify-between gap-4"
+            className="mt-6 bg-card rounded-xl border border-line p-5 flex flex-wrap items-center justify-between gap-4"
             aria-labelledby="history-heading"
           >
             <div>
-              <h2 id="history-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide">
+              <h2 id="history-heading" className="text-sm font-semibold text-brand uppercase tracking-wide">
                 Audit trail
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-ink-dim mt-1">
                 {totalEntries === 0
                   ? 'No entries yet. Your first save will appear here.'
                   : `${historyCount} compliance ${historyCount === 1 ? 'update' : 'updates'} · ${fileCount} ${fileCount === 1 ? 'file' : 'files'} uploaded`}

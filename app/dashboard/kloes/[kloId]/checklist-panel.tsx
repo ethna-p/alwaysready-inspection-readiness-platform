@@ -37,7 +37,7 @@ interface Props {
 function RegBadge({ reg }: { reg: string | null }) {
   if (!reg) return null
   return (
-    <span className="inline-block text-[10px] font-mono font-medium bg-gray-100 text-gray-600 rounded px-1.5 py-0.5 leading-none">
+    <span className="inline-block text-[10px] font-mono font-medium bg-fill-dim text-ink-dim rounded px-1.5 py-0.5 leading-none">
       {reg}
     </span>
   )
@@ -50,7 +50,7 @@ function RefBadge({ displayOrder, itemType }: { displayOrder: number; itemType: 
       inline-block text-[10px] font-mono font-medium rounded px-1.5 py-0.5 leading-none shrink-0
       ${isDementia
         ? 'bg-purple-100 text-purple-700'
-        : 'bg-[#e6f7f5] text-[#014D4E]'
+        : 'bg-[#e6f7f5] text-brand'
       }
     `}>
       K{displayOrder}
@@ -101,7 +101,7 @@ function ChecklistItemRow({
   return (
     <div className={`
       flex gap-3 py-3 px-4 rounded-lg transition-colors
-      ${isComplete ? 'bg-green-50' : 'bg-white hover:bg-[#faf9f6]'}
+      ${isComplete ? 'bg-green-50' : 'bg-card hover:bg-canvas'}
     `}>
       {/* Checkbox */}
       <div className="pt-0.5 shrink-0">
@@ -113,7 +113,7 @@ function ChecklistItemRow({
             if (!isViewer) onToggle(item.id, e.target.checked)
           }}
           className="
-            w-4 h-4 rounded border-gray-300 text-[#014D4E]
+            w-4 h-4 rounded border-line text-brand
             focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-1
             disabled:opacity-60 disabled:cursor-not-allowed
             cursor-pointer
@@ -127,7 +127,7 @@ function ChecklistItemRow({
         {/* Top row: ref + text */}
         <div className="flex flex-wrap items-start gap-2">
           <RefBadge displayOrder={item.display_order} itemType={item.item_type} />
-          <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-gray-600' : 'text-[#1a1a1a]'}`}>
+          <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-ink-dim' : 'text-ink'}`}>
             {item.checklist_item}
           </p>
         </div>
@@ -137,14 +137,14 @@ function ChecklistItemRow({
           <button
             type="button"
             onClick={() => setShowEvidence(v => !v)}
-            className="inline-flex items-center gap-1 text-xs font-medium text-[#014D4E] bg-[#e6f7f5] hover:bg-[#ccf0ec] rounded px-2 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]"
+            className="inline-flex items-center gap-1 text-xs font-medium text-brand bg-[#e6f7f5] hover:bg-[#ccf0ec] rounded px-2 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]"
           >
             <span aria-hidden="true">{showEvidence ? '▲' : '▼'}</span>
             {showEvidence ? 'Hide evidence guide' : 'What evidence is needed?'}
           </button>
         )}
         {showEvidence && item.evidence_notes && (
-          <p className="text-xs text-gray-700 bg-[#f0faf9] border border-[#c0eae5] rounded px-3 py-2 leading-relaxed">
+          <p className="text-xs text-ink bg-[#f0faf9] border border-[#c0eae5] rounded px-3 py-2 leading-relaxed">
             {item.evidence_notes}
           </p>
         )}
@@ -162,8 +162,8 @@ function ChecklistItemRow({
               }}
               placeholder="Evidence location"
               className="
-                flex-1 text-xs rounded border border-gray-200 px-2 py-1.5
-                bg-white text-[#1a1a1a] placeholder:text-gray-600
+                flex-1 text-xs rounded border border-line px-2 py-1.5
+                bg-card text-ink placeholder:text-ink-dim
                 focus:outline-none focus:ring-1 focus:ring-[#014D4E] focus:border-[#014D4E]
               "
             />
@@ -190,7 +190,7 @@ function ChecklistItemRow({
           </div>
         )}
         {isViewer && evidence && (
-          <p className="text-[11px] text-gray-600 mt-1">
+          <p className="text-[11px] text-ink-dim mt-1">
             <span className="font-medium">Evidence: </span>{evidence}
           </p>
         )}
@@ -222,7 +222,7 @@ function ItemGroup({
   return (
     <div>
       {label && (
-        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 px-4">{label}</p>
+        <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2 px-4">{label}</p>
       )}
       <div className="space-y-1">
         {items.map(item => (
@@ -302,7 +302,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
 
   if (items.length === 0) {
     return (
-      <div className="text-sm text-gray-600 px-1">
+      <div className="text-sm text-ink-dim px-1">
         No compliance checklist items available for this KLOE and your service type.
       </div>
     )
@@ -312,13 +312,13 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
     <div className="space-y-4">
       {/* Progress bar */}
       <div className="flex items-center gap-3">
-        <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div className="flex-1 bg-fill-dim rounded-full h-2 overflow-hidden">
           <div
             className="h-2 rounded-full bg-[#00b8a6] transition-all duration-300"
             style={{ width: `${totalItems > 0 ? (completeCount / totalItems) * 100 : 0}%` }}
           />
         </div>
-        <span className="text-xs font-medium text-gray-600 shrink-0">
+        <span className="text-xs font-medium text-ink-dim shrink-0">
           {completeCount} / {totalItems} complete
         </span>
       </div>
@@ -327,9 +327,9 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
       {coreItems.length > 0 && (
         <div className="space-y-2">
           {dementiaItems.length > 0 && (
-            <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-wide">Core</p>
+            <p className="text-xs font-semibold text-brand uppercase tracking-wide">Core</p>
           )}
-          <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100">
+          <div className="rounded-xl border border-line overflow-hidden divide-y divide-gray-100">
             {isDualReg ? (
               <>
                 {resItems.length > 0 && (
@@ -344,7 +344,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
                   />
                 )}
                 {nurseItems.length > 0 && (
-                  <div className={resItems.length > 0 ? 'border-t border-dashed border-gray-200 pt-1' : ''}>
+                  <div className={resItems.length > 0 ? 'border-t border-dashed border-line pt-1' : ''}>
                     <ItemGroup
                       label="Nursing wing"
                       items={nurseItems}
@@ -402,7 +402,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
       )}
 
       {isPending && (
-        <p className="text-xs text-gray-600 animate-pulse">Saving…</p>
+        <p className="text-xs text-ink-dim animate-pulse">Saving…</p>
       )}
     </div>
   )

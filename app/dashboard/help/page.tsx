@@ -24,17 +24,17 @@ function Section({
   return (
     <section
       id={id}
-      className="scroll-mt-8 bg-white rounded-2xl border border-gray-200 overflow-hidden print:border-gray-400 print:rounded-none print:break-inside-avoid"
+      className="scroll-mt-8 bg-card rounded-2xl border border-line overflow-hidden print:border-gray-400 print:rounded-none print:break-inside-avoid"
     >
       <div className={`px-6 py-4 ${colour}`}>
         <h2 className="text-lg font-bold text-white">{label}</h2>
       </div>
-      <div className="px-6 py-6 space-y-6 text-sm text-[#1a1a1a] leading-relaxed">
+      <div className="px-6 py-6 space-y-6 text-sm text-ink leading-relaxed">
         {children}
         <div className="pt-2 print:hidden">
           <a
             href="#"
-            className="text-xs text-[#014D4E] hover:underline focus:outline-none focus:ring-1 focus:ring-[#014D4E] rounded"
+            className="text-xs text-brand hover:underline focus:outline-none focus:ring-1 focus:ring-[#014D4E] rounded"
           >
             ↑ Back to top
           </a>
@@ -45,7 +45,7 @@ function Section({
 }
 
 function H3({ children }: { children: React.ReactNode }) {
-  return <h3 className="font-bold text-[#014D4E] text-base mt-2">{children}</h3>
+  return <h3 className="font-bold text-brand text-base mt-2">{children}</h3>
 }
 
 function P({ children }: { children: React.ReactNode }) {
@@ -77,9 +77,9 @@ function RAGPill({ colour, label, description }: { colour: string; label: string
 
 function FAQ({ question, answer }: { question: string; answer: string }) {
   return (
-    <div className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
-      <p className="font-semibold text-[#014D4E] mb-1">{question}</p>
-      <p className="text-gray-700">{answer}</p>
+    <div className="border-b border-line last:border-0 pb-4 last:pb-0">
+      <p className="font-semibold text-brand mb-1">{question}</p>
+      <p className="text-ink">{answer}</p>
     </div>
   )
 }
@@ -92,8 +92,8 @@ export default function HelpPage() {
 
       {/* Page heading */}
       <div className="mb-6 print:mb-4">
-        <h1 className="text-2xl font-bold text-[#014D4E]">Help &amp; User Guide</h1>
-        <p className="text-sm text-gray-600 mt-1">
+        <h1 className="text-2xl font-bold text-brand">Help &amp; User Guide</h1>
+        <p className="text-sm text-ink-dim mt-1">
           Everything you need to get the most out of AlwaysReady.
         </p>
       </div>
@@ -101,9 +101,9 @@ export default function HelpPage() {
       {/* ── Jump-to navigation ─────────────────────────────────────────────── */}
       <nav
         aria-label="Page sections"
-        className="bg-white rounded-xl border border-gray-200 p-5 mb-8 print:hidden"
+        className="bg-card rounded-xl border border-line p-5 mb-8 print:hidden"
       >
-        <p className="text-xs font-semibold text-[#014D4E] uppercase tracking-wide mb-3">
+        <p className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
           Jump to a section
         </p>
         <div className="flex flex-wrap gap-3">
@@ -121,9 +121,9 @@ export default function HelpPage() {
               href={link.href}
               className="
                 inline-block text-sm font-medium
-                bg-[#faf9f6] border border-gray-200 rounded-lg
+                bg-canvas border border-line rounded-lg
                 px-4 py-2
-                text-[#014D4E] hover:bg-[#014D4E] hover:text-white hover:border-[#014D4E]
+                text-brand hover:bg-[#014D4E] hover:text-white hover:border-[#014D4E]
                 focus:outline-none focus:ring-2 focus:ring-[#014D4E]
                 transition-colors
               "
@@ -239,8 +239,8 @@ export default function HelpPage() {
 
           {/* Suggestion callout */}
           <div className="mt-4 rounded-xl border border-[#014D4E]/20 bg-[#014D4E]/5 px-5 py-4">
-            <p className="font-semibold text-[#014D4E] mb-1">Got an idea for something new?</p>
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="font-semibold text-brand mb-1">Got an idea for something new?</p>
+            <p className="text-sm text-ink mb-3">
               If there is a feature you would find useful that is not listed above, we would genuinely love to hear about it. Your suggestions help shape the platform — and if it is something many services would benefit from, there is a good chance it will make it in.
             </p>
             <a
@@ -422,7 +422,7 @@ export default function HelpPage() {
 
           <H3>What the RAG colours mean</H3>
           <P>
-            See the <a href="#understanding-rag" className="text-[#014D4E] font-medium hover:underline">Understanding RAG status</a> section above for a full explanation.
+            See the <a href="#understanding-rag" className="text-brand font-medium hover:underline">Understanding RAG status</a> section above for a full explanation.
           </P>
 
           <H3>Can I see KLOEs I have not been assigned?</H3>
@@ -454,7 +454,7 @@ export default function HelpPage() {
 
           <H3>What the RAG colours mean</H3>
           <P>
-            See the <a href="#understanding-rag" className="text-[#014D4E] font-medium hover:underline">Understanding RAG status</a> section above for a full explanation. The audit trail beneath each KLOE shows the full history of how the service has been managing that area over time.
+            See the <a href="#understanding-rag" className="text-brand font-medium hover:underline">Understanding RAG status</a> section above for a full explanation. The audit trail beneath each KLOE shows the full history of how the service has been managing that area over time.
           </P>
 
           <H3>When your access expires</H3>
@@ -544,7 +544,7 @@ export default function HelpPage() {
       </div>
 
       {/* Print footer */}
-      <div className="hidden print:block mt-8 pt-4 border-t border-gray-300 text-xs text-gray-600 text-center">
+      <div className="hidden print:block mt-8 pt-4 border-t border-line text-xs text-ink-dim text-center">
         AlwaysReady Inspection Readiness Platform — User Guide
       </div>
 

@@ -35,18 +35,18 @@ export default async function TeamPage() {
   return (
     <div className="max-w-4xl">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">Team</li>
+          <li className="text-ink" aria-current="page">Team</li>
         </ol>
       </nav>
 
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#014D4E]">Team management</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold text-brand">Team management</h1>
+          <p className="text-sm text-ink-dim mt-1">
             Add team members, assign roles, and manage login credentials.
           </p>
         </div>
@@ -56,20 +56,20 @@ export default async function TeamPage() {
 
         {/* ── Team members list ──────────────────────────────────────────── */}
         <section aria-labelledby="team-list-heading">
-          <h2 id="team-list-heading" className="text-lg font-bold text-[#014D4E] mb-4">
+          <h2 id="team-list-heading" className="text-lg font-bold text-brand mb-4">
             Team members
-            <span className="ml-2 text-sm font-normal text-gray-600">
+            <span className="ml-2 text-sm font-normal text-ink-dim">
               ({members.length})
             </span>
           </h2>
 
           {members.length === 0 ? (
-            <p className="text-sm text-gray-600">No team members yet. Add your first below.</p>
+            <p className="text-sm text-ink-dim">No team members yet. Add your first below.</p>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+            <div className="bg-card rounded-xl border border-line overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
+                  <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                     <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Role</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Password</th>
@@ -91,37 +91,37 @@ export default async function TeamPage() {
 
         {/* ── Role guide ─────────────────────────────────────────────────── */}
         <section
-          className="bg-[#faf9f6] rounded-xl border border-gray-200 p-5 text-sm"
+          className="bg-canvas rounded-xl border border-line p-5 text-sm"
           aria-labelledby="role-guide-heading"
         >
-          <h2 id="role-guide-heading" className="font-semibold text-[#014D4E] mb-3">
+          <h2 id="role-guide-heading" className="font-semibold text-brand mb-3">
             Role guide
           </h2>
-          <dl className="space-y-2 text-[#1a1a1a]">
+          <dl className="space-y-2 text-ink">
             <div className="flex gap-2">
               <dt className="font-medium w-16 shrink-0">Admin</dt>
-              <dd className="text-gray-600">Full access — view and edit all KLOEs, assign tasks, manage team, create inspector logins.</dd>
+              <dd className="text-ink-dim">Full access — view and edit all KLOEs, assign tasks, manage team, create inspector logins.</dd>
             </div>
             <div className="flex gap-2">
               <dt className="font-medium w-16 shrink-0">User</dt>
-              <dd className="text-gray-600">Can view all KLOEs and update the ones assigned to them. Sees their personal "My KLOEs" view on login.</dd>
+              <dd className="text-ink-dim">Can view all KLOEs and update the ones assigned to them. Sees their personal "My KLOEs" view on login.</dd>
             </div>
             <div className="flex gap-2">
               <dt className="font-medium w-16 shrink-0">Viewer</dt>
-              <dd className="text-gray-600">Read-only access — for board members, owners, or CQC inspectors. Cannot edit anything.</dd>
+              <dd className="text-ink-dim">Read-only access — for board members, owners, or CQC inspectors. Cannot edit anything.</dd>
             </div>
           </dl>
         </section>
 
         {/* ── Add team member ────────────────────────────────────────────── */}
         <section
-          className="bg-white rounded-xl border border-gray-200 p-5"
+          className="bg-card rounded-xl border border-line p-5"
           aria-labelledby="add-member-heading"
         >
-          <h2 id="add-member-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+          <h2 id="add-member-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
             Invite team member
           </h2>
-          <p className="text-xs text-gray-600 mb-4">
+          <p className="text-xs text-ink-dim mb-4">
             An invitation email will be sent. The recipient clicks the link and sets their own password — no credentials to share manually.
           </p>
           <AddMemberForm />
@@ -129,25 +129,25 @@ export default async function TeamPage() {
 
         {/* ── Visitor logins ─────────────────────────────────────────────── */}
         <section aria-labelledby="visitor-list-heading">
-          <h2 id="visitor-list-heading" className="text-lg font-bold text-[#014D4E] mb-1">
+          <h2 id="visitor-list-heading" className="text-lg font-bold text-brand mb-1">
             Visitor logins
             {visitors.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-gray-600">
+              <span className="ml-2 text-sm font-normal text-ink-dim">
                 ({visitors.length})
               </span>
             )}
           </h2>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-ink-dim mb-4">
             Read-only access for inspectors, board members, or other external visitors. Access expires automatically.
           </p>
 
           {visitors.length === 0 ? (
-            <p className="text-sm text-gray-600">No visitor logins yet.</p>
+            <p className="text-sm text-ink-dim">No visitor logins yet.</p>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+            <div className="bg-card rounded-xl border border-line overflow-hidden mb-6">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
+                  <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                     <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Access expires</th>
                     <th scope="col" className="text-left px-4 py-3 font-medium">Revoke</th>
@@ -165,13 +165,13 @@ export default async function TeamPage() {
 
         {/* ── Create visitor login ───────────────────────────────────────── */}
         <section
-          className="bg-white rounded-xl border border-gray-200 p-5"
+          className="bg-card rounded-xl border border-line p-5"
           aria-labelledby="add-visitor-heading"
         >
-          <h2 id="add-visitor-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
+          <h2 id="add-visitor-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
             Create visitor login
           </h2>
-          <p className="text-xs text-gray-600 mb-4">
+          <p className="text-xs text-ink-dim mb-4">
             Create a temporary read-only login for an inspector or external visitor. They can view all KLOEs, the audit trail, trend data, and reports — but cannot make any changes.
           </p>
           <AddVisitorForm />

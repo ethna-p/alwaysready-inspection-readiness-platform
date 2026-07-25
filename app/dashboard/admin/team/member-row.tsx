@@ -39,10 +39,10 @@ export default function MemberRow({ member, isSelf }: Props) {
   const isStaffAccount = member.email.endsWith('@staff.alwaysready.uk')
 
   return (
-    <tr className="hover:bg-[#faf9f6] transition-colors align-top">
+    <tr className="hover:bg-canvas transition-colors align-top">
       {/* Name */}
       <td className="px-4 py-4">
-        <p className="font-medium text-[#1a1a1a]">
+        <p className="font-medium text-ink">
           {displayName}
           {isSelf && (
             <span className="ml-2 text-xs bg-[#014D4E] text-white px-2 py-0.5 rounded-full">
@@ -51,17 +51,17 @@ export default function MemberRow({ member, isSelf }: Props) {
           )}
         </p>
         {member.username && (
-          <p className="text-xs text-gray-600 mt-0.5 font-mono">{member.username}</p>
+          <p className="text-xs text-ink-dim mt-0.5 font-mono">{member.username}</p>
         )}
         {!isStaffAccount && (
-          <p className="text-xs text-gray-600 mt-0.5">{member.email}</p>
+          <p className="text-xs text-ink-dim mt-0.5">{member.email}</p>
         )}
       </td>
 
       {/* Role */}
       <td className="px-4 py-4">
         {isSelf ? (
-          <span className="text-sm text-[#1a1a1a]">{ROLE_LABELS[member.role] ?? member.role}</span>
+          <span className="text-sm text-ink">{ROLE_LABELS[member.role] ?? member.role}</span>
         ) : (
           <form action={roleAction} className="flex items-center gap-2">
             <input type="hidden" name="user_id" value={member.id} />
@@ -69,7 +69,7 @@ export default function MemberRow({ member, isSelf }: Props) {
               name="role"
               defaultValue={member.role}
               disabled={rolePending}
-              className="border border-gray-300 rounded-lg px-2 py-1.5 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
+              className="border border-line rounded-lg px-2 py-1.5 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
             >
               <option value="admin">Admin</option>
               <option value="user">User</option>
@@ -78,7 +78,7 @@ export default function MemberRow({ member, isSelf }: Props) {
             <button
               type="submit"
               disabled={rolePending}
-              className="text-xs text-[#014D4E] font-medium hover:underline disabled:opacity-50"
+              className="text-xs text-brand font-medium hover:underline disabled:opacity-50"
             >
               {rolePending ? 'Saving…' : 'Save'}
             </button>
@@ -94,7 +94,7 @@ export default function MemberRow({ member, isSelf }: Props) {
       {/* Password reset */}
       <td className="px-4 py-4">
         {isSelf ? (
-          <span className="text-xs text-gray-600">—</span>
+          <span className="text-xs text-ink-dim">—</span>
         ) : (
           <>
             <form action={resetAction}>
@@ -103,7 +103,7 @@ export default function MemberRow({ member, isSelf }: Props) {
               <button
                 type="submit"
                 disabled={resetPending}
-                className="text-xs text-[#014D4E] font-medium hover:underline disabled:opacity-50"
+                className="text-xs text-brand font-medium hover:underline disabled:opacity-50"
               >
                 {resetPending ? 'Resetting…' : 'Reset password'}
               </button>
@@ -111,10 +111,10 @@ export default function MemberRow({ member, isSelf }: Props) {
             {resetState?.success && resetState.credentials?.password && (
               <div className="mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                 <p className="text-xs text-amber-800 font-medium mb-1">New temporary password:</p>
-                <p className="font-mono text-sm text-[#014D4E] font-semibold select-all">
+                <p className="font-mono text-sm text-brand font-semibold select-all">
                   {resetState.credentials.password}
                 </p>
-                <p className="text-xs text-gray-600 mt-1">Give this to {displayName} directly.</p>
+                <p className="text-xs text-ink-dim mt-1">Give this to {displayName} directly.</p>
               </div>
             )}
             {resetState && !resetState.success && (

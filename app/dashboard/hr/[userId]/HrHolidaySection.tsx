@@ -58,15 +58,15 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
     })
   }
 
-  const inputCls = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[#1a1a1a] bg-white focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]'
+  const inputCls = 'w-full rounded-lg border border-line px-3 py-2 text-sm text-ink bg-card focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]'
 
   return (
     <section className="mb-8">
-      <h2 className="text-base font-semibold text-[#014D4E] mb-4">
-        Holiday / Leave Allowance <span className="text-xs font-normal text-gray-500">({holidayUnit})</span>
+      <h2 className="text-base font-semibold text-brand mb-4">
+        Holiday / Leave Allowance <span className="text-xs font-normal text-ink-muted">({holidayUnit})</span>
       </h2>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-card rounded-xl border border-line p-6">
         {message && (
           <div className="mb-4 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">{message}</div>
         )}
@@ -78,12 +78,12 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
         {hasData && (
           <div className="mb-6 flex items-center gap-6">
             <div className="text-center shrink-0">
-              <p className="text-3xl font-bold text-[#014D4E]">
+              <p className="text-3xl font-bold text-brand">
                 {remaining % 1 === 0 ? remaining : remaining.toFixed(1)}
               </p>
-              <p className="text-xs text-gray-500 mt-0.5">{holidayUnit} remaining</p>
+              <p className="text-xs text-ink-muted mt-0.5">{holidayUnit} remaining</p>
             </div>
-            <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+            <div className="flex-1 h-3 bg-fill-dim rounded-full overflow-hidden">
               <div
                 className="h-3 rounded-full bg-[#00b8a6] transition-all"
                 style={{ width: `${barPct}%` }}
@@ -93,7 +93,7 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
         )}
 
         {!hasData && (
-          <p className="text-sm text-gray-500 mb-5">
+          <p className="text-sm text-ink-muted mb-5">
             No leave year configured yet. Set a leave year start date and entitlement below.
           </p>
         )}
@@ -101,7 +101,7 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
         <form onSubmit={handleSave} className="space-y-4">
           {/* Leave year start */}
           <div>
-            <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Leave Year Start Date</label>
+            <label className="block text-sm font-medium text-ink mb-1">Leave Year Start Date</label>
             <input
               type="date"
               value={leaveYearStart}
@@ -118,7 +118,7 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
               { label: `Taken (${holidayUnit})`,       value: taken,     set: setTaken },
             ] as const).map(({ label, value, set }) => (
               <div key={label}>
-                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">{label}</label>
+                <label className="block text-sm font-medium text-ink mb-1">{label}</label>
                 <input
                   type="number"
                   min="0"
@@ -144,11 +144,11 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
 
         {/* Previous years */}
         {allowances.length > 1 && (
-          <div className="mt-6 border-t border-gray-100 pt-4">
-            <p className="text-sm font-medium text-[#014D4E] mb-2">Previous leave years</p>
+          <div className="mt-6 border-t border-line pt-4">
+            <p className="text-sm font-medium text-brand mb-2">Previous leave years</p>
             <div className="space-y-2">
               {allowances.slice(1).map(a => (
-                <div key={a.id} className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+                <div key={a.id} className="flex items-center justify-between text-sm text-ink-dim bg-fill rounded-lg px-3 py-2">
                   <span>Year starting {new Date(a.leave_year_start).toLocaleDateString('en-GB')}</span>
                   <span>{(a.total_allowance + a.carry_over - a.taken).toFixed(1)} {holidayUnit} remaining of {a.total_allowance} entitlement</span>
                 </div>

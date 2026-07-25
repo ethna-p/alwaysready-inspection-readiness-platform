@@ -24,10 +24,10 @@ export default async function DemoPage({ searchParams }: Props) {
   const errorMessage = error ? (ERROR_MESSAGES[error] ?? ERROR_MESSAGES.unexpected) : null
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] flex flex-col">
+    <div className="min-h-screen bg-canvas flex flex-col">
 
       {/* Minimal header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-card border-b border-line px-6 py-4">
         <a href="https://alwaysready.uk" aria-label="AlwaysReady home">
           <Image
             src="/alwaysready-logo.svg"
@@ -44,8 +44,8 @@ export default async function DemoPage({ searchParams }: Props) {
       <section className="relative bg-[#014D4E] overflow-hidden px-6 py-20 text-center">
 
         {/* Decorative background circles */}
-        <span aria-hidden="true" className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5" />
-        <span aria-hidden="true" className="pointer-events-none absolute -bottom-32 -right-20 w-[28rem] h-[28rem] rounded-full bg-white/5" />
+        <span aria-hidden="true" className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-card/5" />
+        <span aria-hidden="true" className="pointer-events-none absolute -bottom-32 -right-20 w-[28rem] h-[28rem] rounded-full bg-card/5" />
         <span aria-hidden="true" className="pointer-events-none absolute top-10 right-1/4 w-40 h-40 rounded-full bg-[#ffd700]/10" />
 
         <div className="relative max-w-xl mx-auto">
@@ -93,14 +93,14 @@ export default async function DemoPage({ searchParams }: Props) {
       {/* What you'll see */}
       <main className="flex-1 flex items-start justify-center px-6 py-12">
         <div className="max-w-xl w-full">
-          <p className="text-xs text-gray-600 text-center mb-4">
+          <p className="text-xs text-ink-dim text-center mb-4">
             KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
           </p>
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-[#014D4E] uppercase tracking-widest mb-4">
+          <div className="bg-card rounded-2xl border border-line p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-4">
               What you&apos;ll see
             </h2>
-            <ul className="space-y-3 text-sm text-gray-700">
+            <ul className="space-y-3 text-sm text-ink">
               {[
                 ['Readiness dashboard', 'Overall % and per-key-question breakdown at a glance'],
                 ['Full KLOE tracker', 'All 24 KLOEs with RAG status, priority, and next review dates'],
@@ -111,12 +111,12 @@ export default async function DemoPage({ searchParams }: Props) {
               ].map(([title, desc]) => (
                 <li key={title} className="flex items-start gap-3">
                   <span className="mt-0.5 w-5 h-5 rounded-full bg-[#014D4E]/10 flex items-center justify-center shrink-0" aria-hidden="true">
-                    <svg className="w-3 h-3 text-[#014D4E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </span>
                   <span>
-                    <span className="font-semibold text-[#1a1a1a]">{title}</span>
+                    <span className="font-semibold text-ink">{title}</span>
                     {' — '}
                     {desc}
                   </span>
@@ -128,12 +128,12 @@ export default async function DemoPage({ searchParams }: Props) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-[#faf9f6] px-6 py-6 text-center">
-        <p className="text-xs text-[#1a1a1a]">
+      <footer className="border-t border-line bg-canvas px-6 py-6 text-center">
+        <p className="text-xs text-ink">
           © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
           Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
         </p>
-        <p className="text-xs text-[#1a1a1a] mt-1 max-w-2xl mx-auto">
+        <p className="text-xs text-ink mt-1 max-w-2xl mx-auto">
           Our tools are designed to support providers in preparing for CQC inspection.
           They do not constitute official CQC guidance and do not guarantee any
           particular inspection outcome.

@@ -98,17 +98,17 @@ export default async function HrStaffDetailPage({
       {/* Back link */}
       <Link
         href="/dashboard/hr"
-        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#014D4E] mb-6"
+        className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-brand mb-6"
       >
         ← HR Records
       </Link>
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#014D4E]">
+        <h1 className="text-2xl font-bold text-brand">
           {staffUser.full_name ?? staffUser.username}
         </h1>
-        <p className="text-sm text-gray-500 mt-1 capitalize">{staffUser.role}</p>
+        <p className="text-sm text-ink-muted mt-1 capitalize">{staffUser.role}</p>
       </div>
 
       {/* Main form sections (employment, personal, emergency, compliance, supervision, appraisal) */}

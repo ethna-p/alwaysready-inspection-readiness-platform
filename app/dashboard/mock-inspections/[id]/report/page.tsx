@@ -158,22 +158,22 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
 
       {/* Back + print */}
       <div className="flex items-center justify-between print:hidden">
-        <a href="/dashboard/mock-inspections" className="text-sm text-[#014D4E] hover:underline">
+        <a href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
           ← Mock Inspections
         </a>
         <button
           onClick={() => window.print()}
-          className="text-sm font-medium text-[#014D4E] border border-[#014D4E] rounded-lg px-4 py-2 hover:bg-[#014D4E] hover:text-white transition-colors"
+          className="text-sm font-medium text-brand border border-[#014D4E] rounded-lg px-4 py-2 hover:bg-[#014D4E] hover:text-white transition-colors"
         >
           Print / Save PDF
         </button>
       </div>
 
       {/* Report header */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm print:shadow-none print:border-gray-300">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Mock Inspection Report</p>
-        <h1 className="text-2xl font-bold text-[#014D4E] mb-1">{org?.name ?? 'Your Service'}</h1>
-        <p className="text-sm text-gray-500">
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm print:shadow-none print:border-line">
+        <p className="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-2">Mock Inspection Report</p>
+        <h1 className="text-2xl font-bold text-brand mb-1">{org?.name ?? 'Your Service'}</h1>
+        <p className="text-sm text-ink-muted">
           {inspection.type === 'partial'
             ? `Partial inspection — ${(inspection.key_questions as any)?.name}`
             : 'Full inspection — all key questions'}
@@ -195,25 +195,25 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
       </div>
 
       {/* Summary findings by key question */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm print:shadow-none">
-        <h2 className="text-base font-semibold text-[#014D4E] mb-4">Summary findings</h2>
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm print:shadow-none">
+        <h2 className="text-base font-semibold text-brand mb-4">Summary findings</h2>
         <div className="space-y-4">
           {Object.entries(byKeyQuestion).map(([kqId, { name, findings: kqFindings }]) => {
             const kqOverall = overallRating(kqFindings)
             return (
               <div key={kqId}>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-gray-800">{name}</h3>
+                  <h3 className="text-sm font-semibold text-ink">{name}</h3>
                   {kqOverall && (
                     <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${RATING_STYLE[kqOverall]}`}>
                       {RATING_LABEL[kqOverall]}
                     </span>
                   )}
                 </div>
-                <div className="space-y-1.5 pl-2 border-l-2 border-gray-100">
+                <div className="space-y-1.5 pl-2 border-l-2 border-line">
                   {kqFindings.map((f: any) => (
                     <div key={f.klo_item_id} className="flex items-center justify-between gap-3">
-                      <p className="text-sm text-gray-700">{(f.klo_items as any)?.title}</p>
+                      <p className="text-sm text-ink">{(f.klo_items as any)?.title}</p>
                       <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full border ${RATING_STYLE[f.rating as MockInspectionRating]}`}>
                         {RATING_LABEL[f.rating as MockInspectionRating]}
                       </span>
@@ -227,9 +227,9 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
       </div>
 
       {/* Action plan */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm print:shadow-none space-y-6">
-        <h2 className="text-base font-semibold text-[#014D4E]">Your focus areas</h2>
-        <p className="text-sm text-gray-600 -mt-3">
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm print:shadow-none space-y-6">
+        <h2 className="text-base font-semibold text-brand">Your focus areas</h2>
+        <p className="text-sm text-ink-dim -mt-3">
           The actions below tell you what to prioritise before your next inspection. Work through them in order.
         </p>
 
@@ -243,8 +243,8 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
             <div className="space-y-3">
               {mustAddress.map((item, i) => (
                 <div key={i} className="border border-red-100 bg-red-50 rounded-lg p-4">
-                  <p className="text-sm font-semibold text-[#1a1a1a] mb-1">{item.title}</p>
-                  <p className="text-sm text-gray-700 leading-relaxed">
+                  <p className="text-sm font-semibold text-ink mb-1">{item.title}</p>
+                  <p className="text-sm text-ink leading-relaxed">
                     You need to: {item.action}
                   </p>
                 </div>
@@ -263,8 +263,8 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
             <div className="space-y-3">
               {strengthen.map((item, i) => (
                 <div key={i} className="border border-amber-100 bg-amber-50 rounded-lg p-4">
-                  <p className="text-sm font-semibold text-[#1a1a1a] mb-1">{item.title}</p>
-                  <p className="text-sm text-gray-700 leading-relaxed">
+                  <p className="text-sm font-semibold text-ink mb-1">{item.title}</p>
+                  <p className="text-sm text-ink leading-relaxed">
                     We recommend: {item.action}
                   </p>
                 </div>
@@ -281,10 +281,10 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
               <h3 className="text-sm font-bold text-green-700">Maintain</h3>
             </div>
             <div className="border border-green-100 bg-green-50 rounded-lg p-4">
-              <p className="text-sm text-gray-700 mb-2">These areas are performing well. Keep your evidence up to date and continue your current approach.</p>
+              <p className="text-sm text-ink mb-2">These areas are performing well. Keep your evidence up to date and continue your current approach.</p>
               <ul className="space-y-1">
                 {maintain.map((item, i) => (
-                  <li key={i} className="text-sm text-gray-700 flex items-center gap-2">
+                  <li key={i} className="text-sm text-ink flex items-center gap-2">
                     <span className="text-green-500">✓</span> {item.title}
                   </li>
                 ))}
@@ -294,12 +294,12 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
         )}
 
         {mustAddress.length === 0 && strengthen.length === 0 && maintain.length === 0 && (
-          <p className="text-sm text-gray-500">No action items generated — check that all KLOEs were rated.</p>
+          <p className="text-sm text-ink-muted">No action items generated — check that all KLOEs were rated.</p>
         )}
       </div>
 
       {/* Footer disclaimer for print */}
-      <div className="text-xs text-gray-400 text-center pb-4 print:block">
+      <div className="text-xs text-ink-muted text-center pb-4 print:block">
         Generated by AlwaysReady · {formatDate(new Date().toISOString())} · For guidance only — does not represent the view of CQC.
       </div>
 

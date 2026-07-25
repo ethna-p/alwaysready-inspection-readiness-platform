@@ -229,8 +229,8 @@ export default async function DashboardPage() {
       {/* Page heading */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#014D4E]">Inspection Readiness</h1>
-          <p className="text-sm text-gray-600 mt-1">{orgName}</p>
+          <h1 className="text-2xl font-bold text-brand">Inspection Readiness</h1>
+          <p className="text-sm text-ink-dim mt-1">{orgName}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <EvidencePackButton />
@@ -252,7 +252,7 @@ export default async function DashboardPage() {
 
       {/* ── CQC Rating ───────────────────────────────────────────────────── */}
       <section aria-label="Current CQC rating" className="mb-6">
-        <div className="bg-white rounded-2xl border border-gray-200 p-5">
+        <div className="bg-card rounded-2xl border border-line p-5">
           <div className="flex flex-wrap items-center gap-4">
 
             {/* Rating badge */}
@@ -263,7 +263,7 @@ export default async function DashboardPage() {
                 aria-hidden="true"
               />
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-0.5">
                   Current CQC rating
                 </p>
                 {cqcRating ? (
@@ -277,28 +277,28 @@ export default async function DashboardPage() {
                     {cqcRating}
                   </span>
                 ) : (
-                  <span className="text-sm text-gray-500 italic">Not yet rated</span>
+                  <span className="text-sm text-ink-muted italic">Not yet rated</span>
                 )}
               </div>
             </div>
 
             {/* CQC-held name */}
             {cqcLocationName && (
-              <div className="hidden sm:block border-l border-gray-100 pl-4 min-w-0">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <div className="hidden sm:block border-l border-line pl-4 min-w-0">
+                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-0.5">
                   Registered name
                 </p>
-                <p className="text-sm text-[#1a1a1a] font-medium truncate">{cqcLocationName}</p>
+                <p className="text-sm text-ink font-medium truncate">{cqcLocationName}</p>
               </div>
             )}
 
             {/* Last inspection date */}
             {cqcDateFormatted && (
-              <div className="border-l border-gray-100 pl-4 min-w-0">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <div className="border-l border-line pl-4 min-w-0">
+                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-0.5">
                   Last inspection
                 </p>
-                <p className="text-sm text-[#1a1a1a]">{cqcDateFormatted}</p>
+                <p className="text-sm text-ink">{cqcDateFormatted}</p>
               </div>
             )}
 
@@ -309,7 +309,7 @@ export default async function DashboardPage() {
                   href={`https://www.cqc.org.uk/location/${org.cqc_location_id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-[#014D4E] underline underline-offset-2 hover:text-[#013636] focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+                  className="text-xs text-brand underline underline-offset-2 hover:text-[#013636] focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
                 >
                   View on CQC website →
                 </a>
@@ -320,16 +320,16 @@ export default async function DashboardPage() {
 
           {/* No location ID stored */}
           {!org?.cqc_location_id && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-ink-muted">
               No CQC Location ID recorded.{' '}
-              <Link href="/dashboard/account" className="text-[#014D4E] underline hover:text-[#013636]">
+              <Link href="/dashboard/account" className="text-brand underline hover:text-[#013636]">
                 Add it in your account settings
               </Link>{' '}
               to see your live CQC rating here.
             </p>
           )}
 
-          <p className="text-xs text-gray-400 mt-3">
+          <p className="text-xs text-ink-muted mt-3">
             Data sourced from the CQC public register, updated daily.
             AlwaysReady is not affiliated with or endorsed by the Care Quality Commission.
           </p>
@@ -338,28 +338,28 @@ export default async function DashboardPage() {
 
       {/* ── Overall readiness ────────────────────────────────────────────── */}
       <section aria-labelledby="overall-heading" className="mb-8">
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="bg-card rounded-2xl border border-line p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
 
             {/* Big number */}
             <div className="text-center sm:text-left shrink-0">
               <p
-                className="text-6xl font-bold text-[#014D4E] tabular-nums"
+                className="text-6xl font-bold text-brand tabular-nums"
                 aria-label={`${overallPct} percent overall readiness`}
               >
                 {overallPct}<span className="text-3xl">%</span>
               </p>
-              <p className="text-sm text-gray-600 mt-1">Overall readiness</p>
+              <p className="text-sm text-ink-dim mt-1">Overall readiness</p>
             </div>
 
             {/* Progress bar + breakdown */}
             <div className="flex-1 min-w-0">
-              <div className="flex justify-between text-xs text-gray-600 mb-1">
+              <div className="flex justify-between text-xs text-ink-dim mb-1">
                 <span>{compliantKlos} of {totalKlos} KLOEs up to date</span>
                 <span>{overallPct}%</span>
               </div>
               <div
-                className="w-full h-3 bg-gray-100 rounded-full overflow-hidden"
+                className="w-full h-3 bg-fill-dim rounded-full overflow-hidden"
                 role="progressbar"
                 aria-valuenow={overallPct}
                 aria-valuemin={0}
@@ -371,7 +371,7 @@ export default async function DashboardPage() {
                   style={{ width: `${overallPct}%` }}
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2">
+              <p className="text-xs text-ink-dim mt-2">
                 Up to date = status Completed and next review not yet overdue
               </p>
 
@@ -380,7 +380,7 @@ export default async function DashboardPage() {
                 {(['green', 'amber', 'red', 'grey'] as const).map(rag => (
                   <span key={rag} className="inline-flex items-center gap-1">
                     <RagBadge status={rag} compact />
-                    <span className="text-sm font-semibold text-[#1a1a1a]">{overallRag[rag]}</span>
+                    <span className="text-sm font-semibold text-ink">{overallRag[rag]}</span>
                   </span>
                 ))}
               </div>
@@ -393,7 +393,7 @@ export default async function DashboardPage() {
       <section aria-labelledby="breakdown-heading">
         <h2
           id="breakdown-heading"
-          className="text-lg font-bold text-[#014D4E] mb-4"
+          className="text-lg font-bold text-brand mb-4"
         >
           Breakdown by key question
         </h2>
@@ -404,15 +404,15 @@ export default async function DashboardPage() {
             return (
               <div
                 key={kq.id}
-                className="bg-white rounded-xl border border-gray-200 p-5"
+                className="bg-card rounded-xl border border-line p-5"
               >
                 {/* Key question name + % */}
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <h3 className="font-semibold text-[#014D4E] text-sm leading-tight">
+                  <h3 className="font-semibold text-brand text-sm leading-tight">
                     {kq.name}
                   </h3>
                   <span
-                    className="text-2xl font-bold text-[#014D4E] tabular-nums shrink-0"
+                    className="text-2xl font-bold text-brand tabular-nums shrink-0"
                     aria-label={`${kqPct} percent`}
                   >
                     {kqPct}<span className="text-base">%</span>
@@ -421,7 +421,7 @@ export default async function DashboardPage() {
 
                 {/* Progress bar */}
                 <div
-                  className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3"
+                  className="w-full h-2 bg-fill-dim rounded-full overflow-hidden mb-3"
                   role="progressbar"
                   aria-valuenow={kqPct}
                   aria-valuemin={0}
@@ -435,7 +435,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Counts */}
-                <p className="text-xs text-gray-600 mb-3">
+                <p className="text-xs text-ink-dim mb-3">
                   {kq.compliant} of {kq.total} KLOEs up to date
                 </p>
 
@@ -446,16 +446,16 @@ export default async function DashboardPage() {
                     .map(rag => (
                       <span key={rag} className="inline-flex items-center gap-1 text-xs">
                         <RagBadge status={rag} compact />
-                        <span className="font-medium text-[#1a1a1a]">{kq.rag[rag]}</span>
+                        <span className="font-medium text-ink">{kq.rag[rag]}</span>
                       </span>
                     ))}
                 </div>
 
                 {/* Link to KLOEs filtered to this section */}
-                <div className="mt-4 pt-3 border-t border-gray-100">
+                <div className="mt-4 pt-3 border-t border-line">
                   <Link
                     href="/dashboard/kloes"
-                    className="text-xs font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+                    className="text-xs font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
                     aria-label={`View ${kq.name} KLOEs`}
                   >
                     View {kq.name} KLOEs →
@@ -470,13 +470,13 @@ export default async function DashboardPage() {
       {/* ── Team workload ─────────────────────────────────────────────────── */}
       {isAdmin && teamStats.length > 0 && (
         <section aria-labelledby="team-heading" className="mt-8">
-          <h2 id="team-heading" className="text-lg font-bold text-[#014D4E] mb-4">
+          <h2 id="team-heading" className="text-lg font-bold text-brand mb-4">
             Team workload
           </h2>
-          <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+          <div className="bg-card rounded-xl border border-line overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
+                <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                   <th scope="col" className="text-left px-4 py-3 font-medium">Team member</th>
                   <th scope="col" className="text-left px-4 py-3 font-medium">Assigned KLOEs</th>
                   <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">RAG breakdown</th>
@@ -484,8 +484,8 @@ export default async function DashboardPage() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {teamStats.map(member => (
-                  <tr key={member.id} className="hover:bg-[#faf9f6] transition-colors">
-                    <td className="px-4 py-3 font-medium text-[#1a1a1a]">
+                  <tr key={member.id} className="hover:bg-canvas transition-colors">
+                    <td className="px-4 py-3 font-medium text-ink">
                       {member.displayName}
                       {/* RAG inline on mobile */}
                       <div className="flex flex-wrap gap-2 mt-1 sm:hidden">
@@ -499,7 +499,7 @@ export default async function DashboardPage() {
                           ))}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-[#1a1a1a]">
+                    <td className="px-4 py-3 text-ink">
                       <span className="font-semibold">{member.total}</span>
                       {member.rag.red > 0 && (
                         <span className="ml-2 text-xs text-red-600 font-medium">
@@ -514,7 +514,7 @@ export default async function DashboardPage() {
                           .map(r => (
                             <span key={r} className="inline-flex items-center gap-1 text-xs">
                               <RagBadge status={r} compact />
-                              <span className="font-medium text-[#1a1a1a]">{member.rag[r]}</span>
+                              <span className="font-medium text-ink">{member.rag[r]}</span>
                             </span>
                           ))}
                       </div>
@@ -524,7 +524,7 @@ export default async function DashboardPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-gray-600 mt-2">
+          <p className="text-xs text-ink-dim mt-2">
             Sorted by most at-risk first. Assign KLOEs from each KLOE's detail page.
           </p>
         </section>

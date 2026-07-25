@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import ThemeProvider from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "AlwaysReady — Inspection Readiness Platform",
@@ -35,10 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
-      <body className="min-h-full flex flex-col bg-[#faf9f6] text-[#1a1a1a]">
-        <ServiceWorkerRegistration />
-        {children}
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-canvas text-ink">
+        <ThemeProvider>
+          <ServiceWorkerRegistration />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

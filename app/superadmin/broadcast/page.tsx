@@ -56,13 +56,13 @@ export default function BroadcastPage() {
   if (result) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-[#1a1a1a] mb-2">Broadcast sent</h1>
-        <p className="text-gray-500 mb-8">Here is a summary of this send.</p>
-        <div className="bg-white border border-gray-200 rounded-lg p-8 max-w-sm">
+        <h1 className="text-2xl font-bold text-ink mb-2">Broadcast sent</h1>
+        <p className="text-ink-muted mb-8">Here is a summary of this send.</p>
+        <div className="bg-card border border-line rounded-lg p-8 max-w-sm">
           <div className="text-5xl font-bold text-[#00b8a6] mb-1">{result.sent}</div>
-          <div className="text-gray-500 text-sm mb-6">emails delivered</div>
+          <div className="text-ink-muted text-sm mb-6">emails delivered</div>
           {result.skipped > 0 && (
-            <div className="text-gray-500 text-sm">
+            <div className="text-ink-muted text-sm">
               {result.skipped} skipped (opted out or no valid address)
             </div>
           )}
@@ -87,8 +87,8 @@ export default function BroadcastPage() {
     <div>
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#1a1a1a] mb-1">Send a broadcast</h1>
-          <p className="text-gray-500 text-sm">
+          <h1 className="text-2xl font-bold text-ink mb-1">Send a broadcast</h1>
+          <p className="text-ink-muted text-sm">
             Compose an email to send to all opted-in customers.
             {recipientCount !== null && (
               <span className="ml-2 bg-[#014D4E] text-[#00b8a6] text-xs font-semibold px-2 py-0.5 rounded">
@@ -104,7 +104,7 @@ export default function BroadcastPage() {
         {/* ── Compose panel ── */}
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Subject line
             </label>
             <input
@@ -112,15 +112,15 @@ export default function BroadcastPage() {
               value={subject}
               onChange={e => setSubject(e.target.value)}
               placeholder="e.g. New on the AlwaysReady blog"
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-[#1a1a1a] placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
+              className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Intro copy
             </label>
-            <p className="text-xs text-gray-500 mb-2">
+            <p className="text-xs text-ink-muted mb-2">
               Write 1–3 short paragraphs. Separate paragraphs with a blank line.
             </p>
             <textarea
@@ -128,12 +128,12 @@ export default function BroadcastPage() {
               onChange={e => setIntro(e.target.value)}
               rows={8}
               placeholder={"We have just published a new article on the AlwaysReady blog that we think you will find useful.\n\nThis week we are looking at..."}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-[#1a1a1a] placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6] resize-none"
+              className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6] resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Blog post URL
             </label>
             <input
@@ -141,12 +141,12 @@ export default function BroadcastPage() {
               value={postUrl}
               onChange={e => setPostUrl(e.target.value)}
               placeholder="https://alwaysready.uk/blog/your-post"
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-[#1a1a1a] placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
+              className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-ink mb-1">
               Button text
             </label>
             <input
@@ -154,7 +154,7 @@ export default function BroadcastPage() {
               value={buttonText}
               onChange={e => setButtonText(e.target.value)}
               placeholder="Read the full post"
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-[#1a1a1a] placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
+              className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
             />
           </div>
 
@@ -172,7 +172,7 @@ export default function BroadcastPage() {
                 }
                 setConfirming(true)
               }}
-              className="w-full bg-[#014D4E] hover:bg-[#00b8a6] hover:text-[#014D4E] text-white font-semibold py-3 rounded-lg transition-colors text-sm"
+              className="w-full bg-[#014D4E] hover:bg-[#00b8a6] hover:text-brand text-white font-semibold py-3 rounded-lg transition-colors text-sm"
             >
               Review and send
             </button>
@@ -195,7 +195,7 @@ export default function BroadcastPage() {
                 <button
                   onClick={() => setConfirming(false)}
                   disabled={isPending}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-sm transition-colors"
+                  className="flex-1 bg-fill-dim hover:bg-fill-dim text-ink font-semibold py-2 rounded-lg text-sm transition-colors"
                 >
                   Cancel
                 </button>
@@ -206,7 +206,7 @@ export default function BroadcastPage() {
 
         {/* ── Preview panel ── */}
         <div>
-          <p className="text-sm font-medium text-gray-700 mb-3">Preview</p>
+          <p className="text-sm font-medium text-ink mb-3">Preview</p>
           <div style={{
             fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
             backgroundColor: '#faf9f6',
@@ -237,8 +237,8 @@ export default function BroadcastPage() {
           </div>
 
           {subject && (
-            <p className="mt-3 text-xs text-gray-500">
-              <span className="text-gray-400 font-medium">Subject:</span> {subject}
+            <p className="mt-3 text-xs text-ink-muted">
+              <span className="text-ink-muted font-medium">Subject:</span> {subject}
             </p>
           )}
         </div>

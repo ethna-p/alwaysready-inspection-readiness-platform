@@ -136,18 +136,18 @@ export default async function DailyReportPage() {
   return (
     <div>
       {/* Breadcrumb + heading */}
-      <nav className="text-sm text-gray-600 mb-2" aria-label="Breadcrumb">
+      <nav className="text-sm text-ink-dim mb-2" aria-label="Breadcrumb">
         <ol className="flex gap-1">
-          <li><Link href="/dashboard" className="hover:text-[#014D4E] underline">Dashboard</Link></li>
+          <li><Link href="/dashboard" className="hover:text-brand underline">Dashboard</Link></li>
           <li aria-hidden="true">/</li>
-          <li className="text-[#1a1a1a]" aria-current="page">Daily Review Report</li>
+          <li className="text-ink" aria-current="page">Daily Review Report</li>
         </ol>
       </nav>
 
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#014D4E]">Daily Review Report</h1>
-          <p className="text-sm text-gray-600 mt-1">{todayLabel}</p>
+          <h1 className="text-2xl font-bold text-brand">Daily Review Report</h1>
+          <p className="text-sm text-ink-dim mt-1">{todayLabel}</p>
         </div>
 
         {totalAttention > 0 && (
@@ -184,11 +184,11 @@ export default async function DailyReportPage() {
         <section aria-labelledby="unassessed-heading" className="mb-8">
           <h2
             id="unassessed-heading"
-            className="flex items-center gap-2 text-lg font-bold text-gray-700 mb-4"
+            className="flex items-center gap-2 text-lg font-bold text-ink mb-4"
           >
             <span className="w-3 h-3 rounded-full bg-gray-400" aria-hidden="true" />
             Never assessed
-            <span className="text-sm font-normal text-gray-600">
+            <span className="text-sm font-normal text-ink-dim">
               ({unassessedItems.length} {unassessedItems.length === 1 ? 'KLOE' : 'KLOEs'} — no review date set)
             </span>
           </h2>
@@ -253,10 +253,10 @@ function ReportTable({
   kloById: Map<string, KloItem>
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+    <div className="bg-card rounded-xl border border-line overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-100 text-xs text-gray-600 uppercase tracking-wide">
+          <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
             <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
             <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">Key question</th>
             <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">Status</th>
@@ -284,10 +284,10 @@ function ReportTable({
             } else if (record?.status === 'in_progress') {
               dueContext = 'In progress'
             }
-            const contextColour = rag === 'red' ? 'text-red-600' : rag === 'amber' ? 'text-amber-600' : 'text-gray-500'
+            const contextColour = rag === 'red' ? 'text-red-600' : rag === 'amber' ? 'text-amber-600' : 'text-ink-muted'
 
             return (
-              <tr key={klo.id} className="hover:bg-[#faf9f6] transition-colors">
+              <tr key={klo.id} className="hover:bg-canvas transition-colors">
                 {/* KLOE */}
                 <td className="px-4 py-3">
                   <div className="flex items-start gap-2">
@@ -300,12 +300,12 @@ function ReportTable({
                     <div>
                       <Link
                         href={`/dashboard/kloes/${klo.id}`}
-                        className="font-medium text-[#014D4E] hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1 rounded"
+                        className="font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-1 rounded"
                       >
                         {klo.title}
                       </Link>
                       {/* Mobile: show key question + context inline */}
-                      <div className="text-xs text-gray-600 mt-0.5 sm:hidden">{kqName}</div>
+                      <div className="text-xs text-ink-dim mt-0.5 sm:hidden">{kqName}</div>
                       {dueContext && (
                         <div className={`text-xs mt-0.5 font-medium ${contextColour}`}>
                           {dueContext}
@@ -321,7 +321,7 @@ function ReportTable({
                 </td>
 
                 {/* Key question */}
-                <td className="px-4 py-3 hidden sm:table-cell text-gray-600 text-xs">
+                <td className="px-4 py-3 hidden sm:table-cell text-ink-dim text-xs">
                   {kqName}
                 </td>
 
@@ -329,7 +329,7 @@ function ReportTable({
                 <td className="px-4 py-3 hidden md:table-cell">
                   {record
                     ? <StatusBadge status={record.status} />
-                    : <span className="text-gray-600 text-xs">—</span>}
+                    : <span className="text-ink-dim text-xs">—</span>}
                 </td>
 
                 {/* RAG */}
@@ -355,7 +355,7 @@ function ReportTable({
                 </td>
 
                 {/* Due date */}
-                <td className={`px-4 py-3 hidden lg:table-cell text-xs font-medium ${rag === 'red' ? 'text-red-600' : rag === 'amber' ? 'text-[#1a1a1a]' : 'text-gray-500'}`}>
+                <td className={`px-4 py-3 hidden lg:table-cell text-xs font-medium ${rag === 'red' ? 'text-red-600' : rag === 'amber' ? 'text-ink' : 'text-ink-muted'}`}>
                   {formatDate(dueStr)}
                 </td>
 
@@ -363,7 +363,7 @@ function ReportTable({
                 <td className="px-4 py-3 text-right">
                   <Link
                     href={`/dashboard/kloes/${klo.id}`}
-                    className="text-xs text-[#014D4E] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded whitespace-nowrap"
+                    className="text-xs text-brand font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded whitespace-nowrap"
                     aria-label={`View ${klo.title}`}
                   >
                     View →

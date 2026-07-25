@@ -38,8 +38,8 @@ export default function DemoLeadForm() {
           placeholder="First name"
           disabled={pending}
           className="
-            w-full rounded-xl px-4 py-3 text-sm text-[#1a1a1a]
-            bg-white/95 placeholder-gray-400
+            w-full rounded-xl px-4 py-3 text-sm text-ink
+            bg-card/95 placeholder-gray-400
             border border-white/20
             focus:outline-none focus:ring-2 focus:ring-[#ffd700]
             disabled:opacity-60
@@ -61,8 +61,8 @@ export default function DemoLeadForm() {
           placeholder="Last name"
           disabled={pending}
           className="
-            w-full rounded-xl px-4 py-3 text-sm text-[#1a1a1a]
-            bg-white/95 placeholder-gray-400
+            w-full rounded-xl px-4 py-3 text-sm text-ink
+            bg-card/95 placeholder-gray-400
             border border-white/20
             focus:outline-none focus:ring-2 focus:ring-[#ffd700]
             disabled:opacity-60
@@ -84,8 +84,8 @@ export default function DemoLeadForm() {
           placeholder="Email address"
           disabled={pending}
           className="
-            w-full rounded-xl px-4 py-3 text-sm text-[#1a1a1a]
-            bg-white/95 placeholder-gray-400
+            w-full rounded-xl px-4 py-3 text-sm text-ink
+            bg-card/95 placeholder-gray-400
             border border-white/20
             focus:outline-none focus:ring-2 focus:ring-[#ffd700]
             disabled:opacity-60
@@ -99,7 +99,7 @@ export default function DemoLeadForm() {
           type="checkbox"
           name="marketing_consent"
           disabled={pending}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-white/30 bg-white/90 text-[#014D4E] focus:ring-2 focus:ring-[#ffd700] disabled:opacity-60"
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-white/30 bg-card/90 text-brand focus:ring-2 focus:ring-[#ffd700] disabled:opacity-60"
         />
         <span className="text-xs text-white/70 leading-relaxed">
           Keep me updated with CQC news, inspection tips, and resources from AlwaysReady.
@@ -121,7 +121,7 @@ export default function DemoLeadForm() {
         disabled={pending}
         className="
           w-full inline-flex items-center justify-center gap-2
-          bg-[#ffd700] text-[#014D4E] text-base font-bold
+          bg-[#ffd700] text-brand text-base font-bold
           px-8 py-4 rounded-xl
           hover:bg-yellow-300
           focus:outline-none focus:ring-4 focus:ring-[#ffd700]/50
