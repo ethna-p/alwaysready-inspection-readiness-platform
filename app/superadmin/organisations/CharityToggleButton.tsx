@@ -27,7 +27,7 @@ export default function CharityToggleButton({ orgId, isCharity }: Props) {
         disabled={pending}
         className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50 ${
           isCharity
-            ? 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100'
+            ? 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100'
             : 'bg-fill border-line text-ink-muted hover:bg-fill-dim'
         }`}
       >
