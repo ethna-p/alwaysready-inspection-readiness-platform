@@ -415,9 +415,9 @@ export default async function HrOverviewPage() {
       {/* Staff table */}
       {staffList.length === 0 ? (
         <div className="bg-card rounded-xl border border-line p-10 text-center">
-          <p className="text-ink-muted text-sm">No staff members found. Add staff via the Team page first.</p>
-          <Link href="/dashboard/admin/team" className="mt-3 inline-block text-sm text-brand hover:underline">
-            Go to Team →
+          <p className="text-ink-muted text-sm">No staff members found. Add staff via Account settings first.</p>
+          <Link href="/dashboard/account" className="mt-3 inline-block text-sm text-brand hover:underline">
+            Go to Account settings →
           </Link>
         </div>
       ) : (

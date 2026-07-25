@@ -83,14 +83,6 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           </a>
           {isAdmin && (
             <a
-              href="/dashboard/admin/team"
-              className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
-            >
-              Team
-            </a>
-          )}
-          {isAdmin && (
-            <a
               href="/dashboard/hr"
               className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >

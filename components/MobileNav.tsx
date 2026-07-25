@@ -74,11 +74,6 @@ export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
               Inspection Pack
             </a>
             {isAdmin && (
-              <a href="/dashboard/admin/team" className={NAV_LINK} onClick={() => setOpen(false)}>
-                Team
-              </a>
-            )}
-            {isAdmin && (
               <a href="/dashboard/hr" className={NAV_LINK} onClick={() => setOpen(false)}>
                 HR
               </a>
