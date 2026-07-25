@@ -109,6 +109,101 @@ function HrSummaryCard({
   )
 }
 
+// ── Needs-attention section ────────────────────────────────────────────────
+
+type AttentionField = {
+  label: string
+  status: 'overdue' | 'due_soon'
+  dueDate: string | null
+}
+
+type AttentionPerson = {
+  userId: string
+  name: string
+  role: string
+  fields: AttentionField[]
+}
+
+const DATE_FIELDS = [
+  { key: 'dbs_next_review_due'   as const, label: 'DBS' },
+  { key: 'supervision_next_due'  as const, label: 'Supervision' },
+  { key: 'appraisal_next_due'    as const, label: 'Appraisal' },
+]
+
+function formatShortDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
+function AttentionBadge({ label, status, dueDate }: AttentionField) {
+  if (status === 'overdue') {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+        <span className="h-1.5 w-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
+        {label} overdue
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+      <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" aria-hidden="true" />
+      {label} due {dueDate ? formatShortDate(dueDate) : 'soon'}
+    </span>
+  )
+}
+
+function AttentionSection({
+  title,
+  people,
+  variant,
+}: {
+  title: string
+  people: AttentionPerson[]
+  variant: 'overdue' | 'due_soon'
+}) {
+  if (people.length === 0) return null
+
+  const headerStyle = variant === 'overdue'
+    ? 'border-red-200 bg-red-50'
+    : 'border-amber-200 bg-amber-50'
+  const iconStyle = variant === 'overdue' ? 'text-red-600' : 'text-amber-600'
+  const countStyle = variant === 'overdue' ? 'text-red-700' : 'text-amber-700'
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className={`flex items-center gap-2 px-5 py-3 border-b ${headerStyle}`}>
+        <span className={`text-sm ${iconStyle}`} aria-hidden="true">
+          {variant === 'overdue' ? '●' : '◑'}
+        </span>
+        <p className="text-sm font-semibold text-[#1a1a1a]">{title}</p>
+        <span className={`ml-auto text-xs font-medium ${countStyle}`}>
+          {people.length} {people.length === 1 ? 'staff member' : 'staff members'}
+        </span>
+      </div>
+      <div className="divide-y divide-gray-100">
+        {people.map(person => (
+          <div key={person.userId} className="flex items-center gap-3 px-5 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-[#1a1a1a]">{person.name}</p>
+              <p className="text-xs text-gray-500 capitalize">{person.role}</p>
+            </div>
+            <div className="ml-4 flex flex-wrap gap-1.5">
+              {person.fields.map(f => (
+                <AttentionBadge key={f.label} {...f} />
+              ))}
+            </div>
+            <Link
+              href={`/dashboard/hr/${person.userId}`}
+              className="ml-auto shrink-0 text-sm font-medium text-[#014D4E] hover:underline"
+            >
+              View →
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Per-row status pill ────────────────────────────────────────────────────
 
 function StatusPill({ status, label }: { status: StatusBadge; label: string }) {
@@ -209,6 +304,30 @@ export default async function HrOverviewPage() {
     else trainingCounts.not_set++
   }
 
+  // ── Build needs-attention lists ────────────────────────────────────────────
+  const overdueList:  AttentionPerson[] = []
+  const dueSoonList:  AttentionPerson[] = []
+
+  for (const user of staffList) {
+    const hr = profileMap.get(user.id)
+    const overdueFields: AttentionField[] = []
+    const dueSoonFields: AttentionField[] = []
+
+    for (const { key, label } of DATE_FIELDS) {
+      const nextDue = hr?.[key] ?? null
+      const status  = getDateStatus(nextDue)
+      if (status === 'overdue')  overdueFields.push({ label, status: 'overdue',  dueDate: nextDue })
+      if (status === 'due_soon') dueSoonFields.push({ label, status: 'due_soon', dueDate: nextDue })
+    }
+
+    const name = user.full_name ?? user.username ?? 'Unknown'
+    if (overdueFields.length > 0) {
+      overdueList.push({ userId: user.id, name, role: user.role ?? '', fields: overdueFields })
+    } else if (dueSoonFields.length > 0) {
+      dueSoonList.push({ userId: user.id, name, role: user.role ?? '', fields: dueSoonFields })
+    }
+  }
+
   return (
     <div>
       {/* Header */}
@@ -269,6 +388,22 @@ export default async function HrOverviewPage() {
             total={total}
             okCount={trainingCounts.ok}
             notSetCount={trainingCounts.not_set}
+          />
+        </div>
+      )}
+
+      {/* ── Needs attention ───────────────────────────────────────────────── */}
+      {(overdueList.length > 0 || dueSoonList.length > 0) && (
+        <div className="mb-6 space-y-3">
+          <AttentionSection
+            title="Overdue"
+            people={overdueList}
+            variant="overdue"
+          />
+          <AttentionSection
+            title="Due within 30 days"
+            people={dueSoonList}
+            variant="due_soon"
           />
         </div>
       )}
