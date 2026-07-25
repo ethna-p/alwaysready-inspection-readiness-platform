@@ -4,9 +4,11 @@
  * Wraps the CQC public REST API (https://api.cqc.org.uk/public/v1).
  * No authentication required — the partnerCode param is for attribution only.
  *
- * All functions fail gracefully: if the API is unavailable or returns an
- * unexpected response, they return null rather than throwing, so callers can
- * degrade gracefully without blocking the user.
+ * fetchCqcLocation returns a discriminated CqcLookupResult so callers can
+ * distinguish between a genuine 404 (not registered) and a transient API
+ * failure (timeout / network error / non-404 HTTP error). This matters for
+ * the trial signup hard-block: we block on 'not_found' but fail open on
+ * 'unavailable' so a CQC API outage doesn't lock out legitimate providers.
  *
  * CQC overall ratings: Outstanding | Good | Requires improvement | Inadequate
  * Docs: https://api-portal.service.cqc.org.uk
@@ -17,6 +19,19 @@ const PARTNER_CODE  = 'alwaysready'
 const FETCH_TIMEOUT = 8_000  // 8 s — generous for an external API
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Discriminated result from fetchCqcLocation.
+ *
+ * - 'found'       → location exists on the CQC register; data is populated
+ * - 'not_found'   → CQC returned 404 — this ID is not on the register
+ * - 'unavailable' → timeout, network error, or non-404 HTTP error — treat as
+ *                   transient; do not block the user
+ */
+export type CqcLookupResult =
+  | { status: 'found';       data: CqcLocationData }
+  | { status: 'not_found' }
+  | { status: 'unavailable' }
 
 export type CqcRating =
   | 'Outstanding'
@@ -79,12 +94,16 @@ function buildUrl(path: string): string {
 
 /**
  * Fetch a single CQC location by its Location ID (e.g. "1-1234567890").
- * Returns null if the location is not found or the API is unavailable.
+ *
+ * Returns a discriminated CqcLookupResult:
+ *   'found'       → location is on the register; data is populated
+ *   'not_found'   → CQC returned 404 (hard block on signup)
+ *   'unavailable' → transient error (fail open — do not block signup)
  */
 export async function fetchCqcLocation(
   locationId: string
-): Promise<CqcLocationData | null> {
-  if (!locationId?.trim()) return null
+): Promise<CqcLookupResult> {
+  if (!locationId?.trim()) return { status: 'unavailable' }
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT)
@@ -98,31 +117,34 @@ export async function fetchCqcLocation(
     })
 
     if (!res.ok) {
-      // 404 = location not found; other errors = API problem
-      if (res.status !== 404) {
-        console.warn(`[cqc] API returned ${res.status} for location ${locationId}`)
+      if (res.status === 404) {
+        return { status: 'not_found' }
       }
-      return null
+      console.warn(`[cqc] API returned ${res.status} for location ${locationId}`)
+      return { status: 'unavailable' }
     }
 
     const raw: CqcApiLocation = await res.json()
 
-    const overall          = raw.currentRatings?.overall
-    const overallRating    = asRating(overall?.rating)
+    const overall            = raw.currentRatings?.overall
+    const overallRating      = asRating(overall?.rating)
     const lastInspectionDate = overall?.reportDate ?? null
 
     return {
-      locationId:         raw.locationId,
-      locationName:       raw.name,
-      registrationStatus: raw.registrationStatus,
-      overallRating,
-      lastInspectionDate,
-      keyQuestionRatings: {
-        safe:       asRating(raw.currentRatings?.safe?.rating),
-        effective:  asRating(raw.currentRatings?.effective?.rating),
-        caring:     asRating(raw.currentRatings?.caring?.rating),
-        responsive: asRating(raw.currentRatings?.responsive?.rating),
-        wellLed:    asRating(raw.currentRatings?.wellLed?.rating),
+      status: 'found',
+      data: {
+        locationId:         raw.locationId,
+        locationName:       raw.name,
+        registrationStatus: raw.registrationStatus,
+        overallRating,
+        lastInspectionDate,
+        keyQuestionRatings: {
+          safe:       asRating(raw.currentRatings?.safe?.rating),
+          effective:  asRating(raw.currentRatings?.effective?.rating),
+          caring:     asRating(raw.currentRatings?.caring?.rating),
+          responsive: asRating(raw.currentRatings?.responsive?.rating),
+          wellLed:    asRating(raw.currentRatings?.wellLed?.rating),
+        },
       },
     }
   } catch (err) {
@@ -131,7 +153,7 @@ export async function fetchCqcLocation(
     } else {
       console.warn(`[cqc] Error fetching location ${locationId}:`, err)
     }
-    return null
+    return { status: 'unavailable' }
   } finally {
     clearTimeout(timer)
   }

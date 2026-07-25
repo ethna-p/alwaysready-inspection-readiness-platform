@@ -51,7 +51,7 @@ export default function TrialPage() {
   const [isPending,        startTransition]     = useTransition()
 
   // CQC Location ID lookup state
-  const [cqcLookupStatus,  setCqcLookupStatus]  = useState<'idle' | 'loading' | 'found' | 'not_found'>('idle')
+  const [cqcLookupStatus,  setCqcLookupStatus]  = useState<'idle' | 'loading' | 'found' | 'not_found' | 'unavailable'>('idle')
   const [cqcFoundName,     setCqcFoundName]     = useState<string | null>(null)
 
   async function handleCqcLookup() {
@@ -69,11 +69,13 @@ export default function TrialPage() {
         if (!serviceName.trim() && data.locationName) {
           setServiceName(data.locationName)
         }
+      } else if (data.unavailable) {
+        setCqcLookupStatus('unavailable')
       } else {
         setCqcLookupStatus('not_found')
       }
     } catch {
-      setCqcLookupStatus('idle')  // API error — don't alarm user, just show nothing
+      setCqcLookupStatus('unavailable')  // network error — fail open
     }
   }
 
@@ -196,11 +198,19 @@ export default function TrialPage() {
                     </span>
                   )}
                   {cqcLookupStatus === 'not_found' && (
+                    <span className="text-red-700 flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      We couldn&apos;t find that ID on the CQC register. Please double-check it — only CQC-registered services can sign up.
+                    </span>
+                  )}
+                  {cqcLookupStatus === 'unavailable' && (
                     <span className="text-amber-700 flex items-center gap-1.5">
                       <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      We couldn&apos;t find that ID on the CQC register — please double-check it. You can still continue.
+                      We couldn&apos;t reach the CQC register right now — you can still continue.
                     </span>
                   )}
                 </div>
@@ -308,7 +318,7 @@ export default function TrialPage() {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || cqcLookupStatus === 'not_found'}
                 className="
                   w-full inline-flex items-center justify-center gap-2
                   bg-[#014D4E] text-white text-base font-bold

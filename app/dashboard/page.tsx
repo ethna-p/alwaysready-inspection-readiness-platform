@@ -109,21 +109,25 @@ export default async function DashboardPage() {
     if (isStale) {
       try {
         const fresh = await fetchCqcLocation(org.cqc_location_id)
-        if (fresh) {
-          cqcRating         = fresh.overallRating
-          cqcInspectionDate = fresh.lastInspectionDate
-          cqcLocationName   = fresh.locationName
+        if (fresh.status === 'found') {
+          cqcRating         = fresh.data.overallRating
+          cqcInspectionDate = fresh.data.lastInspectionDate
+          cqcLocationName   = fresh.data.locationName
           // Persist the refresh — use admin client since users can't UPDATE organisations.
           const admin = createAdminClient()
           await admin
             .from('organisations')
             .update({
-              cqc_location_name:        fresh.locationName,
-              cqc_rating:               fresh.overallRating,
-              cqc_last_inspection_date: fresh.lastInspectionDate,
+              cqc_location_name:        fresh.data.locationName,
+              cqc_rating:               fresh.data.overallRating,
+              cqc_last_inspection_date: fresh.data.lastInspectionDate,
               cqc_rating_fetched_at:    new Date().toISOString(),
             })
             .eq('id', profile.organisation_id)
+        }
+        // 'not_found' or 'unavailable' → keep showing cached data; log if unexpected
+        if (fresh.status === 'not_found') {
+          console.warn('[dashboard] CQC refresh: location no longer on register', org.cqc_location_id)
         }
       } catch (err) {
         // Non-fatal — keep showing cached data

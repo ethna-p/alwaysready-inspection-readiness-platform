@@ -48,6 +48,18 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   const supabase = createAdminClient()
   const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
 
+  // ── 0. Validate CQC Location ID ─────────────────────────────────────────────
+  // Fetch now so we can (a) hard-block non-registered IDs and (b) reuse the
+  // data for enrichment in step 5, avoiding a second API call.
+  const cqcResult = await fetchCqcLocation(cqcLocationId.trim())
+  if (cqcResult.status === 'not_found') {
+    return {
+      success: false,
+      error: 'Your CQC Location ID could not be found on the CQC register. Please check it and try again.',
+    }
+  }
+  // status === 'unavailable' → CQC API is temporarily down; allow signup to proceed
+
   // ── 1. Resolve service_type_id ───────────────────────────────────────────────
   const { data: serviceTypeRow, error: stError } = await supabase
     .from('service_types')
@@ -124,24 +136,24 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     return { success: false, error: 'Could not create your profile. Please try again.' }
   }
 
-  // ── 5. Fetch CQC rating (non-blocking) ──────────────────────────────────────
-  // Attempt to enrich the org with live CQC data. Failures are logged but do
-  // not block signup — the org still gets created successfully.
-  try {
-    const cqcData = await fetchCqcLocation(cqcLocationId.trim())
-    if (cqcData) {
+  // ── 5. Enrich org with CQC data ─────────────────────────────────────────────
+  // cqcResult was fetched in step 0. If it came back as 'found', persist the
+  // data now. If 'unavailable', skip — the dashboard stale-refresh will pick
+  // it up on first login.
+  if (cqcResult.status === 'found') {
+    try {
       await supabase
         .from('organisations')
         .update({
-          cqc_location_name:        cqcData.locationName,
-          cqc_rating:               cqcData.overallRating,
-          cqc_last_inspection_date: cqcData.lastInspectionDate,
+          cqc_location_name:        cqcResult.data.locationName,
+          cqc_rating:               cqcResult.data.overallRating,
+          cqc_last_inspection_date: cqcResult.data.lastInspectionDate,
           cqc_rating_fetched_at:    new Date().toISOString(),
         })
         .eq('id', org.id)
+    } catch (err) {
+      console.warn('[trial-signup] CQC enrichment update failed (non-fatal):', err)
     }
-  } catch (err) {
-    console.warn('[trial-signup] CQC API fetch failed (non-fatal):', err)
   }
 
   // ── 7. Seed compliance_records (one per KLO item) ────────────────────────────
