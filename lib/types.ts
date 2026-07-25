@@ -620,6 +620,50 @@ export type Database = {
         ]
       }
 
+      // ── Notification log ──────────────────────────────────────────────
+
+      notification_log: {
+        Row: {
+          id:                string
+          organisation_id:   string
+          notification_type: 'due_soon' | 'overdue'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
+          entity_id:         string
+          due_date:          string
+          recipient_email:   string
+          sent_at:           string
+        }
+        Insert: {
+          id?:               string
+          organisation_id:   string
+          notification_type: 'due_soon' | 'overdue'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
+          entity_id:         string
+          due_date:          string
+          recipient_email:   string
+          sent_at?:          string
+        }
+        Update: {
+          id?:               string
+          organisation_id?:  string
+          notification_type?: 'due_soon' | 'overdue'
+          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
+          entity_id?:        string
+          due_date?:         string
+          recipient_email?:  string
+          sent_at?:          string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'notification_log_organisation_id_fkey'
+            columns: ['organisation_id']
+            isOneToOne: false
+            referencedRelation: 'organisations'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
       // ── Support tickets ────────────────────────────────────────────────
 
       support_tickets: {
@@ -1150,6 +1194,8 @@ export interface MockInspectionFinding {
   created_at: string
   updated_at: string
 }
+
+export type NotificationLog = Database['public']['Tables']['notification_log']['Row']
 
 export interface MockInspectionChecklistResponse {
   id: string
