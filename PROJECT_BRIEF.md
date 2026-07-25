@@ -290,6 +290,8 @@ Push to GitHub → Vercel auto-deploys to production. Database schema changes ar
 
 Never use `supabase db push` against the production database. Always use the SQL Editor for production migrations — it gives AJ control over what runs and when.
 
+**`lib/types.ts` is hand-maintained — not auto-generated.** Every migration that adds, removes, or renames a column must be accompanied by a matching update to the `Row`, `Insert`, and `Update` blocks for that table in `lib/types.ts`. Do this in the same commit as the migration file. Skipping this causes TypeScript errors (`RejectExcessProperties`) on any code that references the new columns, and requires `as any` casts as a workaround. Run `npx tsc --noEmit` after updating the types file to confirm the build is clean.
+
 ---
 
 ## To Do / Backlog
