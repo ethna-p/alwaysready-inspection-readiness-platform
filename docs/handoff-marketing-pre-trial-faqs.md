@@ -121,4 +121,3 @@ No. When you enter your Location ID during sign-up, AlwaysReady uses it to look 
 **23. Where is AlwaysReady heading with its CQC connection?**
 The current CQC integration reads from the public register to show your live rating and registration details. As CQC develops its new provider portal and moves towards continuous assessment — where your compliance position is monitored over time rather than only at inspection — AlwaysReady is positioned to deepen this connection. Future development may include structured data exchange with the CQC provider portal, but any such feature would be clearly explained and opt-in. Nothing changes to the current read-only setup without notice.
 
-AlwaysReady is built around the CQC KLOE framework and will be updated to reflect the finalised framework before the platform is available to customers.
