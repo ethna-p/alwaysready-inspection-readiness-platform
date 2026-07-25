@@ -10,7 +10,7 @@ AlwaysReady is an inspection readiness platform built specifically for adult soc
 ---
 
 **2. What does the free trial include?**
-Everything. Your trial is fully featured with no functions locked or limited. You get the KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, and team access. Data you enter during the trial is yours to keep if you subscribe.
+Everything. Your trial is fully featured with no functions locked or limited. You get the KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, and team access. Data you enter during the trial is yours to keep if you subscribe.
 
 ---
 
@@ -36,3 +36,68 @@ Your data is stored securely and is never shared with third parties. If you choo
 
 **7. We already have systems in place. Will AlwaysReady work alongside them?**
 Yes. AlwaysReady is a governance and inspection readiness tool, not a care management system. It sits alongside your existing care planning, medication, and rostering software. It does not hold any resident or clinical information — it is focused entirely on your compliance position and inspection preparedness.
+
+---
+
+**8. Can more than one person access the account?**
+Yes. You can invite as many team members as you need directly from the platform. Each person receives an invitation email and sets their own password — there are no credentials to share manually. You can assign different roles: Admin (full access), Staff (can update their assigned KLOEs), or Visitor (read-only, for inspectors or board members). A service can have multiple Admins — for example, the Registered Manager and a senior team member can both have full access.
+
+---
+
+**9. How do staff members get access?**
+As an Admin, you go to the Team section of the platform, enter a team member's name, email address, and role, and click Send invite. They receive an email with a secure link to set their own password. Once set up, they can log in with their email and password. You can have as many team members as your service needs, and you can adjust or remove access at any time.
+
+---
+
+**10. Can I give a CQC inspector read-only access during a visit?**
+Yes. You can create a Visitor login for any external visitor — an inspector, a board member, or a local authority representative. You set how many days the access lasts, and it expires automatically. The visitor can view your full KLOE tracker, audit trail, readiness trend, and inspection pack on their own device. They cannot make any changes. You can also revoke access at any time before the expiry date.
+
+---
+
+**11. What is the HR module?**
+The HR module lets Admins manage staff records alongside compliance records, all in one platform. You can record employment details, DBS check dates, supervision and appraisal due dates, training completions, and holiday allowances for each staff member. An overview dashboard shows the compliance status across your whole team at a glance — colour-coded so you can see immediately who is overdue or coming up for review — without having to open individual records.
+
+---
+
+**12. Does AlwaysReady track mandatory training?**
+Yes. The HR module includes a training records section for each staff member. You can record the date any training was completed, set how frequently it needs to be renewed, upload a training certificate, and see the next due date calculated automatically. The HR dashboard shows your overall mandatory training compliance across the team, so you can see at a glance whether your team's training is current, due soon, or overdue.
+
+---
+
+**13. Is there a way to test how prepared we are before a real inspection?**
+Yes — AlwaysReady includes a mock inspection tool. It walks you through each KLOE and asks you to self-assess your evidence as Outstanding, Good, Requires Improvement, or Inadequate. At the end it produces a report showing a self-assessed rating for each of the five key question areas. It is a useful way to identify gaps before a real visit. The ratings are for internal self-assessment only and do not represent the view of CQC or any regulatory body.
+
+---
+
+**14. What is the RAG status system?**
+RAG stands for Red, Amber, Green — a colour-coded status system used throughout the platform to show inspection readiness at a glance. Green means a KLOE has been reviewed and is up to date. Amber means it is in progress or due for review within 30 days. Red means it is overdue and needs urgent attention. Grey means no review has been recorded yet. The RAG status updates automatically based on the dates and statuses you enter — you never have to set it manually.
+
+---
+
+**15. Does AlwaysReady keep a record of changes for inspection purposes?**
+Yes. Every update to a KLOE — including who made it, what changed, and when — is permanently recorded in an audit trail. This record cannot be altered or deleted. During an inspection, it provides verifiable evidence that your team has been actively managing compliance over time, not just preparing on the day. This is one of the most frequently cited strengths of the platform when demonstrating readiness to an inspector.
+
+---
+
+**16. Is our account secure?**
+Yes. All Admin accounts require two-factor authentication (2FA), which means logging in requires both a password and a six-digit code from an authenticator app. Your data is stored in an encrypted, access-controlled database. Each organisation's data is completely isolated from every other organisation on the platform — nobody else can see your records, and AlwaysReady staff do not access your account data without your explicit permission.
+
+---
+
+**17. What happens to our KLOEs if the CQC framework changes?**
+The CQC KLOE framework is currently in draft and is expected to be finalised in Autumn 2026. AlwaysReady is built so that any updates to the framework — such as a KLOE moving from one key question to another — can be applied with a simple data change, not a rebuild. Your existing compliance records are not affected by framework updates.
+
+---
+
+**18. Can we use AlwaysReady for more than one service?**
+Each account is for a single CQC-registered service location. If you operate multiple services, each one would need its own account. Contact us at hello@alwaysready.uk to discuss multi-site pricing.
+
+---
+
+**19. What support is available if we have a problem?**
+You can raise a support ticket directly from within the platform using the Support link in the navigation bar. You can also email us at hello@alwaysready.uk. We aim to respond to all support queries within one working day.
+
+---
+
+**20. Does AlwaysReady share our data with CQC?**
+No. AlwaysReady is a private tool. The data you enter is only visible to the people you give access to within your account. The platform is not connected to any CQC systems and does not submit data on your behalf. You decide what to share and with whom.
