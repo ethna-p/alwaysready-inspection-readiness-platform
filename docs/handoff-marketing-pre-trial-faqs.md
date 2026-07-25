@@ -100,4 +100,30 @@ You can raise a support ticket directly from within the platform using the Suppo
 ---
 
 **20. Does AlwaysReady share our data with CQC?**
-No. AlwaysReady is a private tool. The data you enter is only visible to the people you give access to within your account. The platform is not connected to any CQC systems and does not submit data on your behalf. You decide what to share and with whom.
+No. The data you enter into AlwaysReady — your KLOE records, evidence, staff information, and compliance notes — is private. It is only visible to the people you give access to within your account. AlwaysReady does not submit any of your data to CQC, does not connect to any internal CQC system, and does not share your compliance position with any regulator or third party. You decide what to share and with whom.
+
+---
+
+**21. Does AlwaysReady connect to CQC at all?**
+Yes — but only in one direction, and only to read publicly available information. AlwaysReady connects to the CQC Syndication API, which is CQC's official public data feed. It uses this to retrieve your service's current CQC rating, your registered service name, and your last inspection date. This data is already publicly available on the CQC website — AlwaysReady simply pulls it automatically so it appears on your dashboard without you having to check separately.
+
+This is a read-only connection. No data from your AlwaysReady account is sent to CQC. AlwaysReady is not affiliated with or endorsed by the Care Quality Commission.
+
+---
+
+**22. What CQC data does AlwaysReady display, and where does it come from?**
+AlwaysReady displays the following information sourced from the CQC public register: your current overall CQC rating (Outstanding, Good, Requires Improvement, or Inadequate); your registered service name as held by CQC; and the date of your most recent CQC inspection. It also provides a direct link to your service's entry on the CQC website.
+
+This data comes from the CQC Syndication API — the same source CQC uses to power its own public search tool. It is updated daily and published under the Open Government Licence. Your dashboard shows whichever rating CQC currently holds for your service, refreshed automatically every 24 hours.
+
+---
+
+**23. Does entering my CQC Location ID at sign-up send any information to CQC?**
+No. When you enter your Location ID during sign-up, AlwaysReady uses it to look up your service on the CQC public register and confirm the ID is valid. This is a read-only lookup — CQC receives no notification that you have signed up for AlwaysReady, and no information from your account is passed to them. Only services with a valid CQC Location ID on the public register can create an AlwaysReady account.
+
+---
+
+**24. Where is AlwaysReady heading with its CQC connection?**
+The current CQC integration reads from the public register to show your live rating and registration details. As CQC develops its new provider portal and moves towards continuous assessment — where your compliance position is monitored over time rather than only at inspection — AlwaysReady is positioned to deepen this connection. Future development may include structured data exchange with the CQC provider portal, but any such feature would be clearly explained and opt-in. Nothing changes to the current read-only setup without notice.
+
+AlwaysReady is also built around the CQC KLOE framework, which is expected to be updated in Autumn 2026. The platform is architected so that any framework changes can be applied without affecting your existing compliance records. You will not need to start from scratch.

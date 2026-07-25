@@ -164,6 +164,17 @@ export default function HelpPage() {
             <p>• Team workload overview showing assigned KLOEs and overdue items per staff member.</p>
           </div>
 
+          <H3>CQC Register</H3>
+          <div className="space-y-1">
+            <p>• Your live CQC rating (Outstanding, Good, Requires Improvement, or Inadequate) is displayed on the dashboard, pulled directly from the public CQC register.</p>
+            <p>• The rating uses CQC&apos;s official colour scheme so it matches what inspectors and the public see on the CQC website.</p>
+            <p>• Your registered service name, as held by CQC, is shown alongside your rating — useful for confirming your registration details are correct.</p>
+            <p>• The date of your most recent CQC inspection is displayed so you always know when you were last assessed.</p>
+            <p>• A direct link to your service&apos;s entry on the CQC website is included — one click to your public-facing profile.</p>
+            <p>• Rating data is refreshed automatically every 24 hours so your dashboard always reflects the current CQC register.</p>
+            <p>• At sign-up, your CQC Location ID is validated against the live register — confirming your service is CQC-registered before your account is created.</p>
+          </div>
+
           <H3>Daily Review Report</H3>
           <div className="space-y-1">
             <p>• A single screen showing everything that needs attention — overdue KLOEs first, then due soon, sorted by priority.</p>
