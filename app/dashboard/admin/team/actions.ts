@@ -4,13 +4,12 @@
  * Server actions for team management.
  * All actions are admin-only — enforced here and at the RLS layer.
  *
- * Staff accounts use a generated email:
- *   {firstname}.{lastname}.{6-char-org-prefix}@staff.alwaysready.uk
- *
- * The username handed to staff is the portion before @staff.alwaysready.uk.
- * The login page appends @staff.alwaysready.uk if no @ is present.
+ * Primary onboarding flow: email invite via inviteTeamMember.
+ * Legacy: createTeamMember (username + generated password) kept for
+ * staff without a personal email address.
  */
 
+import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -20,6 +19,81 @@ export type TeamActionState =
   | { success: true; message: string; credentials?: { username: string; password: string } }
   | { success: false; error: string }
   | null
+
+
+// ── Invite team member (email-based onboarding) ────────────────────────────
+
+export async function inviteTeamMember(
+  _prevState: TeamActionState,
+  formData: FormData
+): Promise<TeamActionState> {
+  const adminSupabase = createAdminClient()
+
+  const profile = await getCurrentUserProfile()
+  if (!profile || profile.role !== 'admin') {
+    return { success: false, error: 'Only admins can invite team members.' }
+  }
+
+  const fullName = (formData.get('full_name') as string ?? '').trim()
+  const email    = (formData.get('email') as string ?? '').trim().toLowerCase()
+  const role     = formData.get('role') as 'admin' | 'user'
+
+  if (!fullName) return { success: false, error: 'Full name is required.' }
+  if (!email)    return { success: false, error: 'Email address is required.' }
+  if (!['admin', 'user'].includes(role)) return { success: false, error: 'Invalid role.' }
+
+  // Build an absolute redirect URL using the incoming request host —
+  // works on both localhost and the Vercel production domain with no extra env vars.
+  const headersList = await headers()
+  const host        = headersList.get('host') ?? 'localhost:3000'
+  const proto       = host.startsWith('localhost') ? 'http' : 'https'
+  const redirectTo  = `${proto}://${host}/auth/callback?next=/account/setup`
+
+  // Send the Supabase invite email
+  const { data: inviteData, error: inviteError } = await adminSupabase.auth.admin.inviteUserByEmail(
+    email,
+    {
+      data: { organisation_id: profile.organisation_id, role, full_name: fullName },
+      redirectTo,
+    }
+  )
+
+  if (inviteError || !inviteData?.user) {
+    console.error('[inviteTeamMember] inviteUserByEmail error:', inviteError)
+    if (inviteError?.message?.toLowerCase().includes('already been registered')) {
+      return { success: false, error: 'This email address already has an account.' }
+    }
+    return { success: false, error: 'Failed to send invite. Please try again.' }
+  }
+
+  // Insert public.users row immediately so they appear in the team list.
+  // Use adminSupabase — RLS has no INSERT policy for authenticated users.
+  // onboarding_complete = true: invited users join an already-configured org
+  // and should skip the first-time welcome screen.
+  const { error: insertError } = await adminSupabase
+    .from('users')
+    .insert({
+      id:                  inviteData.user.id,
+      organisation_id:     profile.organisation_id,
+      email,
+      full_name:           fullName,
+      role,
+      onboarding_complete: true,
+    })
+
+  if (insertError) {
+    // Roll back auth user so we don't leave an orphan
+    await adminSupabase.auth.admin.deleteUser(inviteData.user.id)
+    console.error('[inviteTeamMember] users insert error:', insertError)
+    return { success: false, error: 'Failed to save invitation. Please try again.' }
+  }
+
+  revalidatePath('/dashboard/admin/team')
+  return {
+    success: true,
+    message: `Invitation sent to ${email}. ${fullName} will receive an email with a link to set up their account.`,
+  }
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 

@@ -1,14 +1,14 @@
 'use client'
 
 /**
- * AddMemberForm — admin creates a new staff account.
+ * AddMemberForm — invite a team member by email.
  *
- * On success, displays the generated username + temporary password
- * so the admin can hand credentials to the staff member directly.
+ * Supabase sends the invite email; the recipient clicks through, sets
+ * their own password on the /account/setup page, and is then active.
  */
 
 import { useActionState } from 'react'
-import { createTeamMember } from './actions'
+import { inviteTeamMember } from './actions'
 import type { TeamActionState } from './actions'
 
 const ROLE_OPTIONS = [
@@ -16,43 +16,30 @@ const ROLE_OPTIONS = [
   { value: 'admin', label: 'Admin — full access, can assign KLOEs and manage team' },
 ]
 
+const inputClass = `
+  w-full border border-gray-300 rounded-lg px-3 py-2
+  text-sm text-[#1a1a1a] placeholder:text-gray-400
+  focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
+  bg-white
+`
+
 export default function AddMemberForm() {
   const [state, formAction, isPending] = useActionState<TeamActionState, FormData>(
-    createTeamMember,
+    inviteTeamMember,
     null
   )
 
-  // After success, show credentials prominently
-  if (state?.success && state.credentials?.username) {
+  if (state?.success) {
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-5">
-        <h3 className="font-semibold text-green-900 mb-1">{state.message}</h3>
-        <p className="text-sm text-green-800 mb-4">
-          Give these credentials to the team member. The password cannot be shown again — if lost, use Reset Password.
-        </p>
-        <dl className="space-y-3">
-          <div className="bg-white rounded-lg border border-green-200 px-4 py-3">
-            <dt className="text-xs text-gray-600 mb-1">Login ID (username)</dt>
-            <dd className="font-mono text-sm font-semibold text-[#014D4E] select-all">
-              {state.credentials.username}
-            </dd>
-          </div>
-          <div className="bg-white rounded-lg border border-green-200 px-4 py-3">
-            <dt className="text-xs text-gray-600 mb-1">Temporary password</dt>
-            <dd className="font-mono text-sm font-semibold text-[#014D4E] select-all">
-              {state.credentials.password}
-            </dd>
-          </div>
-        </dl>
-        <p className="text-xs text-gray-600 mt-3">
-          Staff log in at the AlwaysReady login page using their Login ID and this password.
-        </p>
+        <p className="font-semibold text-green-900 mb-1">Invitation sent</p>
+        <p className="text-sm text-green-800">{state.message}</p>
         <button
           type="button"
           onClick={() => window.location.reload()}
           className="mt-4 text-sm font-medium text-[#014D4E] hover:underline"
         >
-          ← Add another team member
+          ← Invite another team member
         </button>
       </div>
     )
@@ -70,11 +57,27 @@ export default function AddMemberForm() {
           id="full_name"
           name="full_name"
           required
+          autoComplete="off"
           placeholder="e.g. Sarah Jones"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+          className={inputClass}
         />
-        <p className="text-xs text-gray-600 mt-1">
-          Used to generate their login ID and shown in the audit trail.
+      </div>
+
+      {/* Email */}
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-[#1a1a1a] mb-1">
+          Email address
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="e.g. sarah@example.com"
+          className={inputClass}
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          The invite link will be sent to this address. It becomes their login email.
         </p>
       </div>
 
@@ -87,46 +90,12 @@ export default function AddMemberForm() {
           id="role"
           name="role"
           defaultValue="user"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+          className={inputClass}
         >
           {ROLE_OPTIONS.map(o => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
-      </div>
-
-      {/* Personal email */}
-      <div>
-        <label htmlFor="personal_email" className="block text-sm font-medium text-[#1a1a1a] mb-1">
-          Personal email <span className="text-gray-500 font-normal">(optional)</span>
-        </label>
-        <input
-          type="email"
-          id="personal_email"
-          name="personal_email"
-          placeholder="e.g. sarah@gmail.com"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
-        />
-        <p className="text-xs text-gray-600 mt-1">
-          Used for password change notifications. The team member can also add this themselves from their Account page.
-        </p>
-      </div>
-
-      {/* Mobile number */}
-      <div>
-        <label htmlFor="mobile_number" className="block text-sm font-medium text-[#1a1a1a] mb-1">
-          Mobile number <span className="text-gray-500 font-normal">(optional)</span>
-        </label>
-        <input
-          type="tel"
-          id="mobile_number"
-          name="mobile_number"
-          placeholder="e.g. 07700 900123"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
-        />
-        <p className="text-xs text-gray-600 mt-1">
-          Reserved for future WhatsApp notifications.
-        </p>
       </div>
 
       {/* Error */}
@@ -148,7 +117,7 @@ export default function AddMemberForm() {
           transition-colors
         "
       >
-        {isPending ? 'Creating account…' : 'Create account'}
+        {isPending ? 'Sending invite…' : 'Send invite'}
       </button>
     </form>
   )

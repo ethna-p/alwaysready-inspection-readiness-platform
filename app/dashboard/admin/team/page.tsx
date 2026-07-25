@@ -119,10 +119,10 @@ export default async function TeamPage() {
           aria-labelledby="add-member-heading"
         >
           <h2 id="add-member-heading" className="text-sm font-semibold text-[#014D4E] uppercase tracking-wide mb-1">
-            Add team member
+            Invite team member
           </h2>
           <p className="text-xs text-gray-600 mb-4">
-            A login ID and temporary password will be generated. Give them to the team member directly — they do not need an email address.
+            An invitation email will be sent. The recipient clicks the link and sets their own password — no credentials to share manually.
           </p>
           <AddMemberForm />
         </section>
