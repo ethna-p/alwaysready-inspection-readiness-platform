@@ -10,10 +10,10 @@ import ChangePasswordForm from './ChangePasswordForm'
 import PersonalContactForm from './PersonalContactForm'
 import MfaSection from './MfaSection'
 import SubServicesForm from './SubServicesForm'
-import AddMemberForm from '../admin/team/add-member-form'
-import MemberRow from '../admin/team/member-row'
-import AddVisitorForm from '../admin/team/add-visitor-form'
-import VisitorRow from '../admin/team/visitor-row'
+import AddMemberForm from './add-member-form'
+import MemberRow from './member-row'
+import AddVisitorForm from './add-visitor-form'
+import VisitorRow from './visitor-row'
 
 export const metadata = { title: 'Account Settings — AlwaysReady' }
 
