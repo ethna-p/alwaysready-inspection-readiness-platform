@@ -16,7 +16,6 @@ import { createClient } from '@/lib/supabase/server'
 import { calculateRAG, RAG_LABELS, type RAGStatus } from '@/lib/rag'
 import type { ComplianceRecord } from '@/lib/types'
 import PrintButton from './print-button'
-import EvidencePackButton from '@/components/EvidencePackButton'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -179,7 +178,6 @@ export default async function InspectionPackPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <EvidencePackButton />
             <PrintButton />
           </div>
         </div>
