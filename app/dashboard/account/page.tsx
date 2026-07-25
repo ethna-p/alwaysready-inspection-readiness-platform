@@ -54,7 +54,7 @@ export default async function AccountPage() {
           <h2 className="text-base font-semibold text-brand mb-1">Subscription</h2>
           <p className="text-sm text-ink-dim mb-4">
             {subscriptionTier === 'active'
-              ? 'Your subscription is active — £75 + VAT per month.'
+              ? 'Your subscription is active — £75 per month.'
               : subscriptionTier === 'past_due'
               ? 'Your last payment failed. Please update your payment details to restore full access.'
               : 'You are currently on a free trial.'}

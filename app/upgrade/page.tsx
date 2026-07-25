@@ -40,7 +40,7 @@ export default function UpgradePage() {
           <div className="p-8">
           <div className="flex items-baseline gap-1 justify-center">
             <span className="text-6xl font-extrabold text-brand">£75</span>
-            <span className="text-base text-ink-dim">+ VAT / month</span>
+            <span className="text-base text-ink-dim">/ month</span>
           </div>
 
           <hr className="my-8 border-line" />
@@ -91,7 +91,7 @@ export default function UpgradePage() {
               cursor-pointer
             "
           >
-            Subscribe Now — £75 + VAT / month
+            Subscribe Now — £75 / month
           </button>
         </form>
 

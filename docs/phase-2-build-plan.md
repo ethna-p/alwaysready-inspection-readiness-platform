@@ -171,7 +171,7 @@ Staff using the platform for the first time — especially those unfamiliar with
 These are good ideas but deferred to Phase 3 or later:
 
 - **Multi-site / enterprise accounts** — one login for providers with multiple CQC-registered locations. Significant schema changes required. Revisit at ~50 customers.
-- **Stripe billing integration** — currently manual via email. Build when volume justifies it. When Stripe is live, add a "Subscribe Now" button to the marketing site (replacing the waitlist CTA) linking directly to the Stripe payment page. Also update the "Subscribe Now" button on the `/upgrade` page to link to Stripe instead of the mailto link. Stripe product: £75 + VAT / month, with a 20% discount for registered charities.
+- **Stripe billing integration** — currently manual via email. Build when volume justifies it. When Stripe is live, add a "Subscribe Now" button to the marketing site (replacing the waitlist CTA) linking directly to the Stripe payment page. Also update the "Subscribe Now" button on the `/upgrade` page to link to Stripe instead of the mailto link. Stripe product: £75 / month, with a 20% discount for registered charities.
 - **Superadmin org list page** — view all provisioned customers at a glance. Build at ~20-30 customers.
 - **Auto-email on provisioning → OpenCRM** — leads workflow. Build when email is working.
 - **Penetration testing** — commission before ~50 customers or any NHS-adjacent work.
@@ -285,7 +285,7 @@ The existing Inspection Pack (one-click printable summary) is extended to includ
 
 The Personnel & Training module adds significant value beyond basic KLOE tracking. Options to consider when Phase 3 is ready:
 
-- **Include in base price** (£75 + VAT) — simpler, stronger value proposition, easier to sell
+- **Include in base price** (£75) — simpler, stronger value proposition, easier to sell
 - **Premium tier** — charge more for the full package including Personnel
 - **Recommended:** include in base price at launch to keep things simple, revisit at scale
 
