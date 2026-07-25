@@ -320,7 +320,7 @@ export default async function DashboardPage() {
 
           {/* No location ID stored */}
           {!org?.cqc_location_id && (
-            <p className="text-sm text-ink-muted">
+            <p className="text-sm text-ink-dim">
               No CQC Location ID recorded.{' '}
               <Link href="/dashboard/account" className="text-brand underline hover:text-[#013636]">
                 Add it in your account settings
@@ -329,7 +329,7 @@ export default async function DashboardPage() {
             </p>
           )}
 
-          <p className="text-xs text-ink-muted mt-3">
+          <p className="text-xs text-ink-dim mt-3">
             Data sourced from the CQC public register, updated daily.
             AlwaysReady is not affiliated with or endorsed by the Care Quality Commission.
           </p>
