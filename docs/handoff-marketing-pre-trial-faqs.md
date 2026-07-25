@@ -90,7 +90,7 @@ Each account is for a single CQC-registered service location. If you operate mul
 ---
 
 **18. What support is available if we have a problem?**
-You can raise a support ticket directly from within the platform using the Support link in the navigation bar. You can also email us at hello@alwaysready.uk. We aim to respond to all support queries within one working day.
+You can raise a support ticket directly from within the platform using the Support link in the navigation bar. You can also email us at hello@alwaysready.uk. We aim to respond to all support queries within three working days.
 
 ---
 
