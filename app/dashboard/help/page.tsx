@@ -110,6 +110,7 @@ export default function HelpPage() {
           {[
             { href: '#understanding-rag', label: 'Understanding RAG status' },
             { href: '#for-admins',        label: 'For Admins' },
+            { href: '#hr-records',        label: 'HR Records' },
             { href: '#for-staff',         label: 'For Staff' },
             { href: '#for-visitors',      label: 'For Visitors' },
             { href: '#faqs',              label: 'FAQs' },
@@ -156,24 +157,47 @@ export default function HelpPage() {
         {/* ── For Admins ─────────────────────────────────────────────────────── */}
         <Section id="for-admins" label="For Admins" colour="bg-[#00b8a6]">
           <P>
-            As an Admin, you have full access to the platform. You can view and edit all KLOEs, manage your team, assign tasks, and create visitor logins for inspectors. You are the person responsible for keeping AlwaysReady up to date and making sure the right people have the right access.
+            As an Admin, you have full access to the platform. You can view and edit all KLOEs, manage your team, assign tasks, run mock inspections, and maintain HR records. You are responsible for keeping AlwaysReady up to date and making sure the right people have the right access. A care home can have as many Admin users as it needs — for example, the Registered Care Manager and senior team members can all be Admins.
           </P>
 
-          <H3>Setting up your team</H3>
+          <H3>Inviting team members</H3>
           <P>
-            Go to <strong>Team</strong> in the navigation bar. From there you can add staff members, set their role, and generate their login credentials. Staff do not need an email address — the platform creates a login ID for them automatically (for example, <code className="bg-gray-100 px-1 rounded text-xs">sarah.jones.f7a2e1</code>). When you add someone, the login ID and a temporary password appear on screen. Write these down or take a photo — they are only shown once.
+            Go to <strong>Team</strong> in the navigation bar and scroll to <strong>Invite team member</strong>. Enter their full name, email address, and role, then click <strong>Send invite</strong>. They will receive an email with a link to set their own password and activate their account. Once they have done this, they will appear as active in your team list. You do not need to share any credentials manually — the invitation handles everything.
           </P>
 
           <H3>Understanding roles</H3>
           <div className="space-y-2">
-            <p><strong>Admin</strong> — full access. Can edit all KLOEs, manage the team, assign tasks, and create visitor logins. Usually the Registered Care Manager or a senior manager.</p>
+            <p><strong>Admin</strong> — full access. Can edit all KLOEs, manage the team, assign tasks, run mock inspections, maintain HR records, and create visitor logins. Usually the Registered Care Manager or a senior manager. A care home can have multiple Admins.</p>
             <p><strong>Staff (User)</strong> — can view all KLOEs and update the ones assigned to them. When they log in, they see their personal &ldquo;My KLOEs&rdquo; list first.</p>
             <p><strong>Visitor</strong> — read-only. Can view everything but cannot change anything. For inspectors and external visitors. Access expires automatically.</p>
           </div>
 
+          <H3>Two-factor authentication</H3>
+          <P>
+            All Admin accounts must set up two-factor authentication (2FA) before they can access the platform. When you first log in, you will be guided through setting it up using an authenticator app such as Google Authenticator or Authy. Once set up, every login requires your password plus a six-digit code from the app. This protects your organisation&apos;s compliance data from unauthorised access. Staff (User) and Visitor accounts do not require two-factor authentication.
+          </P>
+
           <H3>Assigning KLOEs to team members</H3>
           <P>
             Open any KLOE from the KLOE tracker. At the top of the page you will see an <strong>Assign this KLOE</strong> panel. Select a team member from the dropdown and click Save. They will see this KLOE in their personal My KLOEs view when they log in. You can assign a KLOE to yourself as well as to other team members.
+          </P>
+
+          <H3>Running a mock inspection</H3>
+          <P>
+            Go to <strong>Mock Inspections</strong> in the navigation bar. A mock inspection walks you through each KLOE and asks you to rate your current evidence as Outstanding, Good, Requires Improvement, or Inadequate. At the end, the platform produces a report showing your self-assessed rating for each key question area. This is a useful tool for spotting gaps before a real CQC inspection. Ratings produced in a mock inspection are for self-assessment only — they do not represent the view of CQC or any regulatory body, and reference codes in the report are AlwaysReady identifiers, not CQC codes.
+          </P>
+
+          <H3>Reading the dashboard</H3>
+          <P>
+            The dashboard shows your overall inspection readiness as a percentage, and breaks it down by each key question area (Safe, Effective, Caring, Responsive, Well-led). The Team workload section shows which staff members have assigned KLOEs and how many are overdue, so you can see at a glance if anyone needs support.
+          </P>
+
+          <H3>Uploading evidence files</H3>
+          <P>
+            Open any KLOE and scroll to the <strong>Evidence files</strong> section. Click <strong>Upload file</strong> and select a document from your device. Accepted formats are PDF, Word, Excel, and images (JPG or PNG), up to 10 MB per file. Files are private and can only be accessed by members of your organisation and any visitors you have given access to.
+          </P>
+          <P>
+            <strong>Important:</strong> only upload governance documents — policies, certificates, risk assessments, and similar records. Do not upload anything containing resident-specific clinical information, care plans, or personal health records.
           </P>
 
           <H3>Changing your own password</H3>
@@ -183,7 +207,7 @@ export default function HelpPage() {
 
           <H3>Resetting a team member&apos;s password</H3>
           <P>
-            Team members can change their own password at any time by going to <strong>Account</strong> in the navigation bar. If a team member has forgotten their password and cannot log in, go to <strong>Team</strong>, find their name, and click <strong>Reset password</strong>. A new temporary password will be generated and shown on screen — give it to them directly so they can log in and set their own.
+            Team members can change their own password at any time by going to <strong>Account</strong> in the navigation bar. If a team member has been locked out and cannot log in, go to <strong>Team</strong>, find their name, and click <strong>Reset password</strong>. A new temporary password will be generated and shown on screen — give it to them directly so they can log in and set their own.
           </P>
 
           <H3>Creating a visitor login before an inspection</H3>
@@ -195,25 +219,55 @@ export default function HelpPage() {
             <Step number={5}>Access expires automatically after the number of days you chose. If you need to remove access early, click <strong>Revoke</strong> next to their name in the Visitor logins list.</Step>
           </div>
 
-          <H3>Uploading evidence files</H3>
-          <P>
-            Open any KLOE and scroll to the <strong>Evidence files</strong> section. Click <strong>Upload file</strong> and select a document from your device. Accepted formats are PDF, Word, Excel, and images (JPG or PNG), up to 10 MB per file. Files are private and can only be accessed by members of your organisation and any visitors you have given access to.
-          </P>
-          <P>
-            <strong>Important:</strong> only upload governance documents — policies, certificates, risk assessments, and similar records. Do not upload anything containing resident-specific clinical information, care plans, or personal health records.
-          </P>
-          <P>
-            Admins can delete uploaded files. Staff and visitors can download files but cannot delete them.
-          </P>
-
-          <H3>Reading the dashboard</H3>
-          <P>
-            The dashboard shows your overall inspection readiness as a percentage, and breaks it down by each key question area (Safe, Effective, Caring, Responsive, Well-led). The Team workload section shows which staff members have assigned KLOEs and how many are overdue, so you can see at a glance if anyone needs support.
-          </P>
-
           <H3>The audit trail</H3>
           <P>
             Every time a KLOE is updated, the platform records who made the change, what changed, and when. This record cannot be altered or deleted. During an inspection, this is powerful evidence that your team is actively managing compliance — not just filling in forms on the day.
+          </P>
+        </Section>
+
+        {/* ── HR Records ─────────────────────────────────────────────────────── */}
+        <Section id="hr-records" label="HR Records" colour="bg-[#014D4E]">
+          <P>
+            The HR module helps you keep staff records in one place — employment details, compliance dates, training, and holiday allowances. Access is restricted to Admin users. Go to <strong>HR</strong> in the navigation bar to get started.
+          </P>
+
+          <H3>The HR overview dashboard</H3>
+          <P>
+            The top of the HR page shows four RAG summary cards: <strong>DBS</strong>, <strong>Supervision</strong>, <strong>Appraisal</strong>, and <strong>Mandatory Training</strong>. Each card shows what percentage of your team are current, how many are overdue, and how many are due soon. The colour and headline update automatically based on the most urgent status — red for overdue, amber for due soon, green if all current.
+          </P>
+          <P>
+            Below the summary cards, a <strong>Needs attention</strong> section highlights individual staff members with overdue or upcoming dates, so you can act quickly without scrolling through the full staff list.
+          </P>
+
+          <H3>Adding a staff member to HR records</H3>
+          <P>
+            Staff members appear in HR once they have been added to your team via the <strong>Team</strong> page. You do not need to add them separately in HR — their account automatically creates an HR record slot. Click <strong>View</strong> next to any staff member to open their record and fill in their details.
+          </P>
+
+          <H3>Employment and compliance details</H3>
+          <P>
+            Each staff record contains sections for employment information (job title, contracted hours, start date), personal details (date of birth, gender, ethnicity — held under your Equality Act obligations), emergency contact, and compliance fields including DBS check date, right to work, and references. Fill in the relevant fields and click <strong>Save staff record</strong> at the bottom of the form.
+          </P>
+          <P>
+            The <strong>DBS renewal due</strong>, <strong>Supervision next due</strong>, and <strong>Appraisal next due</strong> fields drive the RAG dashboard at the top of the HR overview. Keep these dates up to date to ensure the dashboard reflects your team&apos;s real compliance status.
+          </P>
+
+          <H3>Training records</H3>
+          <P>
+            Scroll to the <strong>Training Records</strong> section on a staff member&apos;s page. A list of training types is shown — click the arrow on any row to expand it. You can record the date the training was completed, how frequently it needs to be renewed, and any notes. The platform calculates the next due date automatically. You can also upload a training certificate directly to the record — PDF, Word, Excel, JPG, or PNG files up to 10 MB are accepted.
+          </P>
+          <P>
+            Training completion across your team feeds into the <strong>Mandatory Training</strong> card on the HR overview. A training type is counted as complete for a staff member once a completion date has been recorded and the next due date has not passed.
+          </P>
+
+          <H3>Holiday allowances</H3>
+          <P>
+            Scroll to the <strong>Holiday Allowance</strong> section on a staff member&apos;s page. You can record their entitlement and days taken for the current leave year. Holiday can be tracked in days or hours — you can change the unit for your whole organisation by going to <strong>HR</strong> and clicking <strong>Change</strong> next to the holiday unit setting.
+          </P>
+
+          <H3>Special category data</H3>
+          <P>
+            Personal details such as date of birth, gender, ethnicity, disability status, and marital status are held in the HR record for equality monitoring purposes, as required under the Equality Act 2010 and your obligations as an employer. This data is visible only to Admin users within your organisation. It is never shared with CQC or any third party.
           </P>
         </Section>
 
@@ -223,9 +277,14 @@ export default function HelpPage() {
             As a staff member, you have a personal space in AlwaysReady called <strong>My KLOEs</strong>. This shows you the KLOEs your manager has assigned to you. Your job is to keep them up to date so the service is ready for inspection.
           </P>
 
-          <H3>Logging in</H3>
+          <H3>Logging in for the first time</H3>
           <P>
-            Your manager will give you a login ID (it looks something like <code className="bg-gray-100 px-1 rounded text-xs">sarah.jones.f7a2e1</code>) and a temporary password. Go to the AlwaysReady login page, type your login ID into the box, and enter your password. You do not need an email address to log in. Once you are in, you can change your password at any time by going to <strong>Account</strong> in the navigation bar.
+            Your manager will send you an invitation email from AlwaysReady. Click the <strong>Accept invite</strong> button in the email, which will take you to the platform where you can set your own password. Once your password is set, you can log in at any time using your email address and that password. If you do not receive the invitation email, check your junk folder and ask your manager to resend it.
+          </P>
+
+          <H3>Logging in after your first visit</H3>
+          <P>
+            Go to the AlwaysReady login page and enter your email address and password. If you have forgotten your password, click <strong>Forgot password</strong> on the login page to receive a reset link by email, or ask your admin to reset it for you from the Team page.
           </P>
 
           <H3>Your My KLOEs page</H3>
@@ -253,12 +312,17 @@ export default function HelpPage() {
           <P>
             Yes — you can browse the full KLOE list from the <strong>KLOEs</strong> link in the navigation bar. You can read any KLOE, but you can only save changes to the ones assigned to you.
           </P>
+
+          <H3>Changing your password</H3>
+          <P>
+            Go to <strong>Account</strong> in the navigation bar. Enter your current password, choose a new one (at least 8 characters), and confirm it. If you have forgotten your password and cannot log in, click <strong>Forgot password</strong> on the login page or ask your admin to reset it for you.
+          </P>
         </Section>
 
         {/* ── For Visitors ───────────────────────────────────────────────────── */}
         <Section id="for-visitors" label="For Visitors" colour="bg-[#6b7280]">
           <P>
-            As a visitor, you have read-only access to the AlwaysReady platform. This means you can view all the information in the system, but you cannot make any changes. Your login has been set up specifically for your visit and will stop working automatically after a set number of days.
+            As a visitor, you have read-only access to the AlwaysReady platform. This means you can view all the information in the platform, but you cannot make any changes. Your login has been set up specifically for your visit and will stop working automatically after a set number of days.
           </P>
 
           <H3>What you can see</H3>
@@ -286,12 +350,24 @@ export default function HelpPage() {
         <Section id="faqs" label="Frequently asked questions" colour="bg-[#014D4E]">
           <div className="space-y-4">
             <FAQ
-              question="What happens if I forget my password?"
-              answer="If you are logged in, go to Account in the navigation bar and change it there. If you have forgotten your password and cannot log in, ask your admin to reset it from the Team page — they will generate a new temporary password and give it to you directly."
+              question="How does a new team member get access?"
+              answer="An Admin goes to Team in the navigation bar, fills in the new person's name, email address, and role, and clicks Send invite. The new team member receives an email with a link to set their own password. Once they have done this, their account is active. No credentials need to be shared manually."
+            />
+            <FAQ
+              question="What if someone doesn't receive their invite email?"
+              answer="Ask them to check their junk or spam folder first. If it is not there, go to Team, find their name, and use the Reset password option to generate a fresh link, or delete their account and send a new invite. Make sure the email address entered was correct."
+            />
+            <FAQ
+              question="What happens if a team member forgets their password?"
+              answer="They can click Forgot password on the login page and receive a reset link by email. Alternatively, an Admin can go to Team, find their name, and click Reset password — a new temporary password will be shown on screen to give to them directly."
+            />
+            <FAQ
+              question="What is two-factor authentication and why is it required for Admins?"
+              answer="Two-factor authentication (2FA) means that logging in requires both your password and a six-digit code from an authenticator app on your phone. It is required for all Admin accounts because Admins have access to sensitive compliance data, staff records, and team management. It significantly reduces the risk of unauthorised access even if a password is compromised. Staff and Visitor accounts do not require 2FA."
             />
             <FAQ
               question="Can I change my own password?"
-              answer="Yes — go to Account in the navigation bar. Enter your current password, choose a new one, and confirm it. Your new password takes effect immediately. If you have forgotten your current password and cannot log in, ask your admin to reset it for you."
+              answer="Yes — go to Account in the navigation bar. Enter your current password, choose a new one, and confirm it. Your new password takes effect immediately. If you have forgotten your current password and cannot log in, use the Forgot password link on the login page."
             />
             <FAQ
               question="Can I upload documents to a KLOE?"
@@ -300,6 +376,18 @@ export default function HelpPage() {
             <FAQ
               question="What does 'overdue' mean?"
               answer="A KLOE is overdue when it was marked as completed but the next review date has now passed. It shows as Red. This does not mean the service is non-compliant — it means the review needs to be done again to confirm everything is still in order."
+            />
+            <FAQ
+              question="What is the HR module for?"
+              answer="The HR module lets Admins keep staff records in one place — employment details, DBS check dates, supervision and appraisal due dates, training records, and holiday allowances. The HR overview dashboard shows at a glance which staff members are overdue or coming up for review. It is separate from the KLOE compliance tracker and is only visible to Admin users."
+            />
+            <FAQ
+              question="How does the HR RAG dashboard work?"
+              answer="The four cards at the top of the HR page (DBS, Supervision, Appraisal, Mandatory Training) show the compliance status across your whole team. Each card shows the percentage overdue, due soon, or current. If any staff member is overdue, the card turns red and shows the percentage overdue. The Needs attention section below lists those individuals by name so you can act quickly."
+            />
+            <FAQ
+              question="What is a mock inspection?"
+              answer="A mock inspection is a self-assessment tool. It walks you through each KLOE and asks you to rate your evidence as Outstanding, Good, Requires Improvement, or Inadequate. At the end it produces a report showing a self-assessed rating for each key question area. It is useful for identifying gaps before a real CQC inspection. The ratings are for internal use only and do not represent the view of CQC."
             />
             <FAQ
               question="Can two people update the same KLOE at the same time?"
