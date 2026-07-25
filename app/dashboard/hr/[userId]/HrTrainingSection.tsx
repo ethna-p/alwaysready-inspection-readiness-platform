@@ -4,7 +4,7 @@
  * HrTrainingSection — training records with per-type date fields and certificate uploads.
  */
 
-import { useState, useTransition, useRef } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 import { saveTrainingRecord, uploadTrainingCertificate, deleteTrainingCertificate } from '../actions'
 import type { HrTrainingType, HrTrainingRecord, HrTrainingCertificate } from '@/lib/types'
 
@@ -45,7 +45,15 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
   const [expandedType, setExpandedType] = useState<string | null>(null)
   const [messages, setMessages] = useState<Record<string, string>>({})
   const [errors, setErrors]     = useState<Record<string, string>>({})
-  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
+  const fileInputRefs  = useRef<Record<string, HTMLInputElement | null>>({})
+  const panelRefs      = useRef<Record<string, HTMLDivElement | null>>({})
+
+  // Scroll the expanded panel into view whenever a new section opens
+  useEffect(() => {
+    if (!expandedType) return
+    const panel = panelRefs.current[expandedType]
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [expandedType])
 
   // Local editable state per training type
   const [localRecords, setLocalRecords] = useState<Record<string, {
@@ -177,7 +185,7 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
 
               {/* Expanded panel */}
               {isOpen && (
-                <div className="border-t border-gray-100 px-5 py-5">
+                <div ref={el => { panelRefs.current[type.id] = el }} className="border-t border-gray-100 px-5 py-5">
                   {messages[type.id] && (
                     <div className="mb-3 text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">
                       {messages[type.id]}
