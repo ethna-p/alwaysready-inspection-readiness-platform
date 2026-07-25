@@ -5,7 +5,7 @@
 import { Suspense } from 'react'
 import { getCurrentUserProfile } from '@/lib/session'
 import { createClient } from '@/lib/supabase/server'
-import { createBillingPortalSession } from '@/app/actions/stripe'
+import { createBillingPortalSession, createCancellationPortalSession } from '@/app/actions/stripe'
 import ChangePasswordForm from './ChangePasswordForm'
 import PersonalContactForm from './PersonalContactForm'
 import MfaSection from './MfaSection'
@@ -60,14 +60,26 @@ export default async function AccountPage() {
               : 'You are currently on a free trial.'}
           </p>
           {hasStripeCustomer ? (
-            <form action={createBillingPortalSession}>
-              <button
-                type="submit"
-                className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors cursor-pointer"
-              >
-                Manage subscription →
-              </button>
-            </form>
+            <div className="flex flex-wrap items-center gap-6">
+              <form action={createBillingPortalSession}>
+                <button
+                  type="submit"
+                  className="text-sm font-medium text-[#014D4E] underline hover:text-[#00b8a6] transition-colors cursor-pointer"
+                >
+                  Manage subscription →
+                </button>
+              </form>
+              {subscriptionTier === 'active' && (
+                <form action={createCancellationPortalSession}>
+                  <button
+                    type="submit"
+                    className="text-sm font-medium text-red-600 underline hover:text-red-800 transition-colors cursor-pointer"
+                  >
+                    Cancel my subscription
+                  </button>
+                </form>
+              )}
+            </div>
           ) : subscriptionTier !== 'active' ? (
             <a
               href="/upgrade"

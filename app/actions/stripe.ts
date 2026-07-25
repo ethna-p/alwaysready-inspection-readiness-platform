@@ -88,3 +88,61 @@ export async function createBillingPortalSession(): Promise<never> {
 
   redirect(portalSession.url)
 }
+
+// ── Cancel subscription ────────────────────────────────────────────────────
+
+/**
+ * Opens the Stripe billing portal pre-loaded on the cancellation flow,
+ * so the user lands directly on "Cancel subscription" rather than having
+ * to navigate there themselves.
+ */
+export async function createCancellationPortalSession(): Promise<never> {
+  const profile = await getCurrentUserProfile()
+  if (!profile?.organisation_id) redirect('/login')
+
+  const adminSupabase = createAdminClient()
+  const { data: org } = await adminSupabase
+    .from('organisations')
+    .select('stripe_customer_id')
+    .eq('id', profile.organisation_id)
+    .single()
+
+  if (!org?.stripe_customer_id) {
+    redirect('/upgrade')
+  }
+
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer:   org.stripe_customer_id,
+    return_url: `${PLATFORM_URL}/dashboard/account`,
+    flow_data: {
+      type: 'subscription_cancel',
+      subscription_cancel: {
+        subscription: await getActiveSubscriptionId(org.stripe_customer_id),
+      },
+    },
+  })
+
+  redirect(portalSession.url)
+}
+
+/**
+ * Looks up the first active subscription ID for a Stripe customer.
+ * Needed for the portal cancellation flow, which requires a subscription ID.
+ */
+async function getActiveSubscriptionId(customerId: string): Promise<string> {
+  const subscriptions = await stripe.subscriptions.list({
+    customer: customerId,
+    status:   'active',
+    limit:    1,
+  })
+  if (!subscriptions.data[0]) {
+    // Fall back to any non-cancelled subscription (e.g. past_due, trialing)
+    const any = await stripe.subscriptions.list({
+      customer: customerId,
+      limit:    1,
+    })
+    if (!any.data[0]) throw new Error('No subscription found for customer')
+    return any.data[0].id
+  }
+  return subscriptions.data[0].id
+}
