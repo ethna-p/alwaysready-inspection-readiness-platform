@@ -108,6 +108,7 @@ export default function HelpPage() {
         </p>
         <div className="flex flex-wrap gap-3">
           {[
+            { href: '#platform-features', label: 'What\'s in the platform' },
             { href: '#understanding-rag', label: 'Understanding RAG status' },
             { href: '#for-admins',        label: 'For Admins' },
             { href: '#hr-records',        label: 'HR Records' },
@@ -134,6 +135,111 @@ export default function HelpPage() {
       </nav>
 
       <div className="space-y-8">
+
+        {/* ── What's in the platform ─────────────────────────────────────────── */}
+        <Section id="platform-features" label="What's in the platform" colour="bg-[#014D4E]">
+          <P>
+            Here is everything currently available in AlwaysReady. If there is something you would like to see that is not on this list, we would love to hear from you — see the link at the bottom of this section.
+          </P>
+
+          <H3>KLOE Tracker</H3>
+          <div className="space-y-1">
+            <p>• All 24 CQC Key Lines of Enquiry (KLOEs) pre-loaded, grouped by the five key questions: Safe, Effective, Caring, Responsive, and Well-led.</p>
+            <p>• Set the status of each KLOE: Not started, In progress, or Completed.</p>
+            <p>• Record the date of each review and when the next review is due — the platform calculates your readiness automatically.</p>
+            <p>• Set review frequency per KLOE (monthly, quarterly, annual, or custom).</p>
+            <p>• Set a priority level (1–5) per KLOE to reflect the seriousness of non-compliance.</p>
+            <p>• Add evidence location notes — where the document or policy is physically or digitally stored.</p>
+            <p>• Upload evidence files (PDF, Word, Excel, JPG, PNG — up to 10 MB each).</p>
+            <p>• View CQC rating characteristics (Outstanding, Good, Requires Improvement, Inadequate) for each KLOE.</p>
+            <p>• Assign any KLOE to a specific team member.</p>
+            <p>• Full audit trail per KLOE — every change recorded with who made it and when, permanently.</p>
+          </div>
+
+          <H3>Readiness Dashboard</H3>
+          <div className="space-y-1">
+            <p>• Overall inspection readiness percentage at a glance.</p>
+            <p>• Breakdown by each of the five CQC key question areas.</p>
+            <p>• RAG status indicators across all KLOEs — Red (overdue), Amber (due soon), Green (current), Grey (not yet assessed).</p>
+            <p>• Team workload overview showing assigned KLOEs and overdue items per staff member.</p>
+          </div>
+
+          <H3>Daily Review Report</H3>
+          <div className="space-y-1">
+            <p>• A single screen showing everything that needs attention — overdue KLOEs first, then due soon, sorted by priority.</p>
+            <p>• Designed to be scanned in under five minutes each morning.</p>
+          </div>
+
+          <H3>Readiness Trend</H3>
+          <div className="space-y-1">
+            <p>• A graph showing how your overall readiness percentage has changed over recent weeks and months.</p>
+            <p>• Breakdown by key question area so you can see which areas are improving and which need attention.</p>
+          </div>
+
+          <H3>Mock Inspections</H3>
+          <div className="space-y-1">
+            <p>• Self-assessment tool that walks you through every KLOE.</p>
+            <p>• Rate your evidence for each KLOE as Outstanding, Good, Requires Improvement, or Inadequate.</p>
+            <p>• Produces a mock inspection report showing a self-assessed rating per key question area.</p>
+            <p>• Save and revisit previous mock inspections to track your self-assessment over time.</p>
+          </div>
+
+          <H3>Inspection Pack</H3>
+          <div className="space-y-1">
+            <p>• A one-click printable summary of your full compliance position.</p>
+            <p>• Shows current RAG status, review dates, priority, and evidence location for every KLOE.</p>
+            <p>• Designed to be handed to an inspector or presented to a board.</p>
+          </div>
+
+          <H3>Team Management</H3>
+          <div className="space-y-1">
+            <p>• Invite team members by email — they receive a link and set their own password.</p>
+            <p>• Assign roles: Admin (full access), Staff / User (view all, edit assigned KLOEs), Viewer (read-only).</p>
+            <p>• Multiple Admins supported — no limit on the number of Admins per organisation.</p>
+            <p>• Create temporary Visitor logins for inspectors or board members, with automatic expiry.</p>
+            <p>• Revoke visitor access early at any time.</p>
+            <p>• Reset any team member&apos;s password from the Team page.</p>
+          </div>
+
+          <H3>HR Records</H3>
+          <div className="space-y-1">
+            <p>• Staff record for each team member: employment details, job title, contracted hours, start date.</p>
+            <p>• Compliance dates: DBS renewal, right to work, references.</p>
+            <p>• Supervision and appraisal due dates, with RAG status tracking across the whole team.</p>
+            <p>• Training records: completion dates, renewal frequency, next due date calculated automatically, certificate uploads.</p>
+            <p>• Holiday allowances: entitlement and days or hours taken, tracked per leave year.</p>
+            <p>• HR overview dashboard showing DBS, Supervision, Appraisal, and Mandatory Training compliance across the team at a glance.</p>
+            <p>• Needs attention section highlighting individual staff members who are overdue or due soon.</p>
+            <p>• Special category data fields for equality monitoring (held under Equality Act 2010 obligations).</p>
+          </div>
+
+          <H3>Account &amp; Security</H3>
+          <div className="space-y-1">
+            <p>• Two-factor authentication (2FA) required for all Admin accounts.</p>
+            <p>• Password change available at any time from the Account page.</p>
+            <p>• Each organisation&apos;s data is fully isolated — no other organisation can access your records.</p>
+          </div>
+
+          <H3>Support</H3>
+          <div className="space-y-1">
+            <p>• In-platform support ticket system — raise a query or report an issue directly from the Support link in the navigation bar.</p>
+            <p>• Email support at hello@alwaysready.uk.</p>
+          </div>
+
+          {/* Suggestion callout */}
+          <div className="mt-4 rounded-xl border border-[#014D4E]/20 bg-[#014D4E]/5 px-5 py-4">
+            <p className="font-semibold text-[#014D4E] mb-1">Got an idea for something new?</p>
+            <p className="text-sm text-gray-700 mb-3">
+              If there is a feature you would find useful that is not listed above, we would genuinely love to hear about it. Your suggestions help shape the platform — and if it is something many services would benefit from, there is a good chance it will make it in.
+            </p>
+            <a
+              href="/dashboard/support/new"
+              className="inline-block text-sm font-medium bg-[#014D4E] text-white px-4 py-2 rounded-lg hover:bg-[#013838] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 transition-colors"
+            >
+              Share a suggestion →
+            </a>
+          </div>
+        </Section>
 
         {/* ── Understanding RAG ──────────────────────────────────────────────── */}
         <Section id="understanding-rag" label="Understanding RAG status" colour="bg-[#014D4E]">
