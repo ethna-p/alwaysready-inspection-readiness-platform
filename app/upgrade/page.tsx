@@ -65,10 +65,6 @@ export default function UpgradePage() {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-ink-dim mb-4">
-            Registered charities receive a 20% discount — mention your charity
-            number when you get in touch.
-          </p>
           <div className="border-t border-line pt-4">
             <p className="text-xs text-ink-dim">
               <span className="font-semibold text-ink">Need to export your data?</span> Your records are kept for 30 days after your trial ends. Email{' '}

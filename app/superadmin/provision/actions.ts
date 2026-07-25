@@ -163,6 +163,14 @@ export async function provisionOrganisation(
           </tr>
         </table>
 
+        ${isCharity ? `
+        <p style="margin:0 0 16px;background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 16px;border-radius:4px;font-size:14px">
+          <strong>Your 20% charity discount is already applied to your account.</strong>
+          When you subscribe, you will be taken to a page showing the standard price —
+          your discount will be applied automatically during the checkout process before
+          any payment is taken.
+        </p>
+        ` : ''}
         <p style="margin:0 0 16px">
           As the account admin, you can add your team, assign KLOEs, and start
           building your inspection readiness from day one. If you have any
