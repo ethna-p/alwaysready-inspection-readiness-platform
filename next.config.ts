@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Keep @react-pdf/renderer as a native Node module — it uses Node APIs
+  // that can't be bundled by the Next.js webpack config.
+  serverExternalPackages: ['@react-pdf/renderer'],
   async headers() {
     return [
       {

@@ -20,6 +20,7 @@ import RagBadge from '@/components/RagBadge'
 import type { ComplianceRecord } from '@/lib/types'
 import { fetchCqcLocation, cqcRatingColours, formatCqcDate } from '@/lib/cqc'
 import type { CqcRating } from '@/lib/cqc'
+import EvidencePackButton from '@/components/EvidencePackButton'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -231,19 +232,22 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-[#014D4E]">Inspection Readiness</h1>
           <p className="text-sm text-gray-600 mt-1">{orgName}</p>
         </div>
-        <Link
-          href="/dashboard/kloes"
-          className="
-            inline-flex items-center gap-2
-            bg-[#014D4E] text-white text-sm font-medium
-            px-4 py-2.5 rounded-lg
-            hover:bg-[#013838]
-            focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-            transition-colors
-          "
-        >
-          View KLOE tracker →
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <EvidencePackButton />
+          <Link
+            href="/dashboard/kloes"
+            className="
+              inline-flex items-center gap-2
+              bg-[#014D4E] text-white text-sm font-medium
+              px-4 py-2.5 rounded-lg
+              hover:bg-[#013838]
+              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+              transition-colors
+            "
+          >
+            View KLOE tracker →
+          </Link>
+        </div>
       </div>
 
       {/* ── CQC Rating ───────────────────────────────────────────────────── */}
