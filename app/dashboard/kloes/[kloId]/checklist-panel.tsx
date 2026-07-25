@@ -124,13 +124,12 @@ function ChecklistItemRow({
 
       {/* Content */}
       <div className="flex-1 min-w-0 space-y-1.5">
-        {/* Top row: ref + text + regulation */}
+        {/* Top row: ref + text */}
         <div className="flex flex-wrap items-start gap-2">
           <RefBadge displayOrder={item.display_order} itemType={item.item_type} />
           <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-gray-600' : 'text-[#1a1a1a]'}`}>
             {item.checklist_item}
           </p>
-          <RegBadge reg={item.regulation} />
         </div>
 
         {/* Evidence suggestion (collapsed by default) */}

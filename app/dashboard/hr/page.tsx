@@ -30,6 +30,87 @@ function getDateStatus(nextDue: string | null): StatusBadge {
   return 'ok'
 }
 
+// ── HR RAG summary card ────────────────────────────────────────────────────
+
+type SummaryCardProps = {
+  label: string
+  total: number
+  okCount: number
+  dueSoonCount?: number
+  overdueCount?: number
+  notSetCount: number
+}
+
+function HrSummaryCard({
+  label, total, okCount, dueSoonCount = 0, overdueCount = 0, notSetCount,
+}: SummaryCardProps) {
+  const pct = (n: number) => (total === 0 ? 0 : Math.round((n / total) * 100))
+
+  const okPct      = pct(okCount)
+  const dueSoonPct = pct(dueSoonCount)
+  const overduePct = pct(overdueCount)
+
+  const hasOverdue = overdueCount > 0
+  const hasDueSoon = dueSoonCount > 0
+
+  const accentClass = hasOverdue  ? 'border-red-300   bg-red-50'
+                    : hasDueSoon  ? 'border-amber-300 bg-amber-50'
+                    : okCount > 0 ? 'border-green-300 bg-green-50'
+                    :               'border-gray-200  bg-gray-50'
+
+  const headlineColour = hasOverdue  ? 'text-red-700'
+                       : hasDueSoon  ? 'text-amber-700'
+                       : okCount > 0 ? 'text-green-700'
+                       :               'text-gray-500'
+
+  return (
+    <div className={`rounded-xl border p-4 ${accentClass}`}>
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+      <p className={`text-3xl font-bold mb-3 ${headlineColour}`}>
+        {okPct}<span className="text-lg font-medium">%</span>
+        <span className="ml-1 text-xs font-normal text-gray-500">current</span>
+      </p>
+
+      {/* Stacked RAG bar */}
+      <div className="flex h-2 rounded-full overflow-hidden mb-3 bg-gray-200">
+        {overdueCount  > 0 && <div className="bg-red-500"   style={{ width: `${overduePct}%`  }} />}
+        {dueSoonCount  > 0 && <div className="bg-amber-400" style={{ width: `${dueSoonPct}%`  }} />}
+        {okCount       > 0 && <div className="bg-green-500" style={{ width: `${okPct}%`       }} />}
+      </div>
+
+      {/* Count legend */}
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+        {overdueCount > 0 && (
+          <span className="flex items-center gap-1 text-red-700">
+            <span className="h-2 w-2 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
+            {overdueCount} overdue
+          </span>
+        )}
+        {dueSoonCount > 0 && (
+          <span className="flex items-center gap-1 text-amber-700">
+            <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" aria-hidden="true" />
+            {dueSoonCount} due soon
+          </span>
+        )}
+        {okCount > 0 && (
+          <span className="flex items-center gap-1 text-green-700">
+            <span className="h-2 w-2 rounded-full bg-green-500 shrink-0" aria-hidden="true" />
+            {okCount} current
+          </span>
+        )}
+        {notSetCount > 0 && (
+          <span className="flex items-center gap-1 text-gray-500">
+            <span className="h-2 w-2 rounded-full bg-gray-300 shrink-0" aria-hidden="true" />
+            {notSetCount} not set
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Per-row status pill ────────────────────────────────────────────────────
+
 function StatusPill({ status, label }: { status: StatusBadge; label: string }) {
   const styles: Record<StatusBadge, string> = {
     overdue:  'bg-red-100 text-red-700',
@@ -103,6 +184,30 @@ export default async function HrOverviewPage() {
     .single()
 
   const staffList = staffUsers ?? []
+  const total = staffList.length
+
+  // ── Compute per-field RAG summary ─────────────────────────────────────────
+  type Counts = Record<StatusBadge, number>
+
+  function countField(field: 'dbs_next_review_due' | 'supervision_next_due' | 'appraisal_next_due'): Counts {
+    const c: Counts = { ok: 0, due_soon: 0, overdue: 0, not_set: 0 }
+    for (const user of staffList) {
+      const hr = profileMap.get(user.id)
+      c[hr ? getDateStatus(hr[field]) : 'not_set']++
+    }
+    return c
+  }
+
+  const dbsCounts          = countField('dbs_next_review_due')
+  const supervisionCounts  = countField('supervision_next_due')
+  const appraisalCounts    = countField('appraisal_next_due')
+
+  const trainingCounts = { ok: 0, not_set: 0 }
+  for (const user of staffList) {
+    const hr = profileMap.get(user.id)
+    if (hr?.mandatory_training_complete) trainingCounts.ok++
+    else trainingCounts.not_set++
+  }
 
   return (
     <div>
@@ -131,6 +236,42 @@ export default async function HrOverviewPage() {
           Change →
         </Link>
       </div>
+
+      {/* ── RAG summary dashboard ─────────────────────────────────────────── */}
+      {total > 0 && (
+        <div className="mb-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <HrSummaryCard
+            label="DBS"
+            total={total}
+            okCount={dbsCounts.ok}
+            dueSoonCount={dbsCounts.due_soon}
+            overdueCount={dbsCounts.overdue}
+            notSetCount={dbsCounts.not_set}
+          />
+          <HrSummaryCard
+            label="Supervision"
+            total={total}
+            okCount={supervisionCounts.ok}
+            dueSoonCount={supervisionCounts.due_soon}
+            overdueCount={supervisionCounts.overdue}
+            notSetCount={supervisionCounts.not_set}
+          />
+          <HrSummaryCard
+            label="Appraisal"
+            total={total}
+            okCount={appraisalCounts.ok}
+            dueSoonCount={appraisalCounts.due_soon}
+            overdueCount={appraisalCounts.overdue}
+            notSetCount={appraisalCounts.not_set}
+          />
+          <HrSummaryCard
+            label="Mandatory Training"
+            total={total}
+            okCount={trainingCounts.ok}
+            notSetCount={trainingCounts.not_set}
+          />
+        </div>
+      )}
 
       {/* Staff table */}
       {staffList.length === 0 ? (

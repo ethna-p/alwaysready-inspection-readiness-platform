@@ -19,7 +19,7 @@ import type { ComplianceRecord, KloItem } from '@/lib/types'
 // Green (up to date) last
 const RAG_SORT: Record<RAGStatus, number> = { grey: 0, red: 1, amber: 2, green: 3 }
 
-type KeyQuestionRow = { id: string; name: string; display_order: number }
+type KeyQuestionRow = { id: string; name: string; display_order: number; description: string | null }
 
 function formatDate(iso: string | null): string {
   if (!iso) return '—'
@@ -35,7 +35,7 @@ export default async function KloesPage() {
   const [{ data: keyQuestions }, { data: kloItems }, { data: records }] = await Promise.all([
     supabase
       .from('key_questions')
-      .select('id, name, display_order')
+      .select('id, name, display_order, description')
       .order('display_order'),
 
     supabase
@@ -124,15 +124,22 @@ export default async function KloesPage() {
 
           return (
             <section key={kq.id} aria-labelledby={`kq-${kq.id}`}>
-              <h2
-                id={`kq-${kq.id}`}
-                className="text-lg font-bold text-[#014D4E] mb-3 pb-2 border-b border-gray-200"
-              >
-                {kq.name}
-                <span className="ml-2 text-sm font-normal text-gray-600">
-                  ({groupKlos.length} KLOEs)
-                </span>
-              </h2>
+              <div className="mb-3 pb-2 border-b border-gray-200">
+                <h2
+                  id={`kq-${kq.id}`}
+                  className="text-lg font-bold text-[#014D4E]"
+                >
+                  {kq.name}
+                  <span className="ml-2 text-sm font-normal text-gray-600">
+                    ({groupKlos.length} KLOEs)
+                  </span>
+                </h2>
+                {kq.description && (
+                  <p className="text-sm text-gray-600 mt-0.5 italic">
+                    "{kq.description}"
+                  </p>
+                )}
+              </div>
 
               <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
                 <table className="w-full text-sm">

@@ -181,7 +181,8 @@ export default function MockInspectionSession({
 
       {/* Guidance disclaimer */}
       <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 text-xs text-amber-700">
-        <strong>Guidance only.</strong> Ratings produced here are for self-assessment purposes and do not represent the view of CQC or any regulatory body.
+        <strong>Guidance only.</strong> Ratings produced here are for self-assessment purposes and do not represent the view of CQC or any regulatory body.{' '}
+        Reference codes (e.g. SAF-SC-01) are AlwaysReady identifiers to help locate checklist items within this platform — they are not CQC codes.
       </div>
 
       {/* KLOE card */}

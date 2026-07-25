@@ -83,16 +83,17 @@ export default function MfaVerifyPage() {
     }
 
     // Flush the upgraded aal2 session to cookies BEFORE navigating.
-    // Without this, the middleware may still read the old aal1 cookie on the
-    // next request and redirect back here, causing an infinite loop.
+    // refreshSession() writes the new aal2 access token to browser cookies.
     await supabase.auth.refreshSession()
 
-    // Session is now aal2 — redirect based on role
+    // Hard-navigate so the browser sends the fresh aal2 cookies in the HTTP
+    // request. router.replace() is a soft client-side nav that can race with
+    // cookie writes, causing the middleware to still see aal1 and loop back here.
     const { data: { user } } = await supabase.auth.getUser()
     if (user?.email === process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
-      router.replace('/superadmin')
+      window.location.replace('/superadmin')
     } else {
-      router.replace('/dashboard')
+      window.location.replace('/dashboard')
     }
   }
 

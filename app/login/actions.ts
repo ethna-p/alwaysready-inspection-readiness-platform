@@ -17,7 +17,7 @@
 import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { Resend } from 'resend'
+import { sendEmail } from '@/lib/email'
 
 export type ResetRequestResult =
   | { success: true }
@@ -96,55 +96,29 @@ export async function requestPasswordReset(
     return { success: true }
   }
 
-  // Send the link to the staff member's personal email via Resend
-  if (process.env.RESEND_API_KEY) {
-    try {
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      await resend.emails.send({
-        from: 'AlwaysReady <onboarding@resend.dev>',
-        to: userRow.personal_email,
-        subject: 'Reset your AlwaysReady password',
-        html: `
-          <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
-            <div style="background:#014D4E;padding:24px 32px">
-              <span style="color:#fff;font-size:20px;font-weight:bold">AlwaysReady</span>
-            </div>
-            <div style="padding:32px">
-              <p style="font-size:16px;margin:0 0 16px">
-                We received a request to reset the password for your AlwaysReady account
-                (login ID: <strong>${input}</strong>).
-              </p>
-              <p style="font-size:14px;color:#555;margin:0 0 24px">
-                Click the button below to set a new password. This link expires in 1 hour.
-              </p>
-              <a
-                href="${linkData.properties.action_link}"
-                style="
-                  display:inline-block;background:#014D4E;color:#fff;
-                  text-decoration:none;font-size:14px;font-weight:600;
-                  padding:12px 24px;border-radius:8px;
-                "
-              >
-                Reset my password
-              </a>
-              <p style="font-size:12px;color:#999;margin:24px 0 0">
-                If you didn&apos;t request this, you can safely ignore this email.
-                Your password will not change.
-              </p>
-            </div>
-            <div style="border-top:1px solid #eee;padding:16px 32px">
-              <p style="font-size:12px;color:#999;margin:0">
-                AlwaysReady Inspection Readiness Platform
-              </p>
-            </div>
-          </div>
-        `,
-      })
-    } catch (emailError) {
-      console.error('[requestPasswordReset] Resend error:', emailError)
-    }
-  } else {
-    console.warn('[requestPasswordReset] RESEND_API_KEY not set — skipping email send')
+  // Send the link to the staff member's personal email
+  try {
+    await sendEmail({
+      to: userRow.personal_email,
+      subject: 'Reset your AlwaysReady password',
+      bodyHtml: `
+        <p>We received a request to reset the password for your AlwaysReady account
+        (login ID: <strong>${input}</strong>).</p>
+        <p style="color:#555;font-size:14px">Click the button below to set a new password. This link expires in 1 hour.</p>
+        <p>
+          <a href="${linkData.properties.action_link}"
+             style="display:inline-block;background:#014D4E;color:#fff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px">
+            Reset my password
+          </a>
+        </p>
+        <p style="font-size:12px;color:#999;margin-top:24px">
+          If you didn't request this, you can safely ignore this email. Your password will not change.
+        </p>
+      `,
+      type: 'transactional',
+    })
+  } catch (emailError) {
+    console.error('[requestPasswordReset] email send error:', emailError)
   }
 
   return { success: true }

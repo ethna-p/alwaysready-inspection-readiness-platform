@@ -137,7 +137,7 @@ export default function HelpPage() {
         {/* ── Understanding RAG ──────────────────────────────────────────────── */}
         <Section id="understanding-rag" label="Understanding RAG status" colour="bg-[#014D4E]">
           <P>
-            Every KLOE in the system is given a RAG status — Red, Amber, Green, or Grey. This tells you at a glance how well-prepared your service is for each area of inspection.
+            Every KLOE in the platform is given a RAG status — Red, Amber, Green, or Grey. This tells you at a glance how well-prepared your service is for each area of inspection.
           </P>
           <div className="space-y-3 my-2">
             <RAGPill colour="bg-green-500"  label="Green"  description="This KLOE has been reviewed, marked as completed, and the next review date has not yet passed. Everything is in order." />
@@ -146,7 +146,7 @@ export default function HelpPage() {
             <RAGPill colour="bg-gray-300"   label="Grey"   description="No review has been recorded for this KLOE yet. It has not been assessed." />
           </div>
           <P>
-            The RAG status is calculated automatically every time you view the system. You do not need to set it manually — it updates based on the status and review dates you enter.
+            The RAG status is calculated automatically every time you view the platform. You do not need to set it manually — it updates based on the status and review dates you enter.
           </P>
           <P>
             When an inspector visits, they will see the same RAG colours you see. Green KLOEs show that your team is proactive and organised. A mix of amber and grey is normal for a service just getting started. Red KLOEs should always be prioritised.
@@ -161,7 +161,7 @@ export default function HelpPage() {
 
           <H3>Setting up your team</H3>
           <P>
-            Go to <strong>Team</strong> in the navigation bar. From there you can add staff members, set their role, and generate their login credentials. Staff do not need an email address — the system creates a login ID for them automatically (for example, <code className="bg-gray-100 px-1 rounded text-xs">sarah.jones.f7a2e1</code>). When you add someone, the login ID and a temporary password appear on screen. Write these down or take a photo — they are only shown once.
+            Go to <strong>Team</strong> in the navigation bar. From there you can add staff members, set their role, and generate their login credentials. Staff do not need an email address — the platform creates a login ID for them automatically (for example, <code className="bg-gray-100 px-1 rounded text-xs">sarah.jones.f7a2e1</code>). When you add someone, the login ID and a temporary password appear on screen. Write these down or take a photo — they are only shown once.
           </P>
 
           <H3>Understanding roles</H3>
@@ -213,7 +213,7 @@ export default function HelpPage() {
 
           <H3>The audit trail</H3>
           <P>
-            Every time a KLOE is updated, the system records who made the change, what changed, and when. This record cannot be altered or deleted. During an inspection, this is powerful evidence that your team is actively managing compliance — not just filling in forms on the day.
+            Every time a KLOE is updated, the platform records who made the change, what changed, and when. This record cannot be altered or deleted. During an inspection, this is powerful evidence that your team is actively managing compliance — not just filling in forms on the day.
           </P>
         </Section>
 
@@ -330,7 +330,7 @@ export default function HelpPage() {
               answer="Your data is retained for as long as your subscription is active. If your subscription ends, your data is kept for 90 days before being permanently deleted — giving you time to export everything first. To request a full data export (KLOE records, audit trail, team list, and uploaded evidence), email hello@alwaysready.uk with your organisation name. Exports are delivered in CSV format within 5 working days."
             />
             <FAQ
-              question="What should I do if something looks wrong in the system?"
+              question="What should I do if something looks wrong in the platform?"
               answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin should raise a support ticket using the Support link in the navigation bar."
             />
           </div>

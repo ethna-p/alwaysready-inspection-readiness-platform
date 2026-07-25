@@ -189,7 +189,8 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
 
         {/* Disclaimer */}
         <div className="mt-5 bg-amber-50 border border-amber-200 rounded-lg p-4 text-xs text-amber-800 leading-relaxed">
-          <strong>Important — guidance only.</strong> This report is a self-assessment tool designed to help you identify areas for improvement. The ratings and recommendations it produces are for guidance only. They do not represent the view of CQC, and AlwaysReady makes no claim about how a CQC inspector would rate your service. CQC inspectors exercise independent professional judgement when forming their conclusions.
+          <strong>Important — guidance only.</strong> This report is a self-assessment tool designed to help you identify areas for improvement. The ratings and recommendations it produces are for guidance only. They do not represent the view of CQC, and AlwaysReady makes no claim about how a CQC inspector would rate your service. CQC inspectors exercise independent professional judgement when forming their conclusions.{' '}
+          Reference codes appearing in this report (e.g. SAF-SC-01) are AlwaysReady identifiers to help locate individual checklist items within the platform — they are not CQC codes.
         </div>
       </div>
 

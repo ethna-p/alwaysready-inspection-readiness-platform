@@ -93,9 +93,10 @@ function MfaSetupForm() {
       return
     }
 
-    // Enrolment complete — session is now aal2
-    router.replace('/dashboard/account?mfa=enrolled')
-    router.refresh()
+    // Enrolment complete — session is now aal2.
+    // Hard-navigate so the middleware reads fresh aal2 cookies rather than the
+    // stale aal1 session that a soft router.replace() can race against.
+    window.location.replace('/dashboard/account?mfa=enrolled')
   }
 
   // Standalone layout (outside dashboard layout) for mandatory setup

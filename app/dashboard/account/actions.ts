@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { Resend } from 'resend'
+import { sendEmail } from '@/lib/email'
 
 // ── Sub-services ──────────────────────────────────────────────────────────────
 
@@ -122,53 +122,40 @@ export async function changePassword(
   }
 
   // Send notification email (non-fatal — don't fail the password change if email fails)
-  if (process.env.RESEND_API_KEY) {
-    try {
-      // Determine who to notify:
-      // 1. personal_email if set (works for staff who have no real work inbox)
-      // 2. work email if it's a real address (not a generated @staff.alwaysready.uk one)
-      // 3. Otherwise skip
-      const { data: userRow } = await (await createClient())
-        .from('users')
-        .select('personal_email')
-        .eq('id', user.id)
-        .single()
+  try {
+    // Determine who to notify:
+    // 1. personal_email if set (works for staff who have no real work inbox)
+    // 2. work email if it's a real address (not a generated @staff.alwaysready.uk one)
+    // 3. Otherwise skip
+    const { data: userRow } = await (await createClient())
+      .from('users')
+      .select('personal_email')
+      .eq('id', user.id)
+      .single()
 
-      const isStaffEmail = user.email?.endsWith('@staff.alwaysready.uk')
-      const notifyEmail  = userRow?.personal_email || (!isStaffEmail ? user.email : null)
+    const isStaffEmail = user.email?.endsWith('@staff.alwaysready.uk')
+    const notifyEmail  = userRow?.personal_email || (!isStaffEmail ? user.email : null)
 
-      if (!notifyEmail) return { success: true }
-
-      const resend = new Resend(process.env.RESEND_API_KEY)
+    if (notifyEmail) {
       const now = new Date().toLocaleString('en-GB', {
         dateStyle: 'long',
         timeStyle: 'short',
         timeZone: 'Europe/London',
       })
 
-      await resend.emails.send({
-        from: 'AlwaysReady <onboarding@resend.dev>',
+      await sendEmail({
         to: notifyEmail,
         subject: 'Your AlwaysReady password has been changed',
-        html: `
-          <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
-            <div style="background:#014D4E;padding:24px 32px">
-              <span style="color:#fff;font-size:20px;font-weight:bold">AlwaysReady</span>
-            </div>
-            <div style="padding:32px">
-              <p style="font-size:16px;margin:0 0 16px">Your password was successfully changed on <strong>${now}</strong>.</p>
-              <p style="font-size:14px;color:#555;margin:0">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
-            </div>
-            <div style="border-top:1px solid #eee;padding:16px 32px">
-              <p style="font-size:12px;color:#999;margin:0">AlwaysReady Inspection Readiness Platform</p>
-            </div>
-          </div>
+        bodyHtml: `
+          <p>Your AlwaysReady password was successfully changed on <strong>${now}</strong>.</p>
+          <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
         `,
+        type: 'transactional',
       })
-    } catch (emailError) {
-      // Log but don't surface to the user — password was changed successfully
-      console.error('[changePassword] email notification failed:', emailError)
     }
+  } catch (emailError) {
+    // Log but don't surface to the user — password was changed successfully
+    console.error('[changePassword] email notification failed:', emailError)
   }
 
   return { success: true }

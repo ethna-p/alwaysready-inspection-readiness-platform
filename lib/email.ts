@@ -42,12 +42,10 @@ export interface SendEmailResult {
   error?: string
 }
 
-const LOGO_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" role="img" aria-label="AlwaysReady" style="display:block;height:40px;width:auto">
-  <circle cx="24" cy="24" r="22" fill="#ffd700"/>
-  <polyline points="13,24 21,32 35,16" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="54" y="32" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#00b8a6" letter-spacing="-0.3">AlwaysReady</text>
-</svg>`
+function logoImg(): string {
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/$/, '')
+  return `<img src="${baseUrl}/logo-email.png" alt="AlwaysReady" width="220" height="48" style="display:block;height:40px;width:auto;border:0">`
+}
 
 function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: string): string {
   const note = footerNote ?? 'You are receiving this email because you have an active AlwaysReady account.'
@@ -70,7 +68,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <!-- Header -->
           <tr>
             <td style="background-color:#014D4E;padding:28px 40px;border-bottom:4px solid #ffd700">
-              ${LOGO_SVG}
+              ${logoImg()}
             </td>
           </tr>
 
