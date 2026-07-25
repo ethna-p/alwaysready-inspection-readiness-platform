@@ -185,8 +185,45 @@ export async function provisionOrganisation(
       `,
     })
 
-    // ── 7. Done ─────────────────────────────────────────────────────────
+    // ── 7. Notify superadmin ────────────────────────────────────────────
     const reference = `ORG-${org.id.slice(0, 8).toUpperCase()}`
+    const betaLabel  = isBeta    ? 'Yes' : 'No'
+    const charityLabel = isCharity ? 'Yes' : 'No'
+
+    await sendEmail({
+      to: 'hello@alwaysready.uk',
+      subject: `[AlwaysReady] New org provisioned — ${orgName}`,
+      type: 'transactional',
+      bodyHtml: `
+        <p style="margin:0 0 16px">A new organisation has been provisioned via the superadmin panel.</p>
+
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+          style="background:#f5f5f0;border-radius:6px;padding:20px 24px;margin:0 0 24px;width:100%">
+          <tr>
+            <td style="font-size:14px;line-height:2">
+              <strong>Reference:</strong> ${reference}<br>
+              <strong>Organisation:</strong> ${orgName}<br>
+              <strong>Service type:</strong> ${serviceTypeKey}<br>
+              <strong>Admin name:</strong> ${adminName}<br>
+              <strong>Admin email:</strong> ${adminEmail}<br>
+              <strong>Beta:</strong> ${betaLabel}<br>
+              <strong>Charity:</strong> ${charityLabel}<br>
+              <strong>Trial length:</strong> ${trialDays} days (expires ${trialExpiryFormatted})<br>
+              <strong>Org ID:</strong> <span style="font-family:monospace;font-size:12px">${org.id}</span>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0;color:#555;font-size:13px">
+          A welcome email with login credentials has been sent to ${adminEmail}.
+        </p>
+      `,
+    }).catch(err => {
+      // Non-fatal — provisioning succeeded; just log the notification failure
+      console.error('[provision] Superadmin notification email failed:', err)
+    })
+
+    // ── 8. Done ─────────────────────────────────────────────────────────
 
     return {
       success: true,

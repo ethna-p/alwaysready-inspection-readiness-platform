@@ -31,9 +31,9 @@ export async function createCheckoutSession(): Promise<never> {
   if (!profile?.organisation_id) redirect('/login')
 
   const supabase = await createClient()
-  const { data: org } = await supabase
+  const { data: org } = await (supabase as any)
     .from('organisations')
-    .select('id, name, stripe_customer_id')
+    .select('id, name, stripe_customer_id, is_charity')
     .eq('id', profile.organisation_id)
     .single()
 
@@ -46,6 +46,16 @@ export async function createCheckoutSession(): Promise<never> {
     ? { customer: org.stripe_customer_id }
     : {}
 
+  // Charities get 20% off every month, applied automatically from the
+  // pre-created coupon. Stripe disallows allow_promotion_codes when
+  // discounts is set, so the two paths are mutually exclusive.
+  const CHARITY_COUPON_ID = process.env.STRIPE_CHARITY_COUPON_ID
+  const isCharity = org.is_charity === true && !!CHARITY_COUPON_ID
+
+  const discountParams = isCharity
+    ? { discounts: [{ coupon: CHARITY_COUPON_ID }] }
+    : { allow_promotion_codes: true as const }
+
   const session = await stripe.checkout.sessions.create({
     mode:               'subscription',
     line_items:         [{ price: PRICE_ID, quantity: 1 }],
@@ -57,7 +67,7 @@ export async function createCheckoutSession(): Promise<never> {
     billing_address_collection: 'required',
     // Enable automatic tax (requires Stripe Tax to be set up)
     // automatic_tax: { enabled: true },
-    allow_promotion_codes: true,
+    ...discountParams,
   })
 
   redirect(session.url!)
