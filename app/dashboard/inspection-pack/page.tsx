@@ -16,6 +16,7 @@ import { createClient } from '@/lib/supabase/server'
 import { calculateRAG, RAG_LABELS, type RAGStatus } from '@/lib/rag'
 import type { ComplianceRecord } from '@/lib/types'
 import PrintButton from './print-button'
+import EvidencePackButton from '@/components/EvidencePackButton'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -177,7 +178,10 @@ export default async function InspectionPackPage() {
               with an inspector or board member.
             </p>
           </div>
-          <PrintButton />
+          <div className="flex flex-wrap items-center gap-3">
+            <EvidencePackButton />
+            <PrintButton />
+          </div>
         </div>
 
         <p className="text-xs text-ink-dim mb-6 bg-fill border border-line rounded-lg px-4 py-3">

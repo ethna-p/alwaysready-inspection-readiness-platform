@@ -20,7 +20,6 @@ import RagBadge from '@/components/RagBadge'
 import type { ComplianceRecord } from '@/lib/types'
 import { fetchCqcLocation, cqcRatingColours, formatCqcDate } from '@/lib/cqc'
 import type { CqcRating } from '@/lib/cqc'
-import EvidencePackButton from '@/components/EvidencePackButton'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -233,7 +232,6 @@ export default async function DashboardPage() {
           <p className="text-sm text-ink-dim mt-1">{orgName}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <EvidencePackButton />
           <Link
             href="/dashboard/kloes"
             className="
