@@ -10,6 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendEmail } from '@/lib/email'
 
 const ALLOWED_ORIGINS = [
   'https://www.alwaysready.uk',
@@ -103,6 +104,22 @@ export async function POST(req: NextRequest) {
       // Non-fatal — ticket was already created successfully
     }
   }
+
+  // ── Autoresponder ────────────────────────────────────────────────────────────
+  await sendEmail({
+    to:      cleanEmail,
+    subject: "We've got your message — AlwaysReady",
+    type:    'transactional',
+    bodyHtml: `
+      <p>Hi ${cleanName},</p>
+      <p>Thanks for getting in touch. We've received your message and will get back to you as soon as we can.</p>
+      <p>In the meantime, you might find a quick answer on our website — our chatbot and FAQ section cover the most common questions about AlwaysReady and how it works.</p>
+      <p><a href="https://alwaysready.uk" style="color:#014D4E;font-weight:600;">Visit alwaysready.uk →</a></p>
+      <p>Talk soon,<br>The AlwaysReady Team</p>
+    `,
+  }).catch(err => {
+    console.error('[contact-inbound] autoresponder failed:', err)
+  })
 
   return NextResponse.json({ success: true }, { status: 200, headers })
 }

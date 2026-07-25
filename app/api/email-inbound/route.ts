@@ -14,6 +14,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendEmail } from '@/lib/email'
 
 // ── Rate limiter ───────────────────────────────────────────────────────────
 const INBOUND_WINDOW_MS = 60_000 // 1 minute
@@ -151,6 +152,22 @@ export async function POST(req: NextRequest) {
     console.error('[email-inbound] ticket insert error:', error.message)
     return NextResponse.json({ error: 'Could not create ticket.' }, { status: 500 })
   }
+
+  // ── Autoresponder ──────────────────────────────────────────────────────────
+  await sendEmail({
+    to:      senderEmail,
+    subject: "We've got your message — AlwaysReady",
+    type:    'transactional',
+    bodyHtml: `
+      <p>Hi there,</p>
+      <p>Thanks for getting in touch. We've received your message and will get back to you as soon as we can.</p>
+      <p>In the meantime, you might find a quick answer on our website — our chatbot and FAQ section cover the most common questions about AlwaysReady and how it works.</p>
+      <p><a href="https://alwaysready.uk" style="color:#014D4E;font-weight:600;">Visit alwaysready.uk →</a></p>
+      <p>Talk soon,<br>The AlwaysReady Team</p>
+    `,
+  }).catch(err => {
+    console.error('[email-inbound] autoresponder failed:', err)
+  })
 
   return NextResponse.json({ success: true }, { status: 200 })
 }
