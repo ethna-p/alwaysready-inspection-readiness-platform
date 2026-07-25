@@ -63,12 +63,16 @@ function HrSummaryCard({
                        : okCount > 0 ? 'text-green-700'
                        :               'text-gray-500'
 
+  // Headline shows the most urgent stat, not always "% current"
+  const headlinePct   = hasOverdue ? overduePct : hasDueSoon ? dueSoonPct : okPct
+  const headlineLabel = hasOverdue ? 'overdue'  : hasDueSoon ? 'due soon'  : 'current'
+
   return (
     <div className={`rounded-xl border p-4 ${accentClass}`}>
       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold mb-3 ${headlineColour}`}>
-        {okPct}<span className="text-lg font-medium">%</span>
-        <span className="ml-1 text-xs font-normal text-gray-500">current</span>
+        {headlinePct}<span className="text-lg font-medium">%</span>
+        <span className="ml-1 text-xs font-normal text-gray-500">{headlineLabel}</span>
       </p>
 
       {/* Stacked RAG bar */}
