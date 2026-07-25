@@ -41,11 +41,11 @@ export default function NewTicketPage() {
 
   return (
     <div className="max-w-2xl">
-      <Link href="/superadmin/tickets" className="text-sm text-ink-muted hover:text-white mb-6 block">
+      <Link href="/superadmin/tickets" className="text-sm text-ink-muted hover:text-brand mb-6 block">
         ← All tickets
       </Link>
 
-      <h1 className="text-2xl font-bold text-white mb-1">New ticket</h1>
+      <h1 className="text-2xl font-bold text-ink mb-1">New ticket</h1>
       <p className="text-sm text-ink-muted mb-8">
         Open a support ticket on behalf of a customer. The message will appear as an AlwaysReady staff message in their helpdesk.
       </p>
@@ -54,13 +54,13 @@ export default function NewTicketPage() {
 
         {/* Organisation */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             Organisation
           </label>
           <select
             value={orgId}
             onChange={e => setOrgId(e.target.value)}
-            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#00b8a6]"
+            className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink text-sm focus:outline-none focus:border-[#00b8a6]"
           >
             <option value="">— Select an organisation —</option>
             {orgs.map(org => (
@@ -84,7 +84,7 @@ export default function NewTicketPage() {
 
         {/* Subject */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             Subject
           </label>
           <input
@@ -92,13 +92,13 @@ export default function NewTicketPage() {
             value={subject}
             onChange={e => setSubject(e.target.value)}
             placeholder="e.g. Important update to your account"
-            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-[#00b8a6]"
+            className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder:text-ink-muted text-sm focus:outline-none focus:border-[#00b8a6]"
           />
         </div>
 
         {/* Message */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink mb-1">
             Message
           </label>
           <p className="text-xs text-ink-muted mb-2">
@@ -109,24 +109,24 @@ export default function NewTicketPage() {
             onChange={e => setMessage(e.target.value)}
             rows={8}
             placeholder="Write your message to the customer here…"
-            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-[#00b8a6] resize-none"
+            className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder:text-ink-muted text-sm focus:outline-none focus:border-[#00b8a6] resize-none"
           />
         </div>
 
         {/* Preview */}
         {(subject.trim() || message.trim()) && (
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+          <div className="bg-canvas border border-line rounded-xl p-4">
             <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-3">
               Customer will see
             </p>
             {subject.trim() && (
-              <p className="text-sm font-semibold text-white mb-3">{subject}</p>
+              <p className="text-sm font-semibold text-ink mb-3">{subject}</p>
             )}
             <div className="rounded-lg p-4 bg-[#014D4E]/30 border border-[#00b8a6]/30">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-semibold text-[#00b8a6]">AlwaysReady Support</span>
               </div>
-              <p className="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">
                 {message || <span className="text-ink-dim italic">Your message will appear here…</span>}
               </p>
             </div>
@@ -147,7 +147,7 @@ export default function NewTicketPage() {
           </button>
           <Link
             href="/superadmin/tickets"
-            className="flex-1 text-center bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-3 rounded-lg text-sm transition-colors"
+            className="flex-1 text-center bg-card hover:bg-fill-dim text-ink font-semibold py-3 rounded-lg text-sm transition-colors"
           >
             Cancel
           </Link>

@@ -224,8 +224,8 @@ export default function ProvisionPage() {
               minLength={8}
               placeholder="Min 8 characters"
               className="
-                w-full bg-gray-800 border border-gray-700 rounded-lg
-                px-4 py-2.5 text-sm text-white placeholder-gray-500 font-mono
+                w-full bg-card border border-line rounded-lg
+                px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted font-mono
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
