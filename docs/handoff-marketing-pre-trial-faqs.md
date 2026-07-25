@@ -84,8 +84,8 @@ Yes. All Admin accounts require two-factor authentication (2FA), which means log
 
 ---
 
-**17. What happens to our KLOEs if the CQC framework changes?**
-The CQC KLOE framework is currently in draft and is expected to be finalised in Autumn 2026. AlwaysReady is built so that any updates to the framework — such as a KLOE moving from one key question to another — can be applied with a simple data change, not a rebuild. Your existing compliance records are not affected by framework updates.
+**17. Which version of the CQC framework does AlwaysReady use?**
+AlwaysReady is built on the CQC KLOE framework. The platform will be updated to reflect the finalised framework before it is made available to customers, so what you see when you sign up will already reflect the published version.
 
 ---
 
@@ -126,4 +126,4 @@ No. When you enter your Location ID during sign-up, AlwaysReady uses it to look 
 **24. Where is AlwaysReady heading with its CQC connection?**
 The current CQC integration reads from the public register to show your live rating and registration details. As CQC develops its new provider portal and moves towards continuous assessment — where your compliance position is monitored over time rather than only at inspection — AlwaysReady is positioned to deepen this connection. Future development may include structured data exchange with the CQC provider portal, but any such feature would be clearly explained and opt-in. Nothing changes to the current read-only setup without notice.
 
-AlwaysReady is also built around the CQC KLOE framework, which is expected to be updated in Autumn 2026. The platform is architected so that any framework changes can be applied without affecting your existing compliance records. You will not need to start from scratch.
+AlwaysReady is built around the CQC KLOE framework and will be updated to reflect the finalised framework before the platform is available to customers.
