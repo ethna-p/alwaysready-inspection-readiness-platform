@@ -376,8 +376,9 @@ export default function TrialPage() {
                   </li>
                 ))}
               </ul>
+              <p className="mt-4 text-sm text-ink-dim italic">— and much more.</p>
 
-              <div className="mt-6 pt-5 border-t border-line">
+              <div className="mt-4 pt-5 border-t border-line">
                 <p className="text-xs text-ink-muted leading-relaxed">
                   Your trial is fully featured — no functions are locked or limited.
                   Data you enter during the trial is yours to keep if you subscribe.
