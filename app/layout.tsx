@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import ThemeProvider from "@/components/ThemeProvider";
+import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: "AlwaysReady — Inspection Readiness Platform",
@@ -41,6 +42,7 @@ export default function RootLayout({
         <ThemeProvider>
           <ServiceWorkerRegistration />
           {children}
+          <CookieBanner />
         </ThemeProvider>
       </body>
     </html>
