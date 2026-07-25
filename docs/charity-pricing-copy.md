@@ -23,7 +23,11 @@ AlwaysReady supports the vital work carried out by registered charities in the c
 Because we verify each charity individually, we don't use a discount code. Instead, just get in touch:
 
 1. Email [hello@alwaysready.uk](mailto:hello@alwaysready.uk) with the subject line **"Charity account"**
-2. Include your charity registration number and the name of your lead administrator
+2. Include the following details:
+   - First and last name of your lead administrator
+   - Their email address
+   - Your CQC Location ID
+   - Your charity registration number
 3. We'll set up your account directly and send you your login details within one working day
 
 Your 20% discount is applied automatically from your very first payment — there's nothing to enter at checkout.
@@ -36,7 +40,7 @@ Your 20% discount is applied automatically from your very first payment — ther
 
 Yes — registered charities receive 20% off every monthly payment for the lifetime of their subscription.
 
-To keep the discount fair and make sure it only reaches genuine charities, we don't publish a discount code. Instead, email us at [hello@alwaysready.uk](mailto:hello@alwaysready.uk) with your charity registration number and the name of the person who'll be the account administrator. We'll create your account directly and send login details to them. The discount is applied automatically — you won't need to do anything at checkout.
+To keep the discount fair and make sure it only reaches genuine charities, we don't publish a discount code. Instead, email us at [hello@alwaysready.uk](mailto:hello@alwaysready.uk) with the first and last name of your lead administrator, their email address, your CQC Location ID, and your charity registration number. We'll create your account directly and send login details to them. The discount is applied automatically — you won't need to do anything at checkout.
 
 ---
 
