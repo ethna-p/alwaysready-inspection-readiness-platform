@@ -9,6 +9,7 @@
  */
 import { createAdminClient } from '@/lib/supabase/admin'
 import ImpersonateButton from './ImpersonateButton'
+import CharityToggleButton from './CharityToggleButton'
 
 const TIER_STYLES: Record<string, string> = {
   trial:     'bg-blue-100 text-blue-700',
@@ -43,7 +44,7 @@ export default async function OrganisationsPage() {
   const { data: orgs, error: orgsError } = await (supabase as any)
     .from('organisations')
     .select(`
-      id, name, subscription_tier, trial_expires_at, created_at, is_beta,
+      id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity,
       service_types ( name )
     `)
     .eq('is_demo', false)
@@ -126,6 +127,11 @@ export default async function OrganisationsPage() {
                           Beta
                         </span>
                       )}
+                      {(org as any).is_charity && (
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                          Charity 20% off
+                        </span>
+                      )}
                       {trial && (
                         <span className={`text-xs font-medium ${trial.urgent ? 'text-red-600' : 'text-ink-muted'}`}>
                           · {trial.label}
@@ -153,8 +159,12 @@ export default async function OrganisationsPage() {
                     </div>
                   </div>
 
-                  {/* Right: action */}
-                  <div className="shrink-0">
+                  {/* Right: actions */}
+                  <div className="shrink-0 flex flex-col items-end gap-2">
+                    <CharityToggleButton
+                      orgId={org.id}
+                      isCharity={(org as any).is_charity === true}
+                    />
                     {admin ? (
                       <ImpersonateButton
                         adminEmail={admin.email}

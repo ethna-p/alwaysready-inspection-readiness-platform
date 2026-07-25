@@ -1,16 +1,17 @@
 'use server'
 
 /**
- * Superadmin impersonation action.
+ * Superadmin org actions.
  *
- * Generates a one-time Supabase magic link for any org's admin user.
- * This lets you log in as them without knowing their password.
+ * generateImpersonationLink — generates a one-time Supabase magic link for
+ *   any org's admin user so you can log in as them without knowing their password.
  *
- * The link is returned to the client, which opens it in a new tab so
- * your own superadmin session remains intact.
+ * setCharityStatus — toggles is_charity on an org, which controls whether the
+ *   20% charity discount is applied automatically at Stripe checkout.
  *
  * Uses the service-role admin client — server-side only.
  */
+import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export type ImpersonationResult =
@@ -53,4 +54,29 @@ export async function generateImpersonationLink(
   }
 
   return { url: actionLink }
+}
+
+// ── Charity status ─────────────────────────────────────────────────────────
+
+export type SetCharityResult =
+  | { success: true }
+  | { error: string }
+
+export async function setCharityStatus(
+  orgId: string,
+  isCharity: boolean
+): Promise<SetCharityResult> {
+  if (!orgId) return { error: 'No organisation ID provided.' }
+
+  const supabase = createAdminClient()
+
+  const { error } = await (supabase as any)
+    .from('organisations')
+    .update({ is_charity: isCharity })
+    .eq('id', orgId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/superadmin/organisations')
+  return { success: true }
 }
