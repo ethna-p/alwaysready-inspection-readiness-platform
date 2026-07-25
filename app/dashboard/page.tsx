@@ -263,7 +263,7 @@ export default async function DashboardPage() {
                 aria-hidden="true"
               />
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-0.5">
+                <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-0.5">
                   Current CQC rating
                 </p>
                 {cqcRating ? (
@@ -277,7 +277,7 @@ export default async function DashboardPage() {
                     {cqcRating}
                   </span>
                 ) : (
-                  <span className="text-sm text-ink-muted italic">Not yet rated</span>
+                  <span className="text-sm text-ink-dim italic">Not yet rated</span>
                 )}
               </div>
             </div>
@@ -285,7 +285,7 @@ export default async function DashboardPage() {
             {/* CQC-held name */}
             {cqcLocationName && (
               <div className="hidden sm:block border-l border-line pl-4 min-w-0">
-                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-0.5">
+                <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-0.5">
                   Registered name
                 </p>
                 <p className="text-sm text-ink font-medium truncate">{cqcLocationName}</p>
@@ -295,7 +295,7 @@ export default async function DashboardPage() {
             {/* Last inspection date */}
             {cqcDateFormatted && (
               <div className="border-l border-line pl-4 min-w-0">
-                <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-0.5">
+                <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-0.5">
                   Last inspection
                 </p>
                 <p className="text-sm text-ink">{cqcDateFormatted}</p>

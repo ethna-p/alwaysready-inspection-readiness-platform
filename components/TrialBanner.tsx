@@ -73,7 +73,7 @@ export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, t
           href="/upgrade"
           className="
             shrink-0 text-sm font-semibold
-            bg-[#ffd700] text-brand
+            bg-[#ffd700] text-[#014D4E]
             px-4 py-1.5 rounded-lg
             hover:bg-yellow-300
             focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#014D4E]
