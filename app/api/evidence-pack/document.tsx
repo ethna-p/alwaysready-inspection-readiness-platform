@@ -45,7 +45,8 @@ export type EvidencePackDocumentProps = {
 const TEAL   = '#014D4E'
 const WHITE  = '#ffffff'
 const LIGHT  = '#f3f4f6'
-const MUTED  = '#6b7280'
+const MUTED  = '#4b5563'   // darkened from #6b7280 for accessibility
+const LABEL  = '#6b7280'   // small uppercase labels and footer — intentionally lighter
 const DARK   = '#1a1a1a'
 const BORDER = '#e5e7eb'
 
@@ -119,7 +120,7 @@ const s = StyleSheet.create({
   },
   coverMetaLabel: {
     fontSize: 8,
-    color: MUTED,
+    color: LABEL,
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 3,
@@ -140,7 +141,7 @@ const s = StyleSheet.create({
   },
   coverMetaSmallLabel: {
     fontSize: 8,
-    color: MUTED,
+    color: LABEL,
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 2,
@@ -270,7 +271,7 @@ const s = StyleSheet.create({
   },
   kloeFieldLabel: {
     fontSize: 7,
-    color: MUTED,
+    color: LABEL,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
     marginBottom: 2,
@@ -282,7 +283,7 @@ const s = StyleSheet.create({
   },
   kloeFieldEmpty: {
     fontSize: 8.5,
-    color: '#d1d5db',
+    color: MUTED,
     fontStyle: 'italic',
   },
 
@@ -361,13 +362,13 @@ const s = StyleSheet.create({
   },
   footerText: {
     fontSize: 7,
-    color: MUTED,
+    color: LABEL,
   },
 
   // Page number
   pageNumber: {
     fontSize: 7,
-    color: MUTED,
+    color: LABEL,
   },
 })
 
