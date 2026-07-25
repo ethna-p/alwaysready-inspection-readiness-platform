@@ -50,6 +50,33 @@ export default function TrialPage() {
   const [error,            setError]            = useState<string | null>(null)
   const [isPending,        startTransition]     = useTransition()
 
+  // CQC Location ID lookup state
+  const [cqcLookupStatus,  setCqcLookupStatus]  = useState<'idle' | 'loading' | 'found' | 'not_found'>('idle')
+  const [cqcFoundName,     setCqcFoundName]     = useState<string | null>(null)
+
+  async function handleCqcLookup() {
+    const id = cqcLocationId.trim()
+    if (!id) return
+    setCqcLookupStatus('loading')
+    setCqcFoundName(null)
+    try {
+      const res  = await fetch(`/api/cqc-lookup?locationId=${encodeURIComponent(id)}`)
+      const data = await res.json()
+      if (data.found) {
+        setCqcLookupStatus('found')
+        setCqcFoundName(data.locationName ?? null)
+        // Auto-fill service name if blank
+        if (!serviceName.trim() && data.locationName) {
+          setServiceName(data.locationName)
+        }
+      } else {
+        setCqcLookupStatus('not_found')
+      }
+    } catch {
+      setCqcLookupStatus('idle')  // API error — don't alarm user, just show nothing
+    }
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -136,13 +163,49 @@ export default function TrialPage() {
                   id="cqc-id"
                   type="text"
                   value={cqcLocationId}
-                  onChange={e => setCqcLocationId(e.target.value)}
+                  onChange={e => {
+                    setCqcLocationId(e.target.value)
+                    setCqcLookupStatus('idle')
+                    setCqcFoundName(null)
+                  }}
+                  onBlur={handleCqcLookup}
                   placeholder="e.g. 1-1234567890"
                   required
                   disabled={isPending}
+                  aria-describedby="cqc-id-hint cqc-id-feedback"
                   className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-[#1a1a1a] bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+
+                {/* Inline CQC lookup feedback */}
+                <div id="cqc-id-feedback" aria-live="polite" className="mt-1.5 text-xs min-h-[1.25rem]">
+                  {cqcLookupStatus === 'loading' && (
+                    <span className="text-gray-500 flex items-center gap-1.5">
+                      <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+                      </svg>
+                      Checking CQC register…
+                    </span>
+                  )}
+                  {cqcLookupStatus === 'found' && cqcFoundName && (
+                    <span className="text-green-700 flex items-center gap-1.5 font-medium">
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Found: {cqcFoundName}
+                    </span>
+                  )}
+                  {cqcLookupStatus === 'not_found' && (
+                    <span className="text-amber-700 flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      We couldn&apos;t find that ID on the CQC register — please double-check it. You can still continue.
+                    </span>
+                  )}
+                </div>
+
+                <p id="cqc-id-hint" className="text-xs text-gray-500 mt-1">
                   Found on your CQC registration certificate or at{' '}
                   <a href="https://www.cqc.org.uk/search-care-services" target="_blank" rel="noopener noreferrer" className="text-[#014D4E] underline">
                     cqc.org.uk

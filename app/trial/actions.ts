@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { fetchCqcLocation } from '@/lib/cqc'
 
 const ACTIVE_SERVICE_TYPES = [
   'Residential Care Home',
@@ -123,7 +124,29 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     return { success: false, error: 'Could not create your profile. Please try again.' }
   }
 
-  // ── 5. Seed compliance_records (one per KLO item) ────────────────────────────
+  // ── 5. Fetch CQC rating (non-blocking) ──────────────────────────────────────
+  // Attempt to enrich the org with live CQC data. Failures are logged but do
+  // not block signup — the org still gets created successfully.
+  try {
+    const cqcData = await fetchCqcLocation(cqcLocationId.trim())
+    if (cqcData) {
+      // Cast: new columns not in generated types until migration is applied + types regenerated.
+      await supabase
+        .from('organisations')
+        .update({
+          cqc_location_name:        cqcData.locationName,
+          cqc_rating:               cqcData.overallRating,
+          cqc_last_inspection_date: cqcData.lastInspectionDate,
+          cqc_rating_fetched_at:    new Date().toISOString(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any)
+        .eq('id', org.id)
+    }
+  } catch (err) {
+    console.warn('[trial-signup] CQC API fetch failed (non-fatal):', err)
+  }
+
+  // ── 7. Seed compliance_records (one per KLO item) ────────────────────────────
   const { data: klos } = await supabase.from('klo_items').select('id')
   if (klos && klos.length > 0) {
     const { error: crError } = await supabase.from('compliance_records').insert(
@@ -132,7 +155,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     if (crError) console.error('[trial-signup] compliance_records seed error:', crError.message)
   }
 
-  // ── 6. Generate password-setup link ─────────────────────────────────────────
+  // ── 8. Generate password-setup link ─────────────────────────────────────────
   const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
     type:  'recovery',
     email: managerEmail.trim(),
@@ -147,7 +170,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   const firstName = managerName.trim().split(' ')[0]
   const expiry    = trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  // ── 7. Send branded welcome email ────────────────────────────────────────────
+  // ── 9. Send branded welcome email ────────────────────────────────────────────
   await sendEmail({
     to:      managerEmail.trim(),
     subject: 'Your AlwaysReady trial is ready — set your password to get started',

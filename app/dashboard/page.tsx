@@ -12,11 +12,14 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import type { RAGStatus } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import type { ComplianceRecord } from '@/lib/types'
+import { fetchCqcLocation, cqcRatingColours, formatCqcDate } from '@/lib/cqc'
+import type { CqcRating } from '@/lib/cqc'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -55,18 +58,84 @@ export default async function DashboardPage() {
   // ── Auth / profile ────────────────────────────────────────────────────────
   const { data: { user } } = await supabase.auth.getUser()
 
+  type OrgRow = {
+    name: string
+    cqc_location_id:          string | null
+    cqc_location_name:        string | null
+    cqc_rating:               string | null
+    cqc_last_inspection_date: string | null
+    cqc_rating_fetched_at:    string | null
+    service_types: { name: string } | null
+  }
   type ProfileRow = {
     role: string
     organisation_id: string
-    organisations: { name: string; service_types: { name: string } | null } | null
+    organisations: OrgRow | null
   }
   const { data: profile } = await supabase
     .from('users')
-    .select('role, organisation_id, organisations(name, service_types(name))')
+    .select(`
+      role,
+      organisation_id,
+      organisations(
+        name,
+        cqc_location_id,
+        cqc_location_name,
+        cqc_rating,
+        cqc_last_inspection_date,
+        cqc_rating_fetched_at,
+        service_types(name)
+      )
+    `)
     .eq('id', user!.id)
     .single() as { data: ProfileRow | null; error: unknown }
 
   const orgName = profile?.organisations?.name ?? '—'
+  const org     = profile?.organisations
+
+  // ── CQC data — refresh if stale (>24 h) ──────────────────────────────────
+  // We refresh at most once per day to avoid hammering the CQC API.
+  // The adminClient is needed because orgs.cqc_* are not directly writable
+  // by the authenticated user via RLS (they can read but not patch the org row).
+  let cqcRating:          CqcRating | null = (org?.cqc_rating as CqcRating) ?? null
+  let cqcInspectionDate:  string | null    = org?.cqc_last_inspection_date ?? null
+  let cqcLocationName:    string | null    = org?.cqc_location_name ?? null
+
+  if (org?.cqc_location_id && profile?.organisation_id) {
+    const fetchedAt   = org.cqc_rating_fetched_at ? new Date(org.cqc_rating_fetched_at) : null
+    const staleAfter  = 24 * 60 * 60 * 1000  // 24 hours in ms
+    const isStale     = !fetchedAt || (Date.now() - fetchedAt.getTime()) > staleAfter
+
+    if (isStale) {
+      try {
+        const fresh = await fetchCqcLocation(org.cqc_location_id)
+        if (fresh) {
+          cqcRating         = fresh.overallRating
+          cqcInspectionDate = fresh.lastInspectionDate
+          cqcLocationName   = fresh.locationName
+          // Persist the refresh — use admin client since users can't UPDATE organisations.
+          // Cast: new columns not in generated types until migration is applied + types regenerated.
+          const admin = createAdminClient()
+          await admin
+            .from('organisations')
+            .update({
+              cqc_location_name:        fresh.locationName,
+              cqc_rating:               fresh.overallRating,
+              cqc_last_inspection_date: fresh.lastInspectionDate,
+              cqc_rating_fetched_at:    new Date().toISOString(),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } as any)
+            .eq('id', profile.organisation_id)
+        }
+      } catch (err) {
+        // Non-fatal — keep showing cached data
+        console.warn('[dashboard] CQC refresh failed:', err)
+      }
+    }
+  }
+
+  const cqcColours    = cqcRatingColours(cqcRating)
+  const cqcDateFormatted = formatCqcDate(cqcInspectionDate)
 
   // ── Data fetch ────────────────────────────────────────────────────────────
   const [{ data: keyQuestions }, { data: kloItems }, { data: records }] =
@@ -174,6 +243,92 @@ export default async function DashboardPage() {
           View KLOE tracker →
         </Link>
       </div>
+
+      {/* ── CQC Rating ───────────────────────────────────────────────────── */}
+      <section aria-label="Current CQC rating" className="mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5">
+          <div className="flex flex-wrap items-center gap-4">
+
+            {/* Rating badge */}
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div
+                className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: cqcColours.bg }}
+                aria-hidden="true"
+              />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  Current CQC rating
+                </p>
+                {cqcRating ? (
+                  <span
+                    className="inline-block text-sm font-bold px-3 py-1 rounded-full"
+                    style={{
+                      backgroundColor: cqcColours.bg,
+                      color:           cqcColours.text,
+                    }}
+                  >
+                    {cqcRating}
+                  </span>
+                ) : (
+                  <span className="text-sm text-gray-500 italic">Not yet rated</span>
+                )}
+              </div>
+            </div>
+
+            {/* CQC-held name */}
+            {cqcLocationName && (
+              <div className="hidden sm:block border-l border-gray-100 pl-4 min-w-0">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  Registered name
+                </p>
+                <p className="text-sm text-[#1a1a1a] font-medium truncate">{cqcLocationName}</p>
+              </div>
+            )}
+
+            {/* Last inspection date */}
+            {cqcDateFormatted && (
+              <div className="border-l border-gray-100 pl-4 min-w-0">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  Last inspection
+                </p>
+                <p className="text-sm text-[#1a1a1a]">{cqcDateFormatted}</p>
+              </div>
+            )}
+
+            {/* CQC attribution link */}
+            {org?.cqc_location_id && (
+              <div className="ml-auto shrink-0">
+                <a
+                  href={`https://www.cqc.org.uk/location/${org.cqc_location_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-[#014D4E] underline underline-offset-2 hover:text-[#013636] focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+                >
+                  View on CQC website →
+                </a>
+              </div>
+            )}
+
+          </div>
+
+          {/* No location ID stored */}
+          {!org?.cqc_location_id && (
+            <p className="text-sm text-gray-500">
+              No CQC Location ID recorded.{' '}
+              <Link href="/dashboard/account" className="text-[#014D4E] underline hover:text-[#013636]">
+                Add it in your account settings
+              </Link>{' '}
+              to see your live CQC rating here.
+            </p>
+          )}
+
+          <p className="text-xs text-gray-400 mt-3">
+            Data sourced from the CQC public register, updated daily.
+            AlwaysReady is not affiliated with or endorsed by the Care Quality Commission.
+          </p>
+        </div>
+      </section>
 
       {/* ── Overall readiness ────────────────────────────────────────────── */}
       <section aria-labelledby="overall-heading" className="mb-8">
