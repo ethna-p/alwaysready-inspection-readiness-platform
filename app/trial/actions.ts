@@ -130,7 +130,6 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   try {
     const cqcData = await fetchCqcLocation(cqcLocationId.trim())
     if (cqcData) {
-      // Cast: new columns not in generated types until migration is applied + types regenerated.
       await supabase
         .from('organisations')
         .update({
@@ -138,8 +137,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
           cqc_rating:               cqcData.overallRating,
           cqc_last_inspection_date: cqcData.lastInspectionDate,
           cqc_rating_fetched_at:    new Date().toISOString(),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } as any)
+        })
         .eq('id', org.id)
     }
   } catch (err) {

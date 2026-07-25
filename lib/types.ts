@@ -129,6 +129,10 @@ export type Database = {
           id: string
           name: string
           cqc_location_id: string | null
+          cqc_location_name: string | null
+          cqc_rating: string | null
+          cqc_last_inspection_date: string | null
+          cqc_rating_fetched_at: string | null
           service_type_id: string
           subscription_tier: 'trial' | 'active'
           is_demo: boolean
@@ -143,6 +147,10 @@ export type Database = {
           id?: string
           name: string
           cqc_location_id?: string | null
+          cqc_location_name?: string | null
+          cqc_rating?: string | null
+          cqc_last_inspection_date?: string | null
+          cqc_rating_fetched_at?: string | null
           service_type_id: string
           subscription_tier?: 'trial' | 'active'
           is_demo?: boolean
@@ -157,6 +165,10 @@ export type Database = {
           id?: string
           name?: string
           cqc_location_id?: string | null
+          cqc_location_name?: string | null
+          cqc_rating?: string | null
+          cqc_last_inspection_date?: string | null
+          cqc_rating_fetched_at?: string | null
           service_type_id?: string
           subscription_tier?: 'trial' | 'active'
           is_demo?: boolean

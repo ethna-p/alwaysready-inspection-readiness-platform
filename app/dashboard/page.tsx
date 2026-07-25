@@ -114,7 +114,6 @@ export default async function DashboardPage() {
           cqcInspectionDate = fresh.lastInspectionDate
           cqcLocationName   = fresh.locationName
           // Persist the refresh — use admin client since users can't UPDATE organisations.
-          // Cast: new columns not in generated types until migration is applied + types regenerated.
           const admin = createAdminClient()
           await admin
             .from('organisations')
@@ -123,8 +122,7 @@ export default async function DashboardPage() {
               cqc_rating:               fresh.overallRating,
               cqc_last_inspection_date: fresh.lastInspectionDate,
               cqc_rating_fetched_at:    new Date().toISOString(),
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } as any)
+            })
             .eq('id', profile.organisation_id)
         }
       } catch (err) {
