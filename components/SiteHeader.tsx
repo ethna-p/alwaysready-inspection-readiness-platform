@@ -6,9 +6,8 @@
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
-import SignOutButton from './SignOutButton'
 import MobileNav from './MobileNav'
-import ThemeToggle from './ThemeToggle'
+import UserMenu from './UserMenu'
 
 export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean }) {
   const supabase = await createClient()
@@ -111,33 +110,13 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           >
             People's Voice
           </a>
-          <a
-            href="/dashboard/support"
-            className="relative text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
-          >
-            Support
-            {hasUnread && (
-              <span className="absolute -top-1 -right-2.5 h-2 w-2 rounded-full bg-red-500" aria-label="Unread reply" />
-            )}
-          </a>
-          <a
-            href="/dashboard/help"
-            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
-          >
-            Help
-          </a>
-          <a
-            href="/dashboard/account"
-            className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
-          >
-            Account
-          </a>
         </nav>
 
-        {/* Desktop: theme toggle + sign out | Mobile: hamburger */}
+        {/* Desktop: user menu | Mobile: hamburger */}
         <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <SignOutButton />
+          <div className="hidden sm:flex items-center gap-3">
+            <UserMenu fullName={profile?.full_name ?? null} hasUnread={hasUnread} />
+          </div>
           <MobileNav isAdmin={isAdmin} isDemo={isDemo} hasUnread={hasUnread} />
         </div>
       </div>
