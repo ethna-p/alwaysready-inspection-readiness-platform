@@ -281,7 +281,7 @@ export default function TrialPage() {
                   className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
                 <p className="text-sm text-ink-muted mt-1">
-                  This will be your login email. We will send login details to that email.
+                  We will send login details to this email.
                 </p>
               </div>
 
