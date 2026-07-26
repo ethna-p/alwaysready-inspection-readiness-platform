@@ -14,17 +14,17 @@ import { useRouter } from 'next/navigation'
 import { startTrial } from './actions'
 
 const SERVICE_TYPES = [
-  'Residential Care Home',
-  'Nursing Home',
-  'Dual-Registered Care Home',
   'ARBD Specialist Care Home',
-  'Homecare Agency',
-  'Extra Care Housing',
-  'Shared Lives Scheme',
-  'Supported Living',
-  'Specialist College',
-  'Residential Rehabilitation Service',
   'Community Drug and Alcohol Service',
+  'Dual-Registered Care Home',
+  'Extra Care Housing',
+  'Homecare Agency',
+  'Nursing Home',
+  'Residential Care Home',
+  'Residential Rehabilitation Service',
+  'Shared Lives Scheme',
+  'Specialist College',
+  'Supported Living',
 ] as const
 
 const FEATURES = [
