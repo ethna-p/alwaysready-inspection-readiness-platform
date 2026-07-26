@@ -126,6 +126,7 @@ export default function UpgradePage() {
                     'Mock inspection tool with self-assessed CQC ratings',
                     'Live CQC Register integration — your rating, always up to date',
                     'Evidence file uploads — attach documents to every KLOE',
+                    'Automated review reminder emails — never miss an overdue KLOE',
                   ].map(item => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="text-brand font-bold mt-0.5">✓</span>
@@ -145,6 +146,7 @@ export default function UpgradePage() {
                     'Two-factor authentication for all accounts',
                     'KLOE assignment — assign ownership to individual team members',
                     'Review frequency tracking — monthly, quarterly, or annual per KLOE',
+                    'Tailored for multiple care specialisms — residential, nursing, LD, MH, and more',
                   ].map(item => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="text-brand font-bold mt-0.5">✓</span>
