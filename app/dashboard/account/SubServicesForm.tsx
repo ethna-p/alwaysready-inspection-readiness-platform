@@ -38,7 +38,15 @@ interface Props {
 export default function SubServicesForm({ enabledSubServices }: Props) {
   const [isPending, startTransition] = useTransition()
 
-  function handleChange(subService: string, checked: boolean) {
+  function handleChange(subService: string, label: string, checked: boolean) {
+    // Confirm before disabling to reassure the user their data is safe
+    if (!checked) {
+      const confirmed = window.confirm(
+        `Unticking "${label}" will hide these checklist items from your KLOEs.\n\nNo data will be deleted — tick it again at any time to restore everything.\n\nAre you sure?`
+      )
+      if (!confirmed) return
+    }
+
     startTransition(async () => {
       await toggleSubService(subService, checked)
     })
@@ -61,7 +69,7 @@ export default function SubServicesForm({ enabledSubServices }: Props) {
               type="checkbox"
               className="mt-0.5 h-4 w-4 rounded border-line text-brand focus:ring-[#00b8a6]"
               checked={isEnabled}
-              onChange={e => handleChange(ss.value, e.target.checked)}
+              onChange={e => handleChange(ss.value, ss.label, e.target.checked)}
               disabled={isPending}
               aria-label={ss.label}
             />
