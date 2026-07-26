@@ -284,7 +284,7 @@ const s = StyleSheet.create({
   kloeFieldEmpty: {
     fontSize: 8.5,
     color: MUTED,
-    fontStyle: 'italic',
+    fontStyle: 'normal',
   },
 
   // Evidence files

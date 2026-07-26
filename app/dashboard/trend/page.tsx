@@ -283,7 +283,7 @@ export default async function TrendPage() {
             <h2 className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
               By key question
             </h2>
-            <p className="text-xs text-ink-dim mb-4">
+            <p className="text-sm text-ink-dim mb-4">
               Comparing current readiness against 4 weeks ago
             </p>
 
@@ -359,8 +359,8 @@ export default async function TrendPage() {
               </table>
             </div>
 
-            <p className="text-xs text-ink-dim mt-4 border-t border-line pt-3">
-              A KLOE counts as ready when its status is <em>completed</em> and its
+            <p className="text-sm text-ink-dim mt-4 border-t border-line pt-3">
+              A KLOE counts as ready when its status is completed and its
               next review date has not yet passed.
             </p>
           </div>

@@ -129,7 +129,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             max={todayStr}
             className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
-          <p className="text-xs text-ink-dim mt-1">
+          <p className="text-sm text-ink-dim mt-1">
             Leave blank if you are only updating status{isAdmin ? ' or priority' : ''} without completing a review.
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
-            <p className="text-xs text-ink-dim mt-1">
+            <p className="text-sm text-ink-dim mt-1">
               Changes to review frequency are logged in your audit trail.
             </p>
           </div>

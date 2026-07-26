@@ -25,7 +25,7 @@ export default function BroadcastPage() {
     ? intro.split(/\n\n+/).map(p =>
         `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${p.trim().replace(/\n/g, '<br>')}</p>`
       ).join('')
-    : '<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#aaa;font-style:italic">Your intro will appear here…</p>'
+    : '<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#aaa">Your intro will appear here…</p>'
 
   const previewBody = `
     <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear [Name],</p>
@@ -120,7 +120,7 @@ export default function BroadcastPage() {
             <label className="block text-sm font-medium text-ink mb-1">
               Intro copy
             </label>
-            <p className="text-xs text-ink-muted mb-2">
+            <p className="text-sm text-ink-muted mb-2">
               Write 1–3 short paragraphs. Separate paragraphs with a blank line.
             </p>
             <textarea

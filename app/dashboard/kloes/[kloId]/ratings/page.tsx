@@ -59,7 +59,7 @@ export default async function RatingsPage({ params }: Props) {
           <p className="mt-3 text-sm text-ink leading-relaxed">{klo.wording}</p>
         )}
         {klo.scope && (
-          <p className="mt-2 text-xs text-ink-dim">
+          <p className="mt-2 text-sm text-ink-dim">
             <span className="font-medium">Scope: </span>{klo.scope}
           </p>
         )}

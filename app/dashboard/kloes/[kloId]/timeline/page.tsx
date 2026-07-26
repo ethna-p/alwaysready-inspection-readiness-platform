@@ -395,7 +395,7 @@ function ReviewEntryBody({ entry }: {
             {evidenceChanged && <ChangedPill />}
           </dt>
           <dd className="text-ink break-words">
-            {entry.evidenceLocation ?? <span className="text-ink-dim italic">Cleared</span>}
+            {entry.evidenceLocation ?? <span className="text-ink-dim">Cleared</span>}
           </dd>
         </div>
       )}
@@ -422,7 +422,7 @@ function FrequencyEntryBody({ entry }: {
           <span className="text-ink-dim" aria-hidden="true">→</span>
         </>
       ) : (
-        <span className="text-xs text-ink-dim italic mr-1">First set:</span>
+        <span className="text-xs text-ink-dim mr-1">First set:</span>
       )}
       <span className="font-semibold text-brand">{frequencyLabel(entry.newFrequencyDays)}</span>
     </div>
@@ -440,7 +440,7 @@ function PriorityEntryBody({ entry }: {
           <span className="text-ink-dim" aria-hidden="true">→</span>
         </>
       ) : (
-        <span className="text-xs text-ink-dim italic mr-1">First set:</span>
+        <span className="text-xs text-ink-dim mr-1">First set:</span>
       )}
       <PriorityDot value={entry.newPriority} />
       <span className="text-xs text-ink-dim">

@@ -35,7 +35,7 @@ export default function PersonalContactForm({ personalEmail, mobileNumber }: Pro
           placeholder="e.g. yourname@gmail.com"
           className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
         />
-        <p className="text-xs text-ink-muted mt-1">
+        <p className="text-sm text-ink-muted mt-1">
           We&apos;ll send password change notifications here.
         </p>
       </div>
@@ -53,7 +53,7 @@ export default function PersonalContactForm({ personalEmail, mobileNumber }: Pro
           placeholder="e.g. 07700 900123"
           className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
         />
-        <p className="text-xs text-ink-muted mt-1">
+        <p className="text-sm text-ink-muted mt-1">
           Reserved for future WhatsApp notifications.
         </p>
       </div>

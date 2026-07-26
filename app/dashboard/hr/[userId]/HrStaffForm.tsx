@@ -18,7 +18,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
   return (
     <div className="mb-4">
       <h2 className="text-base font-semibold text-brand">{title}</h2>
-      {subtitle && <p className="text-xs text-ink-muted mt-0.5">{subtitle}</p>}
+      {subtitle && <p className="text-sm text-ink-muted mt-0.5">{subtitle}</p>}
     </div>
   )
 }

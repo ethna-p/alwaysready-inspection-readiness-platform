@@ -275,7 +275,7 @@ export default async function DashboardPage() {
                     {cqcRating}
                   </span>
                 ) : (
-                  <span className="text-sm text-ink-dim italic">Not yet rated</span>
+                  <span className="text-sm text-ink-dim">Not yet rated</span>
                 )}
               </div>
             </div>
@@ -327,7 +327,7 @@ export default async function DashboardPage() {
             </p>
           )}
 
-          <p className="text-xs text-ink-dim mt-3">
+          <p className="text-sm text-ink-dim mt-3">
             Data sourced from the CQC public register, updated daily.
             AlwaysReady is not affiliated with or endorsed by the Care Quality Commission.
           </p>
@@ -369,7 +369,7 @@ export default async function DashboardPage() {
                   style={{ width: `${overallPct}%` }}
                 />
               </div>
-              <p className="text-xs text-ink-dim mt-2">
+              <p className="text-sm text-ink-dim mt-2">
                 Up to date = status Completed and next review not yet overdue
               </p>
 
@@ -522,7 +522,7 @@ export default async function DashboardPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-ink-dim mt-2">
+          <p className="text-sm text-ink-dim mt-2">
             Sorted by most at-risk first. Assign KLOEs from each KLOE's detail page.
           </p>
         </section>

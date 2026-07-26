@@ -174,7 +174,7 @@ function LoginForm() {
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-xs text-ink-dim mt-1">
+                    <p className="text-sm text-ink-dim mt-1">
                       Managers: use your email address. Staff: use the login ID given to you.
                     </p>
                   </div>
@@ -278,7 +278,7 @@ function LoginForm() {
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-xs text-ink-dim mt-1">
+                    <p className="text-sm text-ink-dim mt-1">
                       Staff: if you don&apos;t have a personal email on your account, ask your manager to reset your password.
                     </p>
                   </div>
@@ -321,7 +321,7 @@ function LoginForm() {
                   If an account exists for that email or login ID, you&apos;ll receive a reset link shortly.
                   The link expires in 1 hour.
                 </p>
-                <p className="text-xs text-ink-muted mb-6">
+                <p className="text-sm text-ink-muted mb-6">
                   Staff: check the personal email address on your account, not your work one.
                 </p>
                 <button

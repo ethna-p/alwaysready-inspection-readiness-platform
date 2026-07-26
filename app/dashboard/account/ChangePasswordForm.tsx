@@ -64,7 +64,7 @@ export default function ChangePasswordForm() {
           onChange={e => setNewPassword(e.target.value)}
           className={inputClass}
         />
-        <p className="mt-1.5 text-xs text-ink-muted">Minimum 8 characters.</p>
+        <p className="mt-1.5 text-sm text-ink-muted">Minimum 8 characters.</p>
       </div>
 
       <div>

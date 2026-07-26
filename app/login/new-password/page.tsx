@@ -175,7 +175,7 @@ export default function NewPasswordPage() {
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-xs text-ink-dim mt-1">At least 8 characters.</p>
+                    <p className="text-sm text-ink-dim mt-1">At least 8 characters.</p>
                   </div>
 
                   <div className="mb-6">

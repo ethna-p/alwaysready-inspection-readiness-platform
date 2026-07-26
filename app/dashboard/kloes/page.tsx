@@ -135,7 +135,7 @@ export default async function KloesPage() {
                   </span>
                 </h2>
                 {kq.description && (
-                  <p className="text-sm text-ink-dim mt-0.5 italic">
+                  <p className="text-sm text-ink-dim mt-0.5">
                     "{kq.description}"
                   </p>
                 )}

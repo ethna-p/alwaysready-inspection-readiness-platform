@@ -56,7 +56,7 @@ export default function AddVisitorForm() {
               {state.credentials.password}
             </p>
           </div>
-          <p className="text-xs text-ink-dim">
+          <p className="text-sm text-ink-dim">
             Click either field to select all. These credentials will not be shown again.
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function AddVisitorForm() {
             placeholder="e.g. 7"
             className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-card text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
-          <p className="text-xs text-ink-dim mt-1">
+          <p className="text-sm text-ink-dim mt-1">
             Login will stop working automatically after this many days.
           </p>
         </div>

@@ -192,7 +192,7 @@ export default function NewsletterForm({ initialRemaining }: Props) {
             >
               {copied ? '✓ Copied' : 'Copy text'}
             </button>
-            <p className="text-xs text-ink-muted">
+            <p className="text-sm text-ink-muted">
               Review and edit before sending. AlwaysReady doesn&apos;t send on your behalf.
             </p>
           </div>

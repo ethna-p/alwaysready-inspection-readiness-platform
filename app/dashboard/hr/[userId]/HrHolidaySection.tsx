@@ -81,7 +81,7 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
               <p className="text-3xl font-bold text-brand">
                 {remaining % 1 === 0 ? remaining : remaining.toFixed(1)}
               </p>
-              <p className="text-xs text-ink-muted mt-0.5">{holidayUnit} remaining</p>
+              <p className="text-sm text-ink-muted mt-0.5">{holidayUnit} remaining</p>
             </div>
             <div className="flex-1 h-3 bg-fill-dim rounded-full overflow-hidden">
               <div

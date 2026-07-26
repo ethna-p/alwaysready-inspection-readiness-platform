@@ -76,7 +76,7 @@ export default async function PeoplesVoicePage() {
           evidence directly from residents, families, and carers to assess whether each statement is met.
           Use this page to record what evidence you hold and identify gaps before an inspection.
         </p>
-        <p className="text-xs text-ink-muted mt-2 italic">
+        <p className="text-sm text-ink-muted mt-2">
           Source: CQC draft assessment framework v9 (2026). Well-Led has no published "I" statements in the
           current draft.
         </p>

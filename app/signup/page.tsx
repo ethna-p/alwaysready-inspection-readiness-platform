@@ -164,7 +164,7 @@ export default function SignUpPage() {
             </div>
 
             {/* Terms notice */}
-            <p className="text-xs text-ink-dim leading-relaxed pt-1">
+            <p className="text-sm text-ink-dim leading-relaxed pt-1">
               By creating an account you agree to our{' '}
               <a
                 href="https://alwaysready.uk/terms"

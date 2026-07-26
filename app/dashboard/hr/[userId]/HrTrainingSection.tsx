@@ -290,7 +290,7 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs text-ink-muted mb-3">No certificates uploaded yet.</p>
+                      <p className="text-sm text-ink-muted mb-3">No certificates uploaded yet.</p>
                     )}
 
                     <div className="flex items-center gap-3">
@@ -309,7 +309,7 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                         Upload
                       </button>
                     </div>
-                    <p className="text-xs text-ink-muted mt-1">PDF, Word, Excel, JPG or PNG — max 10 MB.</p>
+                    <p className="text-sm text-ink-muted mt-1">PDF, Word, Excel, JPG or PNG — max 10 MB.</p>
                   </div>
                 </div>
               )}

@@ -182,7 +182,7 @@ export default async function InspectionPackPage() {
           </div>
         </div>
 
-        <p className="text-xs text-ink-dim mb-6 bg-fill border border-line rounded-lg px-4 py-3">
+        <p className="text-sm text-ink-dim mb-6 bg-fill border border-line rounded-lg px-4 py-3">
           Click <strong className="text-ink-dim">Print / Save as PDF</strong> above, then choose{' '}
           <strong className="text-ink-dim">Save as PDF</strong> in your browser's print dialog.
           The navigation and this message will not appear in the output.
@@ -255,7 +255,7 @@ export default async function InspectionPackPage() {
                   }}
                 />
               </div>
-              <p className="text-xs text-ink-dim mt-2">
+              <p className="text-sm text-ink-dim mt-2">
                 {totalCompliant} of {totalKlos} KLOEs currently up to date
               </p>
             </div>
@@ -427,7 +427,7 @@ export default async function InspectionPackPage() {
                             <td />
                             <td
                               colSpan={6}
-                              className="px-3 pb-2.5 text-ink-dim text-xs italic"
+                              className="px-3 pb-2.5 text-ink-dim text-sm"
                             >
                               Evidence: {record.evidence_location}
                             </td>

@@ -49,7 +49,7 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
             `}
           >
             <p className="text-sm font-semibold text-ink">Partial inspection</p>
-            <p className="text-xs text-ink-muted mt-1">One key question and its linked KLOEs. Ideal for running a quick audit of a specific area.</p>
+            <p className="text-sm text-ink-muted mt-1">One key question and its linked KLOEs. Ideal for running a quick audit of a specific area.</p>
           </button>
           <button
             type="button"
@@ -62,7 +62,7 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
             `}
           >
             <p className="text-sm font-semibold text-ink">Full inspection</p>
-            <p className="text-xs text-ink-muted mt-1">All five key questions and every KLOE. Recommended when you have time to run a more comprehensive self-assessment.</p>
+            <p className="text-sm text-ink-muted mt-1">All five key questions and every KLOE. Recommended when you have time to run a more comprehensive self-assessment.</p>
           </button>
         </div>
       </div>

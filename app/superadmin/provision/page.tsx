@@ -55,7 +55,7 @@ export default function ProvisionPage() {
               <dd className="font-mono text-xs">{result.userId}</dd>
             </div>
           </dl>
-          <p className="mt-4 text-xs text-ink-muted">
+          <p className="mt-4 text-sm text-ink-muted">
             Send the admin their email and password. They will be prompted to set
             preferences on first login.
           </p>
@@ -229,7 +229,7 @@ export default function ProvisionPage() {
                 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
               "
             />
-            <p className="text-xs text-ink-muted mt-1">
+            <p className="text-sm text-ink-muted mt-1">
               Shown in plain text so you can copy it. Share securely with the admin — they can change it via account settings.
             </p>
           </div>

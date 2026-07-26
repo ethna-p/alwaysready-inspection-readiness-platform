@@ -51,7 +51,7 @@ export default async function WelcomePage() {
           {/* Trial reminder */}
           <div className="bg-[#e6faf8] border border-[#00b8a6]/30 rounded-xl p-4 mb-6 text-sm text-brand">
             <p className="font-semibold mb-1">90-day free trial</p>
-            <p className="text-xs leading-relaxed text-ink">
+            <p className="text-sm leading-relaxed text-ink">
               You have full access to AlwaysReady for 90 days, completely free.
               All your data is saved and carries over when you subscribe.
               As a Founding Member, after your trial your exclusive rate is{' '}
@@ -100,7 +100,7 @@ export default async function WelcomePage() {
             </div>
 
             {/* Privacy note */}
-            <p className="text-xs text-ink-dim leading-relaxed">
+            <p className="text-sm text-ink-dim leading-relaxed">
               By continuing you confirm that you have read and agree to our{' '}
               <a
                 href="https://alwaysready.uk/privacy"

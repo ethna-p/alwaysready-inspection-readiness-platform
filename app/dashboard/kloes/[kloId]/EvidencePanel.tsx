@@ -234,7 +234,7 @@ export default function EvidencePanel({
               aria-label="Upload evidence file"
             />
           </label>
-          <p className="mt-1.5 text-xs text-ink-muted">
+          <p className="mt-1.5 text-sm text-ink-muted">
             PDF, Word, Excel, or image. Maximum 10 MB.
           </p>
           {uploadError && (

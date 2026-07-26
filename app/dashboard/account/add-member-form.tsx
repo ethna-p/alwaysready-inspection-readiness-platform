@@ -76,7 +76,7 @@ export default function AddMemberForm() {
           placeholder="e.g. sarah@example.com"
           className={inputClass}
         />
-        <p className="text-xs text-ink-muted mt-1">
+        <p className="text-sm text-ink-muted mt-1">
           The invite link will be sent to this address. It becomes their login email.
         </p>
       </div>

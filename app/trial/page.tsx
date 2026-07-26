@@ -215,7 +215,7 @@ export default function TrialPage() {
                   )}
                 </div>
 
-                <p id="cqc-id-hint" className="text-xs text-ink-muted mt-1">
+                <p id="cqc-id-hint" className="text-sm text-ink-muted mt-1">
                   Found on your CQC registration certificate or at{' '}
                   <a href="https://www.cqc.org.uk/search-care-services" target="_blank" rel="noopener noreferrer" className="text-brand underline">
                     cqc.org.uk
@@ -280,7 +280,7 @@ export default function TrialPage() {
                   autoComplete="email"
                   className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
-                <p className="text-xs text-ink-muted mt-1">
+                <p className="text-sm text-ink-muted mt-1">
                   This will be your login email. We will send login details to that email.
                 </p>
               </div>
@@ -347,7 +347,7 @@ export default function TrialPage() {
                 )}
               </button>
 
-              <p className="text-xs text-ink-muted text-center">
+              <p className="text-sm text-ink-muted text-center">
                 No credit card required. Cancel any time.
               </p>
 
@@ -376,10 +376,10 @@ export default function TrialPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-sm text-ink-dim italic">— and much more.</p>
+              <p className="mt-4 text-sm text-ink-dim">— and much more.</p>
 
               <div className="mt-4 pt-5 border-t border-line">
-                <p className="text-xs text-ink-muted leading-relaxed">
+                <p className="text-sm text-ink-muted leading-relaxed">
                   Your trial gives you full access, and every piece of data you add is yours to keep.
                   Export it any time during your trial from your Account page, or subscribe and all
                   your work stays exactly where you left it.

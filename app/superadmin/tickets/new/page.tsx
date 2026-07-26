@@ -72,7 +72,7 @@ export default function NewTicketPage() {
           </select>
 
           {selectedOrg && (
-            <p className="mt-2 text-xs text-ink-muted">
+            <p className="mt-2 text-sm text-ink-muted">
               {selectedOrg.adminName
                 ? `Admin: ${selectedOrg.adminName}${selectedOrg.adminEmail ? ` · ${selectedOrg.adminEmail}` : ''}`
                 : selectedOrg.adminEmail
@@ -101,7 +101,7 @@ export default function NewTicketPage() {
           <label className="block text-sm font-medium text-ink mb-1">
             Message
           </label>
-          <p className="text-xs text-ink-muted mb-2">
+          <p className="text-sm text-ink-muted mb-2">
             This will appear as the first message from AlwaysReady Support in the customer&apos;s ticket thread.
           </p>
           <textarea
@@ -127,7 +127,7 @@ export default function NewTicketPage() {
                 <span className="text-xs font-semibold text-[#00b8a6]">AlwaysReady Support</span>
               </div>
               <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">
-                {message || <span className="text-ink-dim italic">Your message will appear here…</span>}
+                {message || <span className="text-ink-dim">Your message will appear here…</span>}
               </p>
             </div>
           </div>

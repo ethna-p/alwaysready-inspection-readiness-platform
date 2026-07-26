@@ -75,7 +75,7 @@ export default function SubServicesForm({ enabledSubServices }: Props) {
             />
             <div>
               <p className="text-sm font-medium text-ink">{ss.label}</p>
-              <p className="text-xs text-ink-muted mt-0.5">{ss.description}</p>
+              <p className="text-sm text-ink-muted mt-0.5">{ss.description}</p>
             </div>
           </label>
         )
