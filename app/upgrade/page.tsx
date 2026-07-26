@@ -103,8 +103,9 @@ export default function UpgradePage() {
                     'Full KLOE tracker with RAG status and priority',
                     'Audit trail — permanent, tamper-proof record of every update',
                     'Exportable inspection pack',
-                    'Visitor logins for CQC inspectors — temporary and expiring',
+                    'Temporary visitor logins for CQC inspectors',
                     'Unlimited users',
+                    'Fully-featured HR Module',
                   ].map(item => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="text-brand font-bold mt-0.5">✓</span>
