@@ -49,6 +49,8 @@ export async function POST(req: NextRequest) {
     const orgId   = session.metadata?.organisation_id
 
     if (orgId && session.customer && session.subscription) {
+      const isBeta = session.metadata?.is_beta === 'true'
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await (supabase as any)
         .from('organisations')
@@ -56,6 +58,7 @@ export async function POST(req: NextRequest) {
           subscription_tier:      'active',
           stripe_customer_id:     String(session.customer),
           stripe_subscription_id: String(session.subscription),
+          ...(isBeta ? { is_beta: true } : {}),
         })
         .eq('id', orgId)
 

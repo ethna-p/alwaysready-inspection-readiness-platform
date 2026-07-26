@@ -20,8 +20,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-06-24.dahlia',
 })
 
-const PRICE_ID    = process.env.STRIPE_PRICE_ID!
-const PLATFORM_URL = process.env.NEXT_PUBLIC_BASE_URL
+const PRICE_ID      = process.env.STRIPE_PRICE_ID!
+const BETA_PRICE_ID = process.env.STRIPE_BETA_PRICE_ID!
+const PLATFORM_URL  = process.env.NEXT_PUBLIC_BASE_URL
   ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
 
 // ── Checkout ───────────────────────────────────────────────────────────────
@@ -68,6 +69,40 @@ export async function createCheckoutSession(): Promise<never> {
     // Enable automatic tax (requires Stripe Tax to be set up)
     // automatic_tax: { enabled: true },
     ...discountParams,
+  })
+
+  redirect(session.url!)
+}
+
+// ── Beta checkout ──────────────────────────────────────────────────────────
+
+export async function createBetaCheckoutSession(): Promise<never> {
+  const profile = await getCurrentUserProfile()
+  if (!profile?.organisation_id) redirect('/login')
+
+  const supabase = await createClient()
+  const { data: org } = await (supabase as any)
+    .from('organisations')
+    .select('id, name, stripe_customer_id')
+    .eq('id', profile.organisation_id)
+    .single()
+
+  if (!org) redirect('/login')
+
+  const customerParams = org.stripe_customer_id
+    ? { customer: org.stripe_customer_id }
+    : {}
+
+  const session = await stripe.checkout.sessions.create({
+    mode:               'subscription',
+    line_items:         [{ price: BETA_PRICE_ID, quantity: 1 }],
+    ...customerParams,
+    success_url:        `${PLATFORM_URL}/dashboard?subscribed=1`,
+    cancel_url:         `${PLATFORM_URL}/upgrade`,
+    // is_beta flag lets the webhook set organisations.is_beta = true
+    metadata:           { organisation_id: org.id, is_beta: 'true' },
+    billing_address_collection: 'required',
+    allow_promotion_codes: false,
   })
 
   redirect(session.url!)

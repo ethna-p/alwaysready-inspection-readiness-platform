@@ -3,7 +3,7 @@
  * Offers Stripe Checkout for self-service subscription.
  */
 
-import { createCheckoutSession } from '@/app/actions/stripe'
+import { createCheckoutSession, createBetaCheckoutSession } from '@/app/actions/stripe'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata = { title: 'Subscribe — AlwaysReady' }
@@ -177,6 +177,68 @@ export default async function UpgradePage() {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* Beta Partner callout */}
+        <div className="bg-card border border-[#00b8a6] rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-[#00b8a6] px-8 py-4 text-center">
+            <p className="text-sm font-semibold text-white uppercase tracking-widest">
+              Beta Partner Programme
+            </p>
+          </div>
+          <div className="px-8 py-6 sm:flex sm:items-center sm:gap-8">
+            <div className="shrink-0 text-center sm:text-left mb-4 sm:mb-0">
+              <div className="flex items-baseline gap-1 justify-center sm:justify-start">
+                <span className="text-4xl font-extrabold text-brand">£50</span>
+                <span className="text-sm text-ink-dim">/ month</span>
+              </div>
+              <p className="text-xs text-ink-muted mt-1">Price locked in. Forever.</p>
+            </div>
+            <div className="flex-1 text-sm text-ink leading-relaxed mb-5 sm:mb-0">
+              <p>
+                <strong>Interested in shaping AlwaysReady?</strong> Join as a Beta Partner at £50/month — your price is locked in permanently — in exchange for occasional feedback and suggestions as we build. Everything in the full subscription, half the price, and your input helps us build something genuinely useful for the sector.
+              </p>
+              <p className="mt-2 text-xs text-ink-muted">Limited places available.</p>
+            </div>
+            {user && (
+              <div className="shrink-0">
+                <form action={createBetaCheckoutSession}>
+                  <button
+                    type="submit"
+                    className="
+                      block w-full sm:w-auto
+                      bg-[#00b8a6] text-white
+                      font-bold text-sm
+                      px-6 py-3 rounded-xl
+                      hover:bg-[#009e8e]
+                      focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
+                      transition-colors cursor-pointer whitespace-nowrap
+                    "
+                  >
+                    Become a Beta Partner →
+                  </button>
+                </form>
+              </div>
+            )}
+            {!user && (
+              <div className="shrink-0">
+                <a
+                  href="/login"
+                  className="
+                    block w-full sm:w-auto text-center
+                    bg-[#00b8a6] text-white
+                    font-bold text-sm
+                    px-6 py-3 rounded-xl
+                    hover:bg-[#009e8e]
+                    focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
+                    transition-colors whitespace-nowrap
+                  "
+                >
+                  Log in to join →
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
