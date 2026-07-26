@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     description: "Inspection readiness tools for CQC-regulated adult social care providers.",
     url: "https://portal.alwaysready.uk",
     siteName: "AlwaysReady",
-    images: [{ url: "https://portal.alwaysready.uk/opengraph-image.png", width: 512, height: 512, alt: "AlwaysReady — Inspection Readiness Platform" }],
+    images: [{ url: "https://portal.alwaysready.uk/opengraph-image.png", width: 1200, height: 630, alt: "AlwaysReady — Inspection Readiness Platform" }],
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "AlwaysReady — Inspection Readiness Platform",
     description: "Inspection readiness tools for CQC-regulated adult social care providers.",
     images: ["https://portal.alwaysready.uk/opengraph-image.png"],
