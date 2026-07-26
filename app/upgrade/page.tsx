@@ -197,7 +197,7 @@ export default async function UpgradePage() {
             </div>
             <div className="flex-1 text-sm text-ink leading-relaxed mb-5 sm:mb-0">
               <p>
-                <strong>Interested in shaping AlwaysReady?</strong> Join as a Beta Partner at £50/month — your price is locked in permanently — in exchange for occasional feedback and suggestions as we build. Everything in the full subscription, half the price, and your input helps us build something genuinely useful for the sector.
+                <strong>Interested in shaping AlwaysReady?</strong> Join as a Beta Partner at £50/month — your price is locked in permanently — in exchange for occasional feedback and suggestions as we build. Everything in the full subscription, at a significantly reduced rate, and your input helps us build something genuinely useful for the sector.
               </p>
               <p className="mt-2 text-xs text-ink-muted">Limited places available.</p>
             </div>
