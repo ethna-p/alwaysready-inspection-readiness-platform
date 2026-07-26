@@ -137,6 +137,7 @@ export type Database = {
           subscription_tier: 'trial' | 'active'
           is_demo: boolean
           is_beta: boolean
+          is_charity: boolean
           demo_expires_at: string | null
           trial_expires_at: string | null
           stripe_customer_id: string | null
@@ -156,6 +157,7 @@ export type Database = {
           subscription_tier?: 'trial' | 'active'
           is_demo?: boolean
           is_beta?: boolean
+          is_charity?: boolean
           demo_expires_at?: string | null
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
@@ -175,6 +177,7 @@ export type Database = {
           subscription_tier?: 'trial' | 'active'
           is_demo?: boolean
           is_beta?: boolean
+          is_charity?: boolean
           demo_expires_at?: string | null
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
