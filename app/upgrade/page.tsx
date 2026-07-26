@@ -10,7 +10,7 @@ export const metadata = { title: 'Subscribe — AlwaysReady' }
 export default function UpgradePage() {
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-6 py-8">
-      <div className="max-w-lg w-full text-center">
+      <div className="max-w-2xl w-full text-center">
 
         {/* Logo mark */}
         <div className="mb-8">
@@ -31,71 +31,76 @@ export default function UpgradePage() {
 
         {/* Pricing card */}
         <div className="bg-card border border-line rounded-2xl mb-6 text-left shadow-sm overflow-hidden">
-          {/* Coloured header band */}
+
+          {/* Coloured header band — full width */}
           <div className="bg-[#014D4E] px-8 py-5 text-center">
             <p className="text-sm font-semibold text-white uppercase tracking-widest">
               AlwaysReady Subscription
             </p>
           </div>
-          <div className="p-8">
-          <div className="flex items-baseline gap-1 justify-center">
-            <span className="text-6xl font-extrabold text-brand">£75</span>
-            <span className="text-base text-ink-dim">/ month</span>
-          </div>
 
-          <hr className="my-8 border-line" />
+          {/* Two-column body on sm+, stacked on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-line">
 
-          <ul className="space-y-3 text-sm text-ink mb-8">
-            {[
-              'Readiness dashboard with % score by key question area',
-              'Full KLOE tracker with RAG status and priority',
-              'Daily Review Report — what needs attention today',
-              'Audit trail — permanent, tamper-proof record of every update',
-              '8-week readiness trend chart',
-              'Exportable inspection pack',
-              'Role-based access — Admin, Staff, and Visitor',
-              'Visitor logins for CQC inspectors — temporary and expiring',
-              'Team management — add staff, assign KLOEs, reset passwords',
-              'Unlimited users',
-              'Built-in helpdesk support',
-            ].map(item => (
-              <li key={item} className="flex items-start gap-2">
-                <span className="text-brand font-bold mt-0.5">✓</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-          <div className="border-t border-line pt-4">
-            <p className="text-xs text-ink-dim">
-              <span className="font-semibold text-ink">Need to export your data?</span> Your records are kept for 30 days after your trial ends. Email{' '}
-              <a href="mailto:hello@alwaysready.uk" className="underline hover:text-brand">hello@alwaysready.uk</a>{' '}
-              and we'll send you a full export in CSV format within 5 working days.
-            </p>
-          </div>
+            {/* Left — price + CTA */}
+            <div className="p-8 flex flex-col items-center justify-center gap-6">
+              <div className="text-center">
+                <div className="flex items-baseline gap-1 justify-center">
+                  <span className="text-6xl font-extrabold text-brand">£75</span>
+                  <span className="text-base text-ink-dim">/ month</span>
+                </div>
+                <p className="text-xs text-ink-muted mt-2">No setup fee. Cancel any time.</p>
+              </div>
+              <form action={createCheckoutSession} className="w-full">
+                <button
+                  type="submit"
+                  className="
+                    block w-full
+                    bg-[#ffd700] text-brand
+                    font-bold text-sm
+                    py-4 rounded-xl
+                    hover:bg-yellow-300
+                    focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+                    transition-colors
+                    cursor-pointer
+                  "
+                >
+                  Subscribe now
+                </button>
+              </form>
+              <p className="text-xs text-ink-muted text-center">
+                <span className="font-semibold text-ink">Need to export your data?</span>{' '}
+                Email{' '}
+                <a href="mailto:hello@alwaysready.uk" className="underline hover:text-brand">hello@alwaysready.uk</a>
+              </p>
+            </div>
+
+            {/* Right — feature list */}
+            <div className="p-8">
+              <ul className="space-y-3 text-sm text-ink">
+                {[
+                  'Readiness dashboard with % score by key question area',
+                  'Full KLOE tracker with RAG status and priority',
+                  'Daily Review Report — what needs attention today',
+                  'Audit trail — permanent, tamper-proof record of every update',
+                  '8-week readiness trend chart',
+                  'Exportable inspection pack',
+                  'Role-based access — Admin, Staff, and Visitor',
+                  'Visitor logins for CQC inspectors — temporary and expiring',
+                  'Team management — add staff, assign KLOEs, reset passwords',
+                  'Unlimited users',
+                  'Built-in helpdesk support',
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="text-brand font-bold mt-0.5">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
           </div>
         </div>
-
-        {/* CTA — Stripe Checkout */}
-        <form action={createCheckoutSession}>
-          <button
-            type="submit"
-            className="
-              block w-full
-              bg-[#ffd700] text-brand
-              font-bold text-sm
-              py-4 rounded-xl
-              hover:bg-yellow-300
-              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-              transition-colors
-              mb-4
-              cursor-pointer
-            "
-          >
-            Subscribe Now — £75 / month
-          </button>
-        </form>
-
-
 
       </div>
     </div>
