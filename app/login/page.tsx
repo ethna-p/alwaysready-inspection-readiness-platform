@@ -141,7 +141,7 @@ function LoginForm() {
             {!showReset && (
               <>
                 <h1 className="text-2xl font-bold text-brand mb-1">Sign in</h1>
-                <p className="text-sm text-ink mb-6">Inspection Readiness Platform</p>
+                <p className="text-sm text-ink mb-6">AlwaysReady Inspection Readiness Platform</p>
 
                 <form onSubmit={handleLogin} noValidate>
                   {error && (
