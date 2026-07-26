@@ -43,7 +43,7 @@ export interface SendEmailResult {
 }
 
 function logoImg(): string {
-  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/$/, '')
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
   return `<img src="${baseUrl}/logo-email.png" alt="AlwaysReady" width="220" height="48" style="display:block;height:40px;width:auto;border:0">`
 }
 
