@@ -4,10 +4,13 @@
  */
 
 import { createCheckoutSession } from '@/app/actions/stripe'
+import { createClient } from '@/lib/supabase/server'
 
 export const metadata = { title: 'Subscribe — AlwaysReady' }
 
-export default function UpgradePage() {
+export default async function UpgradePage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-6 py-8">
       <div className="max-w-3xl w-full text-center">
@@ -77,36 +80,53 @@ export default function UpgradePage() {
                   <span className="font-semibold text-ink">Not ready to subscribe yet?</span>{' '}
                   Download your data before it is deleted.
                 </p>
-                <a
-                  href="/api/export-data"
-                  className="
-                    flex items-center justify-center gap-2 w-full
-                    border border-line rounded-lg
-                    text-xs font-medium text-ink
-                    px-4 py-2.5
-                    hover:bg-fill transition-colors
-                  "
-                >
-                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download field data (CSV)
-                </a>
-                <a
-                  href="/api/export-evidence"
-                  className="
-                    flex items-center justify-center gap-2 w-full
-                    border border-line rounded-lg
-                    text-xs font-medium text-ink
-                    px-4 py-2.5
-                    hover:bg-fill transition-colors
-                  "
-                >
-                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download uploaded documents (ZIP)
-                </a>
+                {user ? (
+                  <>
+                    <a
+                      href="/api/export-data"
+                      className="
+                        flex items-center justify-center gap-2 w-full
+                        border border-line rounded-lg
+                        text-xs font-medium text-ink
+                        px-4 py-2.5
+                        hover:bg-fill transition-colors
+                      "
+                    >
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download field data (CSV)
+                    </a>
+                    <a
+                      href="/api/export-evidence"
+                      className="
+                        flex items-center justify-center gap-2 w-full
+                        border border-line rounded-lg
+                        text-xs font-medium text-ink
+                        px-4 py-2.5
+                        hover:bg-fill transition-colors
+                      "
+                    >
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download uploaded documents (ZIP)
+                    </a>
+                  </>
+                ) : (
+                  <a
+                    href="/login"
+                    className="
+                      flex items-center justify-center gap-2 w-full
+                      border border-line rounded-lg
+                      text-xs font-medium text-ink
+                      px-4 py-2.5
+                      hover:bg-fill transition-colors
+                    "
+                  >
+                    Log in to download your data
+                  </a>
+                )}
                 <p className="text-xs text-ink-muted">After 30 days your data will be permanently deleted.</p>
               </div>
             </div>
