@@ -380,8 +380,8 @@ export default function TrialPage() {
 
               <div className="mt-4 pt-5 border-t border-line">
                 <p className="text-xs text-ink-muted leading-relaxed">
-                  Your trial is fully featured — no functions are locked or limited.
-                  Data you enter during the trial is yours to keep if you subscribe.
+                  Your trial gives you full access, and every piece of data you add is yours to keep.
+                  Subscribe at any time and all your work stays exactly where you left it.
                 </p>
               </div>
             </div>

@@ -141,6 +141,35 @@ export default async function AccountPage() {
         />
       </div>
 
+      {/* ── Data export (admin only) ──────────────────────────────────────── */}
+      {profile?.role === 'admin' && (
+        <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-brand mb-1">Export your data</h2>
+          <p className="text-sm text-ink-dim mb-4">
+            Download a ZIP file containing all your organisation&apos;s data as CSV files —
+            KLOE records, compliance history, HR staff profiles, training records, holiday allowances,
+            and team members. Evidence file attachments are not included in this export.
+          </p>
+          <a
+            href="/api/export-data"
+            download
+            className="
+              inline-flex items-center gap-2
+              bg-[#014D4E] text-white text-sm font-semibold
+              px-5 py-2.5 rounded-lg
+              hover:bg-[#013636]
+              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+              transition-colors
+            "
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export my data
+          </a>
+        </div>
+      )}
+
       {/* ══ Team management (admin only) ══════════════════════════════════ */}
       {profile?.role === 'admin' && (
         <>
