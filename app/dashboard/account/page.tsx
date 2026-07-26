@@ -31,10 +31,11 @@ export default async function AccountPage({
 
   // Tabs available to this user
   const tabs = [
+    ...(isAdmin ? [{ id: 'billing',      label: 'Billing' }] : []),
     ...(isAdmin ? [{ id: 'organisation', label: 'Organisation' }] : []),
     { id: 'security',      label: 'Security' },
     { id: 'notifications', label: 'Notifications' },
-    ...(isAdmin ? [{ id: 'team', label: 'Team' }] : []),
+    ...(isAdmin ? [{ id: 'team',         label: 'Team' }] : []),
   ]
   const defaultTab = tabs[0].id
   const activeTab  = tab ?? defaultTab
@@ -85,8 +86,8 @@ export default async function AccountPage({
         <AccountTabNav tabs={tabs} defaultTab={defaultTab} />
       </Suspense>
 
-      {/* ══ ORGANISATION tab ══════════════════════════════════════════════ */}
-      {activeTab === 'organisation' && isAdmin && (
+      {/* ══ BILLING tab ═══════════════════════════════════════════════════ */}
+      {activeTab === 'billing' && isAdmin && (
         <div className="space-y-8">
 
           {/* Subscription */}
@@ -190,6 +191,13 @@ export default async function AccountPage({
 
             </div>
           </div>
+
+        </div>
+      )}
+
+      {/* ══ ORGANISATION tab ══════════════════════════════════════════════ */}
+      {activeTab === 'organisation' && isAdmin && (
+        <div className="space-y-8">
 
           {/* Sub-services */}
           <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
