@@ -48,14 +48,23 @@ function RegBadge({ reg }: { reg: string | null }) {
 const SPECIALIST_COLOURS: Record<string, {
   border: string; header: string; dot: string; badge: string
 }> = {
-  'Dementia':             { border: 'border-purple-200', header: 'text-purple-700', dot: 'bg-purple-400',  badge: 'bg-purple-100 text-purple-700' },
-  'Autism':               { border: 'border-blue-200',   header: 'text-blue-700',   dot: 'bg-blue-400',    badge: 'bg-blue-100 text-blue-700' },
-  'Learning Disabilities':{ border: 'border-amber-200',  header: 'text-amber-700',  dot: 'bg-amber-400',   badge: 'bg-amber-100 text-amber-700' },
-  'Mental Health':        { border: 'border-violet-200', header: 'text-violet-700', dot: 'bg-violet-400',  badge: 'bg-violet-100 text-violet-700' },
-  'End of Life':          { border: 'border-rose-200',   header: 'text-rose-700',   dot: 'bg-rose-400',    badge: 'bg-rose-100 text-rose-700' },
+  'Dementia':              { border: 'border-purple-200', header: 'text-purple-700', dot: 'bg-purple-400',  badge: 'bg-purple-100 text-purple-700' },
+  'Autism':                { border: 'border-blue-200',   header: 'text-blue-700',   dot: 'bg-blue-400',    badge: 'bg-blue-100 text-blue-700' },
+  'Learning Disabilities': { border: 'border-amber-200',  header: 'text-amber-700',  dot: 'bg-amber-400',   badge: 'bg-amber-100 text-amber-700' },
+  'Mental Health':         { border: 'border-violet-200', header: 'text-violet-700', dot: 'bg-violet-400',  badge: 'bg-violet-100 text-violet-700' },
+  'End of Life':           { border: 'border-rose-200',   header: 'text-rose-700',   dot: 'bg-rose-400',    badge: 'bg-rose-100 text-rose-700' },
+  'Acquired Brain Injury': { border: 'border-sky-200',    header: 'text-sky-700',    dot: 'bg-sky-400',     badge: 'bg-sky-100 text-sky-700' },
+  'Physical Disabilities': { border: 'border-emerald-200',header: 'text-emerald-700',dot: 'bg-emerald-400', badge: 'bg-emerald-100 text-emerald-700' },
+  'Bariatric Care':        { border: 'border-orange-200', header: 'text-orange-700', dot: 'bg-orange-400',  badge: 'bg-orange-100 text-orange-700' },
+  'Sensory Impairment':    { border: 'border-indigo-200', header: 'text-indigo-700', dot: 'bg-indigo-400',  badge: 'bg-indigo-100 text-indigo-700' },
+  'Epilepsy':              { border: 'border-fuchsia-200',header: 'text-fuchsia-700',dot: 'bg-fuchsia-400', badge: 'bg-fuchsia-100 text-fuchsia-700' },
 }
 
-const SPECIALIST_SUB_SERVICES = ['Autism', 'Learning Disabilities', 'Mental Health', 'End of Life']
+const SPECIALIST_SUB_SERVICES = [
+  'Autism', 'Learning Disabilities', 'Mental Health', 'End of Life',
+  'Acquired Brain Injury', 'Physical Disabilities', 'Bariatric Care',
+  'Sensory Impairment', 'Epilepsy',
+]
 
 function RefBadge({ displayOrder, itemType, subService }: {
   displayOrder: number

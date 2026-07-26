@@ -29,6 +29,31 @@ const AVAILABLE_SUB_SERVICES: { value: string; label: string; description: strin
     label: 'End of life / palliative care',
     description: 'Adds end of life-specific checklist items across all KLOEs, covering advance care planning, DNACPR processes, the AMBER care bundle, NICE guidelines, and Gold Standards Framework.',
   },
+  {
+    value: 'Acquired Brain Injury',
+    label: 'Acquired brain injury (ABI)',
+    description: 'Adds ABI-specific checklist items across all KLOEs, covering neurorehabilitation competencies, cognitive and neuropsychological assessment, supported decision-making with fluctuating capacity, MDT liaison, and behaviour support governance.',
+  },
+  {
+    value: 'Physical Disabilities',
+    label: 'Physical disabilities',
+    description: 'Adds physical disability-specific checklist items across all KLOEs, covering moving and handling risk assessment, LOLER/PUWER equipment compliance, OT and physiotherapy assessment, independent living philosophy, and accessible environment governance.',
+  },
+  {
+    value: 'Bariatric Care',
+    label: 'Bariatric care',
+    description: 'Adds bariatric-specific checklist items across all KLOEs, covering bariatric manual handling protocols, specialist equipment governance, nutritional and skin integrity assessment, dignity in care, and dietitian liaison.',
+  },
+  {
+    value: 'Sensory Impairment',
+    label: 'Sensory impairment',
+    description: 'Adds sensory impairment-specific checklist items across all KLOEs, covering environmental adaptations, communication needs assessment, assistive technology, BSL and deafblind communication, and specialist sensory service liaison.',
+  },
+  {
+    value: 'Epilepsy',
+    label: 'Epilepsy',
+    description: 'Adds epilepsy-specific checklist items across all KLOEs, covering individual seizure management plans, rescue medication governance, SUDEP awareness, seizure diary monitoring, risk-enabling care planning, and neurology liaison.',
+  },
 ]
 
 interface Props {
