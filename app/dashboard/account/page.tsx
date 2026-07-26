@@ -109,7 +109,7 @@ export default async function AccountPage() {
         <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
           <h2 className="text-base font-semibold text-brand mb-1">Sub-services we provide</h2>
           <p className="text-sm text-ink-dim mb-4">
-            Enable additional checklist items for specialist care your service provides. Changes take effect immediately across all KLOEs.
+            Enable additional checklist items for specialist care your service provides. Changes take effect immediately across relevant KLOEs.
           </p>
           <SubServicesForm enabledSubServices={enabledSubServices} />
         </div>
