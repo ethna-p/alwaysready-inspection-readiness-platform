@@ -41,6 +41,12 @@ Items here must be resolved before the platform goes live and accepts paying cus
 
 ---
 
+## Business development
+
+- [ ] Apply to be listed on the CQC digital software preferred supplier list
+
+---
+
 ## CQC framework
 
 - [ ] CQC new assessment framework expected Autumn 2026 — review KLOE titles against the finalised framework and write corrective migrations if needed.
