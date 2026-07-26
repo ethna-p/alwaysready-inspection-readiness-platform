@@ -123,6 +123,9 @@ export default function UpgradePage() {
                     'Role-based access — Admin, Staff, and Visitor',
                     'Team management — add staff, assign KLOEs, reset passwords',
                     'Built-in helpdesk support',
+                    'Mock inspection tool with self-assessed CQC ratings',
+                    'Live CQC Register integration — your rating, always up to date',
+                    'Evidence file uploads — attach documents to every KLOE',
                   ].map(item => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="text-brand font-bold mt-0.5">✓</span>
@@ -139,6 +142,9 @@ export default function UpgradePage() {
                     'Temporary visitor logins for CQC inspectors',
                     'Unlimited users',
                     'Fully-featured HR Module',
+                    'Two-factor authentication for all accounts',
+                    'KLOE assignment — assign ownership to individual team members',
+                    'Review frequency tracking — monthly, quarterly, or annual per KLOE',
                   ].map(item => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="text-brand font-bold mt-0.5">✓</span>
