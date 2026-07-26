@@ -1,6 +1,6 @@
 /**
  * /dashboard/account — account settings + team management.
- * Available to all roles; team sections visible to admins only.
+ * Available to all roles; tab visibility is role-dependent.
  */
 import { Suspense } from 'react'
 import { getCurrentUserProfile } from '@/lib/session'
@@ -14,21 +14,39 @@ import AddMemberForm from './add-member-form'
 import MemberRow from './member-row'
 import AddVisitorForm from './add-visitor-form'
 import VisitorRow from './visitor-row'
+import AccountTabNav from './AccountTabNav'
 
 export const metadata = { title: 'Account Settings — AlwaysReady' }
 
-export default async function AccountPage() {
+export default async function AccountPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>
+}) {
+  const { tab } = await searchParams
   const profile = await getCurrentUserProfile()
   const supabase = await createClient()
 
-  // Fetch org data (subscription tier + sub-services) for admin sections
+  const isAdmin = profile?.role === 'admin'
+
+  // Tabs available to this user
+  const tabs = [
+    ...(isAdmin ? [{ id: 'organisation', label: 'Organisation' }] : []),
+    { id: 'security',      label: 'Security' },
+    { id: 'notifications', label: 'Notifications' },
+    ...(isAdmin ? [{ id: 'team', label: 'Team' }] : []),
+  ]
+  const defaultTab = tabs[0].id
+  const activeTab  = tab ?? defaultTab
+
+  // Fetch admin-only data
   let enabledSubServices: string[] = []
   let subscriptionTier = 'trial'
   let hasStripeCustomer = false
   let members: Awaited<ReturnType<typeof supabase.from>>['data'] = []
   let visitors: typeof members = []
 
-  if (profile?.role === 'admin' && profile.organisation_id) {
+  if (isAdmin && profile.organisation_id) {
     const [{ data: subServices }, { data: org }, { data: allUsers }] = await Promise.all([
       supabase
         .from('organisation_sub_services')
@@ -53,7 +71,8 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* ── Page header ───────────────────────────────────────────────── */}
       <div>
         <h1 className="text-2xl font-bold text-brand mb-1">Account settings</h1>
         <p className="text-sm text-ink-dim">
@@ -61,133 +80,147 @@ export default async function AccountPage() {
         </p>
       </div>
 
-      {/* ── Subscription (admin only) ──────────────────────────────────── */}
-      {profile?.role === 'admin' && (
-        <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-brand mb-1">Subscription</h2>
-          <p className="text-sm text-ink-dim mb-4">
-            {subscriptionTier === 'active'
-              ? 'Your subscription is active — £75 per month.'
-              : subscriptionTier === 'past_due'
-              ? 'Your last payment failed. Please update your payment details to restore full access.'
-              : 'You are currently on a free trial.'}
-          </p>
-          {hasStripeCustomer ? (
-            <div className="flex flex-wrap items-center gap-6">
-              <form action={createBillingPortalSession}>
-                <button
-                  type="submit"
-                  className="text-sm font-medium text-brand underline hover:text-[#00b8a6] transition-colors cursor-pointer"
-                >
-                  Manage subscription →
-                </button>
-              </form>
-              {subscriptionTier === 'active' && (
-                <form action={createCancellationPortalSession}>
-                  <button
-                    type="submit"
-                    className="text-sm font-medium text-red-600 underline hover:text-red-800 transition-colors cursor-pointer"
-                  >
-                    Cancel my subscription
-                  </button>
-                </form>
-              )}
-            </div>
-          ) : subscriptionTier !== 'active' ? (
-            <a
-              href="/upgrade"
-              className="text-sm font-medium text-brand underline hover:text-[#00b8a6] transition-colors"
-            >
-              Subscribe now →
-            </a>
-          ) : null}
-        </div>
-      )}
-
-      {/* ── Sub-services (admin only) ──────────────────────────────────── */}
-      {profile?.role === 'admin' && (
-        <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-brand mb-1">Sub-services we provide</h2>
-          <p className="text-sm text-ink-dim mb-4">
-            Enable additional checklist items for specialist care your service provides. Changes take effect immediately across relevant KLOEs.
-          </p>
-          <SubServicesForm enabledSubServices={enabledSubServices} />
-        </div>
-      )}
-
-      {/* ── Two-factor authentication ──────────────────────────────────── */}
+      {/* ── Tab nav ───────────────────────────────────────────────────── */}
       <Suspense>
-        <MfaSection role={profile?.role ?? null} />
+        <AccountTabNav tabs={tabs} defaultTab={defaultTab} />
       </Suspense>
 
-      {/* ── Change password ────────────────────────────────────────────── */}
-      <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-brand mb-1">Change password</h2>
-        <p className="text-sm text-ink-dim mb-6">
-          Enter your current password, then choose a new one.
-        </p>
-        <ChangePasswordForm />
-      </div>
+      {/* ══ ORGANISATION tab ══════════════════════════════════════════════ */}
+      {activeTab === 'organisation' && isAdmin && (
+        <div className="space-y-8">
 
-      {/* ── Personal contact details ───────────────────────────────────── */}
-      <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
-        <h2 className="text-base font-semibold text-brand mb-1">Notification contact details</h2>
-        <p className="text-sm text-ink-dim mb-6">
-          Add a personal email or mobile number to receive notifications. These are separate from your login credentials.
-        </p>
-        <PersonalContactForm
-          personalEmail={profile?.personal_email ?? null}
-          mobileNumber={profile?.mobile_number ?? null}
-        />
-      </div>
+          {/* Subscription */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">Subscription</h2>
+            <p className="text-sm text-ink-dim mb-4">
+              {subscriptionTier === 'active'
+                ? 'Your subscription is active — £75 per month.'
+                : subscriptionTier === 'past_due'
+                ? 'Your last payment failed. Please update your payment details to restore full access.'
+                : 'You are currently on a free trial.'}
+            </p>
+            {hasStripeCustomer ? (
+              <div className="flex flex-wrap items-center gap-6">
+                <form action={createBillingPortalSession}>
+                  <button
+                    type="submit"
+                    className="text-sm font-medium text-brand underline hover:text-[#00b8a6] transition-colors cursor-pointer"
+                  >
+                    Manage subscription →
+                  </button>
+                </form>
+                {subscriptionTier === 'active' && (
+                  <form action={createCancellationPortalSession}>
+                    <button
+                      type="submit"
+                      className="text-sm font-medium text-red-600 underline hover:text-red-800 transition-colors cursor-pointer"
+                    >
+                      Cancel my subscription
+                    </button>
+                  </form>
+                )}
+              </div>
+            ) : subscriptionTier !== 'active' ? (
+              <a
+                href="/upgrade"
+                className="text-sm font-medium text-brand underline hover:text-[#00b8a6] transition-colors"
+              >
+                Subscribe now →
+              </a>
+            ) : null}
+          </div>
 
-      {/* ── Data export (admin only) ──────────────────────────────────────── */}
-      {profile?.role === 'admin' && (
-        <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-brand mb-1">Export your data</h2>
-          <p className="text-sm text-ink-dim mb-4">
-            Download a ZIP file containing all your organisation&apos;s data as CSV files —
-            KLOE records, compliance history, HR staff profiles, training records, holiday allowances,
-            and team members. Evidence file attachments are not included in this export.
-          </p>
-          <a
-            href="/api/export-data"
-            download
-            className="
-              inline-flex items-center gap-2
-              bg-[#014D4E] text-white text-sm font-semibold
-              px-5 py-2.5 rounded-lg
-              hover:bg-[#013636]
-              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-              transition-colors
-            "
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Export my data
-          </a>
+          {/* Sub-services */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">Sub-services we provide</h2>
+            <p className="text-sm text-ink-dim mb-4">
+              Enable additional checklist items for specialist care your service provides. Changes take effect immediately across relevant KLOEs.
+            </p>
+            <SubServicesForm enabledSubServices={enabledSubServices} />
+          </div>
+
+          {/* Export data */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">Export your data</h2>
+            <p className="text-sm text-ink-dim mb-4">
+              Download a ZIP file containing all your organisation&apos;s data as CSV files —
+              KLOE records, compliance history, HR staff profiles, training records, holiday allowances,
+              and team members. Evidence file attachments are not included in this export.
+            </p>
+            <a
+              href="/api/export-data"
+              download
+              className="
+                inline-flex items-center gap-2
+                bg-[#014D4E] text-white text-sm font-semibold
+                px-5 py-2.5 rounded-lg
+                hover:bg-[#013636]
+                focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+                transition-colors
+              "
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export my data
+            </a>
+          </div>
+
         </div>
       )}
 
-      {/* ══ Team management (admin only) ══════════════════════════════════ */}
-      {profile?.role === 'admin' && (
-        <>
-          <div className="pt-4 border-t border-line">
-            <h2 className="text-xl font-bold text-brand mb-1">Team management</h2>
-            <p className="text-sm text-ink-dim">
-              Add team members, assign roles, and manage login credentials.
+      {/* ══ SECURITY tab ══════════════════════════════════════════════════ */}
+      {activeTab === 'security' && (
+        <div className="space-y-8">
+
+          {/* Two-factor authentication */}
+          <Suspense>
+            <MfaSection role={profile?.role ?? null} />
+          </Suspense>
+
+          {/* Change password */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">Change password</h2>
+            <p className="text-sm text-ink-dim mb-6">
+              Enter your current password, then choose a new one.
             </p>
+            <ChangePasswordForm />
           </div>
 
-          {/* ── Team members list ────────────────────────────────────────── */}
+        </div>
+      )}
+
+      {/* ══ NOTIFICATIONS tab ═════════════════════════════════════════════ */}
+      {activeTab === 'notifications' && (
+        <div className="space-y-8">
+
+          {/* Personal contact details */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">Notification contact details</h2>
+            <p className="text-sm text-ink-dim mb-6">
+              Add a personal email or mobile number to receive notifications. These are separate from your login credentials.
+            </p>
+            <PersonalContactForm
+              personalEmail={profile?.personal_email ?? null}
+              mobileNumber={profile?.mobile_number ?? null}
+            />
+          </div>
+
+        </div>
+      )}
+
+      {/* ══ TEAM tab ══════════════════════════════════════════════════════ */}
+      {activeTab === 'team' && isAdmin && (
+        <div className="space-y-8">
+
+          {/* Team members list */}
           <section aria-labelledby="team-list-heading">
-            <h3 id="team-list-heading" className="text-base font-semibold text-brand mb-4">
+            <h2 id="team-list-heading" className="text-base font-semibold text-brand mb-4">
               Team members
               <span className="ml-2 text-sm font-normal text-ink-dim">
                 ({(members as { id: string }[]).length})
               </span>
-            </h3>
+            </h2>
 
             {(members as { id: string }[]).length === 0 ? (
               <p className="text-sm text-ink-dim">No team members yet. Add your first below.</p>
@@ -215,7 +248,7 @@ export default async function AccountPage() {
             )}
           </section>
 
-          {/* ── Role guide ──────────────────────────────────────────────── */}
+          {/* Role guide */}
           <section
             className="bg-canvas rounded-xl border border-line p-5 text-sm"
             aria-labelledby="role-guide-heading"
@@ -239,7 +272,7 @@ export default async function AccountPage() {
             </dl>
           </section>
 
-          {/* ── Invite team member ──────────────────────────────────────── */}
+          {/* Invite team member */}
           <section
             className="bg-card rounded-xl border border-line p-6"
             aria-labelledby="add-member-heading"
@@ -253,7 +286,7 @@ export default async function AccountPage() {
             <AddMemberForm />
           </section>
 
-          {/* ── Visitor logins list ─────────────────────────────────────── */}
+          {/* Visitor logins list */}
           <section aria-labelledby="visitor-list-heading">
             <h3 id="visitor-list-heading" className="text-base font-semibold text-brand mb-1">
               Visitor logins
@@ -289,7 +322,7 @@ export default async function AccountPage() {
             )}
           </section>
 
-          {/* ── Create visitor login ────────────────────────────────────── */}
+          {/* Create visitor login */}
           <section
             className="bg-card rounded-xl border border-line p-6"
             aria-labelledby="add-visitor-heading"
@@ -302,7 +335,8 @@ export default async function AccountPage() {
             </p>
             <AddVisitorForm />
           </section>
-        </>
+
+        </div>
       )}
     </div>
   )
