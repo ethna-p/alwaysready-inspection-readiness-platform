@@ -34,7 +34,11 @@ export default function UpgradePage() {
 
           {/* Coloured header band — full width */}
           <div className="bg-[#014D4E] px-8 py-5 text-center">
-            <p className="text-sm font-semibold text-white uppercase tracking-widest">
+            <p className="text-sm font-semibold text-white uppercase tracking-widest flex items-center justify-center gap-2.5">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="shrink-0">
+                <circle cx="11" cy="11" r="11" fill="#FFD700"/>
+                <path d="M6 11.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
               AlwaysReady Subscription
             </p>
           </div>
@@ -74,28 +78,41 @@ export default function UpgradePage() {
               </p>
             </div>
 
-            {/* Right — feature list in 2-column grid */}
+            {/* Right — feature list in two independent columns */}
             <div className="p-8">
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-ink">
-                {[
-                  'Readiness dashboard with % score by key question area',
-                  'Full KLOE tracker with RAG status and priority',
-                  'Daily Review Report — what needs attention today',
-                  'Audit trail — permanent, tamper-proof record of every update',
-                  '8-week readiness trend chart',
-                  'Exportable inspection pack',
-                  'Role-based access — Admin, Staff, and Visitor',
-                  'Visitor logins for CQC inspectors — temporary and expiring',
-                  'Team management — add staff, assign KLOEs, reset passwords',
-                  'Unlimited users',
-                  'Built-in helpdesk support',
-                ].map(item => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="text-brand font-bold mt-0.5">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 text-sm text-ink">
+                {/* Left column */}
+                <ul className="space-y-3">
+                  {[
+                    'Readiness dashboard with % score by key question area',
+                    'Daily Review Report — what needs attention today',
+                    '8-week readiness trend chart',
+                    'Role-based access — Admin, Staff, and Visitor',
+                    'Team management — add staff, assign KLOEs, reset passwords',
+                    'Built-in helpdesk support',
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-brand font-bold mt-0.5">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                {/* Right column */}
+                <ul className="space-y-3 mt-3 sm:mt-0">
+                  {[
+                    'Full KLOE tracker with RAG status and priority',
+                    'Audit trail — permanent, tamper-proof record of every update',
+                    'Exportable inspection pack',
+                    'Visitor logins for CQC inspectors — temporary and expiring',
+                    'Unlimited users',
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-brand font-bold mt-0.5">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
           </div>

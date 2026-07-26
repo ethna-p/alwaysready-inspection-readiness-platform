@@ -211,6 +211,16 @@ function SetupCard({
                 <p className="font-mono text-sm text-ink break-all">{secret}</p>
               </div>
             )}
+
+            <div className="mt-4 rounded-lg bg-sky-50 border border-sky-200 px-4 py-3 text-xs text-sky-900">
+              <p className="font-semibold mb-1">Don&apos;t have a smartphone?</p>
+              <p className="mb-1">You can use any of these desktop or browser-based options instead — all work with the QR code above:</p>
+              <ul className="space-y-1 ml-1">
+                <li><strong>Authy</strong> — free desktop app for Windows and Mac. Download from <a href="https://authy.com" target="_blank" rel="noreferrer" className="underline">authy.com</a>.</li>
+                <li><strong>Authenticator</strong> (browser extension) — free for Chrome and Firefox. Search &ldquo;Authenticator&rdquo; in the Chrome Web Store or Firefox Add-ons.</li>
+                <li><strong>Microsoft Authenticator</strong> — also available as a Windows desktop app from the Microsoft Store.</li>
+              </ul>
+            </div>
           </div>
 
           <div className="mb-6">

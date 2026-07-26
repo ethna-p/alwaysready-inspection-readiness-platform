@@ -295,6 +295,9 @@ export default function HelpPage() {
           <P>
             All Admin and Staff accounts must set up two-factor authentication (2FA) before they can access the platform. When you first log in, you will be guided through setting it up using an authenticator app such as Google Authenticator or Authy. Once set up, every login requires your password plus a six-digit code from the app. This protects your organisation&apos;s compliance data from unauthorised access. Visitor accounts do not require two-factor authentication.
           </P>
+          <P>
+            <strong>No smartphone?</strong> You can also use a desktop or browser-based authenticator. <strong>Authy</strong> is a free app for Windows and Mac (authy.com). The <strong>Authenticator</strong> browser extension works in Chrome and Firefox (search &ldquo;Authenticator&rdquo; in the relevant add-ons store). <strong>Microsoft Authenticator</strong> is also available as a Windows desktop app from the Microsoft Store. All of these work with the QR code shown during setup.
+          </P>
 
           <H3>Assigning KLOEs to team members</H3>
           <P>
@@ -482,7 +485,7 @@ export default function HelpPage() {
             />
             <FAQ
               question="What is two-factor authentication and why is it required for Admins?"
-              answer="Two-factor authentication (2FA) means that logging in requires both your password and a six-digit code from an authenticator app on your phone. It is required for all Admin and Staff accounts because they have access to sensitive compliance data. It significantly reduces the risk of unauthorised access even if a password is compromised. Visitor accounts do not require 2FA."
+              answer="Two-factor authentication (2FA) means that logging in requires both your password and a six-digit code from an authenticator app. It is required for all Admin and Staff accounts because they have access to sensitive compliance data. It significantly reduces the risk of unauthorised access even if a password is compromised. Visitor accounts do not require 2FA. If a staff member does not have a smartphone, they can use a desktop app such as Authy (Windows/Mac) or Microsoft Authenticator, or the Authenticator browser extension for Chrome or Firefox — all work with the setup QR code."
             />
             <FAQ
               question="Can I change my own password?"
