@@ -18,7 +18,9 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
+import { sendEmail } from '@/lib/email'
 import type { ComplianceStatus } from '@/lib/types'
 
 export type ActionState =
@@ -212,6 +214,66 @@ export async function assignKloe(
 
   revalidatePath(`/dashboard/kloes/${kloItemId}`)
   revalidatePath('/dashboard/kloes')
+
+  // ── Assignment email notification ──────────────────────────
+  // Only send when assigning (not unassigning), and fire-and-forget
+  // so a failed email never breaks the assignment itself.
+  if (assignToId) {
+    try {
+      const adminSupabase = createAdminClient()
+
+      const [{ data: assignee }, { data: klo }] = await Promise.all([
+        adminSupabase
+          .from('users')
+          .select('full_name, email, personal_email')
+          .eq('id', assignToId)
+          .single(),
+        adminSupabase
+          .from('klo_items')
+          .select('title')
+          .eq('id', kloItemId)
+          .single(),
+      ])
+
+      if (assignee && klo) {
+        const recipientEmail = assignee.personal_email || assignee.email
+        const firstName = assignee.full_name?.split(' ')[0] ?? 'there'
+        const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
+        const kloUrl = `${baseUrl}/dashboard/kloes/${kloItemId}`
+
+        await sendEmail({
+          to: recipientEmail,
+          subject: `You've been assigned a KLOE — ${klo.title}`,
+          type: 'transactional',
+          userId: assignToId,
+          bodyHtml: `
+            <p style="margin:0 0 16px">Hi ${firstName},</p>
+            <p style="margin:0 0 16px">
+              You've been assigned a KLOE that needs your attention:
+            </p>
+            <p style="margin:0 0 24px;padding:16px 20px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px;font-weight:600;color:#014D4E">
+              ${klo.title}
+            </p>
+            <p style="margin:0 0 24px">
+              Log in to AlwaysReady to review the checklist, gather evidence, and update your progress.
+            </p>
+            <p style="margin:0 0 32px">
+              <a href="${kloUrl}"
+                 style="display:inline-block;background:#014D4E;color:#ffffff;font-weight:600;font-size:15px;padding:12px 24px;border-radius:6px;text-decoration:none">
+                View KLOE →
+              </a>
+            </p>
+            <p style="margin:0;font-size:13px;color:#666">
+              If you have any questions about what's needed, speak to your admin.
+            </p>
+          `,
+        })
+      }
+    } catch (emailErr) {
+      // Log but do not surface — the assignment itself succeeded
+      console.error('[assignKloe] email notification failed:', emailErr)
+    }
+  }
 
   return {
     success: true,
