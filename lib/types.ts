@@ -328,7 +328,7 @@ export type Database = {
           service_type_id: string | null
           item_type: 'Core' | 'Dementia Care'
           ref: string
-          sub_service: 'Residential' | 'Nursing' | 'Joint' | null
+          sub_service: 'Residential' | 'Nursing' | 'Joint' | 'Dementia' | 'Autism' | 'Learning Disabilities' | 'Mental Health' | 'End of Life' | null
           checklist_item: string
           regulation: string | null
           evidence_notes: string | null
@@ -341,7 +341,7 @@ export type Database = {
           service_type_id?: string | null
           item_type: 'Core' | 'Dementia Care'
           ref: string
-          sub_service?: 'Residential' | 'Nursing' | 'Joint' | null
+          sub_service?: 'Residential' | 'Nursing' | 'Joint' | 'Dementia' | 'Autism' | 'Learning Disabilities' | 'Mental Health' | 'End of Life' | null
           checklist_item: string
           regulation?: string | null
           evidence_notes?: string | null
@@ -354,7 +354,7 @@ export type Database = {
           service_type_id?: string | null
           item_type?: 'Core' | 'Dementia Care'
           ref?: string
-          sub_service?: 'Residential' | 'Nursing' | 'Joint' | null
+          sub_service?: 'Residential' | 'Nursing' | 'Joint' | 'Dementia' | 'Autism' | 'Learning Disabilities' | 'Mental Health' | 'End of Life' | null
           checklist_item?: string
           regulation?: string | null
           evidence_notes?: string | null
