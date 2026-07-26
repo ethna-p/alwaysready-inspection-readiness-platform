@@ -125,7 +125,7 @@ export default function TrialPage() {
           {/* ── Left: form ─────────────────────────────────────────────── */}
           <div>
             <div className="mb-8">
-              <span className="inline-block text-xs font-bold text-[#00b8a6] bg-[#00b8a6]/10 border border-[#00b8a6]/20 px-3 py-1 rounded-full uppercase tracking-widest mb-4">
+              <span className="inline-block text-xs font-bold text-[#014D4E] bg-[#00b8a6]/10 border border-[#00b8a6]/20 px-3 py-1 rounded-full uppercase tracking-widest mb-4">
                 14-day free trial
               </span>
               <h1 className="text-3xl font-bold text-brand leading-tight mb-3">
@@ -152,7 +152,7 @@ export default function TrialPage() {
                   placeholder="e.g. Sunrise Residential Care Home"
                   required
                   disabled={isPending}
-                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function TrialPage() {
                   required
                   disabled={isPending}
                   aria-describedby="cqc-id-hint cqc-id-feedback"
-                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
 
                 {/* Inline CQC lookup feedback */}
@@ -260,7 +260,7 @@ export default function TrialPage() {
                   required
                   disabled={isPending}
                   autoComplete="name"
-                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
               </div>
 
@@ -278,7 +278,7 @@ export default function TrialPage() {
                   required
                   disabled={isPending}
                   autoComplete="email"
-                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
                 />
                 <p className="text-xs text-ink-muted mt-1">
                   This will be your login email. We will send login details to that email.
