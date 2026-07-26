@@ -228,7 +228,7 @@ export default function HelpPage() {
 
           <H3>Account &amp; Security</H3>
           <div className="space-y-1">
-            <p>• Two-factor authentication (2FA) required for all Admin accounts.</p>
+            <p>• Two-factor authentication (2FA) required for all Admin and Staff accounts.</p>
             <p>• Password change available at any time from the Account page.</p>
             <p>• Each organisation&apos;s data is fully isolated — no other organisation can access your records.</p>
           </div>
@@ -293,7 +293,7 @@ export default function HelpPage() {
 
           <H3>Two-factor authentication</H3>
           <P>
-            All Admin accounts must set up two-factor authentication (2FA) before they can access the platform. When you first log in, you will be guided through setting it up using an authenticator app such as Google Authenticator or Authy. Once set up, every login requires your password plus a six-digit code from the app. This protects your organisation&apos;s compliance data from unauthorised access. Staff (User) and Visitor accounts do not require two-factor authentication.
+            All Admin and Staff accounts must set up two-factor authentication (2FA) before they can access the platform. When you first log in, you will be guided through setting it up using an authenticator app such as Google Authenticator or Authy. Once set up, every login requires your password plus a six-digit code from the app. This protects your organisation&apos;s compliance data from unauthorised access. Visitor accounts do not require two-factor authentication.
           </P>
 
           <H3>Assigning KLOEs to team members</H3>
@@ -482,7 +482,7 @@ export default function HelpPage() {
             />
             <FAQ
               question="What is two-factor authentication and why is it required for Admins?"
-              answer="Two-factor authentication (2FA) means that logging in requires both your password and a six-digit code from an authenticator app on your phone. It is required for all Admin accounts because Admins have access to sensitive compliance data, staff records, and team management. It significantly reduces the risk of unauthorised access even if a password is compromised. Staff and Visitor accounts do not require 2FA."
+              answer="Two-factor authentication (2FA) means that logging in requires both your password and a six-digit code from an authenticator app on your phone. It is required for all Admin and Staff accounts because they have access to sensitive compliance data. It significantly reduces the risk of unauthorised access even if a password is compromised. Visitor accounts do not require 2FA."
             />
             <FAQ
               question="Can I change my own password?"

@@ -64,14 +64,14 @@ export default function MfaSection({ role }: Props) {
     setFactors(prev => prev.filter(f => f.id !== factorId))
     setRemoving(null)
 
-    // For admins, middleware will redirect to setup on next navigation
+    // For admins and users, middleware will redirect to setup on next navigation
     startTransition(() => {
       router.refresh()
     })
   }
 
-  const isAdmin   = role === 'admin'
-  const hasFactor = factors.length > 0
+  const requiresMfa = role === 'admin' || role === 'user'
+  const hasFactor   = factors.length > 0
 
   return (
     <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
@@ -82,8 +82,8 @@ export default function MfaSection({ role }: Props) {
         )}
       </div>
       <p className="text-sm text-ink-dim mb-4">
-        {isAdmin
-          ? 'Required for manager accounts. Uses a one-time code from your authenticator app each time you sign in.'
+        {requiresMfa
+          ? 'Required for your account. Uses a one-time code from your authenticator app each time you sign in.'
           : 'Adds a second layer of security. Uses a one-time code from your authenticator app each time you sign in.'}
       </p>
 
@@ -124,7 +124,7 @@ export default function MfaSection({ role }: Props) {
         </div>
       ) : (
         <div>
-          {isAdmin && (
+          {requiresMfa && (
             <div className="mb-4 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
               Two-factor authentication is required for your account. Please set it up.
             </div>

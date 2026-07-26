@@ -173,7 +173,7 @@ function SetupCard({
     <div className="w-full max-w-md bg-card rounded-2xl shadow-sm border border-line p-8">
       {mandatory && (
         <div className="mb-6 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
-          <strong>Action required.</strong> Two-factor authentication is mandatory for manager accounts. Please set it up to continue.
+          <strong>Action required.</strong> Two-factor authentication is mandatory for your account. Please set it up to continue.
         </div>
       )}
 
