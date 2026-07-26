@@ -11,16 +11,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AlwaysReady — Inspection Readiness Platform",
     description: "Inspection readiness tools for CQC-regulated adult social care providers.",
-    url: "https://app.alwaysready.uk",
+    url: "https://portal.alwaysready.uk",
     siteName: "AlwaysReady",
-    images: [{ url: "https://app.alwaysready.uk/opengraph-image.png", width: 512, height: 512 }],
+    images: [{ url: "https://portal.alwaysready.uk/opengraph-image.png", width: 512, height: 512 }],
     type: "website",
   },
   twitter: {
     card: "summary",
     title: "AlwaysReady — Inspection Readiness Platform",
     description: "Inspection readiness tools for CQC-regulated adult social care providers.",
-    images: ["https://app.alwaysready.uk/opengraph-image.png"],
+    images: ["https://portal.alwaysready.uk/opengraph-image.png"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
