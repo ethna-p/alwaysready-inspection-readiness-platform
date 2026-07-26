@@ -133,7 +133,7 @@ export default function TrialPage() {
               </h1>
               <p className="text-ink-dim leading-relaxed">
                 Set up your account in under a minute. No payment required.
-                Your data is private, persistent, and yours from day one.
+                Your data is private, secure, and yours from day one.
               </p>
             </div>
 
