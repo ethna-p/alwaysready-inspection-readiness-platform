@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 export const alt = 'AlwaysReady — Inspection Readiness Platform'
-export const size = { width: 1200, height: 630 }
+export const size = { width: 512, height: 512 }
 export const contentType = 'image/png'
 
 export default function OgImage() {
@@ -10,8 +10,8 @@ export default function OgImage() {
     (
       <div
         style={{
-          width: '1200px',
-          height: '630px',
+          width: '512px',
+          height: '512px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -27,33 +27,19 @@ export default function OgImage() {
             bottom: 0,
             left: 0,
             right: 0,
-            height: '8px',
+            height: '6px',
             backgroundColor: '#ffd700',
           }}
         />
 
-        {/* Logo */}
+        {/* Logo wordmark */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://portal.alwaysready.uk/logo-email.png"
           alt="AlwaysReady"
-          width={440}
-          height={96}
-          style={{ marginBottom: '36px' }}
+          width={330}
+          height={72}
         />
-
-        {/* Tagline */}
-        <div
-          style={{
-            fontSize: '36px',
-            fontWeight: '400',
-            color: '#80cbc4',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase',
-          }}
-        >
-          Inspection Readiness Platform
-        </div>
       </div>
     ),
     { ...size }
