@@ -10,7 +10,7 @@ export const metadata = { title: 'Subscribe — AlwaysReady' }
 export default function UpgradePage() {
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-6 py-8">
-      <div className="max-w-2xl w-full text-center">
+      <div className="max-w-3xl w-full text-center">
 
         {/* Logo mark */}
         <div className="mb-8">
@@ -39,8 +39,8 @@ export default function UpgradePage() {
             </p>
           </div>
 
-          {/* Two-column body on sm+, stacked on mobile */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-line">
+          {/* Two-panel body: price left, features right. Stacked on mobile. */}
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] divide-y sm:divide-y-0 sm:divide-x divide-line">
 
             {/* Left — price + CTA */}
             <div className="p-8 flex flex-col items-center justify-center gap-6">
@@ -69,15 +69,14 @@ export default function UpgradePage() {
                 </button>
               </form>
               <p className="text-xs text-ink-muted text-center">
-                <span className="font-semibold text-ink">Need to export your data?</span>{' '}
-                Email{' '}
-                <a href="mailto:hello@alwaysready.uk" className="underline hover:text-brand">hello@alwaysready.uk</a>
+                <span className="font-semibold text-ink">Need your data?</span>{' '}
+                You can download it from Account → Billing at any time. After 30 days your data will be permanently deleted.
               </p>
             </div>
 
-            {/* Right — feature list */}
+            {/* Right — feature list in 2-column grid */}
             <div className="p-8">
-              <ul className="space-y-3 text-sm text-ink">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-ink">
                 {[
                   'Readiness dashboard with % score by key question area',
                   'Full KLOE tracker with RAG status and priority',
