@@ -156,7 +156,7 @@ function LoginForm() {
                   <div className="mb-4">
                     <label
                       htmlFor="login"
-                      className="block text-sm font-medium text-ink mb-1"
+                      className="sr-only"
                     >
                       Email address
                     </label>
@@ -257,7 +257,7 @@ function LoginForm() {
                   <div className="mb-6">
                     <label
                       htmlFor="reset-login"
-                      className="block text-sm font-medium text-ink mb-1"
+                      className="sr-only"
                     >
                       Email address
                     </label>
