@@ -14,6 +14,21 @@ const AVAILABLE_SUB_SERVICES: { value: string; label: string; description: strin
     label: 'Autism support',
     description: 'Adds autism-specific checklist items across all KLOEs, covering individual autism profiles, sensory needs, communication support, Oliver McGowan training, PBS and restrictive practice governance, and Right Support, Right Care, Right Culture (RSRCC).',
   },
+  {
+    value: 'Learning Disabilities',
+    label: 'Learning disabilities',
+    description: 'Adds learning disability-specific checklist items across all KLOEs, covering Registering the Right Support principles, Building the Right Support, easy-read communication, supported decision-making, and restrictions governance.',
+  },
+  {
+    value: 'Mental Health',
+    label: 'Mental health',
+    description: 'Adds mental health-specific checklist items across all KLOEs, covering Mental Health Act compliance, Section 17 leave, tribunal processes, DoLS/LPS interface, and recovery-focused care planning.',
+  },
+  {
+    value: 'End of Life',
+    label: 'End of life / palliative care',
+    description: 'Adds end of life-specific checklist items across all KLOEs, covering advance care planning, DNACPR processes, the AMBER care bundle, NICE guidelines, and Gold Standards Framework.',
+  },
 ]
 
 interface Props {
