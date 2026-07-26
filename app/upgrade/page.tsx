@@ -72,10 +72,43 @@ export default function UpgradePage() {
                   Subscribe now
                 </button>
               </form>
-              <p className="text-xs text-ink-muted text-center">
-                <span className="font-semibold text-ink">Need your data?</span>{' '}
-                You can download it from Account → Billing at any time. After 30 days your data will be permanently deleted.
-              </p>
+              <div className="w-full border-t border-line pt-5 text-center space-y-3">
+                <p className="text-xs text-ink-muted">
+                  <span className="font-semibold text-ink">Not ready to subscribe yet?</span>{' '}
+                  Download your data before it is deleted.
+                </p>
+                <a
+                  href="/api/export-data"
+                  className="
+                    flex items-center justify-center gap-2 w-full
+                    border border-line rounded-lg
+                    text-xs font-medium text-ink
+                    px-4 py-2.5
+                    hover:bg-fill transition-colors
+                  "
+                >
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download field data (CSV)
+                </a>
+                <a
+                  href="/api/export-evidence"
+                  className="
+                    flex items-center justify-center gap-2 w-full
+                    border border-line rounded-lg
+                    text-xs font-medium text-ink
+                    px-4 py-2.5
+                    hover:bg-fill transition-colors
+                  "
+                >
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download uploaded documents (ZIP)
+                </a>
+                <p className="text-xs text-ink-muted">After 30 days your data will be permanently deleted.</p>
+              </div>
             </div>
 
             {/* Right — feature list in two independent columns */}
