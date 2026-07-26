@@ -43,15 +43,34 @@ function RegBadge({ reg }: { reg: string | null }) {
   )
 }
 
-function RefBadge({ displayOrder, itemType }: { displayOrder: number; itemType: string }) {
-  const isDementia = itemType === 'Dementia Care'
+// ─── Specialist sub-service colour config ─────────────────────────────────────
+
+const SPECIALIST_COLOURS: Record<string, {
+  border: string; header: string; dot: string; badge: string
+}> = {
+  'Dementia':             { border: 'border-purple-200', header: 'text-purple-700', dot: 'bg-purple-400',  badge: 'bg-purple-100 text-purple-700' },
+  'Autism':               { border: 'border-blue-200',   header: 'text-blue-700',   dot: 'bg-blue-400',    badge: 'bg-blue-100 text-blue-700' },
+  'Learning Disabilities':{ border: 'border-amber-200',  header: 'text-amber-700',  dot: 'bg-amber-400',   badge: 'bg-amber-100 text-amber-700' },
+  'Mental Health':        { border: 'border-violet-200', header: 'text-violet-700', dot: 'bg-violet-400',  badge: 'bg-violet-100 text-violet-700' },
+  'End of Life':          { border: 'border-rose-200',   header: 'text-rose-700',   dot: 'bg-rose-400',    badge: 'bg-rose-100 text-rose-700' },
+}
+
+const SPECIALIST_SUB_SERVICES = ['Autism', 'Learning Disabilities', 'Mental Health', 'End of Life']
+
+function RefBadge({ displayOrder, itemType, subService }: {
+  displayOrder: number
+  itemType: string
+  subService: string | null
+}) {
+  const colours =
+    itemType === 'Dementia Care' ? SPECIALIST_COLOURS['Dementia'] :
+    subService && SPECIALIST_COLOURS[subService] ? SPECIALIST_COLOURS[subService] :
+    null
+
   return (
     <span className={`
       inline-block text-[10px] font-mono font-medium rounded px-1.5 py-0.5 leading-none shrink-0
-      ${isDementia
-        ? 'bg-purple-100 text-purple-700'
-        : 'bg-[#e6f7f5] text-brand'
-      }
+      ${colours ? colours.badge : 'bg-[#e6f7f5] text-brand'}
     `}>
       K{displayOrder}
     </span>
@@ -126,7 +145,7 @@ function ChecklistItemRow({
       <div className="flex-1 min-w-0 space-y-1.5">
         {/* Top row: ref + text */}
         <div className="flex flex-wrap items-start gap-2">
-          <RefBadge displayOrder={item.display_order} itemType={item.item_type} />
+          <RefBadge displayOrder={item.display_order} itemType={item.item_type} subService={item.sub_service} />
           <p className={`text-sm flex-1 leading-snug ${isComplete ? 'line-through text-ink-dim' : 'text-ink'}`}>
             {item.checklist_item}
           </p>
@@ -287,9 +306,18 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
     evidenceMap.set(itemId, evidence)
   }
 
-  // Separate Core vs Dementia Care
-  const coreItems     = items.filter(i => i.item_type === 'Core')
+  // Separate Dementia Care (legacy item_type) vs everything else
   const dementiaItems = items.filter(i => i.item_type === 'Dementia Care')
+
+  // Core items: split true core from specialist sub-service items
+  const allCoreItems    = items.filter(i => i.item_type === 'Core')
+  const coreItems       = allCoreItems.filter(i => !i.sub_service || ['Residential', 'Nursing', 'Joint'].includes(i.sub_service ?? ''))
+  const specialistItems = allCoreItems.filter(i => i.sub_service && SPECIALIST_SUB_SERVICES.includes(i.sub_service))
+
+  // Group specialist items by sub_service (preserving display order)
+  const specialistGroups = SPECIALIST_SUB_SERVICES
+    .map(ss => ({ ss, items: specialistItems.filter(i => i.sub_service === ss) }))
+    .filter(g => g.items.length > 0)
 
   // For Dual-Registered: further split Core by sub_service
   const resItems    = coreItems.filter(i => i.sub_service === 'Residential')
@@ -326,7 +354,7 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
       {/* Core items */}
       {coreItems.length > 0 && (
         <div className="space-y-2">
-          {dementiaItems.length > 0 && (
+          {(dementiaItems.length > 0 || specialistGroups.length > 0) && (
             <p className="text-xs font-semibold text-brand uppercase tracking-wide">Core</p>
           )}
           <div className="rounded-xl border border-line overflow-hidden divide-y divide-gray-100">
@@ -380,6 +408,29 @@ export default function ChecklistPanel({ items, isViewer, isDualReg, kloItemId }
           </div>
         </div>
       )}
+
+      {/* Specialist sub-service sections (LD / MH / EOL / Autism) */}
+      {specialistGroups.map(({ ss, items: ssItems }) => {
+        const c = SPECIALIST_COLOURS[ss] ?? SPECIALIST_COLOURS['Autism']
+        return (
+          <div key={ss} className="space-y-2">
+            <p className={`text-xs font-semibold uppercase tracking-wide flex items-center gap-1.5 ${c.header}`}>
+              <span className={`inline-block w-2 h-2 rounded-full ${c.dot}`} aria-hidden="true" />
+              {ss}
+            </p>
+            <div className={`rounded-xl border overflow-hidden ${c.border}`}>
+              <ItemGroup
+                items={ssItems}
+                completionMap={optimisticMap}
+                evidenceMap={evidenceMap}
+                isViewer={isViewer}
+                onToggle={handleToggle}
+                onSaveEvidence={handleSaveEvidence}
+              />
+            </div>
+          </div>
+        )
+      })}
 
       {/* Dementia Care items */}
       {dementiaItems.length > 0 && (
