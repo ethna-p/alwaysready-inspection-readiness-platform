@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
 import TrialBanner from '@/components/TrialBanner'
+import BetaBanner from '@/components/BetaBanner'
 import IdleTimeout from '@/components/IdleTimeout'
 
 export default async function DashboardLayout({
@@ -36,7 +37,7 @@ export default async function DashboardLayout({
   // Get org subscription state
   const { data: org } = await supabase
     .from('organisations')
-    .select('subscription_tier, trial_expires_at, is_demo, demo_expires_at')
+    .select('subscription_tier, trial_expires_at, is_demo, demo_expires_at, is_beta')
     .eq('id', profile.organisation_id)
     .single()
 
@@ -58,6 +59,11 @@ export default async function DashboardLayout({
         demoExpiresAt={org?.demo_expires_at ?? null}
         subscriptionTier={org?.subscription_tier ?? 'trial'}
         trialExpiresAt={org?.trial_expires_at ?? null}
+      />
+      <BetaBanner
+        subscriptionTier={org?.subscription_tier ?? 'trial'}
+        isDemo={org?.is_demo ?? false}
+        isBeta={org?.is_beta ?? false}
       />
       <main className="flex-1 w-full px-4 py-6 sm:px-6 sm:py-8">
         {children}
