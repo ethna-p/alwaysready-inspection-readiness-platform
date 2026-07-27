@@ -2,15 +2,21 @@
  * POST /api/inbound-waitlist
  *
  * Receives Netlify form webhook submissions from alwaysready.uk/waitlist.
- * Netlify posts application/x-www-form-urlencoded with all form fields.
+ * Netlify posts application/json with the form submission payload.
+ *
+ * Payload shape (simplified):
+ * {
+ *   email: string,
+ *   first_name: string,
+ *   last_name: string | null,
+ *   data: { [fieldName: string]: string },
+ *   form_name: string,
+ * }
  *
  * On receipt:
- *   1. Saves the lead to waitlist_leads (warm leads — higher priority)
+ *   1. Saves the lead to waitlist_leads (upsert — no duplicates)
  *   2. If marketing opt-in, also adds to blog_subscribers
- *   3. Sends auto-responder email to the submitter via Resend
- *
- * Security: requests must include the NETLIFY_WEBHOOK_SECRET header value
- * matching the NETLIFY_WEBHOOK_SECRET environment variable.
+ *   3. Sends auto-responder email (skipped if already on the waitlist)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -27,73 +33,124 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Parse form fields ─────────────────────────────────────────────────────
-  let body: URLSearchParams
+  // ── Parse Netlify JSON payload ────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let payload: Record<string, any>
   try {
     const text = await req.text()
-    body = new URLSearchParams(text)
+    // Netlify sends JSON directly; fall back to URLSearchParams for local testing
+    try {
+      payload = JSON.parse(text)
+    } catch {
+      const params = new URLSearchParams(text)
+      const raw = params.get('payload')
+      payload = raw ? JSON.parse(raw) : Object.fromEntries(params.entries())
+    }
   } catch {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }
 
-  const firstName      = body.get('first-name')?.trim() ?? body.get('firstName')?.trim() ?? ''
-  const email          = body.get('email')?.trim() ?? ''
-  const marketingOptIn = body.get('newsletter') === 'on' || body.get('newsletter') === 'true'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: Record<string, any> = payload.data ?? {}
 
-  if (!firstName || !email) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  // Field names — try top-level Netlify fields first, then data object variants
+  const firstName =
+    (payload.first_name as string | undefined)?.trim() ||
+    (data['first-name'] as string | undefined)?.trim() ||
+    (data['firstName'] as string | undefined)?.trim() ||
+    (data['name'] as string | undefined)?.trim() ||
+    ''
+
+  const lastName =
+    (payload.last_name as string | undefined)?.trim() ||
+    (data['last-name'] as string | undefined)?.trim() ||
+    (data['lastName'] as string | undefined)?.trim() ||
+    ''
+
+  const email =
+    (payload.email as string | undefined)?.trim() ||
+    (data['email'] as string | undefined)?.trim() ||
+    (data['email-address'] as string | undefined)?.trim() ||
+    ''
+
+  const marketingOptIn =
+    data['newsletter'] === 'on' ||
+    data['newsletter'] === 'true' ||
+    data['marketing-opt-in'] === 'on' ||
+    data['subscribe'] === 'on'
+
+  if (!email) {
+    console.error('[inbound-waitlist] missing email in payload:', JSON.stringify(payload))
+    return NextResponse.json({ error: 'Missing email' }, { status: 400 })
   }
+
+  const displayName = firstName || 'there'
 
   const supabase = createAdminClient()
 
-  // ── Save waitlist lead ────────────────────────────────────────────────────
+  // ── Check for existing lead (to avoid duplicate auto-responders) ──────────
+  const { data: existing } = await supabase
+    .from('waitlist_leads')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle()
+
+  const isNew = !existing
+
+  // ── Upsert waitlist lead ──────────────────────────────────────────────────
   const { error: leadError } = await supabase
     .from('waitlist_leads')
     .upsert(
-      { first_name: firstName, email, marketing_opt_in: marketingOptIn },
+      {
+        first_name:       firstName || email,
+        email,
+        marketing_opt_in: marketingOptIn,
+      },
       { onConflict: 'email', ignoreDuplicates: false }
     )
 
   if (leadError) {
-    console.error('[inbound-waitlist] lead insert error:', leadError.message)
-    // Don't fail the webhook — Netlify will retry on 5xx
+    console.error('[inbound-waitlist] lead upsert error:', leadError.message)
   }
 
   // ── Add to blog_subscribers if opted in ───────────────────────────────────
   if (marketingOptIn) {
+    const fullName = lastName ? `${firstName} ${lastName}`.trim() : firstName
     const { error: subError } = await supabase
       .from('blog_subscribers')
       .upsert(
-        { email, full_name: firstName, source: 'waitlist_form' },
+        { email, full_name: fullName || email, source: 'waitlist_form' },
         { onConflict: 'email', ignoreDuplicates: true }
       )
 
     if (subError) {
-      console.error('[inbound-waitlist] subscriber insert error:', subError.message)
+      console.error('[inbound-waitlist] subscriber upsert error:', subError.message)
     }
   }
 
-  // ── Send auto-responder ───────────────────────────────────────────────────
-  await sendEmail({
-    to: email,
-    subject: "You're on the AlwaysReady waitlist",
-    type: 'transactional',
-    bodyHtml: `
-      <p>Hi ${firstName},</p>
-      <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>
-      <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
-         and we'll open to new customers as soon as the framework is published.
-         When that happens, you'll be the first to know.</p>
-      <p>In the meantime, if you have any questions about the platform, feel free to reply
-         to this email or visit
-         <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
-      <p style="margin-top:32px">
-        Warm regards,<br>
-        <strong>Ethna Parker PhD</strong><br>
-        Founder, AlwaysReady
-      </p>
-    `,
-  })
+  // ── Send auto-responder (new leads only) ──────────────────────────────────
+  if (isNew) {
+    await sendEmail({
+      to: email,
+      subject: "You're on the AlwaysReady waitlist",
+      type: 'transactional',
+      bodyHtml: `
+        <p>Hi ${displayName},</p>
+        <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>
+        <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
+           and we'll open to new customers as soon as the framework is published.
+           When that happens, you'll be the first to know.</p>
+        <p>In the meantime, if you have any questions about the platform, feel free to reply
+           to this email or visit
+           <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
+        <p style="margin-top:32px">
+          Warm regards,<br>
+          <strong>Ethna Parker PhD</strong><br>
+          Founder, AlwaysReady
+        </p>
+      `,
+    })
+  }
 
   return NextResponse.json({ received: true }, { status: 200 })
 }
