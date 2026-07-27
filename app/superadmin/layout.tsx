@@ -15,7 +15,7 @@ export default function SuperadminLayout({
     <div className="min-h-screen bg-canvas text-ink">
       <IdleTimeout />
       {/* Top bar */}
-      <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between">
+      <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between relative">
         <div className="flex items-center gap-4">
           <span className="font-extrabold tracking-tight text-[#014D4E]">
             AlwaysReady
@@ -24,7 +24,7 @@ export default function SuperadminLayout({
             Superadmin
           </span>
         </div>
-        <nav className="flex items-center gap-6 text-sm text-ink-muted">
+        <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-6 text-sm text-ink-muted">
           <Link href="/superadmin/organisations" className="hover:text-brand transition-colors">
             Organisations
           </Link>
