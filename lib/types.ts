@@ -768,6 +768,36 @@ export type Database = {
         ]
       }
 
+      // ── Waitlist leads ─────────────────────────────────────────────────
+
+      waitlist_leads: {
+        Row: {
+          id: string
+          first_name: string
+          email: string
+          marketing_opt_in: boolean
+          source: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          first_name: string
+          email: string
+          marketing_opt_in?: boolean
+          source?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          first_name?: string
+          email?: string
+          marketing_opt_in?: boolean
+          source?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       // ── Blog subscribers ───────────────────────────────────────────────
 
       blog_subscribers: {
