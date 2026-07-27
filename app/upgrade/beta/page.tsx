@@ -15,9 +15,9 @@ export default async function UpgradeBetaPage() {
 
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-6 py-12">
-      <div className="max-w-2xl w-full">
+      <div className="max-w-4xl w-full">
 
-        {/* Logo mark */}
+        {/* Logo */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-3">
             <svg width="36" height="36" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -37,122 +37,118 @@ export default async function UpgradeBetaPage() {
           </p>
         </div>
 
-        {/* Main card */}
+        {/* 2-column card */}
         <div className="bg-card border border-[#00b8a6] rounded-2xl shadow-sm overflow-hidden mb-6">
 
           {/* Header band */}
-          <div className="bg-[#00b8a6] px-8 py-5 text-center">
+          <div className="bg-[#00b8a6] px-8 py-4 text-center">
             <p className="text-sm font-semibold text-white uppercase tracking-widest">
               Beta Partner — £50/month
             </p>
           </div>
 
-          {/* Body */}
-          <div className="p-8">
+          {/* Two columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-line">
 
-            {/* Price */}
-            <div className="text-center mb-8">
-              <div className="flex items-baseline gap-1 justify-center">
-                <span className="text-6xl font-extrabold text-[#014D4E]">£50</span>
-                <span className="text-base text-ink-muted">/ month</span>
+            {/* Left — price, CTA, T&Cs */}
+            <div className="p-8 flex flex-col gap-6">
+              <div className="text-center">
+                <div className="flex items-baseline gap-1 justify-center">
+                  <span className="text-6xl font-extrabold text-[#014D4E]">£50</span>
+                  <span className="text-base text-ink-muted">/ month</span>
+                </div>
+                <p className="text-sm text-ink-muted mt-2">Price locked in. Forever.*</p>
               </div>
-              <p className="text-sm text-ink-muted mt-2">Price locked in. Forever.*</p>
-            </div>
 
-            {/* What you get */}
-            <div className="mb-8">
-              <h2 className="text-sm font-semibold text-ink uppercase tracking-wider mb-4">What you get</h2>
-              <ul className="space-y-3 text-sm text-ink">
-                {[
-                  'Everything in the full AlwaysReady subscription',
-                  'Your £50/month rate locked in permanently',
-                  'Direct input into the platform as it develops',
-                  'Your feedback shapes features and priorities',
-                ].map(item => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <span className="text-[#00b8a6] font-bold mt-0.5 shrink-0">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* What we ask */}
-            <div className="mb-8 bg-fill rounded-xl p-5">
-              <h2 className="text-sm font-semibold text-ink uppercase tracking-wider mb-3">What we ask in return</h2>
-              <ul className="space-y-2.5 text-sm text-ink-muted">
-                {[
-                  'Flag anything that does not work as expected',
-                  'Spot typos, suggest FAQ updates, share your wish list',
-                  'After a couple of months of consistent use, we\'d love it if you could leave an honest review on Trustpilot — we\'ll send you a direct reviewer link to make it easy',
-                ].map(item => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <span className="text-[#014D4E] shrink-0 mt-0.5">→</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CTA */}
-            {user ? (
-              <form action={createBetaCheckoutSession}>
-                <button
-                  type="submit"
+              {user ? (
+                <form action={createBetaCheckoutSession}>
+                  <button
+                    type="submit"
+                    className="
+                      block w-full
+                      bg-[#00b8a6] hover:bg-[#009e8e] text-white
+                      font-bold text-sm
+                      py-4 rounded-xl
+                      focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
+                      transition-colors cursor-pointer
+                    "
+                  >
+                    Become a Beta Partner →
+                  </button>
+                </form>
+              ) : (
+                <a
+                  href="/login"
                   className="
-                    block w-full
+                    block w-full text-center
                     bg-[#00b8a6] hover:bg-[#009e8e] text-white
                     font-bold text-sm
                     py-4 rounded-xl
                     focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
-                    transition-colors cursor-pointer
+                    transition-colors
                   "
                 >
-                  Become a Beta Partner →
-                </button>
-              </form>
-            ) : (
-              <a
-                href="/login"
-                className="
-                  block w-full text-center
-                  bg-[#00b8a6] hover:bg-[#009e8e] text-white
-                  font-bold text-sm
-                  py-4 rounded-xl
-                  focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
-                  transition-colors
-                "
-              >
-                Log in to join →
-              </a>
-            )}
+                  Log in to join →
+                </a>
+              )}
 
-            <p className="text-center text-xs text-ink-muted mt-4">
-              Limited places available. No setup fee. Cancel any time.
-            </p>
+              <p className="text-center text-xs text-ink-muted">
+                Limited places available. No setup fee. Cancel any time.
+              </p>
+
+              {/* T&Cs small print */}
+              <div className="border-t border-line pt-5 text-xs text-ink-muted leading-relaxed space-y-2">
+                <p className="font-semibold text-ink">* Beta Partner terms</p>
+                <p>
+                  Your £50/month rate is permanently protected — you will never be charged standard pricing.
+                  Your rate may increase modestly over time in line with the cost of living, but will always
+                  remain significantly below the standard subscription price.
+                </p>
+              </div>
+            </div>
+
+            {/* Right — what you get + what we ask */}
+            <div className="p-8 flex flex-col gap-7">
+
+              <div>
+                <h2 className="text-xs font-semibold text-ink uppercase tracking-wider mb-4">What you get</h2>
+                <ul className="space-y-3 text-sm text-ink">
+                  {[
+                    'Everything in the full AlwaysReady subscription',
+                    'Your £50/month rate locked in permanently',
+                    'Direct input into the platform as it develops',
+                    'Your feedback shapes features and priorities',
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2.5">
+                      <span className="text-[#00b8a6] font-bold mt-0.5 shrink-0">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="border-t border-line pt-6">
+                <h2 className="text-xs font-semibold text-ink uppercase tracking-wider mb-4">What we ask in return</h2>
+                <ul className="space-y-3 text-sm text-ink-muted">
+                  {[
+                    'Flag anything that does not work as expected',
+                    'Spot typos, suggest FAQ updates, share your wish list',
+                    "After a couple of months of consistent use, we'd love it if you could leave an honest review on Trustpilot — we'll send you a direct reviewer link to make it easy",
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2.5">
+                      <span className="text-[#014D4E] shrink-0 mt-0.5">→</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+            </div>
           </div>
         </div>
 
-        {/* Small print / T&Cs */}
-        <div className="bg-card border border-line rounded-xl p-6 text-xs text-ink-muted leading-relaxed space-y-3">
-          <p className="font-semibold text-ink text-sm">* Beta Partner terms</p>
-          <p>
-            Your £50/month rate is permanently protected — you will never be charged standard pricing.
-            Your rate may increase modestly over time in line with the cost of living, but will always
-            remain significantly below the standard subscription price.
-          </p>
-          <p>
-            In return, we ask that you help us improve AlwaysReady — flagging anything that does not
-            work as expected, spotting typos, suggesting FAQ updates, and sharing your wish list as
-            the platform develops. After a couple of months of consistent use, we&apos;d love it if you
-            could leave an honest review on Trustpilot — we&apos;ll send you a direct reviewer link to
-            make it easy.
-          </p>
-          <p>Limited places available.</p>
-        </div>
-
         {/* Back link */}
-        <div className="text-center mt-6">
+        <div className="text-center">
           <a href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors">
             ← Back to dashboard
           </a>
