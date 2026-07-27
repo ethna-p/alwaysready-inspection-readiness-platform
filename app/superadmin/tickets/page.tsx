@@ -1,6 +1,7 @@
 /**
  * /superadmin/tickets — all support tickets across all orgs.
  * Uses the admin client to bypass RLS.
+ * Filter by status via ?status=open|in_progress|resolved (default: active = open + in_progress)
  */
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -11,10 +12,25 @@ const STATUS_LABELS: Record<string, { label: string; colour: string }> = {
   resolved:    { label: 'Resolved',    colour: 'bg-green-100 text-green-700' },
 }
 
-export default async function SuperadminTicketsPage() {
+const FILTER_TABS = [
+  { key: 'active',   label: 'Active' },
+  { key: 'open',     label: 'Open' },
+  { key: 'in_progress', label: 'In progress' },
+  { key: 'resolved', label: 'Resolved' },
+  { key: 'all',      label: 'All' },
+]
+
+export default async function SuperadminTicketsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>
+}) {
+  const { status: statusParam } = await searchParams
+  const filter = statusParam ?? 'active'
+
   const supabase = createAdminClient()
 
-  const { data: tickets } = await supabase
+  let query = supabase
     .from('support_tickets')
     .select(`
       id, reference, subject, status, staff_initiated, source,
@@ -23,9 +39,17 @@ export default async function SuperadminTicketsPage() {
     `)
     .order('created_at', { ascending: false })
 
+  if (filter === 'active') {
+    query = query.in('status', ['open', 'in_progress'])
+  } else if (filter !== 'all') {
+    query = query.eq('status', filter as 'open' | 'in_progress' | 'resolved')
+  }
+
+  const { data: tickets } = await query
+
   return (
     <div>
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-ink mb-1">Support Tickets</h1>
           <p className="text-sm text-ink-muted">
@@ -40,8 +64,28 @@ export default async function SuperadminTicketsPage() {
         </Link>
       </div>
 
+      {/* Filter tabs */}
+      <div className="flex gap-1 mb-6 border-b border-line">
+        {FILTER_TABS.map(tab => {
+          const isActive = filter === tab.key
+          return (
+            <Link
+              key={tab.key}
+              href={tab.key === 'active' ? '/superadmin/tickets' : `/superadmin/tickets?status=${tab.key}`}
+              className={`px-4 py-2 text-sm font-medium rounded-t transition-colors ${
+                isActive
+                  ? 'text-[#014D4E] border-b-2 border-[#014D4E] -mb-px'
+                  : 'text-ink-muted hover:text-ink'
+              }`}
+            >
+              {tab.label}
+            </Link>
+          )
+        })}
+      </div>
+
       {!tickets || tickets.length === 0 ? (
-        <p className="text-ink-muted text-sm">No tickets yet.</p>
+        <p className="text-ink-muted text-sm">No tickets found.</p>
       ) : (
         <div className="space-y-3">
           {tickets.map(ticket => {
