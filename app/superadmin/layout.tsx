@@ -40,9 +40,6 @@ export default function SuperadminLayout({
           <Link href="/superadmin/broadcast" className="hover:text-brand transition-colors">
             Broadcast
           </Link>
-          <Link href="/dashboard" className="hover:text-brand transition-colors">
-            ← Dashboard
-          </Link>
           <form action="/auth/signout" method="POST">
             <button type="submit" className="hover:text-brand transition-colors">
               Sign out
