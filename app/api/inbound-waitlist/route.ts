@@ -101,6 +101,7 @@ export async function POST(req: NextRequest) {
     .upsert(
       {
         first_name:       firstName || email,
+        last_name:        lastName || null,
         email,
         marketing_opt_in: marketingOptIn,
       },

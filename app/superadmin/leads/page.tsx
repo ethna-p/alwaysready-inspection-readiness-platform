@@ -10,7 +10,7 @@ export default async function SuperadminLeadsPage() {
 
   const { data: leads } = await supabase
     .from('waitlist_leads')
-    .select('id, first_name, email, marketing_opt_in, created_at')
+    .select('id, first_name, last_name, email, marketing_opt_in, created_at')
     .order('created_at', { ascending: false })
 
   return (
@@ -47,7 +47,9 @@ export default async function SuperadminLeadsPage() {
                 })
                 return (
                   <tr key={lead.id} className="hover:bg-fill transition-colors">
-                    <td className="px-5 py-3.5 font-medium text-ink">{lead.first_name}</td>
+                    <td className="px-5 py-3.5 font-medium text-ink">
+                      {[lead.first_name, lead.last_name].filter(Boolean).join(' ')}
+                    </td>
                     <td className="px-5 py-3.5 text-ink-muted">
                       <a
                         href={`mailto:${lead.email}`}

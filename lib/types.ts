@@ -774,6 +774,7 @@ export type Database = {
         Row: {
           id: string
           first_name: string
+          last_name: string | null
           email: string
           marketing_opt_in: boolean
           source: string
@@ -782,6 +783,7 @@ export type Database = {
         Insert: {
           id?: string
           first_name: string
+          last_name?: string | null
           email: string
           marketing_opt_in?: boolean
           source?: string
@@ -790,6 +792,7 @@ export type Database = {
         Update: {
           id?: string
           first_name?: string
+          last_name?: string | null
           email?: string
           marketing_opt_in?: boolean
           source?: string
