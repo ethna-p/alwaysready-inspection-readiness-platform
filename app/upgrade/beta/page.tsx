@@ -17,28 +17,27 @@ export default async function UpgradeBetaPage() {
     <main className="min-h-screen bg-canvas flex items-center justify-center px-6 py-8">
       <div className="max-w-4xl w-full">
 
-        {/* Logo + heading on one line */}
-        <div className="mb-5 text-center">
-          <div className="inline-flex items-center gap-3 flex-wrap justify-center">
-            <svg width="32" height="32" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="shrink-0">
-              <circle cx="11" cy="11" r="11" fill="#ffd700"/>
-              <path d="M6 11.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#014D4E] whitespace-nowrap">
-              AlwaysReady — Beta Partner Programme
-            </h1>
-          </div>
-          <p className="text-ink-muted text-sm leading-relaxed max-w-lg mx-auto mt-3">
-            You are already using AlwaysReady — help us make it even better, and lock in a significantly
-            reduced subscription rate for life.
-          </p>
-        </div>
-
-        {/* Back link — above card, left-aligned */}
-        <div className="mb-4">
-          <a href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors">
+        {/* Header row: back link left, logo+heading truly centred */}
+        <div className="mb-5 flex items-start gap-4">
+          <a href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors pt-1 shrink-0 w-36">
             ← Back to dashboard
           </a>
+          <div className="flex-1 text-center">
+            <div className="inline-flex items-center gap-3 flex-wrap justify-center">
+              <svg width="32" height="32" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="shrink-0">
+                <circle cx="11" cy="11" r="11" fill="#ffd700"/>
+                <path d="M6 11.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <h1 className="text-2xl font-extrabold tracking-tight text-[#014D4E] whitespace-nowrap">
+                AlwaysReady — Beta Partner Programme
+              </h1>
+            </div>
+            <p className="text-ink-muted text-sm leading-relaxed max-w-lg mx-auto mt-3">
+              You are already using AlwaysReady — help us make it even better, and lock in a significantly
+              reduced subscription rate for life.
+            </p>
+          </div>
+          <div className="w-36 shrink-0" />
         </div>
 
         {/* 2-column card */}
