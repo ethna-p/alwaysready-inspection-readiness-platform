@@ -23,15 +23,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
-  // ── Secret verification ───────────────────────────────────────────────────
-  const secret = process.env.NETLIFY_WEBHOOK_SECRET
-  if (secret) {
-    const incoming = req.headers.get('x-webhook-secret')
-    if (incoming !== secret) {
-      return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-    }
-  }
-
   // ── Parse Netlify JSON payload ────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: Record<string, any>
