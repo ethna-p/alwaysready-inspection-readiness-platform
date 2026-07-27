@@ -52,7 +52,7 @@ export default async function SuperadminTicketsPage() {
               external_name: string | null
               organisations: { name: string } | null
             }
-            const isWebsite = t.source === 'website'
+            const isWebsite = t.source === 'website_contact' || t.source === 'website'
             const isEmail   = t.source === 'email'
             const orgName   = isWebsite || isEmail
               ? (t.external_name ?? (isEmail ? 'Sales enquiry' : 'Website enquiry'))

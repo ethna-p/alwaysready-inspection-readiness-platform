@@ -77,9 +77,6 @@ export async function POST(req: NextRequest) {
     data['marketing-opt-in']     === 'on'   ||
     data['subscribe']            === 'on'
 
-  // Log full payload for debugging — remove once confirmed working
-  console.log('[inbound-waitlist] received payload keys:', Object.keys(payload), '| data keys:', Object.keys(data), '| email:', email, '| firstName:', firstName)
-
   if (!email) {
     console.error('[inbound-waitlist] missing email — full payload:', JSON.stringify(payload))
     return NextResponse.json({ error: 'Missing email' }, { status: 400 })
