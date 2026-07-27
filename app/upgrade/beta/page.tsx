@@ -14,7 +14,7 @@ export default async function UpgradeBetaPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-canvas flex items-center justify-center px-6 py-8">
+    <main className="min-h-screen bg-canvas flex items-center justify-center px-6 py-8">
       <div className="max-w-4xl w-full">
 
         {/* Logo + heading on one line */}
@@ -38,7 +38,7 @@ export default async function UpgradeBetaPage() {
         <div className="bg-card border border-[#00b8a6] rounded-2xl shadow-sm overflow-hidden mb-6">
 
           {/* Header band */}
-          <div className="bg-[#00b8a6] px-8 py-4 text-center">
+          <div className="bg-[#014D4E] px-8 py-4 text-center">
             <p className="text-sm font-semibold text-white uppercase tracking-widest">
               Beta Partner — £50/month
             </p>
@@ -63,7 +63,7 @@ export default async function UpgradeBetaPage() {
                     type="submit"
                     className="
                       block w-full
-                      bg-[#00b8a6] hover:bg-[#009e8e] text-white
+                      bg-[#ffd700] hover:bg-yellow-300 text-[#014D4E]
                       font-bold text-sm
                       py-4 rounded-xl
                       focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
@@ -78,7 +78,7 @@ export default async function UpgradeBetaPage() {
                   href="/login"
                   className="
                     block w-full text-center
-                    bg-[#00b8a6] hover:bg-[#009e8e] text-white
+                    bg-[#ffd700] hover:bg-yellow-300 text-[#014D4E]
                     font-bold text-sm
                     py-4 rounded-xl
                     focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2
@@ -152,6 +152,6 @@ export default async function UpgradeBetaPage() {
         </div>
 
       </div>
-    </div>
+    </main>
   )
 }
