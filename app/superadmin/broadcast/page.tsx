@@ -25,7 +25,7 @@ export default function BroadcastPage() {
     ? intro.split(/\n\n+/).map(p =>
         `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${p.trim().replace(/\n/g, '<br>')}</p>`
       ).join('')
-    : '<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#767676">Your intro will appear here…</p>'
+    : '<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#595959">Your intro will appear here…</p>'
 
   const previewBody = `
     <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear [Name],</p>
@@ -226,7 +226,7 @@ export default function BroadcastPage() {
 
             {/* Email footer */}
             <div style={{ backgroundColor: '#faf9f6', borderTop: '1px solid #e8e6e0', padding: '16px 28px', textAlign: 'center' }}>
-              <p style={{ margin: 0, fontSize: 11, color: '#888', lineHeight: 1.6 }}>
+              <p style={{ margin: 0, fontSize: 11, color: '#595959', lineHeight: 1.6 }}>
                 AlwaysReady is a product of Parker Digital &amp; Print Services Ltd<br />
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
