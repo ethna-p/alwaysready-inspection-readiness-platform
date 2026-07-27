@@ -52,34 +52,41 @@ export async function POST(req: NextRequest) {
   const data: Record<string, any> = payload.data ?? {}
 
   const firstName =
-    (payload.first_name as string | undefined)?.trim() ||
-    (data['first-name'] as string | undefined)?.trim() ||
-    (data['firstName'] as string | undefined)?.trim() ||
+    (payload.first_name    as string | undefined)?.trim() ||
+    (payload['first-name'] as string | undefined)?.trim() ||
+    (data['first-name']    as string | undefined)?.trim() ||
+    (data['firstName']     as string | undefined)?.trim() ||
+    (payload.name          as string | undefined)?.trim() ||
     ''
 
   const lastName =
-    (payload.last_name as string | undefined)?.trim() ||
-    (data['last-name'] as string | undefined)?.trim() ||
-    (data['lastName'] as string | undefined)?.trim() ||
+    (payload.last_name    as string | undefined)?.trim() ||
+    (payload['last-name'] as string | undefined)?.trim() ||
+    (data['last-name']    as string | undefined)?.trim() ||
+    (data['lastName']     as string | undefined)?.trim() ||
     ''
 
   const email =
-    (payload.email as string | undefined)?.trim() ||
-    (data['email'] as string | undefined)?.trim() ||
-    (data['email-address'] as string | undefined)?.trim() ||
+    (payload.email            as string | undefined)?.trim() ||
+    (data['email']            as string | undefined)?.trim() ||
+    (data['email-address']    as string | undefined)?.trim() ||
+    (payload['email-address'] as string | undefined)?.trim() ||
     ''
 
   const company =
-    (data['company-name'] as string | undefined)?.trim() ||
-    (data['company'] as string | undefined)?.trim() ||
+    (data['company-name']    as string | undefined)?.trim() ||
+    (data['company']         as string | undefined)?.trim() ||
+    (payload['company-name'] as string | undefined)?.trim() ||
     ''
 
   const subject =
-    (data['subject'] as string | undefined)?.trim() ||
+    (data['subject']    as string | undefined)?.trim() ||
+    (payload['subject'] as string | undefined)?.trim() ||
     '(No subject)'
 
   const message =
-    (data['message'] as string | undefined)?.trim() ||
+    (data['message']    as string | undefined)?.trim() ||
+    (payload['message'] as string | undefined)?.trim() ||
     ''
 
   if (!email) {

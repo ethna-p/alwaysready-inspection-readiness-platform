@@ -53,34 +53,44 @@ export async function POST(req: NextRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: Record<string, any> = payload.data ?? {}
 
-  // Field names — try top-level Netlify fields first, then data object variants
+  // Field names — check top-level Netlify JSON fields, data sub-object,
+  // and direct URL-encoded keys (all dash/underscore/camel variants)
   const firstName =
-    (payload.first_name as string | undefined)?.trim() ||
-    (data['first-name'] as string | undefined)?.trim() ||
-    (data['firstName'] as string | undefined)?.trim() ||
-    (data['name'] as string | undefined)?.trim() ||
+    (payload.first_name  as string | undefined)?.trim() ||
+    (payload['first-name'] as string | undefined)?.trim() ||
+    (data['first-name']  as string | undefined)?.trim() ||
+    (data['firstName']   as string | undefined)?.trim() ||
+    (data['name']        as string | undefined)?.trim() ||
+    (payload.name        as string | undefined)?.trim() ||
     ''
 
   const lastName =
-    (payload.last_name as string | undefined)?.trim() ||
-    (data['last-name'] as string | undefined)?.trim() ||
-    (data['lastName'] as string | undefined)?.trim() ||
+    (payload.last_name   as string | undefined)?.trim() ||
+    (payload['last-name'] as string | undefined)?.trim() ||
+    (data['last-name']   as string | undefined)?.trim() ||
+    (data['lastName']    as string | undefined)?.trim() ||
     ''
 
   const email =
-    (payload.email as string | undefined)?.trim() ||
-    (data['email'] as string | undefined)?.trim() ||
-    (data['email-address'] as string | undefined)?.trim() ||
+    (payload.email               as string | undefined)?.trim() ||
+    (data['email']               as string | undefined)?.trim() ||
+    (data['email-address']       as string | undefined)?.trim() ||
+    (payload['email-address']    as string | undefined)?.trim() ||
     ''
 
   const marketingOptIn =
-    data['newsletter'] === 'on' ||
-    data['newsletter'] === 'true' ||
-    data['marketing-opt-in'] === 'on' ||
-    data['subscribe'] === 'on'
+    payload['newsletter']        === 'on'   ||
+    payload['newsletter']        === 'true' ||
+    data['newsletter']           === 'on'   ||
+    data['newsletter']           === 'true' ||
+    data['marketing-opt-in']     === 'on'   ||
+    data['subscribe']            === 'on'
+
+  // Log full payload for debugging — remove once confirmed working
+  console.log('[inbound-waitlist] received payload keys:', Object.keys(payload), '| data keys:', Object.keys(data), '| email:', email, '| firstName:', firstName)
 
   if (!email) {
-    console.error('[inbound-waitlist] missing email in payload:', JSON.stringify(payload))
+    console.error('[inbound-waitlist] missing email — full payload:', JSON.stringify(payload))
     return NextResponse.json({ error: 'Missing email' }, { status: 400 })
   }
 
