@@ -34,6 +34,13 @@ export default async function UpgradeBetaPage() {
           </p>
         </div>
 
+        {/* Back link — above card, left-aligned */}
+        <div className="mb-4">
+          <a href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors">
+            ← Back to dashboard
+          </a>
+        </div>
+
         {/* 2-column card */}
         <div className="bg-card border border-[#00b8a6] rounded-2xl shadow-sm overflow-hidden mb-6">
 
