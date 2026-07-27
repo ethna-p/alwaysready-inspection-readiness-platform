@@ -25,7 +25,7 @@ export default function BroadcastPage() {
     ? intro.split(/\n\n+/).map(p =>
         `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${p.trim().replace(/\n/g, '<br>')}</p>`
       ).join('')
-    : '<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#aaa">Your intro will appear here…</p>'
+    : '<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#767676">Your intro will appear here…</p>'
 
   const previewBody = `
     <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear [Name],</p>
@@ -91,7 +91,7 @@ export default function BroadcastPage() {
           <p className="text-ink-muted text-sm">
             Compose an email to send to all opted-in customers.
             {recipientCount !== null && (
-              <span className="ml-2 bg-[#014D4E] text-[#00b8a6] text-xs font-semibold px-2 py-0.5 rounded">
+              <span className="ml-2 bg-[#014D4E] text-white text-xs font-semibold px-2 py-0.5 rounded">
                 {recipientCount} recipient{recipientCount !== 1 ? 's' : ''}
               </span>
             )}
@@ -231,7 +231,7 @@ export default function BroadcastPage() {
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
               <p style={{ margin: '6px 0 0', fontSize: 11 }}>
-                <a href="#" style={{ color: '#014D4E' }}>Unsubscribe</a> from non-essential emails.
+                <a href="#" style={{ color: '#014D4E', textDecoration: 'underline' }}>Unsubscribe</a> from non-essential emails.
               </p>
             </div>
           </div>

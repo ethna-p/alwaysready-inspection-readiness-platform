@@ -17,7 +17,7 @@ export default function SuperadminLayout({
       {/* Top bar */}
       <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <span className="font-extrabold tracking-tight text-[#00b8a6]">
+          <span className="font-extrabold tracking-tight text-[#014D4E]">
             AlwaysReady
           </span>
           <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase tracking-wide">
