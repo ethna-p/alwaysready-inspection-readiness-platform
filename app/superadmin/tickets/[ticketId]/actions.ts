@@ -37,7 +37,7 @@ export async function staffReply(
   if (error) return { status: 'error', message: error.message }
 
   // If this is a website enquiry, email the reply to the external sender
-  if (ticket?.source === 'website' && ticket.external_email) {
+  if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
     const firstName = ticket.external_name?.split(' ')[0] ?? 'there'
     await sendEmail({
       to:      ticket.external_email,
@@ -85,7 +85,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
       let recipientEmail: string | null = null
       let firstName = 'there'
 
-      if (ticket.source === 'website' && ticket.external_email) {
+      if ((ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
         // Website enquiry — email the external contact
         recipientEmail = ticket.external_email
         firstName = ticket.external_name?.split(' ')[0] ?? 'there'
@@ -121,8 +121,10 @@ export async function updateTicketStatus(ticketId: string, status: string) {
             </div>
 
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-              If your issue has not been fully resolved or you have a follow-up question, please open a new support
-              ticket from the <strong>Support</strong> section inside the platform and we'll be happy to help.
+              ${ticket.source === 'website_contact' || ticket.source === 'website'
+                ? `If your issue has not been fully resolved or you have a follow-up question, please get in touch via <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a> and we'll be happy to help.`
+                : `If your issue has not been fully resolved or you have a follow-up question, please open a new support ticket from the <strong>Support</strong> section inside the platform and we'll be happy to help.`
+              }
             </p>
 
             <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
