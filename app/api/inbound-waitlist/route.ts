@@ -115,6 +115,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Add to blog_subscribers if opted in ───────────────────────────────────
+  let subscribedToBlog = false
   if (marketingOptIn) {
     const fullName = lastName ? `${firstName} ${lastName}`.trim() : firstName
     const { error: subError } = await supabase
@@ -126,6 +127,8 @@ export async function POST(req: NextRequest) {
 
     if (subError) {
       console.error('[inbound-waitlist] subscriber upsert error:', subError.message)
+    } else {
+      subscribedToBlog = true
     }
   }
 
@@ -144,6 +147,26 @@ export async function POST(req: NextRequest) {
         <p>In the meantime, if you have any questions about the platform, feel free to reply
            to this email or visit
            <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
+        <p style="margin-top:32px">
+          Warm regards,<br>
+          <strong>Ethna Parker PhD</strong><br>
+          Founder, AlwaysReady
+        </p>
+      `,
+    })
+  }
+
+  // ── Send blog subscription confirmation ───────────────────────────────────
+  if (subscribedToBlog) {
+    await sendEmail({
+      to: email,
+      subject: "You're subscribed to the AlwaysReady blog",
+      type: 'transactional',
+      bodyHtml: `
+        <p>Hi ${displayName},</p>
+        <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
+           sector updates, and inspection-readiness guidance — straight to your inbox.</p>
+        <p>You can unsubscribe at any time by replying to any of our emails.</p>
         <p style="margin-top:32px">
           Warm regards,<br>
           <strong>Ethna Parker PhD</strong><br>
