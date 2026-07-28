@@ -42,6 +42,7 @@ function decodeQuotedPrintable(text: string): string {
   return text
     .replace(/=\r\n/g, '')  // soft line break CRLF
     .replace(/=\n/g, '')    // soft line break LF
+    .replace(/=$/, '')      // trailing soft line break with no following newline
     .replace(/(=([0-9A-Fa-f]{2}))+/g, (match) => {
       const bytes = (match.match(/=([0-9A-Fa-f]{2})/g) ?? [])
         .map(s => parseInt(s.slice(1), 16))
@@ -152,8 +153,7 @@ export async function POST(req: NextRequest) {
         })),
       }
 
-      // Fire-and-forget — don't await so response isn't delayed
-      void refreshDraft(ticket.id, thread)
+      await refreshDraft(ticket.id, thread)
 
       return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
     }
@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: ticketError?.message ?? 'insert failed' }, { status: 500 })
   }
 
-  // Generate AI draft for new ticket — fire-and-forget
+  // Generate AI draft for new ticket
   const thread: TicketThread = {
     subject:         cleanSubject,
     senderName:      displayName || null,
