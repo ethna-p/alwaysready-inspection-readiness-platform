@@ -35,14 +35,22 @@ function extractReference(subject: string): string | null {
   return match ? match[1] : null
 }
 
-// Decode quoted-printable encoding (e.g. "on the =\napp" → "on the app")
+// Decode quoted-printable encoding.
+// Handles soft line breaks (= at end of line) and multi-byte UTF-8 sequences
+// like curly quotes (=E2=80=99) which must be decoded together, not byte-by-byte.
 function decodeQuotedPrintable(text: string): string {
   return text
-    .replace(/=\r\n/g, '')   // soft line break (CRLF)
-    .replace(/=\n/g, '')     // soft line break (LF)
-    .replace(/=([0-9A-Fa-f]{2})/g, (_, hex) =>
-      String.fromCharCode(parseInt(hex, 16))
-    )
+    .replace(/=\r\n/g, '')  // soft line break CRLF
+    .replace(/=\n/g, '')    // soft line break LF
+    .replace(/(=([0-9A-Fa-f]{2}))+/g, (match) => {
+      const bytes = (match.match(/=([0-9A-Fa-f]{2})/g) ?? [])
+        .map(s => parseInt(s.slice(1), 16))
+      try {
+        return new TextDecoder('utf-8').decode(new Uint8Array(bytes))
+      } catch {
+        return match // leave as-is if decode fails
+      }
+    })
 }
 
 // Strip quoted reply text (lines starting with ">") to get just the new message
