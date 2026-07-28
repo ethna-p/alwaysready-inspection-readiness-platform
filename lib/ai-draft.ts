@@ -72,6 +72,44 @@ In-platform support tickets are submitted via Support in the navigation bar. Ema
 Data export
 Users can download their account data and evidence pack from the Account page.
 
+## The 24 KLOEs in the platform
+
+These are the exact KLOE titles and their descriptive questions as they appear in AlwaysReady, grouped by key question area. Use these when a customer asks what a specific KLOE covers or means within the platform. Do not go beyond describing what a KLOE is about — do not advise on what evidence to gather or how to achieve a rating.
+
+SAFE — you are protected from abuse and avoidable harm.
+1. Safety culture: Is there a positive and equitable safety culture where risks are proactively managed, concerns are listened to, incidents are thoroughly investigated, and lessons are learned to improve care?
+2. Managing risks during care and treatment: Are risks to each person monitored and managed so that their care and treatment is safe and supportive?
+3. Safe systems, pathways and transitions: Are there systems to enable collaborative working across care pathways and services, to ensure that safety and continuity of care are prioritised?
+4. Safeguarding: Does the service work with partners and people to protect their rights to live in safety and be free from abuse and improper treatment?
+5. Safe environments and infection prevention and control: Are potential risks within the care environment detected and managed appropriately to enable safe delivery of care for people and staff?
+6. Safe staffing: Are there enough qualified, skilled and experienced staff who receive adequate support, supervision and development to keep people safe and meet their needs?
+7. Safe medicines and treatments: Are medicines and treatments safe and delivered in a timely way, in line with people's needs and preferences?
+
+EFFECTIVE — your care, treatment and support achieves good outcomes, helps you to maintain quality of life and is based on the best available evidence.
+8. Assessing needs: Are people's needs holistically assessed and reviewed with them to maximise the effectiveness of their care, support and treatment?
+9. Evidence-based care and equitable outcomes: Is care, support and treatment delivered in line with legislation, evidence-based standards and good practice, to achieve equitable and good outcomes?
+10. Supporting people to live healthier lives: Are people encouraged and supported to manage their own health and wellbeing?
+11. Consent to care and treatment: Are people supported to understand and exercise their right to consent to care, support and treatment?
+
+CARING — staff involve and treat you with compassion, kindness, dignity and respect.
+12. Kindness, compassion and dignity: Are people treated with kindness, empathy, compassion and respect, and is their privacy and dignity maintained?
+13. Person-centred care: Do people receive personalised care, which ensures they are at the centre of their care, support and treatment choices?
+14. Independence, choice and control: Are people supported and empowered to maintain their independence, relationships, and choice over their care and plans for the future?
+
+RESPONSIVE — services are organised so that they meet your needs.
+15. Care provision, integration and continuity: Is care co-ordinated and delivered in a flexible, joined-up way that reflects diverse needs and promotes choice and continuity?
+16. Listening to and responding to feedback: Are people supported to give feedback and raise concerns, and are they confident that action will be taken as a result?
+17. Timely and equitable access: Does the service ensure that everyone can access equitable and timely care, support and treatment?
+18. Equity in experiences: Does the service tailor people's care, support and treatment effectively, to ensure equity in experiences?
+
+WELL-LED — the leadership, management and governance of the organisation make sure it's providing high-quality care that's based around your individual needs, that it encourages learning and innovation, and that it promotes an open and fair culture.
+19. Strategic direction: Is there a clear vision and strategy to support the current and future needs of people and promote a positive culture?
+20. Workforce equity and culture: Is there an inclusive and compassionate culture that values diversity, supports staff wellbeing and speaking up, and tackles workforce inequalities?
+21. Capable and compassionate leaders: Do leaders at all levels have the capability and experience to lead effectively and deliver high-quality care, with accountability, integrity and empathy?
+22. Governance and management: Are there clear roles, responsibilities and systems of accountability to support good governance and manage risks, performance and issues?
+23. Partnerships and communities: Is the service working effectively and collaboratively with people who use the service and partners to support care provision and service development?
+24. Improvement, innovation and learning: Does the service enable and embed continuous improvement, innovation and learning, using evidence and lived experience?
+
 ## What support covers
 1. Platform fields and processes — what a field means, where to find it, how to use it
 2. KLOE tracker and RAG status
