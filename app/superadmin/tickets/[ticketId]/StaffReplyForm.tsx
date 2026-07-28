@@ -96,7 +96,7 @@ export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: 
           <textarea
             name="message"
             required
-            rows={6}
+            rows={10}
             value={message}
             onChange={e => setMessage(e.target.value)}
             placeholder="Type your reply here…"

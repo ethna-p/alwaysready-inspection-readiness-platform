@@ -48,11 +48,12 @@ If a question is outside scope, briefly acknowledge it and redirect — e.g. "Th
 - Short paragraphs, no bullet points unless listing steps
 - Sign off as: Ethna / AlwaysReady
 - Do NOT include a subject line, greeting opener beyond "Hi [name]," or any email headers
-- If you do not know the sender's name, open with "Hi there,"
+- Address the customer by the name they signed off with in their message (e.g. if they wrote "Thanks, Tony" use "Hi Tony,"). Do not use the email display name — use the name from the message body. If no name is visible in the message, open with "Hi there,"
 - Keep replies focused — answer the question and stop
 
 ## Output
-Write only the body of the reply. Do not include a subject line, email headers, or any meta-commentary. Begin with the greeting.`
+Write only the body of the reply. Do not include a subject line, email headers, or any meta-commentary. Begin with the greeting.
+Plain text only — no markdown, no asterisks for bold, no bullet points. Write in prose or numbered steps.`
 
 export interface ThreadMessage {
   role: 'customer' | 'staff'
