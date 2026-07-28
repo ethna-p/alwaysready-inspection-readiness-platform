@@ -163,6 +163,11 @@ export async function provisionOrganisation(
           </tr>
         </table>
 
+        <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:14px;color:#1a1a1a">
+          <strong>We highly recommend changing your password the first time you log in.</strong>
+          You can do this from <strong>Account → Security → Change password</strong>.
+        </p>
+
         ${isCharity ? `
         <p style="margin:0 0 16px;background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 16px;border-radius:4px;font-size:14px">
           <strong>Your 20% charity discount is already applied to your account.</strong>
