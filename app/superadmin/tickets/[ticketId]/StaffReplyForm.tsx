@@ -4,7 +4,8 @@
  */
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { staffReply, updateTicketStatus, regenerateDraft, type ReplyState } from './actions'
 
 const STATUS_OPTIONS = [
@@ -20,15 +21,22 @@ interface Props {
 }
 
 export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: Props) {
-  // Bind ticketId into the reply action
+  const router = useRouter()
   const boundReply = staffReply.bind(null, ticketId)
   const [state, action, pending] = useActionState<ReplyState, FormData>(
     boundReply,
     { status: 'idle' }
   )
 
-  // Pre-fill from AI draft; user can edit freely
   const [message, setMessage] = useState(draftReply ?? '')
+  const [isGenerating, startGenerating] = useTransition()
+
+  const handleGenerate = () => {
+    startGenerating(async () => {
+      await regenerateDraft(ticketId)
+      router.refresh()
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -62,14 +70,13 @@ export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: 
       <div className="bg-card border border-line rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-xs text-ink-muted uppercase tracking-wide">Reply to customer</p>
-            <form action={regenerateDraft.bind(null, ticketId)}>
-              <button
-                type="submit"
-                className="text-xs text-[#00b8a6] hover:text-[#009d8e] font-medium transition-colors"
-              >
-                {draftReply ? '↺ Regenerate AI draft' : '✦ Generate AI draft'}
-              </button>
-            </form>
+          <button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="text-xs text-[#00b8a6] hover:text-[#009d8e] font-medium transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              {isGenerating ? 'Generating…' : draftReply ? '↺ Regenerate AI draft' : '✦ Generate AI draft'}
+            </button>
         </div>
 
         {draftReply && (

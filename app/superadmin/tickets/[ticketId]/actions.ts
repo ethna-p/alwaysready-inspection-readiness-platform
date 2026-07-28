@@ -103,7 +103,7 @@ export async function regenerateDraft(ticketId: string): Promise<void> {
     console.error('[regenerateDraft] AI draft failed:', err)
   }
 
-  redirect(`/superadmin/tickets/${ticketId}`)
+  // No redirect — caller handles page refresh
 }
 
 export async function updateTicketStatus(ticketId: string, status: string) {
