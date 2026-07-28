@@ -21,7 +21,7 @@ export async function staffReply(
   // Fetch ticket to check source and get external contact details
   const { data: ticket } = await supabase
     .from('support_tickets')
-    .select('subject, source, external_email, external_name')
+    .select('reference, subject, source, external_email, external_name')
     .eq('id', ticketId)
     .single()
 
@@ -41,7 +41,7 @@ export async function staffReply(
     const firstName = ticket.external_name?.split(' ')[0] ?? 'there'
     await sendEmail({
       to:      ticket.external_email,
-      subject: `Re: ${ticket.subject}`,
+      subject: `Re: ${ticket.subject} [${ticket.reference}]`,
       type:    'transactional',
       bodyHtml: `
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
@@ -105,7 +105,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
       if (recipientEmail) {
         await sendEmail({
           to:      recipientEmail,
-          subject: `Your support request has been resolved — ${ticket.reference}`,
+          subject: `Your support request has been resolved [${ticket.reference}]`,
           type:    'transactional',
           bodyHtml: `
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
