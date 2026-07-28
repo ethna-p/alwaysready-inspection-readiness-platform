@@ -685,6 +685,7 @@ export type Database = {
           source: string
           external_email: string | null
           external_name: string | null
+          draft_reply: string | null
           created_at: string
           updated_at: string
         }
@@ -700,6 +701,7 @@ export type Database = {
           source?: string
           external_email?: string | null
           external_name?: string | null
+          draft_reply?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -715,6 +717,7 @@ export type Database = {
           source?: string
           external_email?: string | null
           external_name?: string | null
+          draft_reply?: string | null
           created_at?: string
           updated_at?: string
         }

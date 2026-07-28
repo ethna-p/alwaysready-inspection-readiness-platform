@@ -21,11 +21,13 @@
  * On receipt:
  *   1. If subject contains [AR-XXXX], append as a reply to that ticket.
  *   2. Otherwise, create a new ticket with source='email'.
+ *   3. In both cases, generate an AI draft reply and store on the ticket.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 
 // Parse a ticket reference like [AR-0001] from a subject line
 function extractReference(subject: string): string | null {
@@ -40,6 +42,20 @@ function stripQuotedText(text: string): string {
     .filter(line => !line.trimStart().startsWith('>'))
     .join('\n')
     .trim()
+}
+
+// Generate and persist an AI draft for a ticket — non-fatal
+async function refreshDraft(ticketId: string, thread: TicketThread): Promise<void> {
+  try {
+    const draft = await generateSupportDraft(thread)
+    const supabase = createAdminClient()
+    await supabase
+      .from('support_tickets')
+      .update({ draft_reply: draft })
+      .eq('id', ticketId)
+  } catch (err) {
+    console.error('[inbound-email] AI draft generation failed (non-fatal):', err)
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -76,7 +92,7 @@ export async function POST(req: NextRequest) {
   if (reference) {
     const { data: ticket } = await supabase
       .from('support_tickets')
-      .select('id, subject, status')
+      .select('id, subject, message, status, external_name')
       .eq('reference', reference)
       .single()
 
@@ -93,11 +109,32 @@ export async function POST(req: NextRequest) {
       await supabase
         .from('support_ticket_replies')
         .insert({
-          ticket_id:     ticket.id,
-          sent_by:       null,
-          message:       cleanBody,
+          ticket_id:      ticket.id,
+          sent_by:        null,
+          message:        cleanBody,
           is_staff_reply: false,
         })
+
+      // Fetch full thread for draft generation
+      const { data: allReplies } = await supabase
+        .from('support_ticket_replies')
+        .select('message, is_staff_reply, created_at')
+        .eq('ticket_id', ticket.id)
+        .order('created_at', { ascending: true })
+
+      const thread: TicketThread = {
+        subject:         ticket.subject,
+        senderName:      ticket.external_name ?? (fromName || null),
+        originalMessage: ticket.message,
+        replies: (allReplies ?? []).map(r => ({
+          role:      r.is_staff_reply ? 'staff' : 'customer',
+          message:   r.message,
+          createdAt: new Date(r.created_at).toLocaleDateString('en-GB'),
+        })),
+      }
+
+      // Fire-and-forget — don't await so response isn't delayed
+      void refreshDraft(ticket.id, thread)
 
       return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
     }
@@ -106,23 +143,35 @@ export async function POST(req: NextRequest) {
 
   // ── Route: create new ticket ──────────────────────────────────────────────
   const displayName = fromName || from
+  const cleanSubject = subject.replace(/\s*\[[A-Z]+-\d+\]\s*/g, '').trim() || subject
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: ticketError } = await (supabase as any)
+  const { data: newTicket, error: ticketError } = await (supabase as any)
     .from('support_tickets')
     .insert({
-      subject:        subject.replace(/\s*\[[A-Z]+-\d+\]\s*/g, '').trim() || subject,
+      subject:        cleanSubject,
       message:        cleanBody,
       status:         'open',
       source:         'email',
       external_email: from,
       external_name:  displayName,
     })
+    .select('id')
+    .single()
 
-  if (ticketError) {
-    console.error('[inbound-email] ticket insert error:', ticketError.message)
-    return NextResponse.json({ error: ticketError.message }, { status: 500 })
+  if (ticketError || !newTicket) {
+    console.error('[inbound-email] ticket insert error:', ticketError?.message)
+    return NextResponse.json({ error: ticketError?.message ?? 'insert failed' }, { status: 500 })
   }
+
+  // Generate AI draft for new ticket — fire-and-forget
+  const thread: TicketThread = {
+    subject:         cleanSubject,
+    senderName:      displayName || null,
+    originalMessage: cleanBody,
+    replies:         [],
+  }
+  void refreshDraft(newTicket.id, thread)
 
   // Auto-responder for new tickets
   const firstName = fromName.split(' ')[0] || 'there'
@@ -141,5 +190,5 @@ export async function POST(req: NextRequest) {
     `,
   })
 
-  return NextResponse.json({ action: 'created' }, { status: 200 })
+  return NextResponse.json({ action: 'created', ticketId: newTicket.id }, { status: 200 })
 }

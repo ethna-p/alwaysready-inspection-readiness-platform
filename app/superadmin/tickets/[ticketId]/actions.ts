@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 
 export type ReplyState =
   | { status: 'idle' }
@@ -61,6 +62,47 @@ export async function staffReply(
   }
 
   // Refresh page
+  redirect(`/superadmin/tickets/${ticketId}`)
+}
+
+export async function regenerateDraft(ticketId: string): Promise<void> {
+  const supabase = createAdminClient()
+
+  const { data: ticket } = await supabase
+    .from('support_tickets')
+    .select('subject, message, external_name')
+    .eq('id', ticketId)
+    .single()
+
+  if (!ticket) redirect(`/superadmin/tickets/${ticketId}`)
+
+  const { data: replies } = await supabase
+    .from('support_ticket_replies')
+    .select('message, is_staff_reply, created_at')
+    .eq('ticket_id', ticketId)
+    .order('created_at', { ascending: true })
+
+  const thread: TicketThread = {
+    subject:         ticket.subject,
+    senderName:      ticket.external_name ?? null,
+    originalMessage: ticket.message,
+    replies: (replies ?? []).map(r => ({
+      role:      r.is_staff_reply ? 'staff' : 'customer',
+      message:   r.message,
+      createdAt: new Date(r.created_at).toLocaleDateString('en-GB'),
+    })),
+  }
+
+  try {
+    const draft = await generateSupportDraft(thread)
+    await supabase
+      .from('support_tickets')
+      .update({ draft_reply: draft })
+      .eq('id', ticketId)
+  } catch (err) {
+    console.error('[regenerateDraft] AI draft failed:', err)
+  }
+
   redirect(`/superadmin/tickets/${ticketId}`)
 }
 

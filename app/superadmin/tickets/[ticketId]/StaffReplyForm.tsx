@@ -4,8 +4,8 @@
  */
 'use client'
 
-import { useActionState } from 'react'
-import { staffReply, updateTicketStatus, type ReplyState } from './actions'
+import { useActionState, useState } from 'react'
+import { staffReply, updateTicketStatus, regenerateDraft, type ReplyState } from './actions'
 
 const STATUS_OPTIONS = [
   { value: 'open',        label: 'Open' },
@@ -16,15 +16,19 @@ const STATUS_OPTIONS = [
 interface Props {
   ticketId: string
   currentStatus: string
+  draftReply?: string | null
 }
 
-export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
+export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: Props) {
   // Bind ticketId into the reply action
   const boundReply = staffReply.bind(null, ticketId)
   const [state, action, pending] = useActionState<ReplyState, FormData>(
     boundReply,
     { status: 'idle' }
   )
+
+  // Pre-fill from AI draft; user can edit freely
+  const [message, setMessage] = useState(draftReply ?? '')
 
   return (
     <div className="space-y-6">
@@ -56,7 +60,26 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
 
       {/* Reply form */}
       <div className="bg-card border border-line rounded-xl p-5">
-        <p className="text-xs text-ink-muted uppercase tracking-wide mb-4">Reply to customer</p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-xs text-ink-muted uppercase tracking-wide">Reply to customer</p>
+          {draftReply && (
+            <form action={regenerateDraft.bind(null, ticketId)}>
+              <button
+                type="submit"
+                className="text-xs text-[#00b8a6] hover:text-[#009d8e] font-medium transition-colors"
+              >
+                ↺ Regenerate AI draft
+              </button>
+            </form>
+          )}
+        </div>
+
+        {draftReply && (
+          <div className="flex items-center gap-1.5 mb-3">
+            <span className="inline-block w-2 h-2 rounded-full bg-amber-400" />
+            <span className="text-xs text-ink-muted">AI suggested · edit before sending</span>
+          </div>
+        )}
 
         {state.status === 'error' && (
           <div className="bg-red-50 border border-red-300 rounded-lg p-3 text-sm text-red-700 mb-4">
@@ -69,6 +92,8 @@ export default function StaffReplyForm({ ticketId, currentStatus }: Props) {
             name="message"
             required
             rows={6}
+            value={message}
+            onChange={e => setMessage(e.target.value)}
             placeholder="Type your reply here…"
             className="
               w-full bg-card border border-line rounded-lg
