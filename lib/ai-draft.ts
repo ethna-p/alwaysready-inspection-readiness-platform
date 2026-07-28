@@ -72,6 +72,79 @@ In-platform support tickets are submitted via Support in the navigation bar. Ema
 Data export
 Users can download their account data and evidence pack from the Account page.
 
+## Frequently asked questions — authoritative answers
+
+Use these answers when customers ask about the topics below. Do not deviate from them.
+
+What is AlwaysReady?
+A governance and inspection readiness platform built specifically for Adult Social Care. It helps Registered Managers and their teams track compliance against the CQC KLOE framework, record evidence, and know at a glance where they stand ahead of inspection — all in one place.
+
+Who is it for?
+Registered Managers, Nominated Individuals, Responsible Individuals, and owners of small to mid-sized Adult Social Care services.
+
+How does it differ from care planning systems?
+Care planning systems capture frontline care. AlwaysReady manages governance, oversight, KLOE compliance, and inspection readiness — it sits above your care planning system. It does not integrate with care planning systems.
+
+Does AlwaysReady provide policy templates?
+No — this poses legal and clinical risks if templates are not tailored to the service. AlwaysReady helps providers organise their own service-specific policies.
+
+Does AlwaysReady provide an audit trail?
+Yes — a secure, time-stamped record of every change: who made it, what they changed, and when. Cannot be altered or deleted.
+
+Can I export my data?
+Yes — the Inspection Pack generates a one-click printable summary across all KLOEs. Users can also download their account data at any time from the Account page.
+
+Does AlwaysReady share data with CQC?
+No — data is private and only visible to people the organisation authorises. AlwaysReady does not submit data to CQC.
+
+Does AlwaysReady connect to CQC?
+Yes, read-only — via the CQC Syndication API to retrieve the current CQC rating, registered service name, and last inspection date. No data from the AlwaysReady account is sent to CQC.
+
+Is AlwaysReady GDPR compliant?
+Yes, in full compliance with UK GDPR. See the Privacy Policy at alwaysready.uk/legal.
+
+How secure is AlwaysReady?
+Enterprise-grade infrastructure, encrypted in transit and at rest, EU-based hosting, role-based access controls, and multi-factor authentication.
+
+How much does AlwaysReady cost?
+£75 per month per CQC-registered location. No setup fees, no hidden costs, no tiers.
+
+What is included in the subscription?
+Full platform access, evidence file storage, KLOE tracker, readiness dashboard, daily review report, audit trail, inspection pack, HR module, mock inspection tool, team access with role-based permissions, and support. No add-ons.
+
+Can I cancel?
+Yes, at any time from the Account section. No long-term contracts or cancellation penalties.
+
+Is there a charity discount?
+Yes — registered charities receive a discount for the lifetime of their subscription. To apply, email hello@alwaysready.uk with the lead administrator's name and email address, CQC Location ID, and charity registration number.
+
+Can we use AlwaysReady for more than one service?
+Each account is for a single CQC-registered service location (one CQC Location ID per subscription). Contact hello@alwaysready.uk to discuss multi-site pricing.
+
+Is there a free trial?
+Yes — 14-day free trial, no credit card required, full access from day one.
+
+What happens when the trial ends?
+The user will be invited to subscribe. There is no automatic charge and no obligation.
+
+Can I extend the free trial?
+Contact us via alwaysready.uk/contact.
+
+Can I give a CQC inspector read-only access?
+Yes — create a Visitor login from the Team page with a set expiry date. Visitors can view the KLOE tracker, audit trail, readiness trend, and inspection pack. They cannot make any changes.
+
+How does AlwaysReady help on inspection day?
+The Inspection Pack gives a one-click printable summary across every KLOE, with evidence already organised and time-stamped.
+
+Can AlwaysReady help with factual accuracy challenges?
+Yes — relevant records and evidence can be exported quickly to respond within tight deadlines.
+
+Which CQC framework does AlwaysReady use?
+Currently structured around the CQC KLOE framework. It will be updated as CQC's assessment approach evolves.
+
+What file types can be uploaded as evidence?
+PDF, Word, Excel, and images (JPG or PNG). Up to 10 MB per file. Governance documents only — policies, audits, meeting minutes, training certificates, anonymised incident reviews, action plans. Do not upload documents containing resident-specific clinical information or care plans.
+
 ## The 24 KLOEs in the platform
 
 These are the exact KLOE titles and their descriptive questions as they appear in AlwaysReady, grouped by key question area. Use these when a customer asks what a specific KLOE covers or means within the platform. Do not go beyond describing what a KLOE is about — do not advise on what evidence to gather or how to achieve a rating.
