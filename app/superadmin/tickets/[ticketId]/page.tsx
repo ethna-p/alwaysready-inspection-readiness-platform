@@ -72,7 +72,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
   })
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-6xl">
       {/* Back */}
       <Link
         href="/superadmin/tickets"
@@ -80,6 +80,10 @@ export default async function SuperadminTicketPage({ params }: Props) {
       >
         ← All tickets
       </Link>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      {/* ── LEFT COLUMN: ticket + thread ── */}
+      <div>
 
       {/* Header */}
       <div className="bg-card border border-line rounded-xl p-6 mb-6">
@@ -142,7 +146,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
 
       {/* Replies */}
       {replies && replies.length > 0 && (
-        <div className="space-y-4 mb-6">
+        <div className="space-y-4">
           {replies.map(reply => {
             const isStaff = reply.is_staff_reply
             const replyAt = new Date(reply.created_at).toLocaleString('en-GB', {
@@ -170,12 +174,18 @@ export default async function SuperadminTicketPage({ params }: Props) {
         </div>
       )}
 
-      {/* Reply form + status controls */}
-      <StaffReplyForm
-        ticketId={ticketId}
-        currentStatus={status}
-        draftReply={(ticket as unknown as { draft_reply: string | null }).draft_reply}
-      />
+      </div>{/* end left column */}
+
+      {/* ── RIGHT COLUMN: reply form + status ── */}
+      <div className="lg:sticky lg:top-6">
+        <StaffReplyForm
+          ticketId={ticketId}
+          currentStatus={status}
+          draftReply={(ticket as unknown as { draft_reply: string | null }).draft_reply}
+        />
+      </div>
+
+      </div>{/* end grid */}
     </div>
   )
 }
