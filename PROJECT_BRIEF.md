@@ -18,9 +18,9 @@ This is a **separate, independently deployable product** from the existing Alway
 
 | Environment | URL |
 |---|---|
-| Platform (production) | https://alwaysready-inspection-readiness-pl-three.vercel.app |
-| Login page | https://alwaysready-inspection-readiness-pl-three.vercel.app/login |
-| Superadmin | https://alwaysready-inspection-readiness-pl-three.vercel.app/superadmin |
+| Platform (production) | https://portal.alwaysready.uk |
+| Login page | https://portal.alwaysready.uk/login |
+| Superadmin | https://portal.alwaysready.uk/superadmin |
 | Superadmin email | hello@alwaysready.uk |
 
 ---

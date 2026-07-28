@@ -24,7 +24,7 @@ import { sendEmail }         from '@/lib/email'
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const DUE_SOON_DAYS = 7
-const PLATFORM_URL  = (process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app').replace(/\/$/, '')
+const PLATFORM_URL  = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

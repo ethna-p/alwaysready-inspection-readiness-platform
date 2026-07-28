@@ -34,7 +34,7 @@ export function verifyUnsubscribeToken(userId: string, token: string): boolean {
  * BASE_URL should be the platform's public URL (e.g. https://alwaysready-inspection-readiness-pl-three.vercel.app)
  */
 export function buildUnsubscribeUrl(userId: string): string {
-  const base  = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
+  const base  = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk'
   const token = generateUnsubscribeToken(userId)
   return `${base}/unsubscribe?uid=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`
 }
@@ -75,7 +75,7 @@ export function verifySubscriberToken(email: string, token: string): boolean {
  * distinguish between platform users and blog subscribers.
  */
 export function buildSubscriberUnsubscribeUrl(email: string): string {
-  const base  = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
+  const base  = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk'
   const token = generateSubscriberToken(email)
   return `${base}/unsubscribe?email=${encodeURIComponent(email.toLowerCase().trim())}&token=${encodeURIComponent(token)}`
 }

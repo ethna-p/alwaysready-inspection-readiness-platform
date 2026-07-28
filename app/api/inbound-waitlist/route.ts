@@ -159,12 +159,13 @@ export async function POST(req: NextRequest) {
     await sendEmail({
       to: email,
       subject: "You're subscribed to the AlwaysReady blog",
-      type: 'transactional',
+      type: 'marketing',
+      subscriberEmail: email,
       bodyHtml: `
         <p>Hi ${displayName},</p>
         <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
            sector updates, and inspection-readiness guidance — straight to your inbox.</p>
-        <p>You can unsubscribe at any time by replying to any of our emails.</p>
+        <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
         <p style="margin-top:32px">
           Warm regards,<br>
           <strong>Ethna Parker PhD</strong><br>

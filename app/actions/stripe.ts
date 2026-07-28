@@ -22,8 +22,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 const PRICE_ID      = process.env.STRIPE_PRICE_ID!
 const BETA_PRICE_ID = process.env.STRIPE_BETA_PRICE_ID!
-const PLATFORM_URL  = process.env.NEXT_PUBLIC_BASE_URL
-  ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
+const PLATFORM_URL  = process.env.NEXT_PUBLIC_SITE_URL
+  ?? 'https://portal.alwaysready.uk'
 
 // ── Checkout ───────────────────────────────────────────────────────────────
 

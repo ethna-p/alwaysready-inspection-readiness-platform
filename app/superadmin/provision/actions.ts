@@ -131,8 +131,8 @@ export async function provisionOrganisation(
     }
 
     // ── 6. Send beta welcome email ───────────────────────────────────────
-    const platformUrl = process.env.NEXT_PUBLIC_BASE_URL
-      ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
+    const platformUrl = process.env.NEXT_PUBLIC_SITE_URL
+      ?? 'https://portal.alwaysready.uk'
 
     const trialExpiryFormatted = trialExpiresAt.toLocaleDateString('en-GB', {
       day: 'numeric', month: 'long', year: 'numeric',

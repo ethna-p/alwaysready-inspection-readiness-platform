@@ -46,7 +46,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   }
 
   const supabase = createAdminClient()
-  const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://alwaysready-inspection-readiness-pl-three.vercel.app'
+  const baseUrl  = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk'
 
   // ── 0. Validate CQC Location ID ─────────────────────────────────────────────
   // Fetch now so we can (a) hard-block non-registered IDs and (b) reuse the
