@@ -35,6 +35,16 @@ function extractReference(subject: string): string | null {
   return match ? match[1] : null
 }
 
+// Decode quoted-printable encoding (e.g. "on the =\napp" → "on the app")
+function decodeQuotedPrintable(text: string): string {
+  return text
+    .replace(/=\r\n/g, '')   // soft line break (CRLF)
+    .replace(/=\n/g, '')     // soft line break (LF)
+    .replace(/=([0-9A-Fa-f]{2})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    )
+}
+
 // Strip quoted reply text (lines starting with ">") to get just the new message
 function stripQuotedText(text: string): string {
   return text
@@ -78,7 +88,8 @@ export async function POST(req: NextRequest) {
   const from     = (payload.from     as string | undefined)?.trim() ?? ''
   const fromName = (payload.fromName as string | undefined)?.trim() ?? ''
   const subject  = (payload.subject  as string | undefined)?.trim() ?? '(No subject)'
-  const text     = (payload.text     as string | undefined)?.trim() ?? ''
+  const rawText  = (payload.text     as string | undefined) ?? ''
+  const text     = decodeQuotedPrintable(rawText).trim()
 
   if (!from) {
     return NextResponse.json({ error: 'Missing from address' }, { status: 400 })
