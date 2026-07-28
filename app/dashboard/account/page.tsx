@@ -34,7 +34,10 @@ export default async function AccountPage({
     ...(isAdmin ? [{ id: 'billing',      label: 'Billing' }] : []),
     ...(isAdmin ? [{ id: 'organisation', label: 'Organisation' }] : []),
     { id: 'security',      label: 'Security' },
-    { id: 'notifications', label: 'Notifications' },
+    // NOTIFICATIONS TAB — hidden until email threading (#269) and WhatsApp (Meta API) are ready.
+    // The UI (PersonalContactForm, mobile_number field, personal_email field) is fully built.
+    // To restore: uncomment the line below and uncomment the tab panel further down.
+    // { id: 'notifications', label: 'Notifications' },
     ...(isAdmin ? [{ id: 'team',         label: 'Team' }] : []),
   ]
   const defaultTab = tabs[0].id
@@ -232,11 +235,16 @@ export default async function AccountPage({
         </div>
       )}
 
-      {/* ══ NOTIFICATIONS tab ═════════════════════════════════════════════ */}
+      {/* ══ NOTIFICATIONS tab ═════════════════════════════════════════════
+           HIDDEN — pending completion of:
+             • #269: Inbound email threading (requires Resend Pro)
+             • WhatsApp notifications via Meta Business API
+           The PersonalContactForm component, personal_email and mobile_number
+           columns on the users table, and the UI are all fully built and ready.
+           To restore: uncomment the tab in the tabs array above, and uncomment
+           this panel.
       {activeTab === 'notifications' && (
         <div className="space-y-8">
-
-          {/* Personal contact details */}
           <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
             <h2 className="text-base font-semibold text-brand mb-1">Notification contact details</h2>
             <p className="text-sm text-ink-dim mb-6">
@@ -247,9 +255,9 @@ export default async function AccountPage({
               mobileNumber={profile?.mobile_number ?? null}
             />
           </div>
-
         </div>
       )}
+      ══════════════════════════════════════════════════════════════════════ */}
 
       {/* ══ TEAM tab ══════════════════════════════════════════════════════ */}
       {activeTab === 'team' && isAdmin && (
