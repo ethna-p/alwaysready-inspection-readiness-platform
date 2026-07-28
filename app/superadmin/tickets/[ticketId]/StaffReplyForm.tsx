@@ -62,16 +62,14 @@ export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: 
       <div className="bg-card border border-line rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-xs text-ink-muted uppercase tracking-wide">Reply to customer</p>
-          {draftReply && (
             <form action={regenerateDraft.bind(null, ticketId)}>
               <button
                 type="submit"
                 className="text-xs text-[#00b8a6] hover:text-[#009d8e] font-medium transition-colors"
               >
-                ↺ Regenerate AI draft
+                {draftReply ? '↺ Regenerate AI draft' : '✦ Generate AI draft'}
               </button>
             </form>
-          )}
         </div>
 
         {draftReply && (
