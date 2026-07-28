@@ -4,7 +4,7 @@
  */
 'use client'
 
-import { useActionState, useState, useTransition } from 'react'
+import { useActionState, useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { staffReply, updateTicketStatus, regenerateDraft, type ReplyState } from './actions'
 
@@ -30,6 +30,11 @@ export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: 
 
   const [message, setMessage] = useState(draftReply ?? '')
   const [isGenerating, startGenerating] = useTransition()
+
+  // Sync textarea when a new draft arrives after regeneration
+  useEffect(() => {
+    if (draftReply) setMessage(draftReply)
+  }, [draftReply])
 
   const handleGenerate = () => {
     startGenerating(async () => {
