@@ -54,6 +54,64 @@ function decodeQuotedPrintable(text: string): string {
     })
 }
 
+// Returns true for automated/transactional senders that should be silently dropped.
+// Covers no-reply patterns, postmaster, mailer-daemon, and known service domains.
+function isAutomatedSender(from: string): boolean {
+  const lower = from.toLowerCase()
+
+  // Address-part patterns (before the @)
+  const automatedPrefixes = [
+    'noreply', 'no-reply', 'no_reply', 'donotreply', 'do-not-reply',
+    'do_not_reply', 'postmaster', 'mailer-daemon', 'mailerdeamon',
+    'automated', 'notifications', 'bounce', 'bounces', 'system',
+    'daemon', 'root',
+  ]
+  const localPart = lower.split('@')[0] ?? ''
+  if (automatedPrefixes.some(p => localPart === p || localPart.startsWith(p + '+') || localPart.startsWith(p + '.'))) {
+    return true
+  }
+
+  // Known transactional/service sending domains
+  const automatedDomains = [
+    'stripe.com',
+    'mail.stripe.com',
+    'salesforce.com',
+    'bnc.salesforce.com',
+    'exacttarget.com',
+    'mailchimp.com',
+    'sendgrid.net',
+    'amazonses.com',
+    'postmarkapp.com',
+    'mailgun.org',
+    'mandrill.com',
+    'sparkpostmail.com',
+    'bounces.google.com',
+    'bounce.google.com',
+    'accounts.google.com',
+    'notifications.google.com',
+    'notify.microsoft.com',
+    'github.com',
+    'githubnoreply.com',
+    'intercom.io',
+    'zendesk.com',
+    'freshdesk.com',
+    'hubspot.com',
+    'paypal.com',
+    'ebay.com',
+    'apple.com',
+    'linkedin.com',
+    'twitter.com',
+    'facebook.com',
+    'instagram.com',
+  ]
+  const domain = lower.split('@')[1] ?? ''
+  if (automatedDomains.some(d => domain === d || domain.endsWith('.' + d))) {
+    return true
+  }
+
+  return false
+}
+
 // Strip quoted reply text (lines starting with ">") to get just the new message
 function stripQuotedText(text: string): string {
   return text
@@ -102,6 +160,12 @@ export async function POST(req: NextRequest) {
 
   if (!from) {
     return NextResponse.json({ error: 'Missing from address' }, { status: 400 })
+  }
+
+  // Drop automated/transactional emails silently — no ticket, no auto-reply
+  if (isAutomatedSender(from)) {
+    console.log(`[inbound-email] Dropped automated sender: ${from}`)
+    return NextResponse.json({ action: 'ignored', reason: 'automated sender' }, { status: 200 })
   }
 
   const supabase = createAdminClient()
@@ -190,7 +254,7 @@ export async function POST(req: NextRequest) {
     originalMessage: cleanBody,
     replies:         [],
   }
-  void refreshDraft(newTicket.id, thread)
+  await refreshDraft(newTicket.id, thread)
 
   // Auto-responder for new tickets
   const firstName = fromName.split(' ')[0] || 'there'
