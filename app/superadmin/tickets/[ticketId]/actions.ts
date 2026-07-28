@@ -65,7 +65,7 @@ export async function staffReply(
   redirect(`/superadmin/tickets/${ticketId}`)
 }
 
-export async function regenerateDraft(ticketId: string): Promise<void> {
+export async function regenerateDraft(ticketId: string): Promise<string | null> {
   const supabase = createAdminClient()
 
   const { data: ticket } = await supabase
@@ -74,7 +74,7 @@ export async function regenerateDraft(ticketId: string): Promise<void> {
     .eq('id', ticketId)
     .single()
 
-  if (!ticket) redirect(`/superadmin/tickets/${ticketId}`)
+  if (!ticket) return null
 
   const { data: replies } = await supabase
     .from('support_ticket_replies')
@@ -99,11 +99,11 @@ export async function regenerateDraft(ticketId: string): Promise<void> {
       .from('support_tickets')
       .update({ draft_reply: draft })
       .eq('id', ticketId)
+    return draft
   } catch (err) {
     console.error('[regenerateDraft] AI draft failed:', err)
+    return null
   }
-
-  // No redirect — caller handles page refresh
 }
 
 export async function updateTicketStatus(ticketId: string, status: string) {

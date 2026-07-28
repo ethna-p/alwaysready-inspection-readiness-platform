@@ -38,8 +38,9 @@ export default function StaffReplyForm({ ticketId, currentStatus, draftReply }: 
 
   const handleGenerate = () => {
     startGenerating(async () => {
-      await regenerateDraft(ticketId)
-      router.refresh()
+      const newDraft = await regenerateDraft(ticketId)
+      if (newDraft) setMessage(newDraft)
+      router.refresh() // update button label / amber dot
     })
   }
 
