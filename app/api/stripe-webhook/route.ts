@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
           subscription_tier:      'active',
           stripe_customer_id:     String(session.customer),
           stripe_subscription_id: String(session.subscription),
+          subscribed_at:          new Date().toISOString(),
           ...(isBeta ? { is_beta: true } : {}),
         })
         .eq('id', orgId)
