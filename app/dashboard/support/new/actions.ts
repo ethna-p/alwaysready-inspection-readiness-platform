@@ -84,5 +84,31 @@ export async function submitTicket(
     })
   }
 
+  // Notify AJ of new platform support ticket
+  const superadminEmail = process.env.SUPERADMIN_EMAIL
+  if (superadminEmail) {
+    const { data: org } = await supabase
+      .from('organisations')
+      .select('name')
+      .eq('id', profile.organisation_id)
+      .single()
+
+    await sendEmail({
+      to:      superadminEmail,
+      subject: `New support ticket [${ticket.reference}]: ${subject}`,
+      type:    'transactional',
+      bodyHtml: `
+        <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new support ticket has been submitted via the platform.</p>
+        <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Reference</td><td style="padding:4px 0;font-family:monospace">${ticket.reference}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Organisation</td><td style="padding:4px 0">${org?.name ?? '—'}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${profile.full_name ?? user.email ?? '—'}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${subject}</strong></td></tr>
+        </table>
+        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${message}</p>
+      `,
+    })
+  }
+
   redirect(`/dashboard/support/${ticket.id}`)
 }

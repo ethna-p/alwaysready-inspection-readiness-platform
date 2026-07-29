@@ -10,6 +10,7 @@ import SiteFooter from '@/components/SiteFooter'
 import TrialBanner from '@/components/TrialBanner'
 import BetaBanner from '@/components/BetaBanner'
 import IdleTimeout from '@/components/IdleTimeout'
+import OnboardingChecklist from '@/components/OnboardingChecklist'
 
 export default async function DashboardLayout({
   children,
@@ -66,6 +67,7 @@ export default async function DashboardLayout({
         isBeta={org?.is_beta ?? false}
       />
       <main className="flex-1 w-full px-4 py-6 sm:px-6 sm:py-8">
+        {profile.onboarding_complete === false && <OnboardingChecklist />}
         {children}
       </main>
       <SiteFooter />

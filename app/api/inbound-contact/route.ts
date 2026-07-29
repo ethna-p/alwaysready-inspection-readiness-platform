@@ -112,6 +112,26 @@ export async function POST(req: NextRequest) {
     console.error('[inbound-contact] ticket insert error:', ticketError.message)
   }
 
+  // ── Notify AJ ────────────────────────────────────────────────────────────
+  const superadminEmail = process.env.SUPERADMIN_EMAIL
+  if (superadminEmail) {
+    await sendEmail({
+      to:      superadminEmail,
+      subject: `New website enquiry: ${subject}`,
+      type:    'transactional',
+      bodyHtml: `
+        <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new enquiry has arrived via the website contact form.</p>
+        <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${fullName}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${email}</td></tr>
+          ${company ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Company</td><td style="padding:4px 0">${company}</td></tr>` : ''}
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${subject}</strong></td></tr>
+        </table>
+        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${message}</p>
+      `,
+    })
+  }
+
   // ── Send auto-responder ───────────────────────────────────────────────────
   await sendEmail({
     to: email,

@@ -182,7 +182,29 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   const firstName = managerName.trim().split(' ')[0]
   const expiry    = trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  // ── 9. Send branded welcome email ────────────────────────────────────────────
+  // ── 9. Notify AJ of new trial signup ────────────────────────────────────────
+  const superadminEmail = process.env.SUPERADMIN_EMAIL
+  if (superadminEmail) {
+    await sendEmail({
+      to:      superadminEmail,
+      subject: `New trial started: ${serviceName.trim()}`,
+      type:    'transactional',
+      bodyHtml: `
+        <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new trial has started.</p>
+        <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Service</td><td style="padding:4px 0"><strong>${serviceName.trim()}</strong></td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Manager</td><td style="padding:4px 0">${managerName.trim()}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${managerEmail.trim()}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Service type</td><td style="padding:4px 0">${serviceType}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">CQC Location ID</td><td style="padding:4px 0">${cqcLocationId.trim()}</td></tr>
+          ${charityNumber ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Charity no.</td><td style="padding:4px 0"><strong style="color:#b45309">${charityNumber} — verify document before enabling discount</strong></td></tr>` : ''}
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Trial expires</td><td style="padding:4px 0">${trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</td></tr>
+        </table>
+      `,
+    })
+  }
+
+  // ── 10. Send branded welcome email ────────────────────────────────────────────
   await sendEmail({
     to:      managerEmail.trim(),
     subject: 'Your AlwaysReady trial is ready — set your password to get started',

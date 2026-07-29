@@ -256,6 +256,24 @@ export async function POST(req: NextRequest) {
   }
   await refreshDraft(newTicket.id, thread)
 
+  // Notify AJ of new inbound email ticket
+  const superadminEmail = process.env.SUPERADMIN_EMAIL
+  if (superadminEmail) {
+    await sendEmail({
+      to:      superadminEmail,
+      subject: `New inbound email: ${cleanSubject}`,
+      type:    'transactional',
+      bodyHtml: `
+        <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new email has arrived at hello@alwaysready.uk and a support ticket has been created.</p>
+        <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
+          <tr><td style="padding:4px 16px 4px 0;color:#555">From</td><td style="padding:4px 0">${displayName} &lt;${from}&gt;</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${cleanSubject}</strong></td></tr>
+        </table>
+        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${cleanBody.slice(0, 500)}${cleanBody.length > 500 ? '…' : ''}</p>
+      `,
+    })
+  }
+
   // Auto-responder for new tickets
   const firstName = fromName.split(' ')[0] || 'there'
   await sendEmail({
