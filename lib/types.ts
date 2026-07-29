@@ -635,8 +635,8 @@ export type Database = {
         Row: {
           id:                string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -645,8 +645,8 @@ export type Database = {
         Insert: {
           id?:               string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -655,8 +655,8 @@ export type Database = {
         Update: {
           id?:               string
           organisation_id?:  string
-          notification_type?: 'due_soon' | 'overdue'
-          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
+          notification_type?: 'due_soon' | 'overdue' | 'trial_day'
+          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial'
           entity_id?:        string
           due_date?:         string
           recipient_email?:  string
