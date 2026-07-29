@@ -42,11 +42,13 @@ export default async function DashboardLayout({
     .eq('id', profile.organisation_id)
     .single()
 
-  // If trial has expired, bounce to upgrade page
+  // Block access for orgs that have no active subscription
   if (
-    org?.subscription_tier === 'trial' &&
-    org.trial_expires_at &&
-    new Date(org.trial_expires_at) < new Date()
+    org?.subscription_tier === 'canceled' ||
+    org?.subscription_tier === 'past_due'  ||
+    (org?.subscription_tier === 'trial' &&
+      org.trial_expires_at &&
+      new Date(org.trial_expires_at) < new Date())
   ) {
     redirect('/upgrade')
   }

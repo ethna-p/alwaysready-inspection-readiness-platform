@@ -417,14 +417,15 @@ export async function GET(req: NextRequest) {
         const firstName      = admin.full_name?.split(' ')[0] ?? 'there'
         const unsubscribeUrl = buildUnsubscribeUrl(admin.id)
 
-        const sent = await sendEmail({
+        const result = await sendEmail({
           to:       admin.email,
           subject:  email.subject,
           type:     'marketing',
+          userId:   admin.id,
           bodyHtml: buildHtml(email.body(firstName), unsubscribeUrl),
         })
 
-        if (sent) {
+        if (result.sent) {
           // Log it — deduplication anchor is subscribed_at date
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           await (supabase as any)
@@ -442,6 +443,7 @@ export async function GET(req: NextRequest) {
 
           totalSent++
         } else {
+          console.warn(`[onboarding-emails] skipped ${email.weekId} → ${admin.email}: ${result.error ?? result.skipped}`)
           totalSkipped++
         }
       }

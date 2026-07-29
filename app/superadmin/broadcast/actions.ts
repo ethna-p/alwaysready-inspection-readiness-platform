@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export interface BroadcastResult {
   sent: number
@@ -15,6 +16,7 @@ export interface BroadcastResult {
  * - Blog subscribers (not unsubscribed)
  */
 export async function getRecipientCount(): Promise<number> {
+  await assertSuperadmin()
   const supabase = createAdminClient()
 
   const [usersResult, subscribersResult] = await Promise.all([
@@ -50,6 +52,8 @@ export async function sendBroadcast(
   postUrl: string,
   buttonText: string
 ): Promise<BroadcastResult> {
+  await assertSuperadmin()
+
   if (!subject.trim() || !intro.trim() || !postUrl.trim()) {
     return { sent: 0, skipped: 0, error: 'Subject, intro, and post URL are all required.' }
   }

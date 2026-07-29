@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export type ReplyState =
   | { status: 'idle' }
@@ -14,6 +15,8 @@ export async function staffReply(
   _prev: ReplyState,
   formData: FormData
 ): Promise<ReplyState> {
+  await assertSuperadmin()
+
   const message = (formData.get('message') as string | null)?.trim()
   if (!message) return { status: 'error', message: 'Message is required.' }
 

@@ -41,6 +41,10 @@ export async function createCheckoutSession(): Promise<never> {
 
   if (!org) redirect('/login')
 
+  const isCharity = org.is_charity === true
+  if (isCharity && !CHARITY_PRICE_ID) throw new Error('STRIPE_CHARITY_PRICE_ID is not set')
+  if (!isCharity && !PRICE_ID)        throw new Error('STRIPE_PRICE_ID is not set')
+
   // Reuse existing Stripe customer if we have one.
   // In subscription mode, customer_creation is not allowed — Stripe
   // creates the customer automatically when none is supplied.
@@ -50,8 +54,7 @@ export async function createCheckoutSession(): Promise<never> {
 
   // Charities get a dedicated £50/month price (AlwaysReady — Charity Rate).
   // Everyone else gets the standard price, with promotion codes allowed.
-  const isCharity = org.is_charity === true
-  const priceId   = isCharity ? CHARITY_PRICE_ID : PRICE_ID
+  const priceId = isCharity ? CHARITY_PRICE_ID : PRICE_ID
 
   const session = await stripe.checkout.sessions.create({
     mode:               'subscription',
@@ -75,6 +78,8 @@ export async function createCheckoutSession(): Promise<never> {
 export async function createBetaCheckoutSession(): Promise<never> {
   const profile = await getCurrentUserProfile()
   if (!profile?.organisation_id) redirect('/login')
+
+  if (!BETA_PRICE_ID) throw new Error('STRIPE_BETA_PRICE_ID is not set')
 
   const supabase = await createClient()
   const { data: org } = await (supabase as any)

@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export interface OrgOption {
   id: string
@@ -15,6 +16,7 @@ export interface OrgOption {
  * for the "open ticket on behalf of" dropdown.
  */
 export async function getOrganisationsForTicket(): Promise<OrgOption[]> {
+  await assertSuperadmin()
   const supabase = createAdminClient()
 
   const { data: orgs } = await supabase
@@ -60,6 +62,8 @@ export async function openTicketForCustomer(
   subject: string,
   message: string,
 ): Promise<{ error: string } | never> {
+  await assertSuperadmin()
+
   if (!orgId || !subject.trim() || !message.trim()) {
     return { error: 'Organisation, subject, and message are all required.' }
   }

@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export type ProvisionResult =
   | { success: true; orgId: string; userId: string; reference: string }
@@ -11,6 +12,8 @@ export async function provisionOrganisation(
   _prev: ProvisionResult | null,
   formData: FormData
 ): Promise<ProvisionResult> {
+  await assertSuperadmin()
+
   const orgName        = (formData.get('org_name') as string | null)?.trim()
   const serviceTypeKey = (formData.get('service_type') as string | null)?.trim()
   const adminEmail     = (formData.get('admin_email') as string | null)?.trim()

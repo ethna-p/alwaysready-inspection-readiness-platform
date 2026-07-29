@@ -13,6 +13,7 @@
  */
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export type ImpersonationResult =
   | { url: string }
@@ -21,6 +22,8 @@ export type ImpersonationResult =
 export async function generateImpersonationLink(
   adminEmail: string
 ): Promise<ImpersonationResult> {
+  await assertSuperadmin()
+
   if (!adminEmail) {
     return { error: 'No admin email provided.' }
   }
@@ -66,6 +69,8 @@ export async function setCharityStatus(
   orgId: string,
   isCharity: boolean
 ): Promise<SetCharityResult> {
+  await assertSuperadmin()
+
   if (!orgId) return { error: 'No organisation ID provided.' }
 
   const supabase = createAdminClient()

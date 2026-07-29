@@ -134,7 +134,7 @@ export type Database = {
           cqc_last_inspection_date: string | null
           cqc_rating_fetched_at: string | null
           service_type_id: string
-          subscription_tier: 'trial' | 'active'
+          subscription_tier: 'trial' | 'active' | 'past_due' | 'canceled'
           is_demo: boolean
           is_beta: boolean
           is_charity: boolean
@@ -156,7 +156,7 @@ export type Database = {
           cqc_last_inspection_date?: string | null
           cqc_rating_fetched_at?: string | null
           service_type_id: string
-          subscription_tier?: 'trial' | 'active'
+          subscription_tier?: 'trial' | 'active' | 'past_due' | 'canceled'
           is_demo?: boolean
           is_beta?: boolean
           is_charity?: boolean
@@ -178,7 +178,7 @@ export type Database = {
           cqc_last_inspection_date?: string | null
           cqc_rating_fetched_at?: string | null
           service_type_id?: string
-          subscription_tier?: 'trial' | 'active'
+          subscription_tier?: 'trial' | 'active' | 'past_due' | 'canceled'
           is_demo?: boolean
           is_beta?: boolean
           is_charity?: boolean
