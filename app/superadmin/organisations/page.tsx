@@ -44,7 +44,7 @@ export default async function OrganisationsPage() {
   const { data: orgs, error: orgsError } = await (supabase as any)
     .from('organisations')
     .select(`
-      id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity,
+      id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity, charity_number,
       service_types ( name )
     `)
     .eq('is_demo', false)
@@ -138,6 +138,14 @@ export default async function OrganisationsPage() {
                         </span>
                       )}
                     </div>
+
+                    {/* Charity number */}
+                    {(org as any).charity_number && (
+                      <p className="text-xs text-ink-muted mt-1">
+                        Charity no. <span className="font-mono text-ink">{(org as any).charity_number}</span>
+                        {' '}· <span className="text-amber-600 font-medium">Verify document before enabling discount</span>
+                      </p>
+                    )}
 
                     {/* Admin + dates */}
                     <div className="text-xs text-ink-muted space-y-0.5">

@@ -24,6 +24,7 @@ export type TrialSignupInput = {
   serviceType: string
   managerName: string
   managerEmail: string
+  charityNumber: string | null
   marketingConsent: boolean
 }
 
@@ -32,7 +33,7 @@ export type TrialSignupResult =
   | { success: false; error: string }
 
 export async function startTrial(input: TrialSignupInput): Promise<TrialSignupResult> {
-  const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, marketingConsent } = input
+  const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, charityNumber, marketingConsent } = input
 
   // ── Validate ────────────────────────────────────────────────────────────────
   if (!serviceName.trim() || !cqcLocationId.trim() || !serviceType || !managerName.trim() || !managerEmail.trim()) {
@@ -84,6 +85,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       subscription_tier: 'trial',
       trial_expires_at: trialExpiresAt.toISOString(),
       is_demo:          false,
+      ...(charityNumber ? { charity_number: charityNumber } : {}),
     })
     .select('id')
     .single()

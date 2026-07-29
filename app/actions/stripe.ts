@@ -20,9 +20,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-06-24.dahlia',
 })
 
-const PRICE_ID      = process.env.STRIPE_PRICE_ID!
-const BETA_PRICE_ID = process.env.STRIPE_BETA_PRICE_ID!
-const PLATFORM_URL  = process.env.NEXT_PUBLIC_SITE_URL
+const PRICE_ID         = process.env.STRIPE_PRICE_ID!
+const BETA_PRICE_ID    = process.env.STRIPE_BETA_PRICE_ID!
+const CHARITY_PRICE_ID = process.env.STRIPE_CHARITY_PRICE_ID!
+const PLATFORM_URL     = process.env.NEXT_PUBLIC_SITE_URL
   ?? 'https://portal.alwaysready.uk'
 
 // ── Checkout ───────────────────────────────────────────────────────────────
@@ -47,19 +48,14 @@ export async function createCheckoutSession(): Promise<never> {
     ? { customer: org.stripe_customer_id }
     : {}
 
-  // Charities get 20% off every month, applied automatically from the
-  // pre-created coupon. Stripe disallows allow_promotion_codes when
-  // discounts is set, so the two paths are mutually exclusive.
-  const CHARITY_COUPON_ID = process.env.STRIPE_CHARITY_COUPON_ID
-  const isCharity = org.is_charity === true && !!CHARITY_COUPON_ID
-
-  const discountParams = isCharity
-    ? { discounts: [{ coupon: CHARITY_COUPON_ID }] }
-    : { allow_promotion_codes: true as const }
+  // Charities get a dedicated £50/month price (AlwaysReady — Charity Rate).
+  // Everyone else gets the standard price, with promotion codes allowed.
+  const isCharity = org.is_charity === true
+  const priceId   = isCharity ? CHARITY_PRICE_ID : PRICE_ID
 
   const session = await stripe.checkout.sessions.create({
     mode:               'subscription',
-    line_items:         [{ price: PRICE_ID, quantity: 1 }],
+    line_items:         [{ price: priceId, quantity: 1 }],
     ...customerParams,
     success_url:        `${PLATFORM_URL}/dashboard?subscribed=1`,
     cancel_url:         `${PLATFORM_URL}/upgrade`,
@@ -68,7 +64,7 @@ export async function createCheckoutSession(): Promise<never> {
     billing_address_collection: 'required',
     // Enable automatic tax (requires Stripe Tax to be set up)
     // automatic_tax: { enabled: true },
-    ...discountParams,
+    ...(isCharity ? {} : { allow_promotion_codes: true as const }),
   })
 
   redirect(session.url!)

@@ -46,6 +46,7 @@ export default function TrialPage() {
   const [serviceType,      setServiceType]      = useState('')
   const [managerName,      setManagerName]      = useState('')
   const [managerEmail,     setManagerEmail]     = useState('')
+  const [charityNumber,    setCharityNumber]    = useState('')
   const [marketingConsent, setMarketingConsent] = useState(false)
   const [error,            setError]            = useState<string | null>(null)
   const [isPending,        startTransition]     = useTransition()
@@ -90,6 +91,7 @@ export default function TrialPage() {
         serviceType,
         managerName,
         managerEmail,
+        charityNumber: charityNumber.trim() || null,
         marketingConsent,
       })
 
@@ -282,6 +284,30 @@ export default function TrialPage() {
                 />
                 <p className="text-sm text-ink-muted mt-1">
                   We will send login details to this email.
+                </p>
+              </div>
+
+              {/* Charity number (optional) */}
+              <div>
+                <label htmlFor="charity-number" className="block text-sm font-semibold text-ink mb-1">
+                  Charity registration number{' '}
+                  <span className="font-normal text-ink-muted">(optional)</span>
+                </label>
+                <input
+                  id="charity-number"
+                  type="text"
+                  value={charityNumber}
+                  onChange={e => setCharityNumber(e.target.value)}
+                  placeholder="e.g. 1234567"
+                  disabled={isPending}
+                  className="w-full rounded-xl border border-line px-4 py-3 text-sm text-ink bg-card placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E] disabled:opacity-60"
+                />
+                <p className="text-sm text-ink-muted mt-1">
+                  If you are a registered charity, enter your registration number here, then email{' '}
+                  <a href="mailto:hello@alwaysready.uk" className="text-brand underline">
+                    hello@alwaysready.uk
+                  </a>
+                  {' '}with a copy of your registration document to receive your charity discount.
                 </p>
               </div>
 

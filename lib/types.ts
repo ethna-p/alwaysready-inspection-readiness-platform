@@ -138,6 +138,7 @@ export type Database = {
           is_demo: boolean
           is_beta: boolean
           is_charity: boolean
+          charity_number: string | null
           demo_expires_at: string | null
           trial_expires_at: string | null
           stripe_customer_id: string | null
@@ -158,6 +159,7 @@ export type Database = {
           is_demo?: boolean
           is_beta?: boolean
           is_charity?: boolean
+          charity_number?: string | null
           demo_expires_at?: string | null
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
@@ -178,6 +180,7 @@ export type Database = {
           is_demo?: boolean
           is_beta?: boolean
           is_charity?: boolean
+          charity_number?: string | null
           demo_expires_at?: string | null
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
