@@ -103,6 +103,10 @@ function isAutomatedSender(from: string): boolean {
     'twitter.com',
     'facebook.com',
     'instagram.com',
+    // Supabase auth emails (password resets, magic links, confirmations)
+    'supabase.io',
+    'mail.app.supabase.io',
+    'pm-bounces.mail.app.supabase.io',
   ]
   const domain = lower.split('@')[1] ?? ''
   if (automatedDomains.some(d => domain === d || domain.endsWith('.' + d))) {
