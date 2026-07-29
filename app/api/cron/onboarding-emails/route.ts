@@ -30,6 +30,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { buildUnsubscribeUrl } from '@/lib/unsubscribe-token'
 
 const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
 
@@ -311,7 +312,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
 
 // ── Email HTML wrapper ─────────────────────────────────────────────────────────
 
-function buildHtml(bodyInner: string): string {
+function buildHtml(bodyInner: string, unsubscribeUrl: string): string {
   return `
     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;font-size:15px;line-height:1.7;color:#1a1a1a">
       <div style="background:#014D4E;padding:28px 40px;border-bottom:4px solid #ffd700">
@@ -337,7 +338,7 @@ function buildHtml(bodyInner: string): string {
           AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd.
           Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE.
           &nbsp;|&nbsp;
-          <a href="${PLATFORM_URL}/unsubscribe" style="color:#888">Unsubscribe</a>
+          <a href="${unsubscribeUrl}" style="color:#888">Unsubscribe from these emails</a>
         </p>
       </div>
     </div>
@@ -397,12 +398,13 @@ export async function GET(req: NextRequest) {
 
     const sentWeekIds = new Set((existingLogs ?? []).map((r: { entity_id: string }) => r.entity_id))
 
-    // Fetch admins for this org
+    // Fetch admins for this org — exclude anyone who has opted out of marketing emails
     const { data: admins } = await supabase
       .from('users')
-      .select('email, full_name')
+      .select('id, email, full_name, marketing_opt_out')
       .eq('organisation_id', org.id)
       .eq('role', 'admin')
+      .eq('marketing_opt_out', false)
 
     if (!admins?.length) continue
 
@@ -412,13 +414,14 @@ export async function GET(req: NextRequest) {
 
       for (const admin of admins) {
         if (!admin.email) continue
-        const firstName = admin.full_name?.split(' ')[0] ?? 'there'
+        const firstName      = admin.full_name?.split(' ')[0] ?? 'there'
+        const unsubscribeUrl = buildUnsubscribeUrl(admin.id)
 
         const sent = await sendEmail({
           to:       admin.email,
           subject:  email.subject,
           type:     'marketing',
-          bodyHtml: buildHtml(email.body(firstName)),
+          bodyHtml: buildHtml(email.body(firstName), unsubscribeUrl),
         })
 
         if (sent) {
