@@ -418,6 +418,95 @@ export async function GET(request: Request) {
     }
   }
 
+  // ── Day 14b — trial lapsed ────────────────────────────────────────────────
+  // Find orgs whose trial expired yesterday and who never subscribed.
+  // (If they subscribed, subscription_tier would have been set to 'active' by
+  // the Stripe webhook; if it's still 'trial' they quietly lapsed.)
+
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+  const { data: lapsedOrgs } = await supabase
+    .from('organisations')
+    .select('id, name, is_charity')
+    .eq('subscription_tier', 'trial')
+    .eq('is_demo', false)
+    .gte('trial_expires_at', `${yesterdayStr}T00:00:00.000Z`)
+    .lt('trial_expires_at',  `${yesterdayStr}T23:59:59.999Z`)
+
+  for (const org of lapsedOrgs ?? []) {
+    const { data: admins } = await supabase
+      .from('users')
+      .select('email, full_name')
+      .eq('organisation_id', org.id)
+      .eq('role', 'admin')
+
+    for (const admin of admins ?? []) {
+      if (!admin.email) continue
+
+      // Check if already sent
+      const { data: existing } = await supabase
+        .from('notification_log')
+        .select('id')
+        .eq('organisation_id',   org.id)
+        .eq('notification_type', 'trial_day')
+        .eq('entity_type',       'trial')
+        .eq('entity_id',         'day_14b')
+        .eq('due_date',          yesterdayStr)
+        .eq('recipient_email',   admin.email)
+        .maybeSingle()
+
+      if (existing) { emailsSkipped++; continue }
+
+      const firstName  = admin.full_name?.split(' ')[0] ?? 'there'
+      const expiryDate = formatDate(`${yesterdayStr}T00:00:00Z`)
+      const upgradeUrl = `${PLATFORM_URL}/upgrade`
+
+      const result = await sendEmail({
+        to:      admin.email,
+        subject: 'Your AlwaysReady trial has ended',
+        type:    'transactional',
+        bodyHtml: wrapEmail(`
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            Your AlwaysReady trial ended on ${expiryDate} and your account has now been suspended.
+          </p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            Your data is safe and will be retained for 30 days. If you'd like to reactivate
+            your account, you can subscribe at any time — everything will be exactly as you left it.
+          </p>
+          <p style="margin:0 0 32px">
+            <a href="${upgradeUrl}"
+               style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+              Reactivate my account &rarr;
+            </a>
+          </p>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+            If you have any feedback about your experience, or if there's anything we could have
+            done better, we'd genuinely welcome hearing from you. You can reach us via
+            <a href="mailto:hello@alwaysready.uk" style="color:#014D4E">hello@alwaysready.uk</a>.
+          </p>
+        `),
+      })
+
+      if (result.sent) {
+        await supabase.from('notification_log').insert({
+          organisation_id:   org.id,
+          notification_type: 'trial_day',
+          entity_type:       'trial',
+          entity_id:         'day_14b',
+          due_date:          yesterdayStr,
+          recipient_email:   admin.email,
+        })
+        emailsSent++
+        console.log(`[trial-emails] Sent day_14b to ${admin.email} (${org.name})`)
+      } else {
+        errors.push(`day_14b → ${admin.email}: ${result.error ?? result.skipped}`)
+      }
+    }
+  }
+
   console.log(`[trial-emails] sent=${emailsSent} skipped=${emailsSkipped} errors=${errors.length}`)
   if (errors.length > 0) console.error('[trial-emails] errors:', errors)
 
