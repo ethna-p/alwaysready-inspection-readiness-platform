@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { getPostMfaDestination } from './actions'
 
 export default function MfaVerifyPage() {
   const router   = useRouter()
@@ -89,12 +90,9 @@ export default function MfaVerifyPage() {
     // Hard-navigate so the browser sends the fresh aal2 cookies in the HTTP
     // request. router.replace() is a soft client-side nav that can race with
     // cookie writes, causing the middleware to still see aal1 and loop back here.
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user?.email === process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
-      window.location.replace('/superadmin')
-    } else {
-      window.location.replace('/dashboard')
-    }
+    // Destination is resolved server-side to keep SUPERADMIN_EMAIL out of the bundle.
+    const destination = await getPostMfaDestination()
+    window.location.replace(destination)
   }
 
   return (
