@@ -128,7 +128,6 @@ export default function ProvisionPage() {
               id="is_beta"
               name="is_beta"
               type="checkbox"
-              defaultChecked
               className="h-4 w-4 accent-[#00b8a6] rounded"
             />
             <label htmlFor="is_beta" className="text-sm text-ink">
