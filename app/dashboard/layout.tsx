@@ -10,6 +10,7 @@ import SiteFooter from '@/components/SiteFooter'
 import TrialBanner from '@/components/TrialBanner'
 import BetaBanner from '@/components/BetaBanner'
 import IdleTimeout from '@/components/IdleTimeout'
+import TabCloseSignout from '@/components/TabCloseSignout'
 import OnboardingChecklist from '@/components/OnboardingChecklist'
 
 export default async function DashboardLayout({
@@ -56,6 +57,7 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
       <IdleTimeout />
+      <TabCloseSignout />
       <SiteHeader isDemo={org?.is_demo ?? false} />
       <TrialBanner
         isDemo={org?.is_demo ?? false}
