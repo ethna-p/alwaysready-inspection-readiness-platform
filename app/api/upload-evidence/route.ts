@@ -20,12 +20,13 @@ import { createAdminClient } from '@/lib/supabase/admin'
 
 const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 
-// Allowed MIME types and their accepted magic-byte equivalents
+// Allowed MIME types and their accepted magic-byte equivalents.
+// Legacy .doc and .xls are intentionally excluded — those formats support
+// VBA macros and represent a meaningfully higher malware risk than the
+// modern Open XML equivalents (.docx, .xlsx).
 const ALLOWED_MIME_TYPES = new Set([
   'application/pdf',
-  'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'image/jpeg',
   'image/png',
@@ -124,17 +125,10 @@ export async function POST(request: NextRequest) {
     else if (ext === 'xlsx') actualMime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   }
 
-  // Legacy .doc and .xls: file-type returns application/x-cfb or similar
-  if (detected?.mime === 'application/x-cfb' || detected?.mime === 'application/x-ole-storage') {
-    const ext = file.name.split('.').pop()?.toLowerCase()
-    if (ext === 'doc') actualMime = 'application/msword'
-    else if (ext === 'xls') actualMime = 'application/vnd.ms-excel'
-  }
-
   if (!ALLOWED_MIME_TYPES.has(actualMime)) {
     console.warn(`[upload-evidence] Rejected file: reported=${file.type} detected=${detected?.mime} resolved=${actualMime}`)
     return NextResponse.json(
-      { error: 'File type not accepted. Please upload a PDF, Word document, Excel spreadsheet, or image.' },
+      { error: 'File type not accepted. Please upload a PDF, Word (.docx), Excel (.xlsx), JPG, or PNG.' },
       { status: 400 }
     )
   }

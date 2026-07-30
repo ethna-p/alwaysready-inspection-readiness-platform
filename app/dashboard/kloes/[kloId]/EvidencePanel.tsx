@@ -21,14 +21,12 @@ import { saveEvidenceRecord, deleteEvidenceRecord } from './evidence-actions'
 
 const ACCEPTED_TYPES = [
   'application/pdf',
-  'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'image/jpeg',
   'image/png',
 ]
-const ACCEPTED_EXTENSIONS = '.pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png'
+const ACCEPTED_EXTENSIONS = '.pdf,.docx,.xlsx,.jpg,.jpeg,.png'
 const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 
 export interface EvidenceFile {
@@ -235,7 +233,8 @@ export default function EvidencePanel({
             />
           </label>
           <p className="mt-1.5 text-sm text-ink-muted">
-            PDF, Word, Excel, or image. Maximum 10 MB.
+            PDF, Word (.docx), Excel (.xlsx), JPG, or PNG — max 10 MB.
+            Legacy .doc and .xls files are not accepted for security reasons.
           </p>
           {uploadError && (
             <p role="alert" className="mt-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2">

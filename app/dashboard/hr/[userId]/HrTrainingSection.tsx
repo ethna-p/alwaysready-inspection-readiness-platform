@@ -296,7 +296,7 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                     <div className="flex items-center gap-3">
                       <input
                         type="file"
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                        accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png"
                         ref={el => { fileInputRefs.current[type.id] = el }}
                         className="text-sm text-ink"
                       />
@@ -309,7 +309,10 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                         Upload
                       </button>
                     </div>
-                    <p className="text-sm text-ink-muted mt-1">PDF, Word, Excel, JPG or PNG — max 10 MB.</p>
+                    <p className="text-sm text-ink-muted mt-1">
+                      PDF, Word (.docx), Excel (.xlsx), JPG, or PNG — max 10 MB.
+                      Legacy .doc and .xls files are not accepted for security reasons.
+                    </p>
                   </div>
                 </div>
               )}

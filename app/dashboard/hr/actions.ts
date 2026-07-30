@@ -209,16 +209,14 @@ export async function uploadTrainingCertificate(
 
   const ALLOWED_MIME = [
     'application/pdf',
-    'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'image/jpeg',
     'image/png',
   ]
 
   if (!ALLOWED_MIME.includes(file.type)) {
-    return { success: false, error: 'File type not allowed. Upload PDF, Word, Excel, JPG, or PNG.' }
+    return { success: false, error: 'File type not allowed. Upload PDF, Word (.docx), Excel (.xlsx), JPG, or PNG.' }
   }
 
   const supabase = await createClient()

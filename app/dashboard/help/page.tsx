@@ -152,7 +152,7 @@ export default function HelpPage() {
             <p>• Set review frequency per KLOE (monthly, quarterly, annual, or custom).</p>
             <p>• Set a priority level (1–5) per KLOE to reflect the seriousness of non-compliance.</p>
             <p>• Add evidence location notes — where the document or policy is physically or digitally stored.</p>
-            <p>• Upload evidence files (PDF, Word, Excel, JPG, PNG — up to 10 MB each).</p>
+            <p>• Upload evidence files (PDF, Word (.docx), Excel (.xlsx), JPG, PNG — up to 10 MB each).</p>
             <p>• View CQC rating characteristics (Outstanding, Good, Requires Improvement, Inadequate) for each KLOE.</p>
             <p>• Assign any KLOE to a specific team member.</p>
             <p>• Full audit trail per KLOE — every change recorded with who made it and when, permanently.</p>
@@ -316,7 +316,7 @@ export default function HelpPage() {
 
           <H3>Uploading evidence files</H3>
           <P>
-            Open any KLOE and scroll to the <strong>Evidence files</strong> section. Click <strong>Upload file</strong> and select a document from your device. Accepted formats are PDF, Word, Excel, and images (JPG or PNG), up to 10 MB per file. Files are private and can only be accessed by members of your organisation and any visitors you have given access to.
+            Open any KLOE and scroll to the <strong>Evidence files</strong> section. Click <strong>Upload file</strong> and select a document from your device. Accepted formats are PDF, Word (.docx), Excel (.xlsx), and images (JPG or PNG), up to 10 MB per file. Legacy .doc and .xls files are not accepted for security reasons. Files are private and can only be accessed by members of your organisation and any visitors you have given access to.
           </P>
           <P>
             <strong>Important:</strong> only upload governance documents — policies, certificates, risk assessments, and similar records. Do not upload anything containing resident-specific clinical information, care plans, or personal health records.
@@ -376,7 +376,7 @@ export default function HelpPage() {
 
           <H3>Training records</H3>
           <P>
-            Scroll to the <strong>Training Records</strong> section on a staff member&apos;s page. A list of training types is shown — click the arrow on any row to expand it. You can record the date the training was completed, how frequently it needs to be renewed, and any notes. The platform calculates the next due date automatically. You can also upload a training certificate directly to the record — PDF, Word, Excel, JPG, or PNG files up to 10 MB are accepted.
+            Scroll to the <strong>Training Records</strong> section on a staff member&apos;s page. A list of training types is shown — click the arrow on any row to expand it. You can record the date the training was completed, how frequently it needs to be renewed, and any notes. The platform calculates the next due date automatically. You can also upload a training certificate directly to the record — PDF, Word (.docx), Excel (.xlsx), JPG, or PNG files up to 10 MB are accepted.
           </P>
           <P>
             Training completion across your team feeds into the <strong>Mandatory Training</strong> card on the HR overview. A training type is counted as complete for a staff member once a completion date has been recorded and the next due date has not passed.
@@ -590,7 +590,7 @@ export default function HelpPage() {
           <H3>Uploaded file protection</H3>
           <P>All uploaded files pass through a secure processing pipeline before being stored.</P>
           <div className="space-y-1">
-            <p><strong>File type validation:</strong> every uploaded file is inspected at the byte level before storage. We check the actual file signature, not just the file name or extension, ensuring that files cannot be disguised as a safe format. Only PDFs, Word documents, Excel spreadsheets, and images (JPG and PNG) are accepted.</p>
+            <p><strong>File type validation:</strong> every uploaded file is inspected at the byte level before storage. We check the actual file signature, not just the file name or extension, ensuring that files cannot be disguised as a safe format. Only PDFs, Word (.docx), Excel (.xlsx), and images (JPG and PNG) are accepted. Legacy .doc and .xls formats are blocked because they support macros, which are the most common vector for Office malware.</p>
             <p><strong>Malware scanning:</strong> every uploaded file is scanned for viruses and malicious content by Cloudmersive, an enterprise-grade virus scanning service, before it is stored. Files that fail the scan are rejected immediately and never stored.</p>
             <p><strong>No direct browser-to-storage uploads:</strong> files pass through AlwaysReady&apos;s secure server before reaching storage, so validation and scanning cannot be bypassed.</p>
           </div>
