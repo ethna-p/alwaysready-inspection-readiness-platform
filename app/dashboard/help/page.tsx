@@ -543,6 +543,10 @@ export default function HelpPage() {
               question="What should I do if something looks wrong in the platform?"
               answer="Contact your admin in the first instance. If the issue appears to be a technical problem with the platform itself, the admin should raise a support ticket using the Support link in the navigation bar."
             />
+            <FAQ
+              question="Why am I signed out when I close my browser tab?"
+              answer="AlwaysReady automatically signs you out when you close your browser tab. This is a security feature designed to protect resident and staff data on shared devices — it ensures that nobody can access your account simply by opening the browser after you have finished. When you are ready to use AlwaysReady again, simply sign back in. If you are using a personal device and find this inconvenient, contact your admin — they may be able to advise on alternative ways to keep your session active."
+            />
           </div>
         </Section>
 

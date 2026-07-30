@@ -223,6 +223,10 @@ function LoginForm() {
                   >
                     {loading ? 'Signing in…' : 'Sign in'}
                   </button>
+
+                  <p className="mt-4 text-xs text-ink-dim text-center leading-relaxed">
+                    🔒 For security, you will be automatically signed out when you close this tab.
+                  </p>
                 </form>
               </>
             )}
