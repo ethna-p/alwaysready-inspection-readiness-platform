@@ -17,10 +17,10 @@ export default function SuperadminLayout({
       {/* Top bar */}
       <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between relative">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <a href="https://www.alwaysready.uk" target="_blank" rel="noopener noreferrer">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/alwaysready-logo.svg" alt="AlwaysReady" className="h-8 w-auto" />
-          </div>
+          </a>
           <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase tracking-wide">
             Superadmin
           </span>
