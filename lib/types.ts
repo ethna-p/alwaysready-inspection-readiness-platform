@@ -306,6 +306,8 @@ export type Database = {
           mime_type: string | null
           uploaded_at: string
           scan_status: string
+          /** NULL = manually uploaded; DSCR slug when pushed by an integration (e.g. 'pcs', 'nourish'). */
+          integration_source: string | null
         }
         Insert: {
           id?: string
@@ -318,6 +320,7 @@ export type Database = {
           mime_type?: string | null
           uploaded_at?: string
           scan_status?: string
+          integration_source?: string | null
         }
         Update: {
           id?: string
@@ -330,6 +333,7 @@ export type Database = {
           mime_type?: string | null
           uploaded_at?: string
           scan_status?: string
+          integration_source?: string | null
         }
         Relationships: []
       }
@@ -1068,6 +1072,8 @@ export type Database = {
           notes: string | null
           created_at: string
           updated_at: string
+          /** NULL = manually entered; DSCR slug when pushed by an integration (e.g. 'pcs', 'nourish'). */
+          integration_source: string | null
         }
         Insert: {
           id?: string
@@ -1080,6 +1086,7 @@ export type Database = {
           notes?: string | null
           created_at?: string
           updated_at?: string
+          integration_source?: string | null
         }
         Update: {
           id?: string
@@ -1088,6 +1095,7 @@ export type Database = {
           frequency_days?: number
           notes?: string | null
           updated_at?: string
+          integration_source?: string | null
         }
         Relationships: []
       }
