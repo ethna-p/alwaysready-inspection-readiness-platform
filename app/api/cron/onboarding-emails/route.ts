@@ -30,7 +30,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
-import { buildUnsubscribeUrl } from '@/lib/unsubscribe-token'
 
 const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
 
@@ -310,38 +309,25 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   },
 ]
 
-// ── Email HTML wrapper ─────────────────────────────────────────────────────────
+// ── Email body fragment ────────────────────────────────────────────────────────
+// Returns the inner body only — no header, no footer, no unsubscribe link.
+// sendEmail() in lib/email.ts wraps this in the full branded template and
+// appends the unsubscribe footer automatically for type: 'marketing'.
 
-function buildHtml(bodyInner: string, unsubscribeUrl: string): string {
+function buildHtml(bodyInner: string): string {
   return `
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;font-size:15px;line-height:1.7;color:#1a1a1a">
-      <div style="background:#014D4E;padding:28px 40px;border-bottom:4px solid #ffd700">
-        <p style="margin:0;font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.3px">AlwaysReady</p>
-        <p style="margin:4px 0 0;font-size:12px;color:#99cccc;letter-spacing:0.05em;text-transform:uppercase">Inspection Readiness Platform</p>
-      </div>
-      <div style="padding:36px 40px">
-        ${bodyInner}
-        <p style="margin:32px 0 0">
-          <a href="${PLATFORM_URL}/dashboard"
-             style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-            Go to your dashboard &rarr;
-          </a>
-        </p>
-        <p style="margin:32px 0 0">
-          Kind regards,<br>
-          <strong>Ethna Parker PhD</strong><br>
-          Founder, AlwaysReady
-        </p>
-      </div>
-      <div style="padding:20px 40px;background:#f5f4f1;border-top:1px solid #e5e3de">
-        <p style="margin:0;font-size:12px;color:#888;line-height:1.6">
-          AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd.
-          Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE.
-          &nbsp;|&nbsp;
-          <a href="${unsubscribeUrl}" style="color:#888">Unsubscribe from these emails</a>
-        </p>
-      </div>
-    </div>
+    ${bodyInner}
+    <p style="margin:32px 0 0">
+      <a href="${PLATFORM_URL}/dashboard"
+         style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+        Go to your dashboard &rarr;
+      </a>
+    </p>
+    <p style="margin:32px 0 0">
+      Kind regards,<br>
+      <strong>Ethna Parker PhD</strong><br>
+      Founder, AlwaysReady
+    </p>
   `
 }
 
@@ -381,10 +367,9 @@ export async function GET(req: NextRequest) {
     const daysElapsed    = Math.floor(msElapsed / (1000 * 60 * 60 * 24))
     const anchorDate     = subscribedAt.toISOString().slice(0, 10)
 
-    // Determine which email to send today (highest threshold reached)
-    // We work backwards from week_12 so we only ever send the most recent one
-    // but the notification_log prevents re-sending emails already sent.
-    // Instead, iterate all emails and send any whose threshold is met but not yet logged.
+    // Iterate emails in threshold order; send every email whose threshold is first
+    // met today. Deduplication via notification_log prevents re-sends on retries
+    // or catch-up runs.
 
     // Fetch all existing onboarding log entries for this org
     const { data: existingLogs } = await supabase
@@ -414,15 +399,14 @@ export async function GET(req: NextRequest) {
 
       for (const admin of admins) {
         if (!admin.email) continue
-        const firstName      = admin.full_name?.split(' ')[0] ?? 'there'
-        const unsubscribeUrl = buildUnsubscribeUrl(admin.id)
+        const firstName = admin.full_name?.split(' ')[0] ?? 'there'
 
         const result = await sendEmail({
           to:       admin.email,
           subject:  email.subject,
           type:     'marketing',
           userId:   admin.id,
-          bodyHtml: buildHtml(email.body(firstName), unsubscribeUrl),
+          bodyHtml: buildHtml(email.body(firstName)),
         })
 
         if (result.sent) {
