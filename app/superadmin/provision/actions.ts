@@ -196,7 +196,7 @@ export async function provisionOrganisation(
 
         <p style="margin:0;color:#555">
           AJ Parker<br>
-          <span style="color:#888;font-size:13px">AlwaysReady · hello@alwaysready.uk</span>
+          <span style="color:#888;font-size:13px">AlwaysReady · support@alwaysready.uk</span>
         </p>
       `,
     })

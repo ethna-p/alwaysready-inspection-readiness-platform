@@ -485,7 +485,7 @@ export async function GET(request: Request) {
           <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
             If you have any feedback about your experience, or if there's anything we could have
             done better, we'd genuinely welcome hearing from you. You can reach us via
-            <a href="mailto:hello@alwaysready.uk" style="color:#014D4E">hello@alwaysready.uk</a>.
+            <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
           </p>
         `),
       })

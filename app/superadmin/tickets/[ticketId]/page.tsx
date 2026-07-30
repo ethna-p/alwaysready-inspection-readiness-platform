@@ -104,7 +104,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
                 <dt className="text-ink-muted">Source</dt>
                 <dd>
                   {isEmail
-                    ? <span className="font-semibold text-purple-700">Inbound email (hello@alwaysready.uk)</span>
+                    ? <span className="font-semibold text-purple-700">Inbound email (support@alwaysready.uk)</span>
                     : <span className="font-semibold text-amber-700">Website enquiry</span>
                   }
                 </dd>

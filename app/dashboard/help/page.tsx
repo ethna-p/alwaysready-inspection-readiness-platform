@@ -236,7 +236,7 @@ export default function HelpPage() {
           <H3>Support</H3>
           <div className="space-y-1">
             <p>• In-platform support ticket system — raise a query or report an issue directly from the Support link in the navigation bar.</p>
-            <p>• Email support at hello@alwaysready.uk.</p>
+            <p>• Email support at support@alwaysready.uk.</p>
           </div>
 
           {/* Suggestion callout */}
@@ -537,7 +537,7 @@ export default function HelpPage() {
             />
             <FAQ
               question="How long is our data kept, and can we export it?"
-              answer="Your data is retained for as long as your subscription is active. If your subscription ends, your data is kept for 90 days before being permanently deleted — giving you time to export everything first. To request a full data export (KLOE records, audit trail, team list, and uploaded evidence), email hello@alwaysready.uk with your organisation name. Exports are delivered in CSV format within 5 working days."
+              answer="Your data is retained for as long as your subscription is active. If your subscription ends, your data is kept for 90 days before being permanently deleted — giving you time to export everything first. To request a full data export (KLOE records, audit trail, team list, and uploaded evidence), email support@alwaysready.uk with your organisation name. Exports are delivered in CSV format within 5 working days."
             />
             <FAQ
               question="What should I do if something looks wrong in the platform?"
@@ -603,7 +603,7 @@ export default function HelpPage() {
           </div>
 
           <H3>Questions</H3>
-          <P>If you have any questions about data security or how we handle your information, please contact us at <a href="mailto:hello@alwaysready.uk" className="text-brand font-medium hover:underline">hello@alwaysready.uk</a>.</P>
+          <P>If you have any questions about data security or how we handle your information, please contact us at <a href="mailto:support@alwaysready.uk" className="text-brand font-medium hover:underline">support@alwaysready.uk</a>.</P>
         </Section>
 
         {/* ── Data Retention ─────────────────────────────────────────────────── */}
@@ -627,7 +627,7 @@ export default function HelpPage() {
           </div>
 
           <H3>Exporting your data</H3>
-          <P>You can request a full export of your organisation&apos;s data at any time by emailing <a href="mailto:hello@alwaysready.uk" className="text-brand font-medium hover:underline">hello@alwaysready.uk</a>. Please include your organisation name and the email address associated with your account.</P>
+          <P>You can request a full export of your organisation&apos;s data at any time by emailing <a href="mailto:support@alwaysready.uk" className="text-brand font-medium hover:underline">support@alwaysready.uk</a>. Please include your organisation name and the email address associated with your account.</P>
           <div className="space-y-1">
             <p className="font-medium">What is included in a data export:</p>
             <p>• All KLOE records and compliance updates (CSV format)</p>
@@ -648,10 +648,10 @@ export default function HelpPage() {
           <P>AlwaysReady acts as a <strong>data processor</strong> on your behalf. You remain the <strong>data controller</strong> for all information entered into the platform.</P>
 
           <H3>Requesting early deletion</H3>
-          <P>If you wish your data to be deleted before the 90-day retention period has elapsed, please email <a href="mailto:hello@alwaysready.uk" className="text-brand font-medium hover:underline">hello@alwaysready.uk</a> with the subject line <strong>&ldquo;Data deletion request&rdquo;</strong>. We will confirm deletion within 5 working days. Please note that once data is deleted it cannot be recovered.</P>
+          <P>If you wish your data to be deleted before the 90-day retention period has elapsed, please email <a href="mailto:support@alwaysready.uk" className="text-brand font-medium hover:underline">support@alwaysready.uk</a> with the subject line <strong>&ldquo;Data deletion request&rdquo;</strong>. We will confirm deletion within 5 working days. Please note that once data is deleted it cannot be recovered.</P>
 
           <H3>Questions</H3>
-          <P>If you have any questions about how we handle your data, please contact us at <a href="mailto:hello@alwaysready.uk" className="text-brand font-medium hover:underline">hello@alwaysready.uk</a>.</P>
+          <P>If you have any questions about how we handle your data, please contact us at <a href="mailto:support@alwaysready.uk" className="text-brand font-medium hover:underline">support@alwaysready.uk</a>.</P>
         </Section>
 
       {/* Print footer */}

@@ -88,10 +88,10 @@ export default async function WelcomePage() {
                   <span className="block mt-1 text-xs text-ink-dim">
                     You can unsubscribe at any time by emailing{' '}
                     <a
-                      href="mailto:hello@alwaysready.uk"
+                      href="mailto:support@alwaysready.uk"
                       className="underline hover:text-brand"
                     >
-                      hello@alwaysready.uk
+                      support@alwaysready.uk
                     </a>
                     . We will never share your details with third parties.
                   </span>

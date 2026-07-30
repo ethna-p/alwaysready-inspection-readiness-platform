@@ -304,8 +304,8 @@ export default function TrialPage() {
                 />
                 <p className="text-sm text-ink-muted mt-1">
                   If you are a registered charity, enter your registration number here, then email{' '}
-                  <a href="mailto:hello@alwaysready.uk" className="text-brand underline">
-                    hello@alwaysready.uk
+                  <a href="mailto:support@alwaysready.uk" className="text-brand underline">
+                    support@alwaysready.uk
                   </a>
                   {' '}with a copy of your registration document to receive your charity discount.
                 </p>
