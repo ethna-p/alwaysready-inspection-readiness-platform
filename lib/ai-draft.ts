@@ -24,7 +24,7 @@ IMPORTANT — only describe features that exist: Never invent or imply platform 
 ## Platform features — accurate descriptions
 
 KLOE Tracker
-All 24 CQC Key Lines of Enquiry (KLOEs) are pre-loaded into the platform, grouped by the five CQC key questions: Safe, Effective, Caring, Responsive, and Well-led. For each KLOE, users can: set the status (Not started, In progress, or Completed); record the date of the last review and the next review due date; set review frequency (monthly, quarterly, annual, or custom); set a priority level (1 to 5); add evidence location notes; upload evidence files (PDF, Word, Excel, JPG, or PNG, up to 10 MB each); view CQC rating characteristics for that KLOE; assign the KLOE to a team member; and view a permanent audit trail of every change made.
+All 24 CQC Key Lines of Enquiry (KLOEs) are pre-loaded into the platform, grouped by the five CQC key questions: Safe, Effective, Caring, Responsive, and Well-led. For each KLOE, users can: set the status (Not started, In progress, or Completed); record the date of the last review and the next review due date; set review frequency (monthly, quarterly, annual, or custom); set a priority level (1 to 5); add evidence location notes; upload evidence files (.docx and .xlsx only, up to 10 MB each); view CQC rating characteristics for that KLOE; assign the KLOE to a team member; and view a permanent audit trail of every change made.
 
 RAG status
 Every KLOE is given an automatic RAG status:
@@ -69,8 +69,11 @@ Two-factor authentication (2FA) is required for all Admin and Staff accounts. It
 Support
 In-platform support tickets are submitted via Support in the navigation bar. Email support is available at support@alwaysready.uk.
 
+Newsletter Drafting Tool
+An AI-assisted drafting tool available to Admin users only. Accessed from the navigation bar. The admin selects an audience (staff, families, or both), a topic or occasion, a tone, and adds optional key points — the platform generates a ready-to-copy draft. AlwaysReady never sends newsletters on your behalf; the draft is for copying into email, print, or messaging. Do not include personal details of residents, patients, families, or individual staff in prompts. Each organisation can generate up to 10 drafts per calendar month.
+
 Data export
-Users can download their account data and evidence pack from the Account page.
+Users can download all their account data and evidence files as a self-serve download from the Account page. The evidence download is a ZIP archive of all uploaded files organised by KLOE.
 
 ## Frequently asked questions — authoritative answers
 
@@ -119,13 +122,16 @@ Q: How does document management work in AlwaysReady?
 A: You can upload evidence files directly to each KLOE. Every upload is virus-scanned, time-stamped, and linked to the relevant key question, so your evidence trail is built naturally as you work. Everything is stored securely and easy to retrieve.
 
 Q: What types of documents can I upload?
-A: You can upload any non-clinical governance-related document: policies, audits, meeting minutes, training records, anonymised incident reviews, action plans, and more. AlwaysReady supports PDF, Word, Excel, and images. Do not upload documents containing resident-specific clinical information or care plans.
+A: AlwaysReady accepts Word documents (.docx) and Excel spreadsheets (.xlsx) only. Files in older formats (.doc or .xls) are not accepted and must be re-saved in the current format before uploading. Do not upload documents containing resident-specific clinical information or care plans.
 
 Q: Does AlwaysReady provide policy templates?
 A: No. AlwaysReady does not provide generic policy templates because they can pose legal and clinical risks if not tailored appropriately. Instead, it helps you organise, evidence, and track your own service-specific policies.
 
 Q: Can I export data from AlwaysReady?
-A: Yes. The Inspection Pack feature generates a one-click printable summary of your compliance position across all KLOEs, formatted for inspectors, boards, and commissioners. You can also download your data at any time from your account.
+A: Yes. The Inspection Pack feature generates a one-click printable summary of your compliance position across all KLOEs, formatted for inspectors, boards, and commissioners. You can also download all your account data and evidence files as a self-serve ZIP download from the Account page at any time.
+
+Q: Can I download all my uploaded evidence files?
+A: Yes. From the Account page, there is a Download evidence button that downloads all your uploaded evidence files as a ZIP archive, organised by KLOE. This is available to all Admin users at any time.
 
 Q: How does AlwaysReady support the CQC regulatory framework?
 A: AlwaysReady is built around the five CQC key questions — Safe, Effective, Caring, Responsive, and Well-led — and their KLOEs. Every feature in the platform maps to this framework, so you always know what to collect, where it fits, and how to demonstrate it.
@@ -261,6 +267,30 @@ A: You will be invited to subscribe. There is no automatic charge and no obligat
 
 Q: Can I extend my free trial?
 A: Contact us via alwaysready.uk/contact and we will do our best to help.
+
+Q: Does AlwaysReady support different care specialisms within a service?
+A: Yes. During setup or from your account settings, Admin users can select one or more sub-specialisms that apply to their service. The platform currently supports: Dementia Care, Learning Disabilities, Mental Health, End of Life Care, Acquired Brain Injury (ABI), Physical Disabilities, Bariatric Care, Sensory Impairment, Epilepsy, and Autism. Selecting a sub-specialism unlocks additional tailored checklist items relevant to that area.
+
+Q: Is there a newsletter drafting tool?
+A: Yes. AlwaysReady includes an AI-assisted newsletter drafting tool, available to Admin users from the navigation bar. You choose your audience (staff, families, or both), a topic or occasion, a tone, and add any key points — the platform generates a ready-to-copy draft in seconds. AlwaysReady does not send newsletters on your behalf; the draft is for copying into your preferred medium. Each organisation can generate up to 10 drafts per calendar month.
+
+Q: Is the newsletter content written by AI?
+A: Yes. Drafts are generated by AI and should always be reviewed and edited before use. Do not include personal details of residents, patients, families, or individual staff members in your prompts.
+
+Q: Does AlwaysReady send newsletters to families or staff on my behalf?
+A: No. The newsletter tool generates a draft for you to copy and use however you like — email, print, or messaging. AlwaysReady does not store, schedule, or send newsletters.
+
+Q: How many newsletters can I generate per month?
+A: Each organisation can generate up to 10 AI newsletter drafts per calendar month. The counter resets at the start of each month.
+
+Q: Is there a dark mode?
+A: Yes. Click the sun/moon icon in the navigation bar to switch between light and dark mode. The platform will also follow your device's system preference by default if you have not set a manual preference.
+
+Q: Can I reply to a support ticket by email?
+A: Yes. When you receive a reply to your support ticket, you can reply directly to that email and your response will be threaded back into the ticket automatically. You do not need to log in to the platform to continue the conversation.
+
+Q: Why am I signed out when I close my browser tab?
+A: AlwaysReady signs you out automatically when you close your browser tab. This is a security feature to protect resident and staff data on shared devices — it ensures nobody can access your account by simply reopening the browser. When you are ready to use AlwaysReady again, sign back in as normal.
 
 Q: Who writes the AlwaysReady blog?
 A: All blog posts are written by Dr Ethna Parker, founder and developer of AlwaysReady, who holds a doctorate and has a professional background in health and adult social care.
