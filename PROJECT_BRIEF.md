@@ -48,6 +48,7 @@ The following modules and features are fully built and deployed:
 - Evidence file upload with server-side MIME validation and Cloudmersive virus scanning
 - On-page tooltips
 - People's Voice module
+- AI newsletter drafting tool (admin only, 10 AI generations/month per org; output is copy-paste only — AlwaysReady does not send on the provider's behalf; users are warned not to include personal details of residents, patients, families, or individual staff)
 - HR module (staff records, per-org)
 - PWA support (installable on iPhone/Android home screen)
 - Mobile-responsive layout
