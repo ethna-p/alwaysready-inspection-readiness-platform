@@ -28,7 +28,12 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo — links to dashboard */}
         <div className="flex items-center gap-4">
-          <a href="/dashboard" aria-label="AlwaysReady — go to dashboard">
+          <a
+            href="https://www.alwaysready.uk"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="AlwaysReady — visit marketing site"
+          >
             <Image
               src="/alwaysready-logo.svg"
               alt="AlwaysReady"
