@@ -536,6 +536,10 @@ export default function HelpPage() {
               answer="No. AlwaysReady is a private tool for your service. The data you enter is only visible to people you give access to. It is not connected to any CQC systems. You choose what to share and with whom, by creating visitor logins."
             />
             <FAQ
+              question="Does AlwaysReady guarantee a good CQC rating?"
+              answer="No — and it's important to be clear about this. AlwaysReady helps you organise your evidence, track your compliance activity, and prepare for inspection. Your readiness score and RAG status are calculated from your own self-assessed inputs, not from an independent audit of your service. CQC inspection outcomes depend on a wide range of factors that are entirely outside our knowledge or control — how your team performs on the day, what inspectors observe, and how evidence is assessed against the standards. What AlwaysReady does is help you arrive at inspection better organised and with your evidence ready. That is a real advantage — but it is not a guarantee."
+            />
+            <FAQ
               question="How long is our data kept, and can we export it?"
               answer="Your data is retained for as long as your subscription is active. If your subscription ends, your data is kept for 90 days before being permanently deleted — giving you time to export everything first. To request a full data export (KLOE records, audit trail, team list, and uploaded evidence), email support@alwaysready.uk with your organisation name. Exports are delivered in CSV format within 5 working days."
             />
