@@ -69,8 +69,8 @@ export default async function TrialConfirmedPage({ searchParams }: Props) {
       {/* Footer */}
       <footer className="border-t border-line bg-canvas px-6 py-6 text-center">
         <p className="text-xs text-ink">
-          &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
-          Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
+          &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services. |
+          82A James Carter Road, Mildenhall, IP28 7DE
         </p>
       </footer>
 

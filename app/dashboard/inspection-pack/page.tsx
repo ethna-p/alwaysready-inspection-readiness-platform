@@ -446,8 +446,8 @@ export default async function InspectionPackPage() {
         {/* ── Print footer — disclaimer (hidden on screen; SiteFooter covers it) */}
         <div className="hidden print:block mt-10 pt-6 border-t border-line text-xs text-ink-dim space-y-1">
           <p>
-            © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd. |
-            Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
+            © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services. |
+            82A James Carter Road, Mildenhall, IP28 7DE
           </p>
           <p>
             Our tools are designed to support providers in preparing for CQC inspection.

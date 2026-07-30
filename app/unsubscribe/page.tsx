@@ -163,7 +163,7 @@ export default async function UnsubscribePage({ searchParams }: Props) {
           textAlign: 'center',
         }}>
           <p style={{ margin: 0, fontSize: 12, color: '#888', lineHeight: 1.6 }}>
-            AlwaysReady is a product of Parker Digital &amp; Print Services Ltd<br />
+            AlwaysReady is a product of Parker Digital &amp; Print Services<br />
             82A James Carter Road, Mildenhall, IP28 7DE
           </p>
         </div>

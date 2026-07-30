@@ -178,7 +178,7 @@ Sub-services with additional checklist items: **Dementia**, **Autism**
 **Footer content — required on every page:**
 
 ```
-© 2026 AlwaysReady is a brand of Parker Digital & Print Services Ltd. | Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE
+© 2026 AlwaysReady is a brand of Parker Digital & Print Services | 82A James Carter Road, Mildenhall, IP28 7DE
 Our tools are designed to support providers in preparing for CQC inspection. They do not constitute official CQC guidance and do not guarantee any particular inspection outcome.
 ```
 

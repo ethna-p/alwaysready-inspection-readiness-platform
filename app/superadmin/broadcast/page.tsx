@@ -227,7 +227,7 @@ export default function BroadcastPage() {
             {/* Email footer */}
             <div style={{ backgroundColor: '#faf9f6', borderTop: '1px solid #e8e6e0', padding: '16px 28px', textAlign: 'center' }}>
               <p style={{ margin: 0, fontSize: 11, color: '#595959', lineHeight: 1.6 }}>
-                AlwaysReady is a product of Parker Digital &amp; Print Services Ltd<br />
+                AlwaysReady is a product of Parker Digital &amp; Print Services<br />
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
               <p style={{ margin: '6px 0 0', fontSize: 11 }}>

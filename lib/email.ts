@@ -112,7 +112,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <tr>
             <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:20px 40px;text-align:center">
               <p style="margin:0;font-size:12px;color:#888;line-height:1.6">
-                AlwaysReady is a product of Parker Digital &amp; Print Services Ltd<br>
+                AlwaysReady is a product of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
               ${unsubscribeFooter}

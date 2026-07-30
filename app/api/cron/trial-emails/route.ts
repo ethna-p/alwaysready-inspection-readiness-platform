@@ -306,8 +306,8 @@ function wrapEmail(bodyHtml: string): string {
       </div>
       <div style="padding:20px 40px;background:#f5f4f1;border-top:1px solid #e5e3de">
         <p style="margin:0;font-size:12px;color:#888;line-height:1.6">
-          AlwaysReady is a brand of Parker Digital &amp; Print Services Ltd.
-          Registered Office: 82A James Carter Road, Mildenhall, IP28 7DE.<br>
+          AlwaysReady is a brand of Parker Digital &amp; Print Services.
+          82A James Carter Road, Mildenhall, IP28 7DE.<br>
           You are receiving this because you signed up for an AlwaysReady trial.
         </p>
       </div>
