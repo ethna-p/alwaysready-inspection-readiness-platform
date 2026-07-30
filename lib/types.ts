@@ -144,6 +144,8 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscribed_at: string | null
+          terms_accepted_at: string | null
+          terms_version: string | null
           holiday_unit: 'days' | 'hours'
           created_at: string
         }
@@ -166,6 +168,8 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscribed_at?: string | null
+          terms_accepted_at?: string | null
+          terms_version?: string | null
           holiday_unit?: 'days' | 'hours'
           created_at?: string
         }
@@ -188,6 +192,8 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscribed_at?: string | null
+          terms_accepted_at?: string | null
+          terms_version?: string | null
           holiday_unit?: 'days' | 'hours'
           created_at?: string
         }

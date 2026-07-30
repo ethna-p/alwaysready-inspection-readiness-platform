@@ -18,6 +18,10 @@ const ACTIVE_SERVICE_TYPES = [
   'Community Drug and Alcohol Service',
 ] as const
 
+// Current T&Cs version — bump this string whenever T&Cs are materially updated
+// so the platform can identify which version each org accepted.
+export const TERMS_VERSION = 'v1.0'
+
 export type TrialSignupInput = {
   serviceName: string
   cqcLocationId: string
@@ -26,6 +30,7 @@ export type TrialSignupInput = {
   managerEmail: string
   charityNumber: string | null
   marketingConsent: boolean
+  termsAccepted: boolean
 }
 
 export type TrialSignupResult =
@@ -33,11 +38,14 @@ export type TrialSignupResult =
   | { success: false; error: string }
 
 export async function startTrial(input: TrialSignupInput): Promise<TrialSignupResult> {
-  const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, charityNumber, marketingConsent } = input
+  const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, charityNumber, marketingConsent, termsAccepted } = input
 
   // ── Validate ────────────────────────────────────────────────────────────────
   if (!serviceName.trim() || !cqcLocationId.trim() || !serviceType || !managerName.trim() || !managerEmail.trim()) {
     return { success: false, error: 'All fields are required.' }
+  }
+  if (!termsAccepted) {
+    return { success: false, error: 'You must accept the Terms & Conditions to start your trial.' }
   }
   if (!ACTIVE_SERVICE_TYPES.includes(serviceType as typeof ACTIVE_SERVICE_TYPES[number])) {
     return { success: false, error: 'Please select a valid service type.' }
@@ -83,8 +91,10 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       cqc_location_id:  cqcLocationId.trim(),
       service_type_id:  serviceTypeRow.id,
       subscription_tier: 'trial',
-      trial_expires_at: trialExpiresAt.toISOString(),
-      is_demo:          false,
+      trial_expires_at:  trialExpiresAt.toISOString(),
+      is_demo:           false,
+      terms_accepted_at: new Date().toISOString(),
+      terms_version:     TERMS_VERSION,
       ...(charityNumber ? { charity_number: charityNumber } : {}),
     })
     .select('id')

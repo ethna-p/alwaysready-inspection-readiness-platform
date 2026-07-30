@@ -48,6 +48,7 @@ export default function TrialPage() {
   const [managerEmail,     setManagerEmail]     = useState('')
   const [charityNumber,    setCharityNumber]    = useState('')
   const [marketingConsent, setMarketingConsent] = useState(false)
+  const [termsAccepted,    setTermsAccepted]    = useState(false)
   const [error,            setError]            = useState<string | null>(null)
   const [isPending,        startTransition]     = useTransition()
 
@@ -93,6 +94,7 @@ export default function TrialPage() {
         managerEmail,
         charityNumber: charityNumber.trim() || null,
         marketingConsent,
+        termsAccepted,
       })
 
       if (!result.success) {
@@ -311,6 +313,39 @@ export default function TrialPage() {
                 </p>
               </div>
 
+              {/* T&Cs acceptance — required */}
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={e => setTermsAccepted(e.target.checked)}
+                  disabled={isPending}
+                  required
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-line text-brand focus:ring-2 focus:ring-[#014D4E] disabled:opacity-60"
+                />
+                <span className="text-sm text-ink leading-relaxed">
+                  I have read and agree to the{' '}
+                  <a
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand underline"
+                  >
+                    Terms &amp; Conditions
+                  </a>
+                  {' '}and{' '}
+                  <a
+                    href="/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand underline"
+                  >
+                    Privacy Policy
+                  </a>
+                  . <span className="text-red-500">*</span>
+                </span>
+              </label>
+
               {/* Marketing consent */}
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
@@ -344,7 +379,7 @@ export default function TrialPage() {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={isPending || cqcLookupStatus === 'not_found'}
+                disabled={isPending || cqcLookupStatus === 'not_found' || !termsAccepted}
                 className="
                   w-full inline-flex items-center justify-center gap-2
                   bg-[#014D4E] text-white text-base font-bold
