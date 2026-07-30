@@ -20,7 +20,7 @@ const ACTIVE_SERVICE_TYPES = [
 
 // Current T&Cs version — bump this string whenever T&Cs are materially updated
 // so the platform can identify which version each org accepted.
-export const TERMS_VERSION = 'v1.0'
+const TERMS_VERSION = 'v1.0'
 
 export type TrialSignupInput = {
   serviceName: string
