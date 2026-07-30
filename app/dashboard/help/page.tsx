@@ -541,7 +541,27 @@ export default function HelpPage() {
             />
             <FAQ
               question="How long is our data kept, and can we export it?"
-              answer="Your data is retained for as long as your subscription is active. If your subscription ends, your data is kept for 90 days before being permanently deleted — giving you time to export everything first. To request a full data export (KLOE records, audit trail, team list, and uploaded evidence), email support@alwaysready.uk with your organisation name. Exports are delivered in CSV format within 5 working days."
+              answer="Your data is retained for as long as your subscription is active, plus 30 days after it ends to give you time to export everything. You can download your data at any time from Account → Organisation — two exports are available: a CSV of all your compliance records, audit trail, and team data, and a ZIP archive of all your uploaded evidence files. No need to contact support."
+            />
+            <FAQ
+              question="Can I export my evidence files?"
+              answer="Yes. Go to Account → Organisation and use the Download evidence archive button. This creates a ZIP file containing all the documents your team has uploaded across all KLOEs. The CSV records export (same page) covers everything else — compliance records, audit trail, team list, and HR data."
+            />
+            <FAQ
+              question="What sub-services does AlwaysReady support?"
+              answer="You can configure which specialist sub-services your organisation provides from the Admin settings page. Currently supported: Learning Disabilities, Mental Health, End of Life Care, Acquired Brain Injury, Physical Disabilities, Bariatric Care, Sensory Impairment, and Epilepsy. Sub-service selection is reflected in your compliance tracking. If you provide a sub-service that is not listed, let us know via the Support tab."
+            />
+            <FAQ
+              question="What is the newsletter drafting tool and who can use it?"
+              answer="The newsletter drafting tool is an AI-assisted feature available to Admin users. You choose your audience, a topic or occasion, a tone, and add any key points — the platform generates a ready-to-copy draft in seconds. It is a drafting aid only: AlwaysReady never sends newsletters on your behalf, and all output should be reviewed before use. Do not include personal details of residents, patients, families, or individual staff in your prompts. Each organisation can generate up to 10 drafts per calendar month."
+            />
+            <FAQ
+              question="Is there a dark mode?"
+              answer="Yes. Click the sun/moon icon in the navigation bar to switch between light and dark mode. The platform will also follow your device's system preference by default if you haven't set a manual preference."
+            />
+            <FAQ
+              question="Can I reply to a support ticket by email?"
+              answer="Yes. When you receive a reply to your support ticket, you can reply directly to that email and your response will be threaded back into the ticket automatically. You do not need to log in to the platform to continue the conversation."
             />
             <FAQ
               question="What should I do if something looks wrong in the platform?"
