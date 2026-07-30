@@ -57,6 +57,13 @@ export default async function WelcomePage() {
             </p>
           </div>
 
+          {/* Platform scope notice */}
+          <div className="bg-fill border border-line rounded-xl p-4 mb-6 text-sm text-ink-dim leading-relaxed space-y-2">
+            <p className="font-semibold text-ink">What AlwaysReady does — and doesn&apos;t do</p>
+            <p>AlwaysReady helps you organise your compliance evidence, track your KLOE activity, and prepare for CQC inspection. Your readiness score and RAG status are based entirely on the information your team enters — they are self-assessment indicators, not the result of an independent audit.</p>
+            <p>AlwaysReady does not provide legal, clinical, or regulatory advice, and does not guarantee any particular CQC inspection outcome.</p>
+          </div>
+
           {/* Consent form */}
           <form action={completeOnboarding} className="space-y-6">
 

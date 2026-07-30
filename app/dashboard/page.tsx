@@ -372,6 +372,9 @@ export default async function DashboardPage() {
               <p className="text-sm text-ink-dim mt-2">
                 Up to date = status Completed and next review not yet overdue
               </p>
+              <p className="text-xs text-ink-dim mt-2 leading-relaxed">
+                This score is calculated from your own self-assessed inputs. It is not an independent audit and does not predict your CQC inspection rating.
+              </p>
 
               {/* RAG pill row */}
               <div className="flex flex-wrap gap-2 mt-4">

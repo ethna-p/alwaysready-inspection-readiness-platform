@@ -182,10 +182,13 @@ export default async function InspectionPackPage() {
           </div>
         </div>
 
-        <p className="text-sm text-ink-dim mb-6 bg-fill border border-line rounded-lg px-4 py-3">
+        <p className="text-sm text-ink-dim mb-4 bg-fill border border-line rounded-lg px-4 py-3">
           Click <strong className="text-ink-dim">Print / Save as PDF</strong> above, then choose{' '}
           <strong className="text-ink-dim">Save as PDF</strong> in your browser's print dialog.
           The navigation and this message will not appear in the output.
+        </p>
+        <p className="text-xs text-ink-dim mb-6 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 leading-relaxed">
+          <strong className="text-amber-900">Please note:</strong> This pack is a self-compiled summary of the records your team has entered into AlwaysReady. It is not a certification of compliance, an audit report, or an assessment of your readiness for inspection. Your organisation is solely responsible for the accuracy and completeness of the information it contains.
         </p>
       </div>
 
@@ -444,15 +447,17 @@ export default async function InspectionPackPage() {
         </div>
 
         {/* ── Print footer — disclaimer (hidden on screen; SiteFooter covers it) */}
-        <div className="hidden print:block mt-10 pt-6 border-t border-line text-xs text-ink-dim space-y-1">
+        <div className="hidden print:block mt-10 pt-6 border-t border-line text-xs text-ink-dim space-y-2">
+          <p className="font-semibold text-ink-dim">Important notice</p>
           <p>
-            © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services. |
-            82A James Carter Road, Mildenhall, IP28 7DE
+            This pack is a self-compiled summary of the records entered into AlwaysReady by your team.
+            It is not a certification of compliance, an independent audit, or an assessment of readiness for CQC inspection.
+            Your organisation is solely responsible for the accuracy and completeness of the information it contains.
+            AlwaysReady does not guarantee any particular CQC inspection outcome.
           </p>
           <p>
-            Our tools are designed to support providers in preparing for CQC inspection.
-            They do not constitute official CQC guidance and do not guarantee any
-            particular inspection outcome.
+            © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services |
+            82A James Carter Road, Mildenhall, IP28 7DE
           </p>
         </div>
 
