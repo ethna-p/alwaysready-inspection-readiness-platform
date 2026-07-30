@@ -1,9 +1,10 @@
 # AlwaysReady — Revised Legal Policies (Draft)
 
 > **Note:** These are draft policies for solicitor review before publishing.
-> They replace the existing Privacy Policy and Terms & Conditions on alwaysready.uk/legal.
-> The Cookie Policy, Acceptable Use Policy, Cancellation Policy, Accessibility Policy and Disclaimer
-> remain unchanged unless otherwise noted.
+> They replace the existing Privacy Policy, Terms & Conditions, and Cancellation Policy on alwaysready.uk/legal.
+> The Cookie Policy, Acceptable Use Policy, Accessibility Policy and Disclaimer also require the updates noted below.
+>
+> **Session updates (July 2026):** sole trader status (removed "registered at"); AI newsletter tool added to Privacy Policy and T&Cs; readiness score / inspection pack self-assessment language added to Disclaimer and T&Cs; T&Cs acceptance logging added to Privacy Policy; Cancellation Policy updated with 30-day data retention window.
 
 ---
 
@@ -15,10 +16,10 @@ This policy explains how AlwaysReady collects, uses and protects your personal d
 
 ### 1. Who we are
 
-AlwaysReady is a brand of Parker Digital & Print Services, registered at 82A James Carter Road, Mildenhall, IP28 7DE. We provide CQC inspection readiness tools for adult social care managers in the UK.
+AlwaysReady is a brand of Parker Digital & Print Services, based at 82A James Carter Road, Mildenhall, IP28 7DE. We provide CQC inspection readiness tools for adult social care managers in the UK.
 
 **Data Controller:** Parker Digital & Print Services
-**Contact:** hello@alwaysready.uk
+**Contact:** support@alwaysready.uk
 
 Where our platform stores and processes personal data on behalf of your organisation, Parker Digital & Print Services also acts as a **data processor**. A Data Processing Agreement (DPA) governing this relationship is available on request.
 
@@ -73,6 +74,9 @@ When your organisation uses the platform, we collect and store the following cat
 - Support tickets submitted through the platform or by email
 - Replies and correspondence relating to support requests
 
+**Legal acceptance data**
+- Timestamp and version reference of the Terms & Conditions accepted at trial signup
+
 **Billing data**
 - Subscription status and billing history (managed by Stripe; we do not store card details)
 
@@ -86,8 +90,17 @@ We use the data above solely to:
 - Enable your team to track and manage CQC compliance
 - Send transactional communications (account confirmations, support replies, subscription notifications)
 - Respond to support requests
+- Generate AI-assisted newsletter draft text when requested by the organisation admin (see below)
 
 We do not use platform data for marketing purposes. We never sell your data.
+
+#### AI newsletter drafting tool
+
+The platform includes an AI-assisted newsletter drafting tool available to organisation admins. When used, the content of your newsletter prompt (topics, themes and any text you provide) is processed by Anthropic's Claude API to generate a draft. We do not send newsletters on your behalf — the draft is for you to copy, edit and send through your own preferred channel.
+
+**Important:** do not enter personal details of residents, patients, families or individual staff members into the newsletter tool. The tool is for generating general compliance communications only.
+
+The Anthropic API is used solely to process newsletter drafting requests and is not used to train AI models on your data. See anthropic.com/privacy for Anthropic's privacy policy.
 
 #### Data you enter on behalf of others
 
@@ -107,6 +120,7 @@ We use the following third-party services to deliver our website and platform. E
 | Stripe | Subscription payment processing | US / UK |
 | Resend | Transactional email delivery | US |
 | Netlify | Marketing website hosting and form processing | US |
+| Anthropic | AI processing for newsletter draft generation (admin feature only) | US |
 
 All data transfers outside the UK are protected by appropriate safeguards including UK adequacy decisions, standard contractual clauses, or the UK International Data Transfer Agreement (IDTA).
 
@@ -164,9 +178,9 @@ Last updated: July 2026
 
 ### 1. About AlwaysReady
 
-AlwaysReady is a brand of Parker Digital & Print Services, registered at 82A James Carter Road, Mildenhall, IP28 7DE. We provide CQC compliance support tools and resources for adult social care managers in the United Kingdom.
+AlwaysReady is a brand of Parker Digital & Print Services, based at 82A James Carter Road, Mildenhall, IP28 7DE. We provide CQC compliance support tools and resources for adult social care managers in the United Kingdom.
 
-Contact: hello@alwaysready.uk
+Contact: support@alwaysready.uk
 
 ### 2. Acceptance
 
@@ -230,27 +244,46 @@ A Data Processing Agreement (DPA) governing AlwaysReady's role as data processor
 
 You may export your organisation's compliance data and evidence files at any time from within the platform. We encourage you to take regular exports as part of your own data governance practices.
 
-### 10. Service availability
+### 10. AI-assisted features
+
+The platform includes an AI-assisted newsletter drafting tool available to organisation admins. Drafts are generated using Anthropic's Claude API based on the topics and content you provide.
+
+By using this feature you agree that:
+
+- You will not enter personal details of residents, patients, families or individual staff members into the drafting tool
+- All AI-generated output is a draft only — you are solely responsible for reviewing, editing and approving any content before use
+- AlwaysReady does not send newsletters or communications on your behalf; the output is for your own use
+- AI-generated content may contain inaccuracies and should not be published without review
+
+AlwaysReady is not liable for any losses or claims arising from the use of AI-generated draft content.
+
+### 11. Service availability
 
 We aim to maintain platform availability at all times but do not guarantee uninterrupted access. Planned maintenance will be communicated where reasonably practicable. We are not liable for losses arising from temporary unavailability of the platform.
 
-### 11. CQC data
+### 12. CQC data
 
 At signup, we automatically retrieve publicly available information about your organisation from the CQC's public register, including your current CQC rating and inspection history. This data is sourced from the official CQC API and displayed within your dashboard for reference purposes. It does not constitute official CQC guidance.
 
-### 12. Intellectual property
+### 13. Intellectual property
 
 All content on this website and within our platform — including KLOE frameworks, evidence mappings, checklists, dashboard structures, guides and branding — is the intellectual property of AlwaysReady (Parker Digital & Print Services) unless otherwise stated. Data your organisation enters into the platform remains your organisation's property at all times.
 
-### 13. Disclaimer and limitation of liability
+### 14. Disclaimer and limitation of liability
 
 Our tools are provided for guidance and self-assessment purposes only. We make no warranties as to their completeness, accuracy or fitness for any particular purpose. To the fullest extent permitted by law, AlwaysReady shall not be liable for indirect, consequential or special losses, or any losses arising from reliance on our tools or any CQC inspection outcome.
 
-### 14. Changes to these terms
+**Readiness scores and RAG status** are calculated entirely from information your team enters into the platform. They are self-assessment indicators and are not the result of an independent audit. They do not predict, guarantee or influence any CQC inspection rating.
+
+**Inspection packs** generated by the platform are a self-compiled summary of the records your organisation has entered. They are not a certification of compliance, an audit report or an independent assessment of inspection readiness. Your organisation is solely responsible for the accuracy and completeness of information entered into the platform.
+
+**AlwaysReady does not guarantee any particular CQC inspection outcome.** CQC ratings depend on a wide range of factors outside our knowledge or control, including how your team performs on inspection day and how CQC inspectors assess evidence.
+
+### 15. Changes to these terms
 
 We may update these terms from time to time. We will notify active subscribers of any material changes by email with at least 14 days' notice. Continued use of the platform after that date constitutes acceptance of the updated terms.
 
-### 15. Governing law
+### 16. Governing law
 
 These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.
 
