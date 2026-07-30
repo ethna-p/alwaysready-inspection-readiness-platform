@@ -220,6 +220,12 @@ A: £75 per month per CQC-registered location. No setup fees, no hidden costs, n
 Q: Can I cancel my subscription?
 A: Yes, at any time from the Account section. No long-term contracts or cancellation penalties. Access continues until the end of the current billing period.
 
+Q: How do I update my payment details?
+A: Payment details are managed securely by our payment provider, Stripe. AlwaysReady does not hold any card or financial data. To update your billing details, please contact support@alwaysready.uk and we will send you a secure link.
+
+Q: What happens if a payment fails?
+A: If a payment fails, you will be notified by email. To resolve it, please contact us at support@alwaysready.uk and we will help you update your billing details via our payment provider. If the payment cannot be collected, access to the platform may be suspended until the issue is resolved.
+
 Q: Is there a charity discount?
 A: Yes — registered charities receive a discount on every monthly payment for the lifetime of their subscription. Email support@alwaysready.uk with the lead administrator's first and last name, their email address, your CQC Location ID, and your charity registration number. The account will be created directly and login details sent. The discount is applied automatically.
 
