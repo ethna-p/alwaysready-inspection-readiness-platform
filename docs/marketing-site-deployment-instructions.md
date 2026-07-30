@@ -30,7 +30,7 @@ git push
 ```
 
 AJ should replace "Brief description of what changed" with a short plain-English summary of what was updated — for example:
-- `"Update pricing page with founding member rate"`
+- `"Update pricing page"`
 - `"Add security and data protection page"`
 - `"Fix typo on home page hero section"`
 

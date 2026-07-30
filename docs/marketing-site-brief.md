@@ -57,7 +57,7 @@ AlwaysReady makes compliance an ongoing, manageable process rather than a last-m
 - **£75 per month** per CQC-registered location
 - **20% discount** for registered charities
 - **14-day free trial** — no credit card required, full access from day one
-- Founding Member rate: beta customers who join during the trial period lock in **£60 per month** in return for feedback
+- Beta Partner rate: **£50 per month** for life of subscription (manual provision only)
 
 ---
 

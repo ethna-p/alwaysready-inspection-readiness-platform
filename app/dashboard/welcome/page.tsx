@@ -54,9 +54,6 @@ export default async function WelcomePage() {
             <p className="text-sm leading-relaxed text-ink">
               You have full access to AlwaysReady for 14 days, completely free.
               All your data is saved and carries over when you subscribe.
-              As a Founding Member, after your trial your exclusive rate is{' '}
-              <strong>£60 per month</strong> — in return for your feedback
-              and a review of the platform.
             </p>
           </div>
 
