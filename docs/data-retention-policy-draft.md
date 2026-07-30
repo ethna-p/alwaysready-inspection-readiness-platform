@@ -22,7 +22,7 @@ If your subscription lapses or is cancelled, your data is retained for **90 days
 After 90 days, all data associated with your organisation is permanently and irreversibly deleted from our systems. This cannot be undone.
 
 **Trial accounts**
-If you do not subscribe at the end of your 90-day free trial, your data is retained for a further **30 days** before being permanently deleted. You will not be notified before deletion occurs, so please export any records you wish to keep before your trial ends.
+If you do not subscribe at the end of your 14-day free trial, your data is retained for a further **30 days** before being permanently deleted. You will not be notified before deletion occurs, so please export any records you wish to keep before your trial ends.
 
 **Demo accounts**
 Demo environments are reset nightly and contain no real data. No data retention applies to demo accounts.

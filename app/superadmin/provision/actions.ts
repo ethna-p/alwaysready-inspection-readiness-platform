@@ -19,7 +19,7 @@ export async function provisionOrganisation(
   const adminEmail     = (formData.get('admin_email') as string | null)?.trim()
   const adminName      = (formData.get('admin_name') as string | null)?.trim()
   const adminPassword  = (formData.get('admin_password') as string | null)?.trim()
-  const trialDays      = parseInt(formData.get('trial_days') as string ?? '90', 10)
+  const trialDays      = parseInt(formData.get('trial_days') as string ?? '14', 10)
   const isCharity      = formData.get('is_charity') === 'on'
   const isBeta         = formData.get('is_beta') === 'on'
 
