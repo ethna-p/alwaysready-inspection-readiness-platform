@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 
 // ── Sub-services ──────────────────────────────────────────────────────────────
@@ -112,12 +113,17 @@ export async function changePassword(
     return { success: false, error: 'Current password is incorrect.' }
   }
 
-  // Update to new password
-  const { error: updateError } = await supabase.auth.updateUser({
-    password: newPassword,
-  })
+  // Update to new password via admin client — avoids session cookie timing
+  // issues that can cause supabase.auth.updateUser to fail after a
+  // signInWithPassword re-authentication in a server action context.
+  const adminSupabase = createAdminClient()
+  const { error: updateError } = await adminSupabase.auth.admin.updateUserById(
+    user.id,
+    { password: newPassword }
+  )
 
   if (updateError) {
+    console.error('[changePassword] updateUserById error:', updateError.message)
     return { success: false, error: 'Unable to update password. Please try again.' }
   }
 
