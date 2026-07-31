@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 type Props = {
   isAdmin: boolean
@@ -58,51 +59,51 @@ export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
               </a>
             )}
 
-            <a href="/dashboard" className={NAV_LINK} onClick={() => setOpen(false)}>
+            <Link href="/dashboard" className={NAV_LINK} onClick={() => setOpen(false)}>
               Dashboard
-            </a>
-            <a href="/dashboard/kloes" className={NAV_LINK} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/kloes" className={NAV_LINK} onClick={() => setOpen(false)}>
               KLOEs
-            </a>
-            <a href="/dashboard/daily-report" className={NAV_LINK} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/daily-report" className={NAV_LINK} onClick={() => setOpen(false)}>
               Daily Report
-            </a>
-            <a href="/dashboard/trend" className={NAV_LINK} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/trend" className={NAV_LINK} onClick={() => setOpen(false)}>
               Trend
-            </a>
-            <a href="/dashboard/inspection-pack" className={NAV_LINK} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/inspection-pack" className={NAV_LINK} onClick={() => setOpen(false)}>
               Inspection Pack
-            </a>
+            </Link>
             {isAdmin && (
-              <a href="/dashboard/hr" className={NAV_LINK} onClick={() => setOpen(false)}>
+              <Link href="/dashboard/hr" className={NAV_LINK} onClick={() => setOpen(false)}>
                 HR
-              </a>
+              </Link>
             )}
             {isAdmin && (
-              <a href="/dashboard/newsletter" className={NAV_LINK} onClick={() => setOpen(false)}>
+              <Link href="/dashboard/newsletter" className={NAV_LINK} onClick={() => setOpen(false)}>
                 Newsletter
-              </a>
+              </Link>
             )}
             {isAdmin && (
-              <a href="/dashboard/mock-inspections" className={NAV_LINK} onClick={() => setOpen(false)}>
+              <Link href="/dashboard/mock-inspections" className={NAV_LINK} onClick={() => setOpen(false)}>
                 Mock Inspection
-              </a>
+              </Link>
             )}
-            <a href="/dashboard/peoples-voice" className={NAV_LINK} onClick={() => setOpen(false)}>
+            <Link href="/dashboard/peoples-voice" className={NAV_LINK} onClick={() => setOpen(false)}>
               People&apos;s Voice
-            </a>
-            <a href="/dashboard/support" className={`${NAV_LINK} flex items-center gap-2`} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/support" className={`${NAV_LINK} flex items-center gap-2`} onClick={() => setOpen(false)}>
               Support
               {hasUnread && (
                 <span className="h-2 w-2 rounded-full bg-red-500 shrink-0" aria-label="Unread reply" />
               )}
-            </a>
-            <a href="/dashboard/help" className={NAV_LINK} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/help" className={NAV_LINK} onClick={() => setOpen(false)}>
               Help
-            </a>
-            <a href="/dashboard/account" className={NAV_LINK} onClick={() => setOpen(false)}>
+            </Link>
+            <Link href="/dashboard/account" className={NAV_LINK} onClick={() => setOpen(false)}>
               Account
-            </a>
+            </Link>
           </nav>
         </div>
       )}

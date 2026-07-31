@@ -4,6 +4,7 @@
  * Sign-out is delegated to SignOutButton (client component).
  */
 import Image from 'next/image'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import MobileNav from './MobileNav'
@@ -53,68 +54,68 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           )}
         </div>
 
-        {/* Primary nav */}
+        {/* Primary nav — use Link (soft navigation) so pagehide is never triggered */}
         <nav aria-label="Main navigation" className="hidden sm:flex items-center gap-6">
-          <a
+          <Link
             href="/dashboard"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Dashboard
-          </a>
-          <a
+          </Link>
+          <Link
             href="/dashboard/kloes"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             KLOEs
-          </a>
-          <a
+          </Link>
+          <Link
             href="/dashboard/daily-report"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Daily Report
-          </a>
-          <a
+          </Link>
+          <Link
             href="/dashboard/trend"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Trend
-          </a>
-          <a
+          </Link>
+          <Link
             href="/dashboard/inspection-pack"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
             Inspection Pack
-          </a>
+          </Link>
           {isAdmin && (
-            <a
+            <Link
               href="/dashboard/hr"
               className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               HR
-            </a>
+            </Link>
           )}
           {isAdmin && (
-            <a
+            <Link
               href="/dashboard/newsletter"
               className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               Newsletter
-            </a>
+            </Link>
           )}
           {isAdmin && (
-            <a
+            <Link
               href="/dashboard/mock-inspections"
               className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >
               Mock Inspection
-            </a>
+            </Link>
           )}
-          <a
+          <Link
             href="/dashboard/peoples-voice"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
-            People's Voice
-          </a>
+            People&apos;s Voice
+          </Link>
         </nav>
 
         {/* Desktop: user menu | Mobile: hamburger */}
