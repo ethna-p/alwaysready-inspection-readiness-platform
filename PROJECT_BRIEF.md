@@ -261,20 +261,28 @@ Before the platform is opened to real paying customers:
 
 - `key_questions` — 5 CQC key questions (Safe, Effective, Caring, Responsive, Well-led), static
 - `service_types` — 11 Adult Social Care service types, static
-- `organisations` (id, name, cqc_location_id, service_type, subscription_tier, is_demo, demo_expires_at)
+- `organisations` (id, name, cqc_location_id, service_type, subscription_tier, trial_expires_at, is_beta, is_charity, charity_number)
 - `users` (id, organisation_id, email, full_name, username, role [`admin`|`user`|`viewer`], viewer_expires_at, assigned_to, marketing_opt_out, personal_email, mobile_number)
 - `klo_items` — 24 KLOEs with title, wording, scope, key_question_id, rating_outstanding, rating_good, rating_ri, rating_inadequate, display_order
 - `klo_checklist_items` — per service type checklist items linked to klo_items
-- `organisation_sub_services` — which sub-services (Dementia, Autism) are enabled per org
+- `klo_checklist_completions` — per org per checklist item completion state
+- `organisation_sub_services` — which sub-services (Dementia, Autism etc.) are enabled per org
 - `compliance_records` — current state, one row per org per KLOE
 - `compliance_record_history` — append-only audit trail
 - `review_frequency_history` — append-only log of frequency changes
 - `priority_history` — append-only log of priority changes
 - `kloe_evidence` — uploaded evidence files (with scan_status for virus scanning)
+- `i_statement_evidence` — People's Voice module evidence records
 - `support_tickets` — customer support and website enquiries
-- `demo_leads` — trial signup captures
-- `peoples_voice` — People's Voice module records
-- `hr_records` — HR module staff records
+- `support_ticket_replies` — threaded replies on support tickets
+- `notification_log` — deduplication log for all outgoing emails
+- `waitlist_leads` — trial/waitlist signups from marketing site
+- `blog_subscribers` — email list subscribers
+- `hr_staff_profiles` — HR module staff records
+- `hr_training_types` — per-org training type definitions
+- `hr_training_records` — per-staff training completion records
+- `hr_training_certificates` — uploaded certificate files
+- `hr_holiday_allowances` — per-staff annual leave records
 
 ---
 

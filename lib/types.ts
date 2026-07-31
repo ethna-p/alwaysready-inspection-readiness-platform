@@ -1174,14 +1174,6 @@ export type Database = {
         Args: Record<string, never>
         Returns: string
       }
-      create_demo_session: {
-        Args: { p_user_id: string }
-        Returns: string   // returns the new org_id (UUID)
-      }
-      cleanup_expired_demo_orgs: {
-        Args: Record<string, never>
-        Returns: void
-      }
       seed_default_training_types: {
         Args: { p_organisation_id: string }
         Returns: void

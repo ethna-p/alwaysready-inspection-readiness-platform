@@ -4,6 +4,7 @@
  * Only shows the £50 Beta Partner offer — not the standard £75 subscription.
  */
 
+import Link from 'next/link'
 import { createBetaCheckoutSession } from '@/app/actions/stripe'
 import { createClient } from '@/lib/supabase/server'
 
@@ -19,9 +20,9 @@ export default async function UpgradeBetaPage() {
 
         {/* Header row: back link left, logo+heading truly centred */}
         <div className="mb-5 flex items-start gap-4">
-          <a href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors pt-1 shrink-0 w-36">
+          <Link href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors pt-1 shrink-0 w-36">
             ← Back to dashboard
-          </a>
+          </Link>
           <div className="flex-1 text-center">
             <div className="inline-flex items-center gap-3 flex-wrap justify-center">
               <svg width="32" height="32" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="shrink-0">
@@ -152,9 +153,9 @@ export default async function UpgradeBetaPage() {
 
         {/* Back link */}
         <div className="text-center">
-          <a href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors">
+          <Link href="/dashboard" className="text-sm text-ink-muted hover:text-ink transition-colors">
             ← Back to dashboard
-          </a>
+          </Link>
         </div>
 
       </div>
