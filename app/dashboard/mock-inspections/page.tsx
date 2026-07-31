@@ -3,6 +3,7 @@
  * Admin only.
  */
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import StartMockInspectionForm from './StartMockInspectionForm'
@@ -77,7 +78,7 @@ export default async function MockInspectionsPage() {
                 : `/dashboard/mock-inspections/${insp.id}`
 
               return (
-                <a
+                <Link
                   key={insp.id}
                   href={target}
                   className="flex items-center justify-between bg-card border border-line rounded-xl px-5 py-4 hover:border-[#00b8a6] transition-colors group"
@@ -92,7 +93,7 @@ export default async function MockInspectionsPage() {
                     </span>
                     <span className="text-ink-muted group-hover:text-brand text-sm">→</span>
                   </div>
-                </a>
+                </Link>
               )
             })}
           </div>
