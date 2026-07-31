@@ -19,8 +19,15 @@ import { useEffect } from 'react'
 
 export default function TabCloseSignout() {
   useEffect(() => {
-    const handlePageHide = () => {
-      navigator.sendBeacon('/api/signout-beacon')
+    const handlePageHide = (event: PageTransitionEvent) => {
+      // event.persisted = true means the browser is saving the page to
+      // the back/forward cache (bfcache) — e.g. Mac sleep, tab suspension,
+      // or the browser optimising back-button navigation.  The user hasn't
+      // left; don't revoke their session.  Only fire the beacon when the
+      // page is genuinely being unloaded (tab close, hard navigation away).
+      if (!event.persisted) {
+        navigator.sendBeacon('/api/signout-beacon')
+      }
     }
 
     window.addEventListener('pagehide', handlePageHide)

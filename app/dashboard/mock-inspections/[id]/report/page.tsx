@@ -156,7 +156,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   const overall = overallRating(findings)
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 print:space-y-6">
+    <div className="max-w-7xl mx-auto space-y-8 print:space-y-6">
 
       {/* Back + print */}
       <div className="flex items-center justify-between print:hidden">

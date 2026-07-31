@@ -33,9 +33,9 @@ export default function NewTicketPage() {
 
       <div className="bg-teal-50 border border-teal-200 rounded-xl px-4 py-3 text-sm text-brand mb-8">
         Before submitting, it&apos;s worth checking our{' '}
-        <a href="/dashboard/help" className="font-semibold underline hover:text-brand">
+        <Link href="/dashboard/help" className="font-semibold underline hover:text-brand">
           Help page
-        </a>
+        </Link>
         {' '}— it covers common questions about KLOEs, roles, and using the platform.
       </div>
 
