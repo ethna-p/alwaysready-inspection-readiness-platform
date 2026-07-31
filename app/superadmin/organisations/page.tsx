@@ -7,9 +7,11 @@
  * "View as admin →" generates a one-time magic link for the org's admin user
  * and opens it in a new tab, leaving your superadmin session intact.
  */
+import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import ImpersonateButton from './ImpersonateButton'
 import CharityToggleButton from './CharityToggleButton'
+import DeleteOrgButton from './DeleteOrgButton'
 
 const TIER_STYLES: Record<string, string> = {
   trial:     'bg-blue-100 text-blue-700',
@@ -90,9 +92,9 @@ export default async function OrganisationsPage() {
       {!orgs || orgs.length === 0 ? (
         <div className="bg-card border border-line rounded-xl p-8 text-center text-sm text-ink-muted">
           No organisations provisioned yet.{' '}
-          <a href="/superadmin/provision" className="text-brand hover:underline font-semibold">
+          <Link href="/superadmin/provision" className="text-brand hover:underline font-semibold">
             Provision one →
-          </a>
+          </Link>
         </div>
       ) : (
         <>
@@ -181,6 +183,7 @@ export default async function OrganisationsPage() {
                     ) : (
                       <span className="text-xs text-ink-muted">—</span>
                     )}
+                    <DeleteOrgButton orgId={org.id} orgName={org.name} />
                   </div>
                 </div>
               )
