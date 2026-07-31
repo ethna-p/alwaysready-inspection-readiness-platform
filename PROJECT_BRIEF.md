@@ -310,4 +310,85 @@ Never use `supabase db push` against the production database. Always use the SQL
 
 ---
 
+---
+
+## Full System Audit Checklist
+
+When AJ asks for a "full, system-wide audit" or "full audit", run every check below — not a selection. Use grep/bash commands for each section rather than reading files selectively. Report findings clearly, fix what can be fixed immediately, and flag anything requiring AJ's decision.
+
+---
+
+### 1. Navigation integrity
+- `grep -rn '<a href="/' --include="*.tsx"` across the entire codebase. Every internal link inside the dashboard layout must use `<Link>`, not `<a>`. Plain `<a>` tags cause full page loads which trigger `pagehide` and fire the signout beacon.
+- Check every client component (`'use client'`) file for `<a href=` pointing to any internal route.
+- Verify all nav components: `SiteHeader.tsx`, `MobileNav.tsx`, `UserMenu.tsx`, and any page-level back links.
+- Check every list/table/card that links to a detail page — these are easy to miss.
+
+### 2. Authentication and authorisation
+- Every page under `/dashboard` calls `getCurrentUserProfile()` or `supabase.auth.getUser()` and redirects if no session.
+- Every admin-only page checks `profile?.role !== 'admin'` and redirects.
+- Every server action (`'use server'`) calls `supabase.auth.getUser()` before any DB operation — never trusts client-passed IDs alone.
+- Every `/api/` route handler verifies the session before processing.
+- No auth check relies on a value passed from the client (user ID, org ID, role) without server-side verification.
+
+### 3. React / Next.js correctness
+- No `onClick`, `onChange`, or other event handlers in server components — these cause serialisation errors at runtime that manifest as blank pages or redirects.
+- No `useState`, `useEffect`, or other hooks in server components.
+- Every client component that needs them has `'use client'` at the top.
+- No missing `key` props on mapped lists.
+
+### 4. TypeScript
+- `npx tsc --noEmit` passes with zero errors.
+- Review any `as any` casts — each one should be justified and noted. Unjustified `as any` hides real type errors.
+- `lib/types.ts` Row/Insert/Update blocks match the current schema for every table.
+
+### 5. Supabase RLS
+- Every table holding org-scoped data has an RLS policy.
+- Demo orgs cannot read or write data belonging to real orgs.
+- No query bypasses RLS by using the service role key client-side.
+
+### 6. Environment variables and secrets
+- `grep -rn 'SUPABASE\|RESEND\|STRIPE\|API_KEY\|SECRET' --include="*.ts" --include="*.tsx"` — no secret values hardcoded.
+- Every env var used server-side is prefixed correctly (`NEXT_PUBLIC_` only for values safe to expose to the browser).
+- `.env.local` is in `.gitignore` and not committed.
+
+### 7. File upload validation
+- Server-side MIME type checks are present on every upload endpoint — not just client-side `accept=` attribute restrictions.
+- Allowed types match the platform policy: `.docx`, `.xlsx`, `.jpg`, `.jpeg`, `.png`, `.pdf`.
+
+### 8. Email consistency
+- All customer-facing `from`, `reply-to`, and body references use `support@alwaysready.uk`.
+- No stray `hello@alwaysready.uk` in customer-facing content (superadmin internal use is fine).
+- All email templates compile without missing variables.
+
+### 9. Cron jobs
+- Every route listed in `vercel.json` under `crons` exists as an actual file in `/app/api/cron/`.
+- Each cron route handles errors and returns a non-500 response so Vercel doesn't disable it.
+
+### 10. Dead routes and broken references
+- Every page linked from nav, emails, or other pages exists.
+- No `import` or `Link` pointing to a file or route that doesn't exist.
+
+### 11. Content and copy
+- No placeholder, draft, or TODO text visible in production-facing UI.
+- Governance-only boundary respected — no resident-specific clinical content.
+- No factual claims about unbuilt features (e.g., integrations not yet implemented).
+
+### 12. Demo isolation
+- Demo orgs have `is_demo = true` and an expiry date.
+- The RLS mechanism correctly scopes demo orgs the same way it scopes real orgs.
+- No query in the codebase explicitly excludes demo orgs in a way that could accidentally expose real data to demo users.
+
+### 13. Accessibility baseline (WCAG 2.1 AA)
+- Interactive elements have visible focus indicators.
+- All form inputs have associated `<label>` elements.
+- RAG status indicators have text equivalents (not colour-only).
+- Images have meaningful `alt` text or `alt=""` if decorative.
+
+### 14. `lib/types.ts` vs schema
+- For every table in the schema reference above, confirm the `Row`, `Insert`, and `Update` types in `lib/types.ts` reflect the current column list.
+- Flag any column present in the DB but missing from the types (or vice versa).
+
+---
+
 *This brief is the source of truth for this project's decisions and constraints. If something here conflicts with a new instruction from AJ, ask for clarification rather than silently choosing one over the other.*
