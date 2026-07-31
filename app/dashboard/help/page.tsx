@@ -115,6 +115,7 @@ export default function HelpPage() {
             { href: '#for-staff',         label: 'For Staff' },
             { href: '#for-visitors',      label: 'For Visitors' },
             { href: '#faqs',              label: 'FAQs' },
+            { href: '#v1-faqs',           label: 'Platform FAQ' },
             { href: '#data-security',     label: 'Data Security' },
             { href: '#data-retention',    label: 'Data Retention' },
           ].map(link => (
@@ -549,7 +550,7 @@ export default function HelpPage() {
             />
             <FAQ
               question="What sub-services does AlwaysReady support?"
-              answer="You can configure which specialist sub-services your organisation provides from the Admin settings page. Currently supported: Learning Disabilities, Mental Health, End of Life Care, Acquired Brain Injury, Physical Disabilities, Bariatric Care, Sensory Impairment, and Epilepsy. Sub-service selection is reflected in your compliance tracking. If you provide a sub-service that is not listed, let us know via the Support tab."
+              answer="You can configure which specialist sub-services your organisation provides from the Admin settings page. Currently supported: Dementia Care, Learning Disabilities, Mental Health, End of Life Care, Acquired Brain Injury (ABI), Physical Disabilities, Bariatric Care, Sensory Impairment, Epilepsy, and Autism. Sub-service selection is reflected in your compliance tracking. If you provide a sub-service that is not listed, let us know via the Support tab."
             />
             <FAQ
               question="What is the newsletter drafting tool and who can use it?"
@@ -572,6 +573,172 @@ export default function HelpPage() {
               answer="AlwaysReady automatically signs you out when you close your browser tab. This is a security feature designed to protect resident and staff data on shared devices — it ensures that nobody can access your account simply by opening the browser after you have finished. When you are ready to use AlwaysReady again, simply sign back in. If you are using a personal device and find this inconvenient, contact your admin — they may be able to advise on alternative ways to keep your session active."
             />
           </div>
+        </Section>
+
+        {/* ── Platform FAQ (V1) ──────────────────────────────────────────────── */}
+        <Section id="v1-faqs" label="Platform FAQ" colour="bg-[#014D4E]">
+
+          <H3>About AlwaysReady</H3>
+          <div className="space-y-4">
+            <FAQ question="What is AlwaysReady?" answer="AlwaysReady is a governance and inspection-readiness platform designed for Adult Social Care providers. It helps Registered Managers and their teams track compliance with the CQC assessment framework for adult social care, record evidence, and see at a glance where they stand ahead of inspection — all in one place." />
+            <FAQ question="Who is AlwaysReady for?" answer="AlwaysReady is designed for managers and owners of small to mid-sized Adult Social Care services. It is built for those who need clear oversight, strong governance, and a reliable way to stay inspection-ready every day." />
+            <FAQ question="What problems does AlwaysReady solve?" answer="AlwaysReady removes the chaos of scattered folders, spreadsheets, and last-minute inspection panic. It gives you a structured, reliable system for tracking your compliance position against the five Key Questions and 24 KLOEs, uploading evidence, recording governance activity, and knowing exactly what needs attention and when." />
+            <FAQ question="How does AlwaysReady differ from care planning systems?" answer="Care planning systems capture frontline, person-centred care, including daily notes, MAR charts, and risk assessments. AlwaysReady is completely different. It manages governance, oversight, KLOE compliance, and inspection readiness. It sits above your care planning system, providing the organisational structure that inspectors expect to see." />
+            <FAQ question="How does AlwaysReady integrate with my care planning system?" answer="Your care planning system shows how you care for people day-to-day. AlwaysReady shows how you run and govern the service. Together, they provide inspectors with a complete picture of frontline care and organisational oversight." />
+            <FAQ question="What does AlwaysReady do that care planning systems cannot?" answer="AlwaysReady brings together your compliance records, evidence, audit trail, HR compliance, and governance activity in a single, structured platform. It tracks who did what and when, shows your readiness position across all five CQC key questions, and generates printable summaries for inspectors — capabilities that care planning systems are not designed to provide." />
+          </div>
+
+          <H3>Getting Started</H3>
+          <div className="space-y-4">
+            <FAQ question="What information do I need to sign up?" answer="Your service name, CQC Location ID, service type, and your name and email address. No credit card is required to start your free trial." />
+            <FAQ question="What happens after I sign up for a trial?" answer="You will receive your login details by email. When you first log in, you will be prompted to change your password and set up two-factor authentication. Your CQC assessment framework is already loaded and ready to use — you can start recording compliance immediately." />
+            <FAQ question="How long does it take to fully set up the platform?" answer="Signing up takes less than a minute. The platform is fully configured. Your main task is to populate it with your data — statuses, review dates, evidence, and HR records — for your whole team. Most managers find the KLOE tracker usable within an hour and fully up to date within a few days." />
+            <FAQ question="Do I need to transfer data from my existing system?" answer="No. AlwaysReady does not import data from other systems. You start fresh and build your compliance picture as you go. Because the platform is pre-loaded, no setup is required — you simply start recording your current position against each KLOE." />
+            <FAQ question="Is AlwaysReady suitable for homecare agencies as well as care homes?" answer="Yes. Homecare agencies are among the eleven supported service types. Each service type has a tailored checklist aligned with CQC guidance for that setting." />
+            <FAQ question="Can our admin team access the platform?" answer="Yes — your admin team can be added to the platform, like any other admin user, to manage it alongside the Registered Manager." />
+          </div>
+
+          <H3>How the Platform Works</H3>
+          <div className="space-y-4">
+            <FAQ question="How does the AlwaysReady platform work?" answer="AlwaysReady is structured around the five CQC key questions, their linked KLOEs, and the CQC 'I' questions. For each KLOE or 'I' question, you record a RAG status, set a review date, add notes, and upload evidence. This tracks your compliance position over time. Your dashboard provides a live view of where you stand, and your Daily Review Report highlights what needs attention today." />
+            <FAQ question="What does a daily routine with AlwaysReady look like?" answer="You log in to your dashboard and review your Daily Review Report, which highlights the KLOEs most overdue for review and those rated Red or Amber. You update statuses, add notes, upload evidence, and set next review dates. Over time, this builds a live, accurate picture of your compliance health." />
+            <FAQ question="Can I see a snapshot of our compliance status?" answer="Yes. Your Readiness Dashboard provides a live view of your compliance position across all five CQC key questions, including RAG ratings, priority indicators, and review dates. You can see at a glance where you are strong and where to focus next." />
+            <FAQ question="What is the RAG status system?" answer="RAG stands for Red, Amber, Green — a colour-coded status system used across the platform to show inspection readiness at a glance. Green means a KLOE has been reviewed and is up to date. Amber means it is in progress or due for review within 30 days. Red means it is overdue and requires urgent attention. Grey means no review has yet been recorded. The RAG status updates automatically based on the dates and statuses you enter — you never have to set it manually." />
+            <FAQ question="Is there a way to test how prepared we are before a real inspection?" answer="Yes — AlwaysReady includes a mock inspection tool. It guides you through each KLOE and prompts you to self-assess your evidence as Outstanding, Good, Requires Improvement, or Inadequate. At the end, it produces a report showing a self-assessed rating for each of the five key question areas. These ratings are for internal self-assessment only and do not represent the views of CQC or any regulatory body." />
+            <FAQ question="Does AlwaysReady work on a tablet or mobile?" answer="Yes. AlwaysReady is a web-based platform optimised to run in any browser — on desktops, laptops, tablets, or smartphones. No app download is required." />
+            <FAQ question="Does AlwaysReady work offline?" answer="No. AlwaysReady requires an internet connection. All data is securely stored in the cloud, so you can access it from any device with a web browser." />
+            <FAQ question="Is there a dark mode?" answer="Yes. Click the sun/moon icon in the navigation bar to switch between light and dark modes. The platform also respects your device's system preference by default if you have not set a manual preference." />
+            <FAQ question="Why am I signed out when I close my browser tab?" answer="AlwaysReady automatically signs you out when you close the browser tab. This deliberate security feature protects compliance and staff data on shared devices — it ensures nobody can access your account simply by reopening the browser after you have finished. When you are ready to use AlwaysReady again, simply sign back in." />
+          </div>
+
+          <H3>The KLOE Tracker</H3>
+          <div className="space-y-4">
+            <FAQ question="Can I add my own KLOEs or customise the list?" answer="No. The 24 KLOEs are fixed within the CQC framework and cannot be added to or removed. This ensures your compliance records always map accurately to the framework used by inspectors. However, you can add your own notes and evidence to each KLOE." />
+            <FAQ question="What is the priority level for?" answer="The priority level (1 to 5, with 1 highest) reflects how serious non-compliance in that area would be for your service. You set it yourself, based on your knowledge of your service. Priority is used to sort your Daily Review Report, so the most critical overdue KLOEs always appear at the top." />
+            <FAQ question="What is the difference between evidence location notes and uploading a file?" answer="Evidence location notes are a free-text field where you specify where a document is stored — for example, a shared drive folder, a filing cabinet, or a policy management system. Uploading a file attaches the document to the KLOE in AlwaysReady. You can use one, the other, or both for each KLOE." />
+            <FAQ question="How does review frequency work?" answer="For each KLOE, you can set how often it needs to be reviewed — monthly, quarterly, annually, or a custom number of days. When you record a review date, the platform automatically calculates the next review due date based on the frequency you have set. This determines the RAG status and your Daily Review Report." />
+            <FAQ question="Can I assign the same KLOE to more than one person?" answer="No — each KLOE can be assigned to one team member at a time. If ownership needs to change, an Admin can reassign it at any time from the KLOE detail page." />
+          </div>
+
+          <H3>Document and Evidence Management</H3>
+          <div className="space-y-4">
+            <FAQ question="How does document management work in AlwaysReady?" answer="You can upload evidence files directly to each KLOE. Every upload is virus-scanned, time-stamped, and linked to the relevant key question, so your evidence trail builds naturally as you work. Everything is securely stored and easy to retrieve." />
+            <FAQ question="What types of documents can I upload?" answer="You can upload any non-clinical governance-related document: policies, audits, meeting minutes, training records, anonymised incident reviews, and action plans. Supported file types include PDF, Word (.docx), Excel (.xlsx), and images (JPG and PNG). The maximum file size is 10 MB per file. Legacy .doc and .xls formats are not accepted — please save files in the current format before uploading." />
+            <FAQ question="Is there a limit on file size?" answer="Each file can be up to 10 MB. There is no limit on the number of files you can upload." />
+            <FAQ question="Can I delete files I have uploaded?" answer="Yes. Uploaded evidence files can be deleted directly from the KLOE by clicking the delete button." />
+            <FAQ question="Does AlwaysReady provide policy templates?" answer="No. AlwaysReady does not provide generic policy templates because they can pose legal and clinical risks if not tailored. Instead, it helps you organise, evidence, and track your service-specific policies." />
+            <FAQ question="Can I export data from AlwaysReady?" answer="Yes. The Inspection Pack generates a one-click, printable summary of your compliance position across all KLOEs. You can also download a full CSV export of all your compliance records and a separate ZIP archive of all your uploaded evidence files — both available at any time from Account > Organisation, without needing to contact support." />
+            <FAQ question="Can I export my evidence files separately?" answer="Yes. Go to Account > Organisation, then click Download evidence archive. This creates a ZIP file containing all documents your team has uploaded across all KLOEs. The records export on the same page covers your compliance data, audit trail, and team information." />
+          </div>
+
+          <H3>CQC Framework and Governance</H3>
+          <div className="space-y-4">
+            <FAQ question="Does AlwaysReady guarantee a good CQC rating?" answer="No. AlwaysReady helps you organise your evidence, track your compliance activity, and prepare for inspection. Your readiness score and RAG status are calculated from your self-assessed inputs, not from an independent audit of your service. CQC inspection outcomes depend on a wide range of factors entirely outside our knowledge or control. AlwaysReady helps you arrive at inspection better organised and with your evidence ready. That is a real advantage — but it is not a guarantee." />
+            <FAQ question="How does AlwaysReady support the CQC regulatory framework?" answer="AlwaysReady is built around the five CQC key questions — Safe, Effective, Caring, Responsive, and Well-led — and their associated KLOEs. Every feature on the platform maps to this framework, so you always know what to collect, where it fits, and how to demonstrate it." />
+            <FAQ question="Does AlwaysReady provide an audit trail?" answer="Yes. AlwaysReady maintains a secure, time-stamped record of every change made on the platform — including who made the change, what was changed, and when. This record cannot be altered or deleted." />
+            <FAQ question="Does AlwaysReady keep a record of changes for inspection purposes?" answer="Yes. Every update to a KLOE — including who made it, what changed, and when — is permanently recorded in an audit trail. During an inspection, it provides verifiable evidence that your team has been actively managing compliance over time, rather than merely preparing on the day." />
+            <FAQ question="What happens to our KLOEs if the CQC framework changes?" answer="AlwaysReady is designed so that any updates to the framework can be applied with a simple data change, not a rebuild. Your existing compliance records remain unaffected by framework updates." />
+          </div>
+
+          <H3>Team Access and Workforce</H3>
+          <div className="space-y-4">
+            <FAQ question="How does team access work in AlwaysReady?" answer="You can invite your team and assign each person a role — Admin, User, or Viewer. Each role has a different level of access, allowing you to share governance responsibilities while maintaining control over who can see and change what." />
+            <FAQ question="Can I control user permissions?" answer="Yes. Role-based permissions let you control who can view, update, or manage different areas of the platform. Viewer access can also be set to expire." />
+            <FAQ question="Can more than one person access the account?" answer="Yes. You can invite as many team members as needed. Roles: Admin (full access), User (can update their assigned KLOEs), or Viewer (read-only)." />
+            <FAQ question="How do staff members get access?" answer="Admins add team members to the platform via the Team section. Enter the team member's name, email address, and role, then click Send invite. The team member receives login details by email and sets their own password on first login." />
+            <FAQ question="Can I give a CQC inspector read-only access during a visit?" answer="Yes. Create a Visitor login on the Team page. You set the access duration, and it expires automatically. The visitor can view the KLOE tracker, audit trail, readiness trend, and inspection pack. They cannot make any changes, and you can revoke access at any time before expiry." />
+          </div>
+
+          <H3>HR Module</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the HR module?" answer="The HR module enables Admins to manage staff and compliance records. You can record employment details, DBS check dates, supervision and appraisal due dates, training completions, and holiday allowances for each staff member. An overview dashboard provides a clear view of the team's compliance status at a glance." />
+            <FAQ question="Does AlwaysReady track mandatory training?" answer="Yes. The HR module includes a training records section for each staff member. You can record completion dates, set renewal frequencies, upload certificates, and view automatically calculated next-due dates." />
+            <FAQ question="Can staff complete daily care notes in AlwaysReady?" answer="No. AlwaysReady is not a care-planning or daily-notes system. It focuses on governance, oversight, and inspection-readiness, not on recording care." />
+            <FAQ question="What is special category data and why does AlwaysReady hold it?" answer="Special category data includes fields such as date of birth, gender, ethnicity, disability status, and marital status. AlwaysReady stores this data in staff HR records for equality monitoring, as required by the Equality Act 2010 for employers. This data is visible only to Admin users within your organisation and is never shared with CQC or any third party." />
+            <FAQ question="Can holiday be tracked in hours instead of days?" answer="Yes. Holiday allowances can be tracked in days or hours. You can change the unit for your whole organisation on the HR settings page." />
+          </div>
+
+          <H3>Specialist Services and Sub-Specialisms</H3>
+          <div className="space-y-4">
+            <FAQ question="Does AlwaysReady cater for specialist care such as dementia or learning disabilities?" answer="Yes. When you sign up, you select your service type and any sub-specialisms you offer. AlwaysReady tailors the compliance checklist accordingly, adding relevant items for your service context." />
+            <FAQ question="What sub-specialisms does AlwaysReady support?" answer="AlwaysReady currently supports the following sub-specialisms: Dementia Care, Learning Disabilities, Mental Health, End of Life Care, Acquired Brain Injury (ABI), Physical Disabilities, Bariatric Care, Sensory Impairment, Epilepsy, and Autism. Sub-specialisms can be selected at sign-up or updated in your account settings." />
+          </div>
+
+          <H3>Newsletter Drafting Tool</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the newsletter drafting tool?" answer="The newsletter drafting tool is an AI-assisted feature available to Admin users. You choose your audience (staff, families and residents, or both), a topic or occasion, and a tone, then add any key points — the platform generates a ready-to-copy draft in seconds. It is a drafting aid only: AlwaysReady never sends newsletters on your behalf, and all output should be reviewed and edited before use." />
+            <FAQ question="Who can use the newsletter drafting tool?" answer="The tool is available to Admin users. Staff and Viewer logins do not have access." />
+            <FAQ question="Is there a limit on how many newsletter drafts I can generate?" answer="Yes — each organisation can create up to 10 drafts per calendar month." />
+            <FAQ question="Can I include resident or patient details in my newsletter prompt?" answer="No. You must not include personal details of residents, patients, families, or individual staff members in the drafting tool. The tool is for generating general compliance communications only. A notice reminding you of this is prominently displayed at the top of the tool." />
+            <FAQ question="Does AlwaysReady send newsletters on my behalf?" answer="No. AlwaysReady generates a draft for you to copy and paste into your preferred channel — email, WhatsApp, a printed notice, or any other channel. You remain fully in control of what goes out and when." />
+          </div>
+
+          <H3>Inspection Day</H3>
+          <div className="space-y-4">
+            <FAQ question="How does AlwaysReady help on inspection day?" answer="Your Inspection Pack provides a one-click, printable summary of your compliance position for every KLOE, with statuses, priorities, and evidence notes already organised and time-stamped." />
+            <FAQ question="What if an inspector disputes our records?" answer="Every entry is time-stamped and linked to a specific KLOE. The audit trail shows exactly who made each change and when, providing a robust basis for any challenge to factual accuracy." />
+            <FAQ question="Can AlwaysReady help with factual accuracy challenges?" answer="Yes. You can quickly export relevant records and evidence to support your challenge, allowing you to respond clearly and confidently within tight deadlines." />
+          </div>
+
+          <H3>Security and Data</H3>
+          <div className="space-y-4">
+            <FAQ question="How secure is AlwaysReady?" answer="AlwaysReady uses enterprise-grade infrastructure. All data is encrypted in transit and at rest, hosted on infrastructure compliant with UK GDPR standards, and protected by role-based access controls and multi-factor authentication." />
+            <FAQ question="Where is my data stored?" answer="On secure cloud infrastructure that meets the data protection standards required for regulated sectors in the UK." />
+            <FAQ question="Is AlwaysReady GDPR compliant?" answer="Yes. AlwaysReady operates in full compliance with UK GDPR. Full details are available in the Privacy Policy at alwaysready.uk/legal." />
+            <FAQ question="Who can access my data?" answer="Only the users you authorise. AlwaysReady staff do not access your service data without your permission." />
+            <FAQ question="Is our account secure?" answer="Yes. All accounts require two-factor authentication (2FA). Data is stored in an encrypted, access-controlled database." />
+            <FAQ question="Which authenticator apps work with AlwaysReady?" answer="AlwaysReady works with any TOTP-compatible authenticator app, including Google Authenticator, Authy, and Microsoft Authenticator. If you do not have a smartphone, you can also use a browser-based authenticator extension for Chrome or Firefox, or the Authy desktop app for Windows and Mac." />
+            <FAQ question="Do Visitor accounts need two-factor authentication?" answer="No. Two-factor authentication is required only for Admin and Staff accounts. Visitor accounts, which are read-only and time-limited, are not subject to 2FA." />
+            <FAQ question="What if I lose access to my authenticator app?" answer="You can add another authenticator app at any time through the Account section of your dashboard. You do not need to contact us to regain access." />
+            <FAQ question="Does AlwaysReady share our data with CQC?" answer="No. The data you enter into AlwaysReady is private and visible only to those you grant access. AlwaysReady does not submit any data to CQC, does not connect to any internal CQC system, and does not share your compliance position with any regulator or third party." />
+            <FAQ question="Does AlwaysReady connect to CQC at all?" answer="Yes — but only in one direction and solely to read publicly available information. AlwaysReady connects to the CQC Syndication API to retrieve your service's current CQC rating, registered service name, and last inspection date. This connection is read-only. No data from your AlwaysReady account is sent to CQC. AlwaysReady is neither affiliated with nor endorsed by the Care Quality Commission." />
+            <FAQ question="What CQC data does AlwaysReady display, and where does it come from?" answer="AlwaysReady displays your current overall CQC rating, your registered service name as recorded by CQC, and the date of your most recent CQC inspection, along with a direct link to your service's CQC page. This data is sourced from the CQC Syndication API and is refreshed automatically every 24 hours." />
+            <FAQ question="Does entering my CQC Location ID at sign-up send any information to CQC?" answer="No. AlwaysReady uses the Location ID to look up your service on the CQC public register and confirm its validity. CQC receives no notification of your sign-up, and no information from your account is shared with them." />
+          </div>
+
+          <H3>Pricing and Subscription</H3>
+          <div className="space-y-4">
+            <FAQ question="How much does AlwaysReady cost?" answer="£75 per month per CQC-registered location. No setup fees, hidden costs, or tiers — everything is included." />
+            <FAQ question="Is the subscription monthly or annual?" answer="Monthly. There is no annual commitment or long-term contract, and you can cancel at any time." />
+            <FAQ question="When does billing start?" answer="Billing begins after your 14-day free trial ends, but only if you choose to subscribe. There is no automatic charge at the end of the trial." />
+            <FAQ question="Can I cancel my subscription?" answer="Yes, at any time via the Account section. No long-term contracts or cancellation penalties apply. Access continues until the end of the current billing period." />
+            <FAQ question="How do I update my payment details?" answer="Go to Account > Billing, then click 'Manage subscription'. This opens the Stripe billing portal, where you can update your payment method, view invoices, and manage your subscription. AlwaysReady does not store any card or financial data — everything is handled securely by Stripe." />
+            <FAQ question="What happens if a payment fails?" answer="If a payment fails, you will be notified by email. Go to Account > Billing, then click 'Manage subscription' to update your payment method in the Stripe billing portal. If the payment cannot be collected, access to the platform may be suspended until the issue is resolved." />
+            <FAQ question="Can I download my data before I cancel?" answer="Yes. You can download a full export of your compliance records and a ZIP archive of your evidence files at any time from Account > Organisation. Your data is retained for 30 days after cancellation, during which you can still export everything." />
+            <FAQ question="Is there a charity discount?" answer="Yes — registered charities receive a discount on every monthly payment for the duration of their subscription. Provide your charity registration number at sign-up, and the discount is applied automatically once your registration is verified." />
+            <FAQ question="Can we use AlwaysReady for more than one service?" answer="Each account is for a single CQC-registered service location. If you operate multiple services, each requires its own account. Contact support@alwaysready.uk to discuss multi-site pricing." />
+            <FAQ question="What is included in the subscription?" answer="Full platform access, evidence file storage, KLOE tracker, readiness dashboard, daily review report, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, team access with role-based permissions, and support. Everything is included." />
+          </div>
+
+          <H3>Support and Contact</H3>
+          <div className="space-y-4">
+            <FAQ question="What support is available if we have a problem?" answer="Raise a support ticket from within the platform via the Support link in the navigation bar, or email support@alwaysready.uk." />
+            <FAQ question="How do I contact AlwaysReady?" answer="Website visitors can use the contact form at alwaysready.uk/contact. Existing platform users should open a support ticket in the platform or email support@alwaysready.uk." />
+            <FAQ question="Can I reply to a support ticket by email?" answer="Yes. When you receive a reply to your support ticket by email, you can reply directly to that email and your response will be automatically threaded back into the ticket. You do not need to log in to the platform to continue the conversation." />
+          </div>
+
+          <H3>Free Trial</H3>
+          <div className="space-y-4">
+            <FAQ question="Is there a free trial?" answer="Yes — a 14-day free trial with no credit card required. You will have full access to all features from day one." />
+            <FAQ question="How long is the free trial?" answer="14 days with full, unrestricted access throughout." />
+            <FAQ question="Do I need a credit card to start the free trial?" answer="No. You only need your service name, CQC Location ID, service type, and your name and email address." />
+            <FAQ question="What is included in the free trial?" answer="Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, and team access. Data entered during the trial is retained if you subscribe." />
+            <FAQ question="How long does it take to get started?" answer="Under a minute. Fill in a short form, receive your login details by email, and your CQC KLOE framework is already loaded and ready to use." />
+            <FAQ question="Which service types does AlwaysReady currently support?" answer="Eleven service types: ARBD Specialist Care Homes, Community Drug and Alcohol Services, Dual-Registered Care Homes, Extra Care Housing, Homecare Agencies, Nursing Homes, Residential Care Homes, Residential Rehabilitation Services, Shared Lives Schemes, Specialist Colleges, and Supported Living. Each has a tailored checklist aligned with CQC guidance." />
+            <FAQ question="Is my data safe, and what happens to it if I do not subscribe?" answer="Your data is stored securely and never shared with third parties. If you do not subscribe, your data is retained for 30 days and can be downloaded at any time from Account > Organisation. After 30 days, it is permanently deleted. You can also request early deletion by contacting us." />
+            <FAQ question="Will AlwaysReady work alongside my existing systems?" answer="Yes. AlwaysReady integrates with your existing care planning, medication, and rostering software. It does not store any resident or clinical information — it is focused entirely on compliance and inspection preparedness." />
+            <FAQ question="How do I start the free trial?" answer="Click the Start Free Trial button on the AlwaysReady website at alwaysready.uk. No credit card required — full access in minutes." />
+            <FAQ question="What happens when my free trial ends?" answer="You will be invited to subscribe. There is no automatic charge or obligation to do so." />
+            <FAQ question="Can I extend my free trial?" answer="Contact us at support@alwaysready.uk, and we will do our best to help." />
+          </div>
+
+          <H3>About the Blog</H3>
+          <div className="space-y-4">
+            <FAQ question="Who writes the AlwaysReady blog?" answer="All blog posts are written by Dr Ethna Parker, founder and developer of AlwaysReady, who holds a doctorate and has a professional background in health and adult social care." />
+            <FAQ question="What is the blog about?" answer="Practical insights, real-world tips, and straightforward strategies to help registered managers strengthen their evidence base and streamline their processes. Not regulatory advice — focused on good governance practice." />
+            <FAQ question="How often is the blog updated?" answer="New posts are published regularly. Subscribe via the signup form at alwaysready.uk/blog to receive them by email." />
+          </div>
+
         </Section>
 
       </div>
