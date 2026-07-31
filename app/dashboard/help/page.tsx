@@ -578,26 +578,6 @@ export default function HelpPage() {
         {/* ── Platform FAQ (V1) ──────────────────────────────────────────────── */}
         <Section id="v1-faqs" label="Platform FAQ" colour="bg-[#014D4E]">
 
-          <H3>About AlwaysReady</H3>
-          <div className="space-y-4">
-            <FAQ question="What is AlwaysReady?" answer="AlwaysReady is a governance and inspection-readiness platform designed for Adult Social Care providers. It helps Registered Managers and their teams track compliance with the CQC assessment framework for adult social care, record evidence, and see at a glance where they stand ahead of inspection — all in one place." />
-            <FAQ question="Who is AlwaysReady for?" answer="AlwaysReady is designed for managers and owners of small to mid-sized Adult Social Care services. It is built for those who need clear oversight, strong governance, and a reliable way to stay inspection-ready every day." />
-            <FAQ question="What problems does AlwaysReady solve?" answer="AlwaysReady removes the chaos of scattered folders, spreadsheets, and last-minute inspection panic. It gives you a structured, reliable system for tracking your compliance position against the five Key Questions and 24 KLOEs, uploading evidence, recording governance activity, and knowing exactly what needs attention and when." />
-            <FAQ question="How does AlwaysReady differ from care planning systems?" answer="Care planning systems capture frontline, person-centred care, including daily notes, MAR charts, and risk assessments. AlwaysReady is completely different. It manages governance, oversight, KLOE compliance, and inspection readiness. It sits above your care planning system, providing the organisational structure that inspectors expect to see." />
-            <FAQ question="How does AlwaysReady integrate with my care planning system?" answer="Your care planning system shows how you care for people day-to-day. AlwaysReady shows how you run and govern the service. Together, they provide inspectors with a complete picture of frontline care and organisational oversight." />
-            <FAQ question="What does AlwaysReady do that care planning systems cannot?" answer="AlwaysReady brings together your compliance records, evidence, audit trail, HR compliance, and governance activity in a single, structured platform. It tracks who did what and when, shows your readiness position across all five CQC key questions, and generates printable summaries for inspectors — capabilities that care planning systems are not designed to provide." />
-          </div>
-
-          <H3>Getting Started</H3>
-          <div className="space-y-4">
-            <FAQ question="What information do I need to sign up?" answer="Your service name, CQC Location ID, service type, and your name and email address. No credit card is required to start your free trial." />
-            <FAQ question="What happens after I sign up for a trial?" answer="You will receive your login details by email. When you first log in, you will be prompted to change your password and set up two-factor authentication. Your CQC assessment framework is already loaded and ready to use — you can start recording compliance immediately." />
-            <FAQ question="How long does it take to fully set up the platform?" answer="Signing up takes less than a minute. The platform is fully configured. Your main task is to populate it with your data — statuses, review dates, evidence, and HR records — for your whole team. Most managers find the KLOE tracker usable within an hour and fully up to date within a few days." />
-            <FAQ question="Do I need to transfer data from my existing system?" answer="No. AlwaysReady does not import data from other systems. You start fresh and build your compliance picture as you go. Because the platform is pre-loaded, no setup is required — you simply start recording your current position against each KLOE." />
-            <FAQ question="Is AlwaysReady suitable for homecare agencies as well as care homes?" answer="Yes. Homecare agencies are among the eleven supported service types. Each service type has a tailored checklist aligned with CQC guidance for that setting." />
-            <FAQ question="Can our admin team access the platform?" answer="Yes — your admin team can be added to the platform, like any other admin user, to manage it alongside the Registered Manager." />
-          </div>
-
           <H3>How the Platform Works</H3>
           <div className="space-y-4">
             <FAQ question="How does the AlwaysReady platform work?" answer="AlwaysReady is structured around the five CQC key questions, their linked KLOEs, and the CQC 'I' questions. For each KLOE or 'I' question, you record a RAG status, set a review date, add notes, and upload evidence. This tracks your compliance position over time. Your dashboard provides a live view of where you stand, and your Daily Review Report highlights what needs attention today." />
@@ -698,9 +678,6 @@ export default function HelpPage() {
 
           <H3>Pricing and Subscription</H3>
           <div className="space-y-4">
-            <FAQ question="How much does AlwaysReady cost?" answer="£75 per month per CQC-registered location. No setup fees, hidden costs, or tiers — everything is included." />
-            <FAQ question="Is the subscription monthly or annual?" answer="Monthly. There is no annual commitment or long-term contract, and you can cancel at any time." />
-            <FAQ question="When does billing start?" answer="Billing begins after your 14-day free trial ends, but only if you choose to subscribe. There is no automatic charge at the end of the trial." />
             <FAQ question="Can I cancel my subscription?" answer="Yes, at any time via the Account section. No long-term contracts or cancellation penalties apply. Access continues until the end of the current billing period." />
             <FAQ question="How do I update my payment details?" answer="Go to Account > Billing, then click 'Manage subscription'. This opens the Stripe billing portal, where you can update your payment method, view invoices, and manage your subscription. AlwaysReady does not store any card or financial data — everything is handled securely by Stripe." />
             <FAQ question="What happens if a payment fails?" answer="If a payment fails, you will be notified by email. Go to Account > Billing, then click 'Manage subscription' to update your payment method in the Stripe billing portal. If the payment cannot be collected, access to the platform may be suspended until the issue is resolved." />
@@ -719,24 +696,11 @@ export default function HelpPage() {
 
           <H3>Free Trial</H3>
           <div className="space-y-4">
-            <FAQ question="Is there a free trial?" answer="Yes — a 14-day free trial with no credit card required. You will have full access to all features from day one." />
-            <FAQ question="How long is the free trial?" answer="14 days with full, unrestricted access throughout." />
-            <FAQ question="Do I need a credit card to start the free trial?" answer="No. You only need your service name, CQC Location ID, service type, and your name and email address." />
             <FAQ question="What is included in the free trial?" answer="Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, and team access. Data entered during the trial is retained if you subscribe." />
-            <FAQ question="How long does it take to get started?" answer="Under a minute. Fill in a short form, receive your login details by email, and your CQC KLOE framework is already loaded and ready to use." />
             <FAQ question="Which service types does AlwaysReady currently support?" answer="Eleven service types: ARBD Specialist Care Homes, Community Drug and Alcohol Services, Dual-Registered Care Homes, Extra Care Housing, Homecare Agencies, Nursing Homes, Residential Care Homes, Residential Rehabilitation Services, Shared Lives Schemes, Specialist Colleges, and Supported Living. Each has a tailored checklist aligned with CQC guidance." />
             <FAQ question="Is my data safe, and what happens to it if I do not subscribe?" answer="Your data is stored securely and never shared with third parties. If you do not subscribe, your data is retained for 30 days and can be downloaded at any time from Account > Organisation. After 30 days, it is permanently deleted. You can also request early deletion by contacting us." />
-            <FAQ question="Will AlwaysReady work alongside my existing systems?" answer="Yes. AlwaysReady integrates with your existing care planning, medication, and rostering software. It does not store any resident or clinical information — it is focused entirely on compliance and inspection preparedness." />
-            <FAQ question="How do I start the free trial?" answer="Click the Start Free Trial button on the AlwaysReady website at alwaysready.uk. No credit card required — full access in minutes." />
             <FAQ question="What happens when my free trial ends?" answer="You will be invited to subscribe. There is no automatic charge or obligation to do so." />
             <FAQ question="Can I extend my free trial?" answer="Contact us at support@alwaysready.uk, and we will do our best to help." />
-          </div>
-
-          <H3>About the Blog</H3>
-          <div className="space-y-4">
-            <FAQ question="Who writes the AlwaysReady blog?" answer="All blog posts are written by Dr Ethna Parker, founder and developer of AlwaysReady, who holds a doctorate and has a professional background in health and adult social care." />
-            <FAQ question="What is the blog about?" answer="Practical insights, real-world tips, and straightforward strategies to help registered managers strengthen their evidence base and streamline their processes. Not regulatory advice — focused on good governance practice." />
-            <FAQ question="How often is the blog updated?" answer="New posts are published regularly. Subscribe via the signup form at alwaysready.uk/blog to receive them by email." />
           </div>
 
         </Section>
