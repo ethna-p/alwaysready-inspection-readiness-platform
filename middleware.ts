@@ -190,13 +190,11 @@ export async function middleware(request: NextRequest) {
   ) {
     const { data: profile } = await supabase
       .from('users')
-      .select('onboarding_complete, organisations(is_demo)')
+      .select('onboarding_complete')
       .eq('id', user.id)
       .single()
 
-    const isDemo = (profile?.organisations as { is_demo?: boolean } | null)?.is_demo === true
-
-    if (!isDemo && profile && profile.onboarding_complete === false) {
+    if (profile && profile.onboarding_complete === false) {
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard/welcome'
       return NextResponse.redirect(url)

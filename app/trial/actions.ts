@@ -92,7 +92,6 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       service_type_id:  serviceTypeRow.id,
       subscription_tier: 'trial',
       trial_expires_at:  trialExpiresAt.toISOString(),
-      is_demo:           false,
       terms_accepted_at: new Date().toISOString(),
       terms_version:     TERMS_VERSION,
       ...(charityNumber ? { charity_number: charityNumber } : {}),

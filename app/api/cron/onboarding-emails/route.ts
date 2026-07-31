@@ -349,7 +349,6 @@ export async function GET(req: NextRequest) {
     .from('organisations')
     .select('id, subscribed_at')
     .eq('subscription_tier', 'active')
-    .eq('is_demo', false)
     .not('subscribed_at', 'is', null)
 
   if (orgsError) {

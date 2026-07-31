@@ -10,13 +10,12 @@ import Link from 'next/link'
 
 type Props = {
   isAdmin: boolean
-  isDemo: boolean
   hasUnread: boolean
 }
 
 const NAV_LINK = 'block text-base font-medium text-brand py-3 border-b border-line hover:text-[#00b8a6] transition-colors'
 
-export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
+export default function MobileNav({ isAdmin, hasUnread }: Props) {
   const [open, setOpen] = useState(false)
 
   // Close on route change / escape key
@@ -52,12 +51,6 @@ export default function MobileNav({ isAdmin, isDemo, hasUnread }: Props) {
       {open && (
         <div className="sm:hidden fixed inset-x-0 top-[65px] bottom-0 z-50 bg-card border-t border-line overflow-y-auto">
           <nav className="px-6 py-2" aria-label="Mobile navigation">
-
-            {isDemo && (
-              <a href="https://alwaysready.uk" className={NAV_LINK} onClick={() => setOpen(false)}>
-                ← alwaysready.uk
-              </a>
-            )}
 
             <Link href="/dashboard" className={NAV_LINK} onClick={() => setOpen(false)}>
               Dashboard

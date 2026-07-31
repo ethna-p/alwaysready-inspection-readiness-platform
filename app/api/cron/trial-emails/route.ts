@@ -337,7 +337,6 @@ export async function GET(request: Request) {
     .from('organisations')
     .select('id, name, subscription_tier, trial_expires_at, is_charity')
     .eq('subscription_tier', 'trial')
-    .eq('is_demo', false)
     .not('trial_expires_at', 'is', null)
 
   if (orgsError || !orgs) {
@@ -431,7 +430,6 @@ export async function GET(request: Request) {
     .from('organisations')
     .select('id, name, is_charity')
     .eq('subscription_tier', 'trial')
-    .eq('is_demo', false)
     .gte('trial_expires_at', `${yesterdayStr}T00:00:00.000Z`)
     .lt('trial_expires_at',  `${yesterdayStr}T23:59:59.999Z`)
 

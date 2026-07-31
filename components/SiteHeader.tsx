@@ -10,7 +10,7 @@ import { getCurrentUserProfile } from '@/lib/session'
 import MobileNav from './MobileNav'
 import UserMenu from './UserMenu'
 
-export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean }) {
+export default async function SiteHeader() {
   const supabase = await createClient()
   const profile = await getCurrentUserProfile()
   const isAdmin = profile?.role === 'admin'
@@ -44,14 +44,6 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
               priority
             />
           </a>
-          {isDemo && (
-            <a
-              href="https://alwaysready.uk"
-              className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-brand/70 hover:text-brand border border-[#014D4E]/20 rounded-full px-3 py-1 hover:border-[#014D4E]/50 transition-colors"
-            >
-              ← alwaysready.uk
-            </a>
-          )}
         </div>
 
         {/* Primary nav — use Link (soft navigation) so pagehide is never triggered */}
@@ -123,7 +115,7 @@ export default async function SiteHeader({ isDemo = false }: { isDemo?: boolean 
           <div className="hidden sm:flex items-center gap-3">
             <UserMenu fullName={profile?.full_name ?? null} hasUnread={hasUnread} />
           </div>
-          <MobileNav isAdmin={isAdmin} isDemo={isDemo} hasUnread={hasUnread} />
+          <MobileNav isAdmin={isAdmin} hasUnread={hasUnread} />
         </div>
       </div>
     </header>

@@ -1,15 +1,10 @@
 /**
- * TrialBanner — shown at the top of every dashboard page for
- * demo and trial users. Displays a countdown and a subscribe CTA.
- *
- * Demo orgs:  counts down demo_expires_at
- * Trial orgs: counts down trial_expires_at
- * Active orgs: renders nothing
+ * TrialBanner — shown at the top of every dashboard page for trial users.
+ * Displays a countdown and a subscribe CTA.
+ * Active orgs: renders nothing.
  */
 
 interface Props {
-  isDemo: boolean
-  demoExpiresAt: string | null
   subscriptionTier: string
   trialExpiresAt: string | null
 }
@@ -20,35 +15,9 @@ function daysRemaining(iso: string | null): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
 }
 
-function hoursRemaining(iso: string | null): number {
-  if (!iso) return 0
-  const diff = new Date(iso).getTime() - Date.now()
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60)))
-}
-
-export default function TrialBanner({ isDemo, demoExpiresAt, subscriptionTier, trialExpiresAt }: Props) {
+export default function TrialBanner({ subscriptionTier, trialExpiresAt }: Props) {
   // Active subscribers: no banner
-  if (!isDemo && subscriptionTier === 'active') return null
-
-  // Permanent preview accounts (is_demo=true, active, no expiry): no banner
-  if (isDemo && subscriptionTier === 'active' && !demoExpiresAt) return null
-
-  // Demo banner — shown to real demo visitors
-  if (isDemo) {
-    return (
-      <div className="bg-[#014D4E] text-white print:hidden">
-        <div className="max-w-7xl mx-auto px-6 py-2.5">
-          <p className="text-sm">
-            <span className="font-semibold">You&apos;re exploring AlwaysReady</span>
-            {', the inspection readiness platform. We launch when CQC publishes the new framework.'}
-          </p>
-          <p className="text-xs text-white/75 mt-0.5">
-            KLOEs in this demo are based on the CQC draft adult social care assessment framework (March 2026).
-          </p>
-        </div>
-      </div>
-    )
-  }
+  if (subscriptionTier === 'active') return null
 
   // Trial banner
   const days = daysRemaining(trialExpiresAt)

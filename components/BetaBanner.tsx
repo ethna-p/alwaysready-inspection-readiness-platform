@@ -1,18 +1,17 @@
 /**
  * BetaBanner — a slim, non-pushy banner shown to active trial users
  * inviting them to join the Beta Partner Programme at £50/month.
- * Hidden for active subscribers, beta users, and demo orgs.
+ * Hidden for active subscribers and beta users.
  */
 
 interface Props {
   subscriptionTier: string
-  isDemo: boolean
   isBeta: boolean
 }
 
-export default function BetaBanner({ subscriptionTier, isDemo, isBeta }: Props) {
-  // Only show to trial users who are not already beta or demo
-  if (subscriptionTier !== 'trial' || isDemo || isBeta) return null
+export default function BetaBanner({ subscriptionTier, isBeta }: Props) {
+  // Only show to trial users who are not already beta
+  if (subscriptionTier !== 'trial' || isBeta) return null
 
   return (
     <div className="print:hidden bg-[#E6F5F3] border-b border-[#00b8a6]">

@@ -218,7 +218,6 @@ export async function GET(request: Request) {
     .from('organisations')
     .select('id, name')
     .in('subscription_tier', ['trial', 'active'])
-    .eq('is_demo', false)
 
   if (orgsError || !orgs) {
     console.error('[review-reminders] Failed to fetch orgs:', orgsError)

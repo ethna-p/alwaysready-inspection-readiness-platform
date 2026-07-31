@@ -135,11 +135,9 @@ export type Database = {
           cqc_rating_fetched_at: string | null
           service_type_id: string
           subscription_tier: 'trial' | 'active' | 'past_due' | 'canceled'
-          is_demo: boolean
           is_beta: boolean
           is_charity: boolean
           charity_number: string | null
-          demo_expires_at: string | null
           trial_expires_at: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -159,11 +157,9 @@ export type Database = {
           cqc_rating_fetched_at?: string | null
           service_type_id: string
           subscription_tier?: 'trial' | 'active' | 'past_due' | 'canceled'
-          is_demo?: boolean
           is_beta?: boolean
           is_charity?: boolean
           charity_number?: string | null
-          demo_expires_at?: string | null
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -183,11 +179,9 @@ export type Database = {
           cqc_rating_fetched_at?: string | null
           service_type_id?: string
           subscription_tier?: 'trial' | 'active' | 'past_due' | 'canceled'
-          is_demo?: boolean
           is_beta?: boolean
           is_charity?: boolean
           charity_number?: string | null
-          demo_expires_at?: string | null
           trial_expires_at?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null

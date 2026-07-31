@@ -42,14 +42,13 @@ function trialStatus(expiresAt: string | null): { label: string; urgent: boolean
 export default async function OrganisationsPage() {
   const supabase = createAdminClient()
 
-  // ── 1. Fetch all real orgs (exclude demo/shadow orgs) ──────────────────
+  // ── 1. Fetch all organisations ─────────────────────────────────────────
   const { data: orgs, error: orgsError } = await (supabase as any)
     .from('organisations')
     .select(`
       id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity, charity_number,
       service_types ( name )
     `)
-    .eq('is_demo', false)
     .order('created_at', { ascending: false })
 
   if (orgsError) {

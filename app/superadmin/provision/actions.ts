@@ -56,7 +56,6 @@ export async function provisionOrganisation(
         service_type_id: serviceType.id,
         subscription_tier: 'trial',
         trial_expires_at: trialExpiresAt.toISOString(),
-        is_demo: false,
         is_beta: isBeta,
       })
       .select('id')

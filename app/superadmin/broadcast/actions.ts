@@ -22,10 +22,9 @@ export async function getRecipientCount(): Promise<number> {
   const [usersResult, subscribersResult] = await Promise.all([
     supabase
       .from('users')
-      .select('id, email, organisations!inner(is_demo)')
+      .select('id, email')
       .eq('role', 'admin')
-      .eq('marketing_opt_out', false)
-      .eq('organisations.is_demo', false),
+      .eq('marketing_opt_out', false),
     supabase
       .from('blog_subscribers')
       .select('id')
@@ -63,10 +62,9 @@ export async function sendBroadcast(
   const [usersResult, subscribersResult] = await Promise.all([
     supabase
       .from('users')
-      .select('id, email, full_name, organisations!inner(is_demo)')
+      .select('id, email, full_name')
       .eq('role', 'admin')
-      .eq('marketing_opt_out', false)
-      .eq('organisations.is_demo', false),
+      .eq('marketing_opt_out', false),
     supabase
       .from('blog_subscribers')
       .select('id, email, full_name')

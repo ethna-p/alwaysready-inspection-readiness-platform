@@ -71,7 +71,6 @@ export async function signUp(
       service_type_id: serviceTypeRow.id,
       subscription_tier: 'trial',
       trial_expires_at: trialExpiresAt.toISOString(),
-      is_demo: false,
     })
     .select('id')
     .single()

@@ -22,7 +22,6 @@ export async function getOrganisationsForTicket(): Promise<OrgOption[]> {
   const { data: orgs } = await supabase
     .from('organisations')
     .select('id, name')
-    .eq('is_demo', false)
     .order('name', { ascending: true })
 
   if (!orgs) return []
