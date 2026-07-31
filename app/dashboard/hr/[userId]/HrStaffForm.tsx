@@ -26,8 +26,10 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-ink mb-1">{label}</label>
-      {children}
+      <label className="block">
+        <span className="block text-sm font-medium text-ink mb-1">{label}</span>
+        {children}
+      </label>
     </div>
   )
 }

@@ -179,7 +179,9 @@ export default function HrSettingsPage() {
         <form onSubmit={handleAddType} className="border-t border-line pt-5">
           <h3 className="text-sm font-semibold text-brand mb-3">Add training type</h3>
           <div className="flex flex-col gap-3">
+            <label htmlFor="new-training-type-name" className="sr-only">Training type name</label>
             <input
+              id="new-training-type-name"
               type="text"
               value={newTypeName}
               onChange={e => setNewTypeName(e.target.value)}
@@ -198,8 +200,9 @@ export default function HrSettingsPage() {
                 Mandatory
               </label>
               <div className="flex items-center gap-2">
-                <label className="text-sm text-ink">Frequency (days):</label>
+                <label htmlFor="new-training-type-frequency" className="text-sm text-ink">Frequency (days):</label>
                 <input
+                  id="new-training-type-frequency"
                   type="number"
                   min={1}
                   value={newTypeFrequency}

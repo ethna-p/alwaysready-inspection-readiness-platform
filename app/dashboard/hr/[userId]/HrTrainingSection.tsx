@@ -199,8 +199,9 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium text-ink mb-1">Date Completed</label>
+                      <label htmlFor={`training-date-${type.id}`} className="block text-sm font-medium text-ink mb-1">Date Completed</label>
                       <input
+                        id={`training-date-${type.id}`}
                         type="date"
                         value={local.dateCompleted}
                         onChange={e => setField(type.id, 'dateCompleted', e.target.value)}
@@ -208,8 +209,9 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-ink mb-1">Frequency</label>
+                      <label htmlFor={`training-freq-${type.id}`} className="block text-sm font-medium text-ink mb-1">Frequency</label>
                       <select
+                        id={`training-freq-${type.id}`}
                         value={local.frequencyDays}
                         onChange={e => setField(type.id, 'frequencyDays', e.target.value)}
                         className="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#014D4E]"
@@ -230,8 +232,9 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                       </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-ink mb-1">Notes</label>
+                      <label htmlFor={`training-notes-${type.id}`} className="block text-sm font-medium text-ink mb-1">Notes</label>
                       <input
+                        id={`training-notes-${type.id}`}
                         type="text"
                         value={local.notes}
                         onChange={e => setField(type.id, 'notes', e.target.value)}

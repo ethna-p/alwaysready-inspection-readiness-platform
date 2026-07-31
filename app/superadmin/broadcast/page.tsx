@@ -104,10 +104,11 @@ export default function BroadcastPage() {
         {/* ── Compose panel ── */}
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
+            <label htmlFor="broadcast-subject" className="block text-sm font-medium text-ink mb-1">
               Subject line
             </label>
             <input
+              id="broadcast-subject"
               type="text"
               value={subject}
               onChange={e => setSubject(e.target.value)}
@@ -117,13 +118,14 @@ export default function BroadcastPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
+            <label htmlFor="broadcast-intro" className="block text-sm font-medium text-ink mb-1">
               Intro copy
             </label>
             <p className="text-sm text-ink-muted mb-2">
               Write 1–3 short paragraphs. Separate paragraphs with a blank line.
             </p>
             <textarea
+              id="broadcast-intro"
               value={intro}
               onChange={e => setIntro(e.target.value)}
               rows={8}
@@ -133,10 +135,11 @@ export default function BroadcastPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
+            <label htmlFor="broadcast-post-url" className="block text-sm font-medium text-ink mb-1">
               Blog post URL
             </label>
             <input
+              id="broadcast-post-url"
               type="url"
               value={postUrl}
               onChange={e => setPostUrl(e.target.value)}
@@ -146,10 +149,11 @@ export default function BroadcastPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
+            <label htmlFor="broadcast-button-text" className="block text-sm font-medium text-ink mb-1">
               Button text
             </label>
             <input
+              id="broadcast-button-text"
               type="text"
               value={buttonText}
               onChange={e => setButtonText(e.target.value)}

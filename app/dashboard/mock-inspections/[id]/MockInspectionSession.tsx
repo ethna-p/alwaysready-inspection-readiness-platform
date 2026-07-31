@@ -247,6 +247,7 @@ export default function MockInspectionSession({
                       value={responses[ci.id]?.note ?? ''}
                       onChange={e => setResponse(ci.id, 'note', e.target.value)}
                       placeholder="Note what needs to improve (optional)"
+                      aria-label="Note what needs to improve"
                       className="w-full text-xs bg-card border border-line rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#00b8a6] mt-1"
                     />
                   )}

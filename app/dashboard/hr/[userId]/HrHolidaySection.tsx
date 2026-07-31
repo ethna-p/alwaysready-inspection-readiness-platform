@@ -101,8 +101,9 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
         <form onSubmit={handleSave} className="space-y-4">
           {/* Leave year start */}
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">Leave Year Start Date</label>
+            <label htmlFor="leave-year-start" className="block text-sm font-medium text-ink mb-1">Leave Year Start Date</label>
             <input
+              id="leave-year-start"
               type="date"
               value={leaveYearStart}
               onChange={e => setLeaveYearStart(e.target.value)}
@@ -113,13 +114,14 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
           {/* Three numeric fields side by side */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {([
-              { label: `Entitlement (${holidayUnit})`, value: total,     set: setTotal },
-              { label: `Carry Over (${holidayUnit})`,  value: carryOver, set: setCarryOver },
-              { label: `Taken (${holidayUnit})`,       value: taken,     set: setTaken },
-            ] as const).map(({ label, value, set }) => (
+              { label: `Entitlement (${holidayUnit})`, id: 'holiday-entitlement', value: total,     set: setTotal },
+              { label: `Carry Over (${holidayUnit})`,  id: 'holiday-carry-over',  value: carryOver, set: setCarryOver },
+              { label: `Taken (${holidayUnit})`,       id: 'holiday-taken',       value: taken,     set: setTaken },
+            ] as const).map(({ label, id, value, set }) => (
               <div key={label}>
-                <label className="block text-sm font-medium text-ink mb-1">{label}</label>
+                <label htmlFor={id} className="block text-sm font-medium text-ink mb-1">{label}</label>
                 <input
+                  id={id}
                   type="number"
                   min="0"
                   step="0.5"

@@ -189,6 +189,7 @@ function ChecklistItemRow({
                 setSaved(false)
               }}
               placeholder="Evidence location"
+              aria-label="Evidence location"
               className="
                 flex-1 text-xs rounded border border-line px-2 py-1.5
                 bg-card text-ink placeholder:text-ink-dim

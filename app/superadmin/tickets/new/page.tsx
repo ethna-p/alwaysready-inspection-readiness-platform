@@ -84,10 +84,11 @@ export default function NewTicketPage() {
 
         {/* Subject */}
         <div>
-          <label className="block text-sm font-medium text-ink mb-1">
+          <label htmlFor="ticket-subject" className="block text-sm font-medium text-ink mb-1">
             Subject
           </label>
           <input
+            id="ticket-subject"
             type="text"
             value={subject}
             onChange={e => setSubject(e.target.value)}
@@ -98,13 +99,14 @@ export default function NewTicketPage() {
 
         {/* Message */}
         <div>
-          <label className="block text-sm font-medium text-ink mb-1">
+          <label htmlFor="ticket-message" className="block text-sm font-medium text-ink mb-1">
             Message
           </label>
           <p className="text-sm text-ink-muted mb-2">
             This will appear as the first message from AlwaysReady Support in the customer&apos;s ticket thread.
           </p>
           <textarea
+            id="ticket-message"
             value={message}
             onChange={e => setMessage(e.target.value)}
             rows={8}
