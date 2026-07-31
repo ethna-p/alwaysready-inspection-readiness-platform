@@ -154,7 +154,7 @@ export default function MockInspectionSession({
         </div>
 
         {/* KLOE tab navigation */}
-        <div className="mt-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+        <div className="mt-4 overflow-x-scroll -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-fill-dim [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#00b8a6]">
           <div className="flex gap-1.5 min-w-max">
             {klos.map((k, i) => {
               const isActive = i === currentKloeIndex
