@@ -71,26 +71,70 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
 
   const supabase = createAdminClient()
 
-  // Delete in dependency order to handle any FK constraints without CASCADE.
-  // Each step is best-effort — we proceed even if a table has no rows.
-  const tables = [
-    'mock_inspection_checklist_responses',
-    'mock_inspection_findings',
-    'mock_inspections',
+  // ── Step 1: Delete mock inspection children via parent IDs ────────────────
+  const { data: mockInspections } = await (supabase as any)
+    .from('mock_inspections')
+    .select('id')
+    .eq('organisation_id', orgId)
+
+  const mockIds = (mockInspections ?? []).map((m: any) => m.id)
+
+  if (mockIds.length > 0) {
+    const { error: e1 } = await (supabase as any)
+      .from('mock_inspection_checklist_responses')
+      .delete()
+      .in('mock_inspection_id', mockIds)
+    if (e1) return { error: `Failed to delete mock checklist responses: ${e1.message}` }
+
+    const { error: e2 } = await (supabase as any)
+      .from('mock_inspection_findings')
+      .delete()
+      .in('mock_inspection_id', mockIds)
+    if (e2) return { error: `Failed to delete mock findings: ${e2.message}` }
+  }
+
+  const { error: e3 } = await (supabase as any)
+    .from('mock_inspections')
+    .delete()
+    .eq('organisation_id', orgId)
+  if (e3) return { error: `Failed to delete mock inspections: ${e3.message}` }
+
+  // ── Step 2: Delete support ticket replies via parent IDs ──────────────────
+  const { data: tickets } = await (supabase as any)
+    .from('support_tickets')
+    .select('id')
+    .eq('organisation_id', orgId)
+
+  const ticketIds = (tickets ?? []).map((t: any) => t.id)
+
+  if (ticketIds.length > 0) {
+    const { error: e4 } = await (supabase as any)
+      .from('support_ticket_replies')
+      .delete()
+      .in('ticket_id', ticketIds)
+    if (e4) return { error: `Failed to delete ticket replies: ${e4.message}` }
+  }
+
+  const { error: e5 } = await (supabase as any)
+    .from('support_tickets')
+    .delete()
+    .eq('organisation_id', orgId)
+  if (e5) return { error: `Failed to delete support tickets: ${e5.message}` }
+
+  // ── Step 3: Delete remaining org-scoped tables ────────────────────────────
+  const directTables = [
     'compliance_record_history',
     'compliance_records',
     'review_frequency_history',
     'priority_history',
     'kloe_evidence',
-    'support_ticket_replies',
-    'support_tickets',
     'peoples_voice',
     'hr_records',
     'notification_log',
     'organisation_sub_services',
   ]
 
-  for (const table of tables) {
+  for (const table of directTables) {
     const { error } = await (supabase as any)
       .from(table)
       .delete()
@@ -98,7 +142,7 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
     if (error) return { error: `Failed to delete from ${table}: ${error.message}` }
   }
 
-  // Delete the org's users from auth (so their accounts are fully removed)
+  // ── Step 4: Delete users (auth + table rows) ──────────────────────────────
   const { data: orgUsers } = await supabase
     .from('users')
     .select('id')
@@ -108,14 +152,13 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
     await supabase.auth.admin.deleteUser(u.id)
   }
 
-  // Delete users table rows
   const { error: usersError } = await supabase
     .from('users')
     .delete()
     .eq('organisation_id', orgId)
   if (usersError) return { error: `Failed to delete users: ${usersError.message}` }
 
-  // Finally delete the org itself
+  // ── Step 5: Delete the organisation ──────────────────────────────────────
   const { error: orgError } = await (supabase as any)
     .from('organisations')
     .delete()
