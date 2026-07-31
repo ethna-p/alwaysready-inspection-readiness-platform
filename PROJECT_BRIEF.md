@@ -65,7 +65,6 @@ The following modules and features are fully built and deployed:
 - Self-service trial signup flow
 - Trial banners and welcome screen
 - Demo leads capture with marketing consent
-- Nightly cron to reset demo expiry
 - Trial email sequence (Days 3, 5, 7, 9, 11, 13) via Resend
 - Unsubscribe system (HMAC tokens, /unsubscribe page, marketing_opt_out flag)
 - Superadmin provisioning tool (provision Beta users, impersonate orgs)
@@ -195,16 +194,10 @@ Our tools are designed to support providers in preparing for CQC inspection. The
 | Email | Resend |
 | Billing | Stripe (integration pending) |
 | Repo | GitHub — authoritative backup |
-| Demo environment | Per-session shadow org isolation — same RLS mechanism as production |
+| Access model | 14-day free trial → paid monthly subscription. No separate demo environment. |
 | Multi-service-type support | Single Supabase project handles all 11 service types |
 | Staff login | Username-based, no real email required for `user` role accounts |
 | Support protocol | Screen share (Teams / Google Meet) — AJ observes, changes go through Claude |
-
----
-
-## Demo Reset Approach
-
-**Per-session isolated demo** — each visitor gets their own private, temporary "shadow organisation" created on the fly, isolated from every other visitor using the same RLS mechanism as real tenant isolation. Shadow organisations expire and are cleaned up nightly via cron. This is not a parallel system — it reuses the production multi-tenancy mechanism with a "demo" flag and expiry field.
 
 ---
 
@@ -374,16 +367,14 @@ When AJ asks for a "full, system-wide audit" or "full audit", run every check be
 - Governance-only boundary respected — no resident-specific clinical content.
 - No factual claims about unbuilt features (e.g., integrations not yet implemented).
 
-### 12. Demo isolation
-- Demo orgs have `is_demo = true` and an expiry date.
-- The RLS mechanism correctly scopes demo orgs the same way it scopes real orgs.
-- No query in the codebase explicitly excludes demo orgs in a way that could accidentally expose real data to demo users.
-
-### 13. Accessibility baseline (WCAG 2.1 AA)
+### 12. Accessibility baseline (WCAG 2.1 AA)
 - Interactive elements have visible focus indicators.
 - All form inputs have associated `<label>` elements.
 - RAG status indicators have text equivalents (not colour-only).
 - Images have meaningful `alt` text or `alt=""` if decorative.
+
+### 13. Legacy demo code
+- The original build included a demo environment concept that was never launched. The product is trial → subscription only — there is no demo. Flag any remaining `is_demo`, `demo_expires_at`, `/demo/` routes, or demo-related crons that have not yet been removed.
 
 ### 14. `lib/types.ts` vs schema
 - For every table in the schema reference above, confirm the `Row`, `Insert`, and `Update` types in `lib/types.ts` reflect the current column list.
