@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   saveMockFinding,
   saveMockChecklistResponse,
@@ -131,7 +132,6 @@ export default function MockInspectionSession({
         router.push(`/dashboard/mock-inspections/${inspectionId}/report`)
       } else {
         router.push(`/dashboard/mock-inspections/${inspectionId}?kloe=${nextIndex}`)
-        router.refresh()
       }
     })
   }
@@ -141,9 +141,9 @@ export default function MockInspectionSession({
 
       {/* Header */}
       <div>
-        <a href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
+        <Link href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
           ← Mock Inspections
-        </a>
+        </Link>
         <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-xl font-bold text-brand">

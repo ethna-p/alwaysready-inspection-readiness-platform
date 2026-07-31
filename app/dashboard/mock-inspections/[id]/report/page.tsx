@@ -3,9 +3,11 @@
  * Forward-looking: "you need to..." not "you didn't...".
  */
 import { notFound, redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import type { MockInspectionRating } from '@/lib/types'
+import PrintButton from './PrintButton'
 
 export const metadata = { title: 'Mock Inspection Report — AlwaysReady' }
 
@@ -158,15 +160,10 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
 
       {/* Back + print */}
       <div className="flex items-center justify-between print:hidden">
-        <a href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
+        <Link href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
           ← Mock Inspections
-        </a>
-        <button
-          onClick={() => window.print()}
-          className="text-sm font-medium text-brand border border-[#014D4E] rounded-lg px-4 py-2 hover:bg-[#014D4E] hover:text-white transition-colors"
-        >
-          Print / Save PDF
-        </button>
+        </Link>
+        <PrintButton />
       </div>
 
       {/* Report header */}
