@@ -123,6 +123,7 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
 
   // ── Step 3: Delete remaining org-scoped tables ────────────────────────────
   const directTables = [
+    'klo_checklist_completions',
     'compliance_record_history',
     'compliance_records',
     'review_frequency_history',
