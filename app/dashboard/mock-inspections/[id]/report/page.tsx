@@ -11,6 +11,20 @@ import PrintButton from './PrintButton'
 
 export const metadata = { title: 'Mock Inspection Report — AlwaysReady' }
 
+type InspectionForReport = {
+  id: string; type: 'full' | 'partial'; status: string
+  started_at: string; completed_at: string | null
+  key_questions: { name: string } | null
+}
+type FindingWithKlo = {
+  klo_item_id: string; rating: MockInspectionRating; notes: string | null
+  klo_items: { id: string; title: string; wording: string | null; key_question_id: string; key_questions: { name: string } | null } | null
+}
+type ResponseWithItem = {
+  checklist_item_id: string; response: string; note: string | null
+  klo_checklist_items: { id: string; ref: string | null; checklist_item: string; klo_item_id: string } | null
+}
+
 const RATING_LABEL: Record<MockInspectionRating, string> = {
   outstanding:          'Outstanding',
   good:                 'Good',
@@ -51,11 +65,12 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   const supabase = await createClient()
 
   // Load inspection
-  const { data: inspection } = await (supabase as any)
+  const { data: inspectionRaw } = await supabase
     .from('mock_inspections')
     .select('id, type, status, started_at, completed_at, key_questions ( name )')
     .eq('id', id)
     .single()
+  const inspection = inspectionRaw as InspectionForReport | null
 
   if (!inspection) notFound()
   if (inspection.status !== 'completed') {
@@ -63,22 +78,24 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   }
 
   // Load findings with KLOE details
-  const { data: findings } = await (supabase as any)
+  const { data: findingsRaw } = await supabase
     .from('mock_inspection_findings')
     .select(`
       klo_item_id, rating, notes,
       klo_items ( id, title, wording, key_question_id, key_questions ( name ) )
     `)
     .eq('mock_inspection_id', id)
+  const findings = findingsRaw as FindingWithKlo[] | null
 
   // Load checklist responses with item detail
-  const { data: responses } = await (supabase as any)
+  const { data: responsesRaw } = await supabase
     .from('mock_inspection_checklist_responses')
     .select(`
       checklist_item_id, response, note,
       klo_checklist_items ( id, ref, checklist_item, klo_item_id )
     `)
     .eq('mock_inspection_id', id)
+  const responses = responsesRaw as ResponseWithItem[] | null
 
   // Load org name
   const { data: org } = await supabase
@@ -92,8 +109,8 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   // Group findings by key question
   const byKeyQuestion: Record<string, { name: string; findings: typeof findings }> = {}
   for (const f of findings) {
-    const kq = (f.klo_items as any)?.key_questions
-    const kqId = (f.klo_items as any)?.key_question_id
+    const kq = f.klo_items?.key_questions
+    const kqId = f.klo_items?.key_question_id
     if (!kqId) continue
     if (!byKeyQuestion[kqId]) byKeyQuestion[kqId] = { name: kq?.name ?? 'Unknown', findings: [] }
     byKeyQuestion[kqId].findings.push(f)
@@ -105,21 +122,21 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   const maintain:    { title: string }[] = []
 
   for (const f of findings) {
-    const title = (f.klo_items as any)?.title ?? 'Unknown KLOE'
+    const title = f.klo_items?.title ?? 'Unknown KLOE'
     const rating = f.rating as MockInspectionRating
     const kloId  = f.klo_item_id
 
     // Find not-met or partial checklist items for this KLOE
-    const gaps = (responses ?? []).filter((r: any) =>
-      (r.klo_checklist_items as any)?.klo_item_id === kloId &&
+    const gaps = (responses ?? []).filter((r: ResponseWithItem) =>
+      r.klo_checklist_items?.klo_item_id === kloId &&
       (r.response === 'not_met' || r.response === 'partial')
     )
 
     if (rating === 'inadequate' || rating === 'requires_improvement') {
       const gapText = gaps.length > 0
-        ? gaps.map((g: any) => {
-            const ref = (g.klo_checklist_items as any)?.ref ?? ''
-            const item = (g.klo_checklist_items as any)?.checklist_item ?? ''
+        ? gaps.map((g: ResponseWithItem) => {
+            const ref = g.klo_checklist_items?.ref ?? ''
+            const item = g.klo_checklist_items?.checklist_item ?? ''
             const note = g.note ? ` — ${g.note}` : ''
             return `${ref} ${item}${note}`
           }).join('; ')
@@ -131,14 +148,14 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
         rating,
       })
     } else if (rating === 'good') {
-      const partialGaps = gaps.filter((g: any) => g.response === 'partial')
+      const partialGaps = gaps.filter((g: ResponseWithItem) => g.response === 'partial')
       if (partialGaps.length > 0 || !gaps.length) {
         strengthen.push({
           title,
           action: partialGaps.length > 0
-            ? partialGaps.map((g: any) => {
-                const ref = (g.klo_checklist_items as any)?.ref ?? ''
-                const item = (g.klo_checklist_items as any)?.checklist_item ?? ''
+            ? partialGaps.map((g: ResponseWithItem) => {
+                const ref = g.klo_checklist_items?.ref ?? ''
+                const item = g.klo_checklist_items?.checklist_item ?? ''
                 return `Strengthen evidence for ${ref} ${item}`
               }).join('; ')
             : 'Continue building and documenting evidence to maintain this rating.',
@@ -172,7 +189,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
         <h1 className="text-2xl font-bold text-brand mb-1">{org?.name ?? 'Your Service'}</h1>
         <p className="text-sm text-ink-muted">
           {inspection.type === 'partial'
-            ? `Partial inspection — ${(inspection.key_questions as any)?.name}`
+            ? `Partial inspection — ${inspection.key_questions?.name}`
             : 'Full inspection — all key questions'}
           {' · '}Completed {formatDate(inspection.completed_at ?? inspection.started_at)}
         </p>
@@ -208,9 +225,9 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
                   )}
                 </div>
                 <div className="space-y-1.5 pl-2 border-l-2 border-line">
-                  {kqFindings.map((f: any) => (
+                  {kqFindings.map((f: FindingWithKlo) => (
                     <div key={f.klo_item_id} className="flex items-center justify-between gap-3">
-                      <p className="text-sm text-ink">{(f.klo_items as any)?.title}</p>
+                      <p className="text-sm text-ink">{f.klo_items?.title}</p>
                       <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full border ${RATING_STYLE[f.rating as MockInspectionRating]}`}>
                         {RATING_LABEL[f.rating as MockInspectionRating]}
                       </span>

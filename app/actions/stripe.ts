@@ -20,6 +20,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-06-24.dahlia',
 })
 
+type OrgForCheckout = { id: string; name: string; stripe_customer_id: string | null; is_charity: boolean }
+
 const PRICE_ID         = process.env.STRIPE_PRICE_ID!
 const BETA_PRICE_ID    = process.env.STRIPE_BETA_PRICE_ID!
 const CHARITY_PRICE_ID = process.env.STRIPE_CHARITY_PRICE_ID!
@@ -33,11 +35,12 @@ export async function createCheckoutSession(): Promise<never> {
   if (!profile?.organisation_id) redirect('/login')
 
   const supabase = await createClient()
-  const { data: org } = await (supabase as any)
+  const { data: orgRaw } = await supabase
     .from('organisations')
     .select('id, name, stripe_customer_id, is_charity')
     .eq('id', profile.organisation_id)
     .single()
+  const org = orgRaw as OrgForCheckout | null
 
   if (!org) redirect('/login')
 
@@ -82,7 +85,7 @@ export async function createBetaCheckoutSession(): Promise<never> {
   if (!BETA_PRICE_ID) throw new Error('STRIPE_BETA_PRICE_ID is not set')
 
   const supabase = await createClient()
-  const { data: org } = await (supabase as any)
+  const { data: org } = await supabase
     .from('organisations')
     .select('id, name, stripe_customer_id')
     .eq('id', profile.organisation_id)

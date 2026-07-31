@@ -232,8 +232,7 @@ export async function POST(req: NextRequest) {
   const displayName = fromName || from
   const cleanSubject = subject.replace(/\s*\[[A-Z]+-\d+\]\s*/g, '').trim() || subject
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: newTicket, error: ticketError } = await (supabase as any)
+  const { data: newTicket, error: ticketError } = await supabase
     .from('support_tickets')
     .insert({
       subject:        cleanSubject,

@@ -23,7 +23,7 @@ export async function startMockInspection(
   if (!profile?.organisation_id) return { error: 'No organisation found' }
   if (profile.role !== 'admin') return { error: 'Only admins can run mock inspections' }
 
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('mock_inspections')
     .insert({
       organisation_id: profile.organisation_id,
@@ -53,7 +53,7 @@ export async function saveMockFinding(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('mock_inspection_findings')
     .upsert(
       {
@@ -84,7 +84,7 @@ export async function saveMockChecklistResponse(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('mock_inspection_checklist_responses')
     .upsert(
       {
@@ -110,7 +110,7 @@ export async function completeMockInspection(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('mock_inspections')
     .update({
       status: 'completed',

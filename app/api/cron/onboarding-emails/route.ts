@@ -344,8 +344,7 @@ export async function GET(req: NextRequest) {
   const supabase = createAdminClient()
 
   // Fetch all active, non-demo orgs with a subscription date set
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: orgs, error: orgsError } = await (supabase as any)
+  const { data: orgs, error: orgsError } = await supabase
     .from('organisations')
     .select('id, subscribed_at')
     .eq('subscription_tier', 'active')
@@ -375,10 +374,8 @@ export async function GET(req: NextRequest) {
       .from('notification_log')
       .select('entity_id')
       .eq('organisation_id', org.id)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .eq('notification_type' as any, 'onboarding_week')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .eq('entity_type' as any, 'onboarding')
+      .eq('notification_type', 'onboarding_week')
+      .eq('entity_type', 'onboarding')
 
     const sentWeekIds = new Set((existingLogs ?? []).map((r: { entity_id: string }) => r.entity_id))
 

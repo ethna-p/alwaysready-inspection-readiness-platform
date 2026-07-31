@@ -94,8 +94,7 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient()
 
   // ── Create support ticket ─────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: ticketError } = await (supabase as any)
+  const { error: ticketError } = await supabase
     .from('support_tickets')
     .insert({
       subject,

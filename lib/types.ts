@@ -1163,6 +1163,124 @@ export type Database = {
         Relationships: []
       }
 
+      mock_inspections: {
+        Row: {
+          id: string
+          organisation_id: string
+          type: 'full' | 'partial'
+          status: 'in_progress' | 'completed'
+          key_question_id: string | null
+          conducted_by: string
+          started_at: string
+          completed_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          type: 'full' | 'partial'
+          status?: 'in_progress' | 'completed'
+          key_question_id?: string | null
+          conducted_by: string
+          started_at?: string
+          completed_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          type?: 'full' | 'partial'
+          status?: 'in_progress' | 'completed'
+          key_question_id?: string | null
+          conducted_by?: string
+          started_at?: string
+          completed_at?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+
+      mock_inspection_findings: {
+        Row: {
+          id: string
+          mock_inspection_id: string
+          klo_item_id: string
+          rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate'
+          notes: string | null
+          updated_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          mock_inspection_id: string
+          klo_item_id: string
+          rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate'
+          notes?: string | null
+          updated_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          mock_inspection_id?: string
+          klo_item_id?: string
+          rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate'
+          notes?: string | null
+          updated_at?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+
+      mock_inspection_checklist_responses: {
+        Row: {
+          id: string
+          mock_inspection_id: string
+          checklist_item_id: string
+          response: 'met' | 'partial' | 'not_met'
+          note: string | null
+          updated_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          mock_inspection_id: string
+          checklist_item_id: string
+          response: 'met' | 'partial' | 'not_met'
+          note?: string | null
+          updated_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          mock_inspection_id?: string
+          checklist_item_id?: string
+          response?: 'met' | 'partial' | 'not_met'
+          note?: string | null
+          updated_at?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+
+      newsletter_generations: {
+        Row: {
+          id: string
+          organisation_id: string
+          generated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          generated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          generated_at?: string
+        }
+        Relationships: []
+      }
+
     }
     Views: Record<string, never>
     Functions: {

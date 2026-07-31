@@ -13,6 +13,13 @@ import ImpersonateButton from './ImpersonateButton'
 import CharityToggleButton from './CharityToggleButton'
 import DeleteOrgButton from './DeleteOrgButton'
 
+type OrgListItem = {
+  id: string; name: string; subscription_tier: string
+  trial_expires_at: string | null; created_at: string
+  is_beta: boolean; is_charity: boolean; charity_number: string | null
+  service_types: { name: string } | null
+}
+
 const TIER_STYLES: Record<string, string> = {
   trial:     'bg-blue-100 text-blue-700',
   active:    'bg-green-100 text-green-700',
@@ -43,13 +50,14 @@ export default async function OrganisationsPage() {
   const supabase = createAdminClient()
 
   // ── 1. Fetch all organisations ─────────────────────────────────────────
-  const { data: orgs, error: orgsError } = await (supabase as any)
+  const { data: orgsRaw, error: orgsError } = await supabase
     .from('organisations')
     .select(`
       id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity, charity_number,
       service_types ( name )
     `)
     .order('created_at', { ascending: false })
+  const orgs = orgsRaw as OrgListItem[] | null
 
   if (orgsError) {
     return (
@@ -60,7 +68,7 @@ export default async function OrganisationsPage() {
   }
 
   // ── 2. Fetch admin users for those orgs ────────────────────────────────
-  const orgIds = (orgs ?? []).map((o: any) => o.id)
+  const orgIds = (orgs ?? []).map(o => o.id)
 
   const { data: admins } = orgIds.length > 0
     ? await supabase
@@ -99,8 +107,8 @@ export default async function OrganisationsPage() {
         <>
           <p className="text-xs text-ink-muted mb-4">{orgs.length} organisation{orgs.length !== 1 ? 's' : ''}</p>
           <div className="space-y-3">
-            {orgs.map((org: any) => {
-              const serviceType = (org as any).service_types?.name ?? '—'
+            {orgs.map((org: OrgListItem) => {
+              const serviceType = org.service_types?.name ?? '—'
               const tier = org.subscription_tier ?? 'trial'
               const tierStyle = TIER_STYLES[tier] ?? 'bg-fill-dim text-ink-muted'
               const tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1)
@@ -123,12 +131,12 @@ export default async function OrganisationsPage() {
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${tierStyle}`}>
                         {tierLabel}
                       </span>
-                      {(org as any).is_beta && (
+                      {org.is_beta && (
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
                           Beta
                         </span>
                       )}
-                      {(org as any).is_charity && (
+                      {org.is_charity && (
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
                           Charity 20% off
                         </span>
@@ -141,9 +149,9 @@ export default async function OrganisationsPage() {
                     </div>
 
                     {/* Charity number */}
-                    {(org as any).charity_number && (
+                    {org.charity_number && (
                       <p className="text-xs text-ink-muted mt-1">
-                        Charity no. <span className="font-mono text-ink">{(org as any).charity_number}</span>
+                        Charity no. <span className="font-mono text-ink">{org.charity_number}</span>
                         {' '}· <span className="text-amber-600 font-medium">Verify document before enabling discount</span>
                       </p>
                     )}
@@ -172,7 +180,7 @@ export default async function OrganisationsPage() {
                   <div className="shrink-0 flex flex-col items-end gap-2">
                     <CharityToggleButton
                       orgId={org.id}
-                      isCharity={(org as any).is_charity === true}
+                      isCharity={org.is_charity === true}
                     />
                     {admin ? (
                       <ImpersonateButton

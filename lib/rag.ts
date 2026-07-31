@@ -6,6 +6,9 @@
  */
 import type { ComplianceRecord } from './types'
 
+/** Minimum fields needed to calculate RAG — allows partial selects */
+export type RAGInput = Pick<ComplianceRecord, 'date_reviewed' | 'next_review_due'>
+
 export type RAGStatus = 'grey' | 'red' | 'amber' | 'green'
 
 /** Human-readable labels (also used as screen-reader text) */
@@ -33,7 +36,7 @@ const DUE_SOON_DAYS = 14
  * regardless of whether it has been marked "in progress".
  */
 export function calculateRAG(
-  record: ComplianceRecord | null | undefined,
+  record: RAGInput | null | undefined,
   now: Date = new Date()
 ): RAGStatus {
   // Grey: no review date ever recorded

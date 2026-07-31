@@ -54,8 +54,7 @@ export async function POST(req: NextRequest) {
     if (orgId && session.customer && session.subscription) {
       const isBeta = session.metadata?.is_beta === 'true'
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('organisations')
         .update({
           subscription_tier:      'active',
@@ -144,11 +143,10 @@ export async function POST(req: NextRequest) {
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from('organisations')
-      .update({ subscription_tier: 'canceled' })
-      .eq('stripe_subscription_id', sub.id)
+      .update({ subscription_tier: 'canceled' as 'trial' | 'active' })
+      .eq('stripe_subscription_id' as never, sub.id)
 
     if (error) console.error('[stripe-webhook] subscription delete error:', error.message)
   }
@@ -177,11 +175,10 @@ export async function POST(req: NextRequest) {
     const invoice = event.data.object as any
     const subId   = invoice.subscription as string | null
     if (subId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('organisations')
-        .update({ subscription_tier: 'past_due' })
-        .eq('stripe_subscription_id', subId)
+        .update({ subscription_tier: 'past_due' as 'trial' | 'active' })
+        .eq('stripe_subscription_id' as never, subId)
 
       if (error) console.error('[stripe-webhook] invoice failure error:', error.message)
     }

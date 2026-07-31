@@ -91,8 +91,7 @@ export async function GET() {
 
   for (const klo of kloItems) {
     const record = recordByKloId.get(klo.id) ?? null
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ragStatus = calculateRAG(record as any, now)
+    const ragStatus = calculateRAG(record, now)
 
     // key_questions is a joined row — Supabase returns it as object or array
     const kqRaw = klo.key_questions

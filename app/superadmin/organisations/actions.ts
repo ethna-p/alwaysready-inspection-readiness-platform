@@ -72,50 +72,50 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
   const supabase = createAdminClient()
 
   // ── Step 1: Delete mock inspection children via parent IDs ────────────────
-  const { data: mockInspections } = await (supabase as any)
+  const { data: mockInspections } = await supabase
     .from('mock_inspections')
     .select('id')
     .eq('organisation_id', orgId)
 
-  const mockIds = (mockInspections ?? []).map((m: any) => m.id)
+  const mockIds = (mockInspections ?? []).map(m => m.id)
 
   if (mockIds.length > 0) {
-    const { error: e1 } = await (supabase as any)
+    const { error: e1 } = await supabase
       .from('mock_inspection_checklist_responses')
       .delete()
       .in('mock_inspection_id', mockIds)
     if (e1) return { error: `Failed to delete mock checklist responses: ${e1.message}` }
 
-    const { error: e2 } = await (supabase as any)
+    const { error: e2 } = await supabase
       .from('mock_inspection_findings')
       .delete()
       .in('mock_inspection_id', mockIds)
     if (e2) return { error: `Failed to delete mock findings: ${e2.message}` }
   }
 
-  const { error: e3 } = await (supabase as any)
+  const { error: e3 } = await supabase
     .from('mock_inspections')
     .delete()
     .eq('organisation_id', orgId)
   if (e3) return { error: `Failed to delete mock inspections: ${e3.message}` }
 
   // ── Step 2: Delete support ticket replies via parent IDs ──────────────────
-  const { data: tickets } = await (supabase as any)
+  const { data: tickets } = await supabase
     .from('support_tickets')
     .select('id')
     .eq('organisation_id', orgId)
 
-  const ticketIds = (tickets ?? []).map((t: any) => t.id)
+  const ticketIds = (tickets ?? []).map(t => t.id)
 
   if (ticketIds.length > 0) {
-    const { error: e4 } = await (supabase as any)
+    const { error: e4 } = await supabase
       .from('support_ticket_replies')
       .delete()
       .in('ticket_id', ticketIds)
     if (e4) return { error: `Failed to delete ticket replies: ${e4.message}` }
   }
 
-  const { error: e5 } = await (supabase as any)
+  const { error: e5 } = await supabase
     .from('support_tickets')
     .delete()
     .eq('organisation_id', orgId)
@@ -140,6 +140,7 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
   ]
 
   for (const table of directTables) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await (supabase as any)
       .from(table)
       .delete()
@@ -164,7 +165,7 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
   if (usersError) return { error: `Failed to delete users: ${usersError.message}` }
 
   // ── Step 5: Delete the organisation ──────────────────────────────────────
-  const { error: orgError } = await (supabase as any)
+  const { error: orgError } = await supabase
     .from('organisations')
     .delete()
     .eq('id', orgId)
@@ -190,7 +191,7 @@ export async function setCharityStatus(
 
   const supabase = createAdminClient()
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('organisations')
     .update({ is_charity: isCharity })
     .eq('id', orgId)

@@ -10,6 +10,15 @@ import StartMockInspectionForm from './StartMockInspectionForm'
 
 export const metadata = { title: 'Mock Inspections — AlwaysReady' }
 
+type InspectionListItem = {
+  id: string
+  type: 'full' | 'partial'
+  status: 'in_progress' | 'completed'
+  started_at: string
+  completed_at: string | null
+  key_questions: { name: string } | null
+}
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric',
@@ -34,13 +43,14 @@ export default async function MockInspectionsPage() {
     .order('display_order')
 
   // Fetch past mock inspections for this org
-  const { data: inspections } = await (supabase as any)
+  const { data: inspectionsRaw } = await supabase
     .from('mock_inspections')
     .select(`
       id, type, status, started_at, completed_at,
       key_questions ( name )
     `)
     .order('started_at', { ascending: false })
+  const inspections = inspectionsRaw as InspectionListItem[] | null
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
@@ -67,10 +77,10 @@ export default async function MockInspectionsPage() {
         <div>
           <h2 className="text-base font-semibold text-brand mb-3">Previous inspections</h2>
           <div className="space-y-3">
-            {inspections.map((insp: any) => {
+            {inspections.map((insp: InspectionListItem) => {
               const label = insp.type === 'full'
                 ? 'Full inspection'
-                : `Partial — ${(insp.key_questions as any)?.name ?? 'Unknown'}`
+                : `Partial — ${insp.key_questions?.name ?? 'Unknown'}`
               const statusLabel = insp.status === 'completed' ? 'Completed' : 'In progress'
               const statusStyle = STATUS_STYLE[insp.status] ?? 'bg-fill-dim text-ink-muted'
               const target = insp.status === 'completed'

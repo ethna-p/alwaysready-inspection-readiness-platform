@@ -29,6 +29,8 @@ const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.always
 
 // ── Trial email definitions ───────────────────────────────────────────────────
 
+type OrgForTrialEmail = { id: string; name: string; subscription_tier: string; trial_expires_at: string; is_charity: boolean }
+
 type TrialEmailDef = {
   dayKey:   string   // used as entity_id in notification_log
   dayIndex: number   // days since trial start (trial_expires_at - 14 + dayIndex = send date)
@@ -366,7 +368,7 @@ export async function GET(request: Request) {
 
     const expiryDate = formatDate(org.trial_expires_at)
     // Charities pay £50, everyone else pays £75
-    const price      = (org as any).is_charity ? '£50' : '£75'
+    const price      = org.is_charity ? '£50' : '£75'
     const dueDateKey = org.trial_expires_at.split('T')[0]
 
     for (const admin of admins) {

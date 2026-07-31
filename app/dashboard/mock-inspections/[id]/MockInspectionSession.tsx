@@ -13,7 +13,7 @@ import type { MockInspectionRating, MockChecklistResponse } from '@/lib/types'
 type Klo = {
   id: string
   title: string
-  wording: string
+  wording: string | null
   key_question_id: string
   key_questions: { name: string } | null
 }
@@ -202,7 +202,7 @@ export default function MockInspectionSession({
       <div className="bg-card border border-line rounded-xl p-6 shadow-sm space-y-6">
         <div>
           <p className="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-1">
-            {(klo as any).key_questions?.name ?? ''}
+            {klo.key_questions?.name ?? ''}
           </p>
           <h2 className="text-lg font-bold text-ink">{klo.title}</h2>
           <p className="text-sm text-ink-dim mt-2 leading-relaxed">{klo.wording}</p>
