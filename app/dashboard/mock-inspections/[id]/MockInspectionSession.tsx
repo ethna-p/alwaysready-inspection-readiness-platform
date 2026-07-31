@@ -144,37 +144,50 @@ export default function MockInspectionSession({
         <Link href="/dashboard/mock-inspections" className="text-sm text-brand hover:underline">
           ← Mock Inspections
         </Link>
-        <div className="flex items-center justify-between mt-2">
-          <div>
-            <h1 className="text-xl font-bold text-brand">
-              {inspectionType === 'partial' ? `Mock Inspection — ${keyQuestionName}` : 'Full Mock Inspection'}
-            </h1>
-            <p className="text-sm text-ink-muted mt-0.5">
-              KLOE {currentKloeIndex + 1} of {klos.length}
-            </p>
-          </div>
-          {/* Progress dots */}
-          <div className="hidden sm:flex items-center gap-1.5">
-            {klos.map((k, i) => (
-              <div
-                key={k.id}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  i === currentKloeIndex
-                    ? 'bg-[#014D4E]'
-                    : completedIds.has(k.id)
-                    ? 'bg-[#00b8a6]'
-                    : 'bg-fill-dim'
-                }`}
-                title={k.title}
-              />
-            ))}
+        <div className="mt-2">
+          <h1 className="text-xl font-bold text-brand">
+            {inspectionType === 'partial' ? `Mock Inspection — ${keyQuestionName}` : 'Full Mock Inspection'}
+          </h1>
+          <p className="text-sm text-ink-muted mt-0.5">
+            KLOE {currentKloeIndex + 1} of {klos.length}
+          </p>
+        </div>
+
+        {/* KLOE tab navigation */}
+        <div className="mt-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+          <div className="flex gap-1.5 min-w-max">
+            {klos.map((k, i) => {
+              const isActive = i === currentKloeIndex
+              const isDone   = completedIds.has(k.id)
+              return (
+                <button
+                  key={k.id}
+                  type="button"
+                  onClick={() => router.push(`/dashboard/mock-inspections/${inspectionId}?kloe=${i}`)}
+                  title={k.title}
+                  className={`
+                    flex-none text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors whitespace-nowrap
+                    ${isActive
+                      ? 'bg-[#014D4E] text-white border-[#014D4E]'
+                      : isDone
+                      ? 'bg-[#e6f7f6] text-[#014D4E] border-[#00b8a6] hover:bg-[#cff0ed]'
+                      : 'bg-card text-ink-muted border-line hover:border-[#014D4E] hover:text-ink'
+                    }
+                  `}
+                >
+                  {isDone && !isActive && <span className="mr-1 opacity-70">✓</span>}
+                  {k.title}
+                </button>
+              )
+            })}
           </div>
         </div>
+
         {/* Progress bar */}
-        <div className="mt-3 h-1.5 bg-fill-dim rounded-full overflow-hidden">
+        <div className="mt-3 h-1 bg-fill-dim rounded-full overflow-hidden">
           <div
             className="h-full bg-[#00b8a6] transition-all duration-300"
-            style={{ width: `${((currentKloeIndex + 1) / klos.length) * 100}%` }}
+            style={{ width: `${(completedIds.size / klos.length) * 100}%` }}
           />
         </div>
       </div>
