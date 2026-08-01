@@ -74,8 +74,7 @@ export async function submitTicket(
 
         <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           You can reply to this email directly, or visit the <strong>Support</strong> section
-          inside AlwaysReady to view your request and any replies. Either way, your message
-          will reach us and be kept together with your original request.
+          inside AlwaysReady to view your request and any replies.
         </p>
       `,
     })
