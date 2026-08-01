@@ -642,8 +642,8 @@ export type Database = {
         Row: {
           id:                string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -652,8 +652,8 @@ export type Database = {
         Insert: {
           id?:               string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -662,8 +662,8 @@ export type Database = {
         Update: {
           id?:               string
           organisation_id?:  string
-          notification_type?: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week'
-          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding'
+          notification_type?: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding'
+          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user'
           entity_id?:        string
           due_date?:         string
           recipient_email?:  string

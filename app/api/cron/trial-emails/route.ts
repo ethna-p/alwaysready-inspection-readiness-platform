@@ -122,25 +122,36 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You're five days into your AlwaysReady trial — we hope it's been a useful start.
+        You're five days into your AlwaysReady trial. We hope you've had a chance to start
+        exploring — here are a few things worth doing before the halfway point.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        If you've had any difficulties or have questions about how to get the most from the
-        platform, there are a few ways we can help:
+      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <strong style="color:#014D4E">Build your team</strong><br>
+        AlwaysReady works best when responsibility is shared. You can invite colleagues under
+        <strong>Account → Team</strong> and assign them specific KLOEs to manage. Shared
+        ownership means evidence gets added regularly, not all at once before an inspection.
       </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
-        <li>The <strong>Help</strong> tab in the top navigation covers the most common questions by role</li>
-        <li>The <strong>Support</strong> tab allows you to raise a query directly with our team</li>
-      </ul>
+      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <strong style="color:#014D4E">Assign your KLOEs</strong><br>
+        Head to your KLOE tracker and assign individual KLOEs to the team members best placed
+        to manage them. Each person will receive an email notification and can log in to update
+        their progress directly.
+      </p>
+      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <strong style="color:#014D4E">Set review dates</strong><br>
+        KLOEs can have a scheduled review date. Setting these now means the platform will send
+        automatic reminders when a review is approaching or overdue — keeping your readiness
+        position current without you having to remember.
+      </p>
       <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard/support"
+        <a href="${PLATFORM_URL}/dashboard"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Get in touch &rarr;
+          Go to your dashboard &rarr;
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        We're committed to making sure AlwaysReady works well for your service, and we welcome
-        any feedback you have at this stage.
+        If you have questions about any of these features, the <strong>Help</strong> tab covers
+        the most common questions by role, and <strong>Support</strong> lets you reach us directly.
       </p>
     `,
   },
@@ -308,6 +319,94 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
         Thank you for taking the time to try AlwaysReady. Whatever you decide, we hope it's
         been a useful experience.
+      </p>
+    `,
+  },
+]
+
+// ── User onboarding email definitions ────────────────────────────────────────
+// Sent to role='user' accounts based on days since they joined the platform.
+// Timing is relative to the user's created_at, not the org's trial start.
+
+type UserEmailDef = {
+  dayKey:   string
+  dayIndex: number
+  subject:  string
+  bodyHtml: (firstName: string, orgName: string) => string
+}
+
+const USER_EMAILS: UserEmailDef[] = [
+  {
+    dayKey:   'user_day_01',
+    dayIndex: 1,
+    subject:  'Welcome to AlwaysReady — here\'s how to get started',
+    bodyHtml: (firstName, orgName) => `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You've been added to <strong>${orgName}</strong>'s AlwaysReady account.
+        AlwaysReady is an inspection readiness platform that helps adult social care providers
+        prepare for a CQC inspection — and you're now part of the team helping to build
+        your service's readiness.
+      </p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        As a team member, you may be assigned specific KLOEs (Key Lines of Enquiry) to manage.
+        These are the areas the CQC inspects against — Safe, Effective, Caring, Responsive,
+        and Well-led. When you're assigned a KLOE, you'll receive an email notification with a
+        direct link. From there you can:
+      </p>
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+        <li>Record your service's current compliance status for that area</li>
+        <li>Upload supporting evidence — policies, audits, certificates, and more</li>
+        <li>Add notes that will be useful during an inspection</li>
+      </ul>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Log in to your account to see any KLOEs already assigned to you. If none have been
+        assigned yet, your account admin will be in touch shortly.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="${PLATFORM_URL}/dashboard/kloes"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Log in to AlwaysReady &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
+        the <strong>Support</strong> tab to reach our team directly.
+      </p>
+    `,
+  },
+  {
+    dayKey:   'user_day_07',
+    dayIndex: 7,
+    subject:  'A quick check-in on your KLOEs',
+    bodyHtml: (firstName, _orgName) => `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You've been on AlwaysReady for a week. We wanted to check in and make sure
+        you've had a chance to get started.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If you have KLOEs assigned to you, now is a good time to log in and:
+      </p>
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+        <li>Set a compliance rating for each KLOE you're responsible for</li>
+        <li>Upload at least one piece of supporting evidence per KLOE</li>
+        <li>Add any notes that would be useful to have on record during an inspection</li>
+      </ul>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        The more evidence your team adds, the stronger your service's inspection readiness
+        position will be. Every contribution counts.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="${PLATFORM_URL}/dashboard/kloes"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Go to your KLOEs &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you're not sure what's expected of you, the <strong>Help</strong> tab inside the
+        platform covers the most common questions by role.
       </p>
     `,
   },
@@ -535,6 +634,74 @@ export async function GET(request: Request) {
       } else {
         errors.push(`day_14b → ${admin.email}: ${result.error ?? result.skipped}`)
       }
+    }
+  }
+
+  // ── User onboarding emails ──────────────────────────────────────────────────
+  // Sent to role='user' accounts based on days since their created_at.
+  // Runs for all orgs (trial and active) so newly invited users always get onboarded.
+
+  const { data: allUsers } = await supabase
+    .from('users')
+    .select('id, email, full_name, organisation_id, created_at')
+    .eq('role', 'user')
+    .not('email', 'is', null)
+    .not('created_at', 'is', null)
+
+  for (const usr of allUsers ?? []) {
+    if (!usr.email || !usr.organisation_id || !usr.created_at) continue
+
+    const userCreated = new Date(usr.created_at)
+    userCreated.setHours(0, 0, 0, 0)
+    const daysSinceJoining = Math.floor((today.getTime() - userCreated.getTime()) / (24 * 60 * 60 * 1000))
+
+    const emailDef = USER_EMAILS.find(e => e.dayIndex === daysSinceJoining)
+    if (!emailDef) continue
+
+    // Fetch org name
+    const { data: org } = await supabase
+      .from('organisations')
+      .select('name')
+      .eq('id', usr.organisation_id)
+      .single()
+
+    const firstName  = usr.full_name?.split(' ')[0] ?? 'there'
+    const orgName    = org?.name ?? 'your organisation'
+    const dueDateKey = today.toISOString().split('T')[0]
+
+    // Idempotency check
+    const { data: existing } = await supabase
+      .from('notification_log')
+      .select('id')
+      .eq('organisation_id',   usr.organisation_id)
+      .eq('notification_type', 'user_onboarding')
+      .eq('entity_type',       'user')
+      .eq('entity_id',         emailDef.dayKey)
+      .eq('recipient_email',   usr.email)
+      .maybeSingle()
+
+    if (existing) { emailsSkipped++; continue }
+
+    const result = await sendEmail({
+      to:       usr.email,
+      subject:  emailDef.subject,
+      bodyHtml: emailDef.bodyHtml(firstName, orgName),
+      type:     'transactional',
+    })
+
+    if (result.sent) {
+      await supabase.from('notification_log').insert({
+        organisation_id:   usr.organisation_id,
+        notification_type: 'user_onboarding',
+        entity_type:       'user',
+        entity_id:         emailDef.dayKey,
+        due_date:          dueDateKey,
+        recipient_email:   usr.email,
+      })
+      emailsSent++
+      console.log(`[trial-emails] Sent ${emailDef.dayKey} to ${usr.email} (${orgName})`)
+    } else {
+      errors.push(`${emailDef.dayKey} → ${usr.email}: ${result.error ?? result.skipped}`)
     }
   }
 

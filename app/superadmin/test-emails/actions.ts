@@ -163,21 +163,101 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
     send("How are you getting on?", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You're five days into your AlwaysReady trial. We hope it's been a useful start.
+        You're five days into your AlwaysReady trial. We hope you've had a chance to start
+        exploring — here are a few things worth doing before the halfway point.
       </p>
+      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <strong style="color:#014D4E">Build your team</strong><br>
+        AlwaysReady works best when responsibility is shared. You can invite colleagues under
+        <strong>Account &rarr; Team</strong> and assign them specific KLOEs to manage. Shared
+        ownership means evidence gets added regularly, not all at once before an inspection.
+      </p>
+      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <strong style="color:#014D4E">Assign your KLOEs</strong><br>
+        Head to your KLOE tracker and assign individual KLOEs to the team members best placed
+        to manage them. Each person will receive an email notification and can log in to update
+        their progress directly.
+      </p>
+      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <strong style="color:#014D4E">Set review dates</strong><br>
+        KLOEs can have a scheduled review date. Setting these now means the platform will send
+        automatic reminders when a review is approaching or overdue — keeping your readiness
+        position current without you having to remember.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="${PLATFORM_URL}/dashboard"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Go to your dashboard &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you have questions about any of these features, the <strong>Help</strong> tab covers
+        the most common questions by role, and <strong>Support</strong> lets you reach us directly.
+      </p>
+    `),
+    // ── User role emails (day 1 + day 7 after joining) ──────────────────────
+    send("Welcome to AlwaysReady — here's how to get started", `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${STAFF_NAME.split(' ')[0]},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        If you've had any difficulties or have questions about how to get the most from the
-        platform, there are a few ways we can help:
+        You've been added to <strong>${ORG_NAME}</strong>'s AlwaysReady account.
+        AlwaysReady is an inspection readiness platform that helps adult social care providers
+        prepare for a CQC inspection — and you're now part of the team helping to build
+        your service's readiness.
+      </p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        As a team member, you may be assigned specific KLOEs (Key Lines of Enquiry) to manage.
+        These are the areas the CQC inspects against — Safe, Effective, Caring, Responsive,
+        and Well-led. When you're assigned a KLOE, you'll receive an email notification with a
+        direct link. From there you can:
       </p>
       <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
-        <li>The <strong>Help</strong> tab in the top navigation covers the most common questions by role</li>
-        <li>The <strong>Support</strong> tab allows you to raise a query directly with our team</li>
+        <li>Record your service's current compliance status for that area</li>
+        <li>Upload supporting evidence — policies, audits, certificates, and more</li>
+        <li>Add notes that will be useful during an inspection</li>
       </ul>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Log in to your account to see any KLOEs already assigned to you. If none have been
+        assigned yet, your account admin will be in touch shortly.
+      </p>
       <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard/support"
+        <a href="${PLATFORM_URL}/dashboard/kloes"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Get in touch &rarr;
+          Log in to AlwaysReady &rarr;
         </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
+        the <strong>Support</strong> tab to reach our team directly.
+      </p>
+    `),
+    send("A quick check-in on your KLOEs", `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${STAFF_NAME.split(' ')[0]},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You've been on AlwaysReady for a week. We wanted to check in and make sure
+        you've had a chance to get started.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If you have KLOEs assigned to you, now is a good time to log in and:
+      </p>
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+        <li>Set a compliance rating for each KLOE you're responsible for</li>
+        <li>Upload at least one piece of supporting evidence per KLOE</li>
+        <li>Add any notes that would be useful to have on record during an inspection</li>
+      </ul>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        The more evidence your team adds, the stronger your service's inspection readiness
+        position will be. Every contribution counts.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="${PLATFORM_URL}/dashboard/kloes"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Go to your KLOEs &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you're not sure what's expected of you, the <strong>Help</strong> tab inside the
+        platform covers the most common questions by role.
       </p>
     `),
     send("You're halfway through your trial — here's a quick checklist", `
