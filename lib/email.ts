@@ -86,17 +86,17 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 <tr>
                   <td style="padding-bottom:12px;border-bottom:1px solid #e8e6e0">
                     <p style="margin:0 0 2px;font-size:15px;font-weight:700;color:#1a1a1a">Ethna Parker PhD</p>
-                    <p style="margin:0;font-size:13px;color:#555555">Founder &mdash; AlwaysReady</p>
+                    <p style="margin:0;font-size:13px;color:#555555">Founder - AlwaysReady</p>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-top:12px">
                     <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <span style="color:#014D4E">&#9993;</span>&nbsp;
+                      <span style="color:#014D4E">&#128231;</span>&nbsp;
                       <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:none">support@alwaysready.uk</a>
                     </p>
                     <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <span style="color:#014D4E">&#127759;</span>&nbsp;
+                      <span style="color:#014D4E">&#127760;</span>&nbsp;
                       <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:none">www.alwaysready.uk</a>
                     </p>
                     <p style="margin:0;font-size:13px;color:#555555">
