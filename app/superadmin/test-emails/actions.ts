@@ -324,16 +324,15 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
     send("Your AlwaysReady trial has ended", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your AlwaysReady trial ended on ${EXPIRY_DATE} and your account has now been suspended.
-      </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your data is safe and will be retained for 30 days. If you'd like to reactivate
-        your account, you can subscribe at any time.
+        Your AlwaysReady trial ended on ${EXPIRY_DATE}. Your data is safe and will be
+        retained by us for 30 days. To regain access to the AlwaysReady platform,
+        click the <strong>Subscribe</strong> button below at any time — everything
+        will be exactly as you left it.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/upgrade"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Reactivate my account &rarr;
+          Subscribe now &rarr;
         </a>
       </p>
     `),
