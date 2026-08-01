@@ -63,6 +63,14 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
     send("We've received your message", `
       <p>Hi ${FIRST_NAME},</p>
       <p>Thank you for getting in touch. We've received your message and will get back to you shortly.</p>
+      <p>While you wait, you may find an answer straight away. Our FAQs cover
+        <a href="https://alwaysready.uk/waitlist/" style="color:#014D4E">how AlwaysReady works</a>
+        and
+        <a href="https://alwaysready.uk/pricing/" style="color:#014D4E">pricing</a>.
+        If you'd prefer to ask a question in your own words, our platform assistant is available
+        on every page of <a href="https://alwaysready.uk" style="color:#014D4E">alwaysready.uk</a>
+        — look for the chat icon in the bottom-right corner.
+      </p>
     `),
     send("You're subscribed to the AlwaysReady blog", `
       <p>Hi ${FIRST_NAME},</p>
