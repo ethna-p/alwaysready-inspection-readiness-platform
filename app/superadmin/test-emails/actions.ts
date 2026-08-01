@@ -113,7 +113,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         Welcome to AlwaysReady. Your 14-day free trial is now active and your account is ready to use.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is designed to help care providers prepare for CQC inspection with confidence.
+        AlwaysReady is designed to help adult social care providers prepare for a CQC inspection with confidence.
         Over the next two weeks, we hope you enjoy exploring the platform. If you'd like a starting point,
         we suggest beginning with your KLOEs. Adding your current compliance status to even a handful
         of areas will give you an immediate picture of where you stand.
