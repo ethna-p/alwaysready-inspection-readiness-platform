@@ -447,9 +447,9 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
         Thank you for getting in touch. Here is our response to your enquiry:
       </p>
       <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Evidence uploads accept .docx and .xlsx files only. Please ensure your document is saved in one of
-        these formats before uploading. If the issue persists, please let us know the file type you are trying
-        to upload and we will look into it further.
+        Evidence uploads accept .pdf, .docx, .xlsx, .jpg, .jpeg, and .png files. Please ensure your document
+        is saved in one of these formats before uploading. If the issue persists, please let us know the file
+        type you are trying to upload and we will look into it further.
       </div>
     `),
     send(`Your support request has been resolved [${REF}]`, `
