@@ -227,10 +227,10 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       </p>
 
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We have set up <strong style="color:#014D4E">${serviceName.trim()}</strong>
-        with your CQC KLOE framework. You can start recording your compliance
-        position, uploading evidence, and building your inspection readiness
-        straight away.
+        <strong style="color:#014D4E">${serviceName.trim()}</strong> has been configured
+        to your service type using the CQC Adult Social Care Assessment Framework. You can
+        start recording your compliance position, uploading evidence, and building your
+        inspection readiness straight away.
       </p>
 
       <p style="margin:0 0 32px">
@@ -245,7 +245,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#555">
         Your trial runs until <strong>${expiry}</strong>.
         If you have any questions, use the <strong>Support</strong> tab inside
-        the platform and we will get back to you within three business days.
+        the platform and we will get back to you shortly.
       </p>
 
       <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6">

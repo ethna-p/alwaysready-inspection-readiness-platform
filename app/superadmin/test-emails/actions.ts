@@ -91,9 +91,10 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         set your password and get straight into your account.
       </p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We have set up <strong style="color:#014D4E">${ORG_NAME}</strong>
-        with your CQC KLOE framework. You can start recording your compliance
-        position, uploading evidence, and building your inspection readiness straight away.
+        <strong style="color:#014D4E">${ORG_NAME}</strong> has been configured to your
+        service type using the CQC Adult Social Care Assessment Framework. You can start
+        recording your compliance position, uploading evidence, and building your
+        inspection readiness straight away.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/account/setup?token=EXAMPLE_TOKEN"
@@ -104,7 +105,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#555">
         Your trial runs until <strong>${EXPIRY_DATE}</strong>.
         If you have any questions, use the <strong>Support</strong> tab inside
-        the platform and we will get back to you within three business days.
+        the platform and we will get back to you shortly.
       </p>
     `),
     send("Welcome to AlwaysReady", `
