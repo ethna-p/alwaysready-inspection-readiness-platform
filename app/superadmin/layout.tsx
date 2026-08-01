@@ -41,6 +41,9 @@ export default function SuperadminLayout({
           <Link href="/superadmin/broadcast" className="hover:text-brand transition-colors">
             Broadcast
           </Link>
+          <Link href="/superadmin/test-emails" className="hover:text-brand transition-colors">
+            Test emails
+          </Link>
           <form action="/auth/signout" method="POST">
             <button type="submit" className="hover:text-brand transition-colors">
               Sign out

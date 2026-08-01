@@ -323,11 +323,6 @@ function buildHtml(bodyInner: string): string {
         Go to your dashboard &rarr;
       </a>
     </p>
-    <p style="margin:32px 0 0">
-      Kind regards,<br>
-      <strong>Ethna Parker PhD</strong><br>
-      Founder, AlwaysReady
-    </p>
   `
 }
 

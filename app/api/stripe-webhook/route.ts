@@ -83,40 +83,20 @@ export async function POST(req: NextRequest) {
             subject: 'Your AlwaysReady subscription is now active',
             type:    'transactional',
             bodyHtml: `
-              <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff">
-                <div style="background:#014D4E;padding:28px 40px;border-bottom:4px solid #ffd700">
-                  <p style="margin:0;font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.3px">AlwaysReady</p>
-                  <p style="margin:4px 0 0;font-size:12px;color:#99cccc;letter-spacing:0.05em;text-transform:uppercase">Inspection Readiness Platform</p>
-                </div>
-                <div style="padding:36px 40px">
-                  <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
-                  <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-                    Thank you — your subscription is now active and your account will continue without interruption.
-                  </p>
-                  <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#1a1a1a">
-                    We're delighted to have you on board. If there's anything we can do to help you
-                    get the most from AlwaysReady, please don't hesitate to reach out via the
-                    <strong>Support</strong> tab inside the platform.
-                  </p>
-                  <p style="margin:0 0 32px">
-                    <a href="${PLATFORM_URL}/dashboard"
-                       style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-                      Go to your dashboard &rarr;
-                    </a>
-                  </p>
-                  <p style="margin:32px 0 0;font-size:15px;line-height:1.7;color:#1a1a1a">
-                    Kind regards,<br>
-                    <strong>Ethna Parker PhD</strong><br>
-                    Founder, AlwaysReady
-                  </p>
-                </div>
-                <div style="padding:20px 40px;background:#f5f4f1;border-top:1px solid #e5e3de">
-                  <p style="margin:0;font-size:12px;color:#888;line-height:1.6">
-                    AlwaysReady is a brand of Parker Digital &amp; Print Services.
-                    82A James Carter Road, Mildenhall, IP28 7DE.
-                  </p>
-                </div>
-              </div>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+                Thank you. Your subscription is now active and your account will continue without interruption.
+              </p>
+              <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#1a1a1a">
+                We are delighted to have you on board. If there is anything we can do to help you
+                get the most from AlwaysReady, please use the <strong>Support</strong> tab inside the platform.
+              </p>
+              <p style="margin:0 0 32px">
+                <a href="${PLATFORM_URL}/dashboard"
+                   style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+                  Go to your dashboard &rarr;
+                </a>
+              </p>
             `,
           })
         }

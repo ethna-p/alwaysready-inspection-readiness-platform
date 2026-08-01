@@ -1,14 +1,6 @@
-/**
- * GET /api/superadmin/test-emails
- *
- * Sends one of every platform email type to the SUPERADMIN_EMAIL address
- * so content can be reviewed for accuracy.
- *
- * Protected by Authorization: Bearer <CRON_SECRET>
- * Never commit this route to a public repo without that protection in place.
- */
+'use server'
 
-import { NextRequest, NextResponse } from 'next/server'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 import { sendEmail } from '@/lib/email'
 
 const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
@@ -19,20 +11,27 @@ const KLOE_TITLE   = 'Safe — Safeguarding Systems, Processes and Practices'
 const EXPIRY_DATE  = '14 September 2025'
 const REF          = 'AR-0042'
 
-export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET
-  const authHeader = req.headers.get('authorization')
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-  }
+export interface TestEmailResult {
+  subject: string
+  sent: boolean
+  error?: string
+}
 
-  const to = process.env.SUPERADMIN_EMAIL
-  if (!to) return NextResponse.json({ error: 'SUPERADMIN_EMAIL not set' }, { status: 500 })
+export interface TestEmailsSummary {
+  count: number
+  sent: number
+  failed: TestEmailResult[]
+  results: TestEmailResult[]
+}
 
-  const results: { subject: string; sent: boolean; error?: string }[] = []
+export async function sendTestEmails(): Promise<TestEmailsSummary> {
+  await assertSuperadmin()
+
+  const to = process.env.SUPERADMIN_EMAIL!
+  const results: TestEmailResult[] = []
 
   async function send(subject: string, bodyHtml: string, type: 'transactional' | 'marketing' = 'transactional') {
-    const r = await sendEmail({ to: to!, subject: `[TEST] ${subject}`, bodyHtml, type })
+    const r = await sendEmail({ to, subject: `[TEST] ${subject}`, bodyHtml, type })
     results.push({ subject, sent: r.sent, error: r.error })
   }
 
@@ -549,9 +548,7 @@ export async function GET(req: NextRequest) {
 
   await send(`KLOE review due in 7 days — ${KLOE_TITLE}`, `
     <p style="margin:0 0 16px">Hi,</p>
-    <p style="margin:0 0 16px">
-      This is a reminder that your KLOE review is due in <strong>7 days</strong>.
-    </p>
+    <p style="margin:0 0 16px">This is a reminder that your KLOE review is due in <strong>7 days</strong>.</p>
     <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
       <tr>
         <td style="padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px">
@@ -572,9 +569,7 @@ export async function GET(req: NextRequest) {
 
   await send(`Overdue KLOE review — ${KLOE_TITLE}`, `
     <p style="margin:0 0 16px">Hi,</p>
-    <p style="margin:0 0 16px">
-      A KLOE review assigned to you is now <strong style="color:#dc2626">overdue</strong>.
-    </p>
+    <p style="margin:0 0 16px">A KLOE review assigned to you is now <strong style="color:#dc2626">overdue</strong>.</p>
     <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
       <tr>
         <td style="padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px">
@@ -677,11 +672,10 @@ export async function GET(req: NextRequest) {
     </p>
   `)
 
-  return NextResponse.json({
-    ok:    true,
-    count: results.length,
-    sent:  results.filter(r => r.sent).length,
+  return {
+    count:  results.length,
+    sent:   results.filter(r => r.sent).length,
     failed: results.filter(r => !r.sent),
     results,
-  })
+  }
 }

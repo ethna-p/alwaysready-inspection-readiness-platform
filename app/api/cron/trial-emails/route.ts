@@ -285,37 +285,6 @@ function daysElapsed(trialExpiresAt: string, today: Date): number {
   return Math.floor((t.getTime() - start.getTime()) / (24 * 60 * 60 * 1000))
 }
 
-// ── Email wrapper ─────────────────────────────────────────────────────────────
-
-function wrapEmail(bodyHtml: string): string {
-  return `
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff">
-      <div style="background:#014D4E;padding:28px 40px;border-bottom:4px solid #ffd700">
-        <p style="margin:0;font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.3px">
-          AlwaysReady
-        </p>
-        <p style="margin:4px 0 0;font-size:12px;color:#99cccc;letter-spacing:0.05em;text-transform:uppercase">
-          Inspection Readiness Platform
-        </p>
-      </div>
-      <div style="padding:36px 40px">
-        ${bodyHtml}
-        <p style="margin:32px 0 0;font-size:15px;line-height:1.7;color:#1a1a1a">
-          Kind regards,<br>
-          <strong>Ethna Parker PhD</strong><br>
-          Founder, AlwaysReady
-        </p>
-      </div>
-      <div style="padding:20px 40px;background:#f5f4f1;border-top:1px solid #e5e3de">
-        <p style="margin:0;font-size:12px;color:#888;line-height:1.6">
-          AlwaysReady is a brand of Parker Digital &amp; Print Services.
-          82A James Carter Road, Mildenhall, IP28 7DE.<br>
-          You are receiving this because you signed up for an AlwaysReady trial.
-        </p>
-      </div>
-    </div>
-  `
-}
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
@@ -398,7 +367,7 @@ export async function GET(request: Request) {
       const result = await sendEmail({
         to:       admin.email,
         subject:  emailDef.subject,
-        bodyHtml: wrapEmail(bodyHtml),
+        bodyHtml,
         type:     'transactional',
       })
 
@@ -467,14 +436,14 @@ export async function GET(request: Request) {
         to:      admin.email,
         subject: 'Your AlwaysReady trial has ended',
         type:    'transactional',
-        bodyHtml: wrapEmail(`
+        bodyHtml: `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             Your AlwaysReady trial ended on ${expiryDate} and your account has now been suspended.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             Your data is safe and will be retained for 30 days. If you'd like to reactivate
-            your account, you can subscribe at any time — everything will be exactly as you left it.
+            your account, you can subscribe at any time and everything will be exactly as you left it.
           </p>
           <p style="margin:0 0 32px">
             <a href="${upgradeUrl}"
@@ -484,10 +453,10 @@ export async function GET(request: Request) {
           </p>
           <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
             If you have any feedback about your experience, or if there's anything we could have
-            done better, we'd genuinely welcome hearing from you. You can reach us via
+            done better, we'd genuinely welcome hearing from you at
             <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
           </p>
-        `),
+        `,
       })
 
       if (result.sent) {
