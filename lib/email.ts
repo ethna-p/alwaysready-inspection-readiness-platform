@@ -93,7 +93,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                   <td style="padding-top:12px">
                     <p style="margin:0 0 4px;font-size:13px;color:#555555">
                       <span style="color:#014D4E">&#128231;</span>&nbsp;
-                      <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:none">support@alwaysready.uk</a>
+                      <a href="mailto:hello@alwaysready.uk" style="color:#014D4E;text-decoration:none">hello@alwaysready.uk</a>
                     </p>
                     <p style="margin:0 0 4px;font-size:13px;color:#555555">
                       <span style="color:#014D4E">&#127760;</span>&nbsp;
