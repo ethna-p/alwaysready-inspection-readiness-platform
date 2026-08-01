@@ -67,7 +67,7 @@ export default function TestEmailsPage() {
         {GROUPS.map(group => {
           const state   = states[group.id]
           const loading = pending === group.id
-          const done    = state?.sent !== null
+          const done    = state != null && state.sent !== null
 
           return (
             <div key={group.id} className="bg-card border border-line rounded-lg p-5 flex flex-col gap-3">
@@ -115,7 +115,7 @@ export default function TestEmailsPage() {
         {(() => {
           const state   = states['all']
           const loading = pending === 'all'
-          const done    = state?.sent !== null
+          const done    = state != null && state.sent !== null
           return done ? (
             <div className="flex items-center gap-4">
               <span className="text-sm text-[#00b8a6] font-medium">{state.sent}/{state.count} emails sent</span>
