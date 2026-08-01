@@ -72,13 +72,10 @@ export async function submitTicket(
           <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${subject}</p>
         </div>
 
-        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          You can view your request and any replies at any time by logging into AlwaysReady and visiting the
-          <strong>Support</strong> section in the navigation bar.
-        </p>
-
-        <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-          Please do not reply to this email — all correspondence should go through the support desk inside the platform.
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+          You can reply to this email directly, or visit the <strong>Support</strong> section
+          inside AlwaysReady to view your request and any replies. Either way, your message
+          will reach us and be kept together with your original request.
         </p>
       `,
     })
