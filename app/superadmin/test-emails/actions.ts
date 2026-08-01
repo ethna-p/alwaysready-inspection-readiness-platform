@@ -351,17 +351,113 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
     send("Your AlwaysReady trial ends in 3 days", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your free trial ends in <strong>3 days</strong>, on ${EXPIRY_DATE}.
+        Your trial ends in <strong>3 days</strong>, on ${EXPIRY_DATE}. Before you decide,
+        here are a few things you might not have had time to explore — each one is included
+        in your subscription.
       </p>
+
+      <!-- Feature: Mock Inspection -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+        style="width:100%;margin:0 0 12px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
+        <tr>
+          <td style="padding:16px 20px">
+            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+              Mock Inspection
+            </p>
+            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+              Walk through every KLOE and rate your evidence as Outstanding, Good, Requires
+              Improvement, or Inadequate. The platform generates a mock inspection report
+              showing a self-assessed rating for each of the five CQC key questions — so you
+              know exactly where you stand before an inspector walks through the door.
+            </p>
+            <a href="${PLATFORM_URL}/dashboard/mock-inspection"
+               style="font-size:14px;font-weight:600;color:#014D4E;text-decoration:underline">
+              Run a mock inspection &rarr;
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Feature: Evidence Pack -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+        style="width:100%;margin:0 0 12px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
+        <tr>
+          <td style="padding:16px 20px">
+            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+              Evidence Pack
+            </p>
+            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+              One click generates a printable PDF summary of your full compliance position —
+              RAG status, review dates, priority ratings, and evidence location notes for every
+              KLOE. It is designed to be handed to an inspector or presented at a board meeting,
+              without you needing to prepare anything in advance.
+            </p>
+            <a href="${PLATFORM_URL}/dashboard"
+               style="font-size:14px;font-weight:600;color:#014D4E;text-decoration:underline">
+              Download your Evidence Pack &rarr;
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Feature: HR Records -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+        style="width:100%;margin:0 0 12px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
+        <tr>
+          <td style="padding:16px 20px">
+            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+              HR Records
+            </p>
+            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+              Track DBS checks, supervision sessions, appraisals, mandatory training, and
+              holiday entitlement for every member of staff — all in one place. The HR
+              dashboard shows you which staff members are overdue or due soon at a glance,
+              and the platform sends automatic email reminders when a check is approaching.
+            </p>
+            <a href="${PLATFORM_URL}/dashboard/hr"
+               style="font-size:14px;font-weight:600;color:#014D4E;text-decoration:underline">
+              Explore HR Records &rarr;
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Feature: Automatic reminders -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0"
+        style="width:100%;margin:0 0 28px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
+        <tr>
+          <td style="padding:16px 20px">
+            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+              Automatic reminders
+            </p>
+            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+              Set a review frequency for each KLOE — monthly, quarterly, annually, or a
+              custom interval — and AlwaysReady handles the rest. The platform emails the
+              relevant team member when a review is due soon or overdue, so nothing slips
+              through the gap between inspections.
+            </p>
+            <a href="${PLATFORM_URL}/dashboard/kloes"
+               style="font-size:14px;font-weight:600;color:#014D4E;text-decoration:underline">
+              Set review dates &rarr;
+            </a>
+          </td>
+        </tr>
+      </table>
+
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        If you're happy to continue, you can subscribe now for <strong>£75/month</strong>
-        and keep everything exactly as it is.
+        All of this — plus everything you have already built during your trial — continues
+        without interruption when you subscribe for <strong>£75/month</strong>.
+        Your KLOEs, evidence, HR records, and team settings stay exactly as they are.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/upgrade"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
           Subscribe now &rarr;
         </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you have any questions before you decide, the <strong>Support</strong> tab inside
+        the platform is the best place to reach us.
       </p>
     `),
     send("Your trial ends tomorrow", `
