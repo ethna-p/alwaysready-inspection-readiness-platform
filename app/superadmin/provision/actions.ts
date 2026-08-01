@@ -166,10 +166,16 @@ export async function provisionOrganisation(
         </table>
 
         <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:14px;color:#1a1a1a;line-height:1.7">
-          <strong>Two quick steps once you're in:</strong><br>
-          1. <strong>Change your password</strong> — go to <strong>Account → Security → Change password</strong>.<br>
-          2. <strong>Set up two-factor authentication (MFA)</strong> — go to <strong>Account → Security → Two-factor authentication</strong>.
-          This adds an extra layer of protection to your account.
+          <strong>A note on security</strong><br>
+          AlwaysReady holds your service's compliance records, evidence documents, and staff data.
+          This is sensitive information, and we take the security of your account seriously.<br><br>
+          Before you do anything else, please complete these two steps:<br><br>
+          1. <strong>Change your password</strong> — replace the temporary password above with one
+          that is unique to you. Go to <strong>Account → Security → Change password</strong>.<br>
+          2. <strong>Set up two-factor authentication (MFA)</strong> — the platform will prompt you
+          to do this automatically when you first log in. MFA means that even if your password were
+          ever compromised, your account cannot be accessed without a second verification step on
+          your phone or authenticator app.
         </p>
 
         ${isCharity ? `
