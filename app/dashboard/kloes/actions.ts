@@ -255,7 +255,7 @@ export async function assignKloe(
               ${klo.title}
             </p>
             <p style="margin:0 0 24px">
-              Log in to AlwaysReady to review the checklist, gather evidence, and update your progress.
+              Log in to AlwaysReady to review the KLOE(s) you have been assigned, upload evidence, and update your progress.
             </p>
             <p style="margin:0 0 32px">
               <a href="${kloUrl}"

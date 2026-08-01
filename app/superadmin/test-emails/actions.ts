@@ -478,7 +478,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
       <p style="margin:0 0 24px;padding:16px 20px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px;font-weight:600;color:#014D4E">
         ${KLOE_TITLE}
       </p>
-      <p style="margin:0 0 24px">Log in to AlwaysReady to review the checklist, gather evidence, and update your progress.</p>
+      <p style="margin:0 0 24px">Log in to AlwaysReady to review the KLOE(s) you have been assigned, upload evidence, and update your progress.</p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/kloes"
            style="display:inline-block;background:#014D4E;color:#ffffff;font-weight:600;font-size:15px;padding:12px 24px;border-radius:6px;text-decoration:none">
