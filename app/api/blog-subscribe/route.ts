@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendEmail } from '@/lib/email'
 
 const ALLOWED_ORIGINS = [
   'https://www.alwaysready.uk',
@@ -73,6 +74,58 @@ export async function POST(req: NextRequest) {
     if (error) {
       console.error('[blog-subscribe] Supabase error:', error)
       return NextResponse.json({ error: 'Could not save your subscription.' }, { status: 500, headers })
+    }
+
+    const displayName = name || 'there'
+
+    // ── Welcome email to subscriber ─────────────────────────────────────────
+    await sendEmail({
+      to:      email,
+      subject: "You're subscribed to the AlwaysReady blog",
+      type:    'transactional',
+      bodyHtml: `
+        <p>Hi ${displayName},</p>
+
+        <p>
+          Thanks for subscribing to the AlwaysReady blog. We publish practical
+          guides on CQC inspection readiness, care quality, and running a
+          well-governed service — and you'll get new posts straight to your inbox.
+        </p>
+
+        <p>
+          In the meantime, you can browse everything we've published so far at
+          <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
+        </p>
+
+        <p style="margin-top:32px">
+          Warm regards,<br>
+          <strong>Ethna Parker PhD</strong><br>
+          Founder, AlwaysReady
+        </p>
+      `,
+    }).catch(err => {
+      console.error('[blog-subscribe] welcome email failed:', err)
+    })
+
+    // ── Notify AJ ──────────────────────────────────────────────────────────
+    const superadminEmail = process.env.SUPERADMIN_EMAIL
+    if (superadminEmail) {
+      await sendEmail({
+        to:      superadminEmail,
+        subject: `New blog subscriber: ${email}`,
+        type:    'transactional',
+        bodyHtml: `
+          <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">
+            A new subscriber signed up via the website blog signup form.
+          </p>
+          <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
+            ${name ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${name}</td></tr>` : ''}
+            <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${email}</td></tr>
+          </table>
+        `,
+      }).catch(err => {
+        console.error('[blog-subscribe] AJ notification failed:', err)
+      })
     }
 
     return NextResponse.json({ success: true }, { status: 200, headers })
