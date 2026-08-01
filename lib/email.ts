@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { buildUnsubscribeUrl, buildSubscriberUnsubscribeUrl } from '@/lib/unsubscribe-token'
@@ -91,16 +93,16 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 </tr>
                 <tr>
                   <td style="padding-top:12px">
-                    <p style="margin:0 0 6px;font-size:13px;color:#555555;display:flex;align-items:center">
-                      <img src="https://portal.alwaysready.uk/email-icon-mail.svg" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
+                    <p style="margin:0 0 6px;font-size:13px;color:#555555">
+                      <img src="cid:email-icon-mail" width="16" height="16" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
                       <a href="mailto:support@alwaysready.uk" style="color:#555555;text-decoration:none;vertical-align:middle">support@alwaysready.uk</a>
                     </p>
                     <p style="margin:0 0 6px;font-size:13px;color:#555555">
-                      <img src="https://portal.alwaysready.uk/email-icon-globe.svg" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
+                      <img src="cid:email-icon-globe" width="16" height="16" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
                       <a href="https://www.alwaysready.uk" style="color:#555555;text-decoration:none;vertical-align:middle">www.alwaysready.uk</a>
                     </p>
                     <p style="margin:0;font-size:13px;color:#555555">
-                      <img src="https://portal.alwaysready.uk/email-icon-pin.svg" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
+                      <img src="cid:email-icon-pin" width="16" height="16" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
                       <span style="vertical-align:middle">82A James Carter Road, Mildenhall, IP28 7DE</span>
                     </p>
                   </td>
@@ -193,6 +195,17 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
     headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click'
   }
 
+  // --- Load icon attachments (CID inline) ---
+  const iconAttachments = (['mail', 'globe', 'pin'] as const).flatMap((name) => {
+    try {
+      const iconPath = path.join(process.cwd(), 'public', `email-icon-${name}.png`)
+      const content = fs.readFileSync(iconPath)
+      return [{ filename: `email-icon-${name}.png`, content, content_id: `email-icon-${name}` }]
+    } catch {
+      return []
+    }
+  })
+
   // --- Send ---
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
@@ -204,6 +217,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
       subject: opts.subject,
       html,
       headers: Object.keys(headers).length ? headers : undefined,
+      attachments: iconAttachments.length ? iconAttachments : undefined,
     })
 
     if (error) {
