@@ -87,13 +87,12 @@ export async function POST(req: NextRequest) {
         <p>Hi ${displayName},</p>
 
         <p>
-          Thanks for subscribing to the AlwaysReady blog. We publish practical
-          guides on CQC inspection readiness, care quality, and running a
-          well-governed service — and you'll get new posts straight to your inbox.
+          Thanks for subscribing to the AlwaysReady blog. We cover CQC inspection readiness,
+          compliance, and governance for care providers. New posts will arrive straight to your inbox.
         </p>
 
         <p>
-          In the meantime, you can browse everything we've published so far at
+          You can browse everything we've published so far at
           <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
         </p>
       `,
