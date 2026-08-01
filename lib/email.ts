@@ -91,14 +91,17 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 </tr>
                 <tr>
                   <td style="padding-top:12px">
-                    <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:none">support@alwaysready.uk</a>
+                    <p style="margin:0 0 6px;font-size:13px;color:#555555;display:flex;align-items:center">
+                      <img src="https://portal.alwaysready.uk/email-icon-mail.svg" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
+                      <a href="mailto:support@alwaysready.uk" style="color:#555555;text-decoration:none;vertical-align:middle">support@alwaysready.uk</a>
                     </p>
-                    <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:none">www.alwaysready.uk</a>
+                    <p style="margin:0 0 6px;font-size:13px;color:#555555">
+                      <img src="https://portal.alwaysready.uk/email-icon-globe.svg" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
+                      <a href="https://www.alwaysready.uk" style="color:#555555;text-decoration:none;vertical-align:middle">www.alwaysready.uk</a>
                     </p>
                     <p style="margin:0;font-size:13px;color:#555555">
-                      82A James Carter Road, Mildenhall, IP28 7DE
+                      <img src="https://portal.alwaysready.uk/email-icon-pin.svg" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;margin-right:7px">
+                      <span style="vertical-align:middle">82A James Carter Road, Mildenhall, IP28 7DE</span>
                     </p>
                   </td>
                 </tr>
