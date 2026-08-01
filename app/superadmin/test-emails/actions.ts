@@ -603,9 +603,11 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
           </td>
         </tr>
       </table>
-      <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:14px;color:#1a1a1a">
-        <strong>We highly recommend changing your password the first time you log in.</strong>
-        You can do this from <strong>Account &rarr; Security &rarr; Change password</strong>.
+      <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:14px;color:#1a1a1a;line-height:1.7">
+        <strong>Two quick steps once you're in:</strong><br>
+        1. <strong>Change your password</strong> — go to <strong>Account &rarr; Security &rarr; Change password</strong>.<br>
+        2. <strong>Set up two-factor authentication (MFA)</strong> — go to <strong>Account &rarr; Security &rarr; Two-factor authentication</strong>.
+        This adds an extra layer of protection to your account.
       </p>
     `),
   ])
