@@ -92,15 +92,13 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 <tr>
                   <td style="padding-top:12px">
                     <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <span style="color:#014D4E">&#128231;</span>&nbsp;
                       <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:none">support@alwaysready.uk</a>
                     </p>
                     <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <span style="color:#014D4E">&#127760;</span>&nbsp;
                       <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:none">www.alwaysready.uk</a>
                     </p>
                     <p style="margin:0;font-size:13px;color:#555555">
-                      <span style="color:#014D4E">&#128205;</span>&nbsp;82A James Carter Road, Mildenhall, IP28 7DE
+                      82A James Carter Road, Mildenhall, IP28 7DE
                     </p>
                   </td>
                 </tr>
