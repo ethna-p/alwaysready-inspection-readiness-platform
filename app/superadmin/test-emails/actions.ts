@@ -182,20 +182,61 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
     send("You're halfway through your trial — here's a quick checklist", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You have 7 days remaining on your AlwaysReady trial. You're at the halfway point —
-        a good moment to take stock.
+        You have 7 days remaining on your AlwaysReady trial — you're at the halfway point.
       </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
-        <li>Add your compliance status across your key KLOEs</li>
-        <li>Upload at least one piece of supporting evidence</li>
-        <li>Review your Daily Report and Readiness Dashboard</li>
-        <li>Share access with a colleague if you'd like a second opinion</li>
-      </ul>
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You've already made a start — well done. Here's a summary of what you've done and
+        what's still worth exploring before your trial ends.
+      </p>
+      <table style="width:100%;border-collapse:collapse;margin:0 0 28px">
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:28px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#00b8a6;color:#fff;font-size:12px;font-weight:700;line-height:1">✓</span>
+          </td>
+          <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
+            <span style="font-size:15px;color:#9ca3af;text-decoration:line-through">Rate your KLOEs</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:28px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#00b8a6;color:#fff;font-size:12px;font-weight:700;line-height:1">✓</span>
+          </td>
+          <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
+            <span style="font-size:15px;color:#9ca3af;text-decoration:line-through">Upload your first evidence</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:28px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:2px solid #014D4E"></span>
+          </td>
+          <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
+            <span style="font-size:15px;font-weight:600;color:#1a1a1a">Invite a team member</span><br>
+            <span style="font-size:13px;color:#6b7280;line-height:1.5">Give a colleague their own login under Account &rarr; Team —
+              <a href="${PLATFORM_URL}/dashboard/account?tab=team" style="color:#014D4E;font-weight:600">Go there now &rarr;</a>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:28px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:2px solid #014D4E"></span>
+          </td>
+          <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
+            <span style="font-size:15px;font-weight:600;color:#1a1a1a">Add a staff record</span><br>
+            <span style="font-size:13px;color:#6b7280;line-height:1.5">Create your first HR profile to explore the HR module —
+              <a href="${PLATFORM_URL}/dashboard/hr" style="color:#014D4E;font-weight:600">Go there now &rarr;</a>
+            </span>
+          </td>
+        </tr>
+      </table>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
           Go to your dashboard &rarr;
         </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you need any help, the <strong>Support</strong> tab inside the platform is the
+        best place to reach us.
       </p>
     `),
     send("A few things you might not have tried yet", `

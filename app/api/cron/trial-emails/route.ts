@@ -31,11 +31,18 @@ const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.always
 
 type OrgForTrialEmail = { id: string; name: string; subscription_tier: string; trial_expires_at: string; is_charity: boolean }
 
+type WizardStatus = {
+  hasKloeRating:  boolean
+  hasEvidence:    boolean
+  hasTeamMember:  boolean
+  hasHrRecord:    boolean
+}
+
 type TrialEmailDef = {
   dayKey:   string   // used as entity_id in notification_log
   dayIndex: number   // days since trial start (trial_expires_at - 14 + dayIndex = send date)
   subject:  string
-  bodyHtml: (firstName: string, expiryDate: string, price: string) => string
+  bodyHtml: (firstName: string, expiryDate: string, price: string, wizard?: WizardStatus) => string
 }
 
 const TRIAL_EMAILS: TrialEmailDef[] = [
@@ -141,33 +148,72 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     dayKey:   'day_07',
     dayIndex: 7,
     subject:  'You\'re halfway through your trial — here\'s a quick checklist',
-    bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You have 7 days remaining on your AlwaysReady trial. You're at the halfway point —
-        a good moment to take stock.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Before your trial ends, it's worth making sure you've had a chance to:
-      </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
-        <li>Add your compliance status across your key KLOEs</li>
-        <li>Upload at least one piece of supporting evidence</li>
-        <li>Review your Daily Report and Readiness Dashboard</li>
-        <li>Share access with a colleague if you'd like a second opinion</li>
-      </ul>
-      <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Go to your dashboard &rarr;
-        </a>
-      </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If there's anything you haven't had time to explore yet, the next seven days are a
-        good opportunity. Our team is available via the <strong>Support</strong> tab if you
-        need any help.
-      </p>
-    `,
+    bodyHtml: (firstName, _expiryDate, _price, wizard) => {
+      const w = wizard ?? { hasKloeRating: false, hasEvidence: false, hasTeamMember: false, hasHrRecord: false }
+      const completedCount = [w.hasKloeRating, w.hasEvidence, w.hasTeamMember, w.hasHrRecord].filter(Boolean).length
+      const allDone = completedCount === 4
+      const nonStarted = completedCount === 0
+
+      // Render one checklist row — ticked if done, linked if not
+      function row(done: boolean, label: string, detail: string, href: string): string {
+        if (done) {
+          return `
+            <tr>
+              <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:28px">
+                <span style="display:inline-flex;align-items:center;justify-content:center;
+                             width:20px;height:20px;border-radius:50%;background:#00b8a6;
+                             color:#fff;font-size:12px;font-weight:700;line-height:1">✓</span>
+              </td>
+              <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
+                <span style="font-size:15px;color:#9ca3af;text-decoration:line-through">${label}</span>
+              </td>
+            </tr>`
+        }
+        return `
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;width:28px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;
+                           width:20px;height:20px;border-radius:50%;border:2px solid #014D4E"></span>
+            </td>
+            <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
+              <span style="font-size:15px;font-weight:600;color:#1a1a1a">${label}</span><br>
+              <span style="font-size:13px;color:#6b7280;line-height:1.5">${detail} —
+                <a href="${href}" style="color:#014D4E;font-weight:600">Go there now →</a>
+              </span>
+            </td>
+          </tr>`
+      }
+
+      const introText = nonStarted
+        ? `If you haven't had a chance to log in yet, now is a great moment to start — everything is set up and waiting for you. The four steps below each take just a few minutes and will immediately show you what AlwaysReady can do for your service.`
+        : allDone
+          ? `You've already completed all the key setup steps — that's a great start. Log in to continue building your inspection readiness and make the most of your remaining trial time.`
+          : `You've already made a start — well done. Here's a summary of what you've done and what's still worth exploring before your trial ends.`
+
+      return `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          You have 7 days remaining on your AlwaysReady trial — you're at the halfway point.
+        </p>
+        <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#1a1a1a">${introText}</p>
+        <table style="width:100%;border-collapse:collapse;margin:0 0 28px">
+          ${row(w.hasKloeRating,  'Rate your KLOEs',           'Open any KLOE and set your current compliance status',            `${PLATFORM_URL}/dashboard/kloes`)}
+          ${row(w.hasEvidence,    'Upload your first evidence', 'Attach a policy, audit, or certificate to a KLOE',               `${PLATFORM_URL}/dashboard/kloes`)}
+          ${row(w.hasTeamMember,  'Invite a team member',       'Give a colleague their own login under Account → Team',           `${PLATFORM_URL}/dashboard/account?tab=team`)}
+          ${row(w.hasHrRecord,    'Add a staff record',         'Create your first HR profile to explore the HR module',           `${PLATFORM_URL}/dashboard/hr`)}
+        </table>
+        <p style="margin:0 0 32px">
+          <a href="${PLATFORM_URL}/dashboard"
+             style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+            Go to your dashboard &rarr;
+          </a>
+        </p>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+          If you need any help, the <strong>Support</strong> tab inside the platform is the
+          best place to reach us.
+        </p>
+      `
+    },
   },
   {
     dayKey:   'day_09',
@@ -362,7 +408,24 @@ export async function GET(request: Request) {
         continue
       }
 
-      const bodyHtml = emailDef.bodyHtml(firstName, expiryDate, price)
+      // For day_07, query the org's actual wizard status to personalise the checklist
+      let wizard: WizardStatus | undefined
+      if (emailDef.dayKey === 'day_07') {
+        const [kloeRes, evidenceRes, teamRes, hrRes] = await Promise.all([
+          supabase.from('compliance_records').select('id').eq('organisation_id', org.id).not('status', 'is', null).limit(1),
+          supabase.from('kloe_evidence').select('id').eq('organisation_id', org.id).limit(1),
+          supabase.from('users').select('id').eq('organisation_id', org.id).limit(2),
+          supabase.from('hr_staff_profiles').select('id').eq('organisation_id', org.id).limit(1),
+        ])
+        wizard = {
+          hasKloeRating:  (kloeRes.data?.length     ?? 0) > 0,
+          hasEvidence:    (evidenceRes.data?.length  ?? 0) > 0,
+          hasTeamMember:  (teamRes.data?.length      ?? 0) > 1,
+          hasHrRecord:    (hrRes.data?.length        ?? 0) > 0,
+        }
+      }
+
+      const bodyHtml = emailDef.bodyHtml(firstName, expiryDate, price, wizard)
 
       const result = await sendEmail({
         to:       admin.email,
