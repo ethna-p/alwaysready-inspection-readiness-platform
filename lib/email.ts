@@ -84,18 +84,18 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
             <td style="padding:24px 40px 32px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="padding-bottom:12px;border-bottom:1px solid #e8e6e0">
+                  <td style="padding-bottom:12px;border-bottom:2px solid #014D4E">
                     <p style="margin:0 0 2px;font-size:15px;font-weight:700;color:#1a1a1a">Ethna Parker PhD</p>
                     <p style="margin:0;font-size:13px;color:#555555">Founder - AlwaysReady</p>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding-top:12px">
-                    <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <a href="mailto:support@alwaysready.uk" style="color:#555555;text-decoration:none">support@alwaysready.uk</a>
+                  <td style="padding-top:12px;padding-left:12px;border-left:3px solid #014D4E">
+                    <p style="margin:0 0 4px;font-size:13px">
+                      <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:none">support@alwaysready.uk</a>
                     </p>
-                    <p style="margin:0 0 4px;font-size:13px;color:#555555">
-                      <a href="https://www.alwaysready.uk" style="color:#555555;text-decoration:none">www.alwaysready.uk</a>
+                    <p style="margin:0 0 4px;font-size:13px">
+                      <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:none">www.alwaysready.uk</a>
                     </p>
                     <p style="margin:0;font-size:13px;color:#555555">82A James Carter Road, Mildenhall, IP28 7DE</p>
                   </td>
