@@ -42,11 +42,6 @@ export interface SendEmailResult {
   error?: string
 }
 
-function logoImg(): string {
-  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
-  return `<img src="${baseUrl}/logo-email.png" alt="AlwaysReady" width="220" height="48" style="display:block;height:40px;width:auto;border:0">`
-}
-
 function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: string): string {
   const note = footerNote ?? 'You are receiving this email because you have an active AlwaysReady account.'
   const unsubscribeFooter = unsubscribeUrl
@@ -67,8 +62,11 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
 
           <!-- Header -->
           <tr>
-            <td style="background-color:#014D4E;padding:28px 40px;border-bottom:4px solid #ffd700">
-              ${logoImg()}
+            <td style="background-color:#014D4E;padding:32px 40px;text-align:center">
+              <div style="margin-bottom:8px">
+                <span style="display:inline-block;width:34px;height:34px;background:#ffd700;border-radius:50%;text-align:center;line-height:34px;font-size:20px;color:#ffffff;vertical-align:middle;margin-right:10px;font-weight:700">&#10003;</span><span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;vertical-align:middle">ALWAYSREADY</span>
+              </div>
+              <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.15em;text-transform:uppercase">Inspection Readiness Platform</div>
             </td>
           </tr>
 
