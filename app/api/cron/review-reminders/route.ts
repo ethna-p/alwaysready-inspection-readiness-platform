@@ -103,7 +103,7 @@ function hrDueSoonHtml(staffName: string, fieldLabel: string, dueDate: string, d
   return `
     <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
-      An HR review is due in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong>.
+      <strong>${staffName}</strong>'s <strong>${fieldLabel}</strong> is due in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong>.
     </p>
     <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
       <tr>

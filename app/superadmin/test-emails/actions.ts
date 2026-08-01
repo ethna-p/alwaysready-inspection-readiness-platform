@@ -529,7 +529,7 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
   return Promise.all([
     send(`${STAFF_NAME} — DBS Check due in 30 days`, `
       <p style="margin:0 0 16px">Hi,</p>
-      <p style="margin:0 0 16px">An HR review is due in <strong>30 days</strong>.</p>
+      <p style="margin:0 0 16px"><strong>${STAFF_NAME}</strong>'s <strong>DBS Check</strong> is due in <strong>30 days</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
         <tr>
           <td style="padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px">
