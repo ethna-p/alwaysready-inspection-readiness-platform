@@ -96,12 +96,6 @@ export async function POST(req: NextRequest) {
           In the meantime, you can browse everything we've published so far at
           <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
         </p>
-
-        <p style="margin-top:32px">
-          Warm regards,<br>
-          <strong>Ethna Parker PhD</strong><br>
-          Founder, AlwaysReady
-        </p>
       `,
     }).catch(err => {
       console.error('[blog-subscribe] welcome email failed:', err)

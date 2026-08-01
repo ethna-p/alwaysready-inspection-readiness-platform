@@ -286,11 +286,6 @@ export async function POST(req: NextRequest) {
     bodyHtml: `
       <p>Hi ${firstName},</p>
       <p>Thank you for getting in touch. We've received your message and will get back to you shortly.</p>
-      <p style="margin-top:32px">
-        Warm regards,<br>
-        <strong>Ethna Parker PhD</strong><br>
-        Founder, AlwaysReady
-      </p>
     `,
   })
 

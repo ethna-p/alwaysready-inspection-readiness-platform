@@ -149,11 +149,6 @@ export async function POST(req: NextRequest) {
         <p>In the meantime, if you have any questions about the platform, feel free to reply
            to this email or visit
            <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
-        <p style="margin-top:32px">
-          Warm regards,<br>
-          <strong>Ethna Parker PhD</strong><br>
-          Founder, AlwaysReady
-        </p>
       `,
     })
   }
@@ -170,11 +165,6 @@ export async function POST(req: NextRequest) {
         <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
            sector updates, and inspection-readiness guidance — straight to your inbox.</p>
         <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
-        <p style="margin-top:32px">
-          Warm regards,<br>
-          <strong>Ethna Parker PhD</strong><br>
-          Founder, AlwaysReady
-        </p>
       `,
     })
   }
