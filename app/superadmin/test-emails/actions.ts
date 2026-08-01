@@ -589,7 +589,7 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
     send('Welcome to AlwaysReady — your login details', `
       <p style="margin:0 0 16px">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px">
-        Welcome to the AlwaysReady Beta. Your account for <strong>${ORG_NAME}</strong> is ready.
+        Welcome to AlwaysReady. Your account for <strong>${ORG_NAME}</strong> is ready.
       </p>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0"
         style="background:#f5f5f0;border-radius:6px;padding:20px 24px;margin:0 0 24px;width:100%">

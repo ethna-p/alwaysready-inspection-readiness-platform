@@ -148,7 +148,7 @@ export async function provisionOrganisation(
         <p style="margin:0 0 16px">Hi ${adminName},</p>
 
         <p style="margin:0 0 16px">
-          Welcome to the AlwaysReady Beta. Your account for
+          Welcome to AlwaysReady. Your account for
           <strong>${orgName}</strong> is ready — you can log in right now.
         </p>
 
