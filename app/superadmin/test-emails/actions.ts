@@ -84,7 +84,7 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
 
 async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
   const emails = [
-    send("Your AlwaysReady trial is ready — set your password to get started", `
+    send("[Day 0] Your AlwaysReady trial is ready — set your password to get started", `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your 14-day free trial of AlwaysReady is ready. Click the button below to
@@ -108,7 +108,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         the platform and we will get back to you shortly.
       </p>
     `),
-    send("Welcome to AlwaysReady", `
+    send("[Day 1] Welcome to AlwaysReady", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Welcome to AlwaysReady. Your 14-day free trial is now active and your account is ready to use.
@@ -134,7 +134,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         <strong>Support</strong> tab within the platform.
       </p>
     `),
-    send("Three things worth exploring in AlwaysReady", `
+    send("[Day 3] Three things worth exploring in AlwaysReady", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Now that you've had a couple of days to settle in, we wanted to highlight three features
@@ -160,7 +160,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send("How are you getting on?", `
+    send("[Day 5] How are you getting on?", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You're five days into your AlwaysReady trial. We hope you've had a chance to start
@@ -195,72 +195,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         the most common questions by role, and <strong>Support</strong> lets you reach us directly.
       </p>
     `),
-    // ── User role emails (day 1 + day 7 after joining) ──────────────────────
-    send("Welcome to AlwaysReady — here's how to get started", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${STAFF_NAME.split(' ')[0]},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You've been added to <strong>${ORG_NAME}</strong>'s AlwaysReady account.
-        AlwaysReady is an inspection readiness platform that helps adult social care providers
-        prepare for a CQC inspection — and you're now part of the team helping to build
-        your service's readiness.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        As a team member, you may be assigned specific KLOEs (Key Lines of Enquiry) to manage.
-        These are the areas the CQC inspects against — Safe, Effective, Caring, Responsive,
-        and Well-led. When you're assigned a KLOE, you'll receive an email notification with a
-        direct link. From there you can:
-      </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
-        <li>Record your service's current compliance status for that area</li>
-        <li>Upload supporting evidence — policies, audits, certificates, and more</li>
-        <li>Add notes that will be useful during an inspection</li>
-      </ul>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Log in to your account to see any KLOEs already assigned to you. If none have been
-        assigned yet, your account admin will be in touch shortly.
-      </p>
-      <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard/kloes"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Log in to AlwaysReady &rarr;
-        </a>
-      </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
-        the <strong>Support</strong> tab to reach our team directly.
-      </p>
-    `),
-    send("A quick check-in on your KLOEs", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${STAFF_NAME.split(' ')[0]},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You've been on AlwaysReady for a week. We wanted to check in and make sure
-        you've had a chance to get started.
-      </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        If you have KLOEs assigned to you, now is a good time to log in and:
-      </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
-        <li>Set a compliance rating for each KLOE you're responsible for</li>
-        <li>Upload at least one piece of supporting evidence per KLOE</li>
-        <li>Add any notes that would be useful to have on record during an inspection</li>
-      </ul>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        The more evidence your team adds, the stronger your service's inspection readiness
-        position will be. Every contribution counts.
-      </p>
-      <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard/kloes"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Go to your KLOEs &rarr;
-        </a>
-      </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you're not sure what's expected of you, the <strong>Help</strong> tab inside the
-        platform covers the most common questions by role.
-      </p>
-    `),
-    send("You're halfway through your trial — here's a quick checklist", `
+    send("[Day 7] You're halfway through your trial — here's a quick checklist", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You have 7 days remaining on your AlwaysReady trial — you're at the halfway point.
@@ -320,7 +255,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         best place to reach us.
       </p>
     `),
-    send("A few things you might not have tried yet", `
+    send("[Day 9] A few things you might not have tried yet", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         With five days of your trial remaining, we wanted to share a few features that are
@@ -348,7 +283,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send("Your AlwaysReady trial ends in 3 days", `
+    send("[Day 11] Your AlwaysReady trial ends in 3 days", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your trial ends in <strong>3 days</strong>, on ${EXPIRY_DATE}. Before you decide,
@@ -460,7 +395,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         the platform is the best place to reach us.
       </p>
     `),
-    send("Your trial ends tomorrow", `
+    send("[Day 13] Your trial ends tomorrow", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your AlwaysReady trial ends <strong>tomorrow</strong>, on ${EXPIRY_DATE}.
@@ -482,7 +417,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send("Your AlwaysReady subscription is now active", `
+    send("[Day 14a — Subscribed] Your AlwaysReady subscription is now active", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you. Your subscription is now active and your account will continue without interruption.
@@ -498,7 +433,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send("Your AlwaysReady trial has ended", `
+    send("[Day 14b — Lapsed] Your AlwaysReady trial has ended", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your AlwaysReady trial ended on ${EXPIRY_DATE}. Your data is safe and will be
@@ -511,6 +446,71 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
           Subscribe now &rarr;
         </a>
+      </p>
+    `),
+    // ── User role emails (sent based on days since user joined — separate to admin trial sequence) ──
+    send("[User — Day 1] Welcome to AlwaysReady — here's how to get started", `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${STAFF_NAME.split(' ')[0]},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You've been added to <strong>${ORG_NAME}</strong>'s AlwaysReady account.
+        AlwaysReady is an inspection readiness platform that helps adult social care providers
+        prepare for a CQC inspection — and you're now part of the team helping to build
+        your service's readiness.
+      </p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        As a team member, you may be assigned specific KLOEs (Key Lines of Enquiry) to manage.
+        These are the areas the CQC inspects against — Safe, Effective, Caring, Responsive,
+        and Well-led. When you're assigned a KLOE, you'll receive an email notification with a
+        direct link. From there you can:
+      </p>
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+        <li>Record your service's current compliance status for that area</li>
+        <li>Upload supporting evidence — policies, audits, certificates, and more</li>
+        <li>Add notes that will be useful during an inspection</li>
+      </ul>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Log in to your account to see any KLOEs already assigned to you. If none have been
+        assigned yet, your account admin will be in touch shortly.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="${PLATFORM_URL}/dashboard/kloes"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Log in to AlwaysReady &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
+        the <strong>Support</strong> tab to reach our team directly.
+      </p>
+    `),
+    send("[User — Day 7] A quick check-in on your KLOEs", `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${STAFF_NAME.split(' ')[0]},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You've been on AlwaysReady for a week. We wanted to check in and make sure
+        you've had a chance to get started.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If you have KLOEs assigned to you, now is a good time to log in and:
+      </p>
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+        <li>Set a compliance rating for each KLOE you're responsible for</li>
+        <li>Upload at least one piece of supporting evidence per KLOE</li>
+        <li>Add any notes that would be useful to have on record during an inspection</li>
+      </ul>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        The more evidence your team adds, the stronger your service's inspection readiness
+        position will be. Every contribution counts.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="${PLATFORM_URL}/dashboard/kloes"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Go to your KLOEs &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If you're not sure what's expected of you, the <strong>Help</strong> tab inside the
+        platform covers the most common questions by role.
       </p>
     `),
   ]

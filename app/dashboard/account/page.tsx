@@ -195,6 +195,91 @@ export default async function AccountPage({
             </div>
           </div>
 
+          {/* What's included */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">What&apos;s included in your plan</h2>
+            <p className="text-sm text-ink-dim mb-6">
+              Every feature below is included in your AlwaysReady subscription at no extra cost.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {([
+                {
+                  name: 'KLOE Tracker',
+                  desc: 'All 24 CQC Key Lines of Enquiry pre-loaded. Set compliance status, record review dates, upload evidence, and assign ownership.',
+                  href: '/dashboard/kloes',
+                },
+                {
+                  name: 'Compliance Dashboard',
+                  desc: 'Readiness percentage at a glance. RAG status across all KLOEs, broken down by the five CQC key questions.',
+                  href: '/dashboard',
+                },
+                {
+                  name: 'CQC Register',
+                  desc: 'Your live CQC rating pulled directly from the public register and updated daily, displayed on your dashboard.',
+                  href: '/dashboard',
+                },
+                {
+                  name: 'Mock Inspection',
+                  desc: 'Self-assess your evidence across every KLOE and generate a mock inspection report showing a rating per key question.',
+                  href: '/dashboard/mock-inspection',
+                },
+                {
+                  name: 'Evidence Pack',
+                  desc: 'One click generates a printable PDF of your full compliance position — ready to hand to an inspector or share with your board.',
+                  href: '/dashboard',
+                },
+                {
+                  name: 'Daily Report',
+                  desc: 'A single screen showing everything that needs attention — overdue KLOEs first, sorted by priority.',
+                  href: '/dashboard/report',
+                },
+                {
+                  name: 'HR Records',
+                  desc: 'Track DBS checks, supervision, appraisals, mandatory training, and holiday entitlement for every member of staff.',
+                  href: '/dashboard/hr',
+                },
+                {
+                  name: 'Team Management',
+                  desc: 'Invite colleagues by email, assign roles (Admin, Staff, Viewer), and assign KLOEs to specific team members.',
+                  href: '/dashboard/account?tab=team',
+                },
+                {
+                  name: 'Automatic Reminders',
+                  desc: 'The platform emails the relevant person when a KLOE review or HR check is due soon or overdue.',
+                  href: '/dashboard/kloes',
+                },
+                {
+                  name: 'Audit Trail',
+                  desc: 'Every change to a KLOE is permanently recorded — who made it, when, and what changed. Useful during an inspection.',
+                  href: '/dashboard/kloes',
+                },
+                {
+                  name: 'Visitor Access',
+                  desc: 'Grant a time-limited read-only login to an external reviewer without giving them editing rights.',
+                  href: '/dashboard/account?tab=team',
+                },
+                {
+                  name: 'Data Export',
+                  desc: 'Download all your records and uploaded evidence at any time. Your data is always yours to keep.',
+                  href: '/dashboard/account?tab=billing',
+                },
+              ] as { name: string; desc: string; href: string }[]).map(feature => (
+                <a
+                  key={feature.name}
+                  href={feature.href}
+                  className="group block border border-line rounded-lg p-4 hover:border-brand hover:shadow-sm transition-all"
+                >
+                  <p className="text-sm font-semibold text-brand mb-1 group-hover:text-[#00b8a6] transition-colors">
+                    {feature.name}
+                  </p>
+                  <p className="text-sm text-ink-muted leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </div>
+
         </div>
       )}
 
