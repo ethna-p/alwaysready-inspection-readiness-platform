@@ -80,6 +80,12 @@ export async function POST(req: NextRequest) {
     (payload['message'] as string | undefined)?.trim() ||
     ''
 
+  const blogOptIn =
+    payload['blog_opt_in'] === 'yes' ||
+    payload['blog_opt_in'] === 'on'  ||
+    data['blog_opt_in']    === 'yes' ||
+    data['blog_opt_in']    === 'on'
+
   if (!email) {
     console.error('[inbound-contact] missing email in payload:', JSON.stringify(payload))
     return NextResponse.json({ error: 'Missing email' }, { status: 400 })
@@ -109,6 +115,51 @@ export async function POST(req: NextRequest) {
 
   if (ticketError) {
     console.error('[inbound-contact] ticket insert error:', ticketError.message)
+  }
+
+  // ── Blog opt-in ───────────────────────────────────────────────────────────
+  if (blogOptIn) {
+    const { error: subError } = await supabase
+      .from('blog_subscribers')
+      .upsert(
+        {
+          email,
+          full_name:       fullName || null,
+          source:          'contact_form',
+          subscribed_at:   new Date().toISOString(),
+          unsubscribed_at: null,
+        },
+        { onConflict: 'email', ignoreDuplicates: true },
+      )
+
+    if (subError) {
+      console.error('[inbound-contact] blog subscriber upsert error:', subError.message)
+    } else {
+      await sendEmail({
+        to:      email,
+        subject: "You're subscribed to the AlwaysReady blog",
+        type:    'transactional',
+        bodyHtml: `
+          <p>Hi ${displayName},</p>
+          <p>
+            Thanks for subscribing to the AlwaysReady blog. We publish practical
+            guides on CQC inspection readiness, care quality, and running a
+            well-governed service — and you'll get new posts straight to your inbox.
+          </p>
+          <p>
+            In the meantime, you can browse everything we've published so far at
+            <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
+          </p>
+          <p style="margin-top:32px">
+            Warm regards,<br>
+            <strong>Ethna Parker PhD</strong><br>
+            Founder, AlwaysReady
+          </p>
+        `,
+      }).catch(err => {
+        console.error('[inbound-contact] blog welcome email failed:', err)
+      })
+    }
   }
 
   // ── Notify AJ ────────────────────────────────────────────────────────────

@@ -75,7 +75,11 @@ export async function POST(req: NextRequest) {
     data['newsletter']           === 'on'   ||
     data['newsletter']           === 'true' ||
     data['marketing-opt-in']     === 'on'   ||
-    data['subscribe']            === 'on'
+    data['subscribe']            === 'on'   ||
+    payload['blog_opt_in']       === 'yes'  ||
+    payload['blog_opt_in']       === 'on'   ||
+    data['blog_opt_in']          === 'yes'  ||
+    data['blog_opt_in']          === 'on'
 
   if (!email) {
     console.error('[inbound-waitlist] missing email — full payload:', JSON.stringify(payload))

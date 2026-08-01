@@ -1,0 +1,120 @@
+BLOG SIGNUP FORM — WIRING HANDOFF
+==================================
+
+GOAL
+----
+Wire the blog signup form on alwaysready.uk so that submissions POST to
+the AlwaysReady platform API. The API endpoint already exists and is ready
+to receive submissions — it saves the subscriber to the database and sends
+a welcome email automatically.
+
+The marketing site is an Eleventy static site hosted on Netlify.
+
+
+WHAT NEEDS TO HAPPEN
+--------------------
+The blog signup form needs a JavaScript submit handler that:
+  1. Prevents the default form submission
+  2. Reads the email (and name, if the form has it) from the form fields
+  3. POSTs that data as JSON to the platform API
+  4. Shows a success or error message to the user
+
+
+API ENDPOINT
+------------
+URL:     https://portal.alwaysready.uk/api/blog-subscribe
+Method:  POST
+Headers: Content-Type: application/json
+Body:    { "email": "...", "name": "..." }
+
+name is optional. email is required.
+
+Success response: { "success": true }  (HTTP 200)
+Error response:   { "error": "..." }   (HTTP 400 or 500)
+
+
+STEP-BY-STEP
+------------
+
+Step 1 — Find the blog signup form
+Find the HTML file containing the blog signup form. It will be a <form>
+element with an email field, possibly also a name field.
+
+Note the form's id (or other identifier) and the name attributes on each input.
+
+
+Step 2 — Check for existing JavaScript
+Search for any existing JavaScript that references the form — there may
+already be a submit event listener or fetch() call pointing somewhere
+wrong or nowhere. If there is, replace it rather than adding a second one.
+
+
+Step 3 — Add the fetch call
+Add the following JavaScript, either in a <script> block in the HTML file
+or in a .js file already loaded on that page.
+
+Replace #your-form-id with the actual form id, and adjust the field
+selectors to match the actual input name attributes.
+
+---
+
+document.querySelector('#your-form-id').addEventListener('submit', async function(e) {
+  e.preventDefault()
+
+  const email = this.querySelector('[name="email"]').value.trim()
+  const name  = this.querySelector('[name="name"]')?.value.trim() || ''
+
+  try {
+    const res = await fetch('https://portal.alwaysready.uk/api/blog-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name }),
+    })
+
+    if (res.ok) {
+      // Show success message to the user
+      // e.g. this.innerHTML = '<p>Thanks! Check your inbox.</p>'
+    } else {
+      const data = await res.json()
+      // Show error message to the user
+      // e.g. console.error(data.error)
+    }
+  } catch (err) {
+    // Network error — show a fallback message
+    console.error('Blog signup error:', err)
+  }
+})
+
+---
+
+
+Step 4 — Remove data-netlify if present
+If the form has data-netlify="true" or netlify as an attribute, remove it.
+Netlify Forms and the direct API call will conflict. The direct API call
+is the correct approach.
+
+
+Step 5 — Deploy
+Commit and push. Netlify will rebuild the site automatically.
+
+
+HOW TO TEST
+-----------
+After deploying, submit the form with a real email address. Within a few
+seconds, that address should receive a welcome email with the subject:
+"You're subscribed to the AlwaysReady blog"
+
+You can also verify in Supabase: open the blog_subscribers table and
+confirm a new row appears with source = 'website_form'.
+
+
+NOTES
+-----
+- The API already handles duplicate signups gracefully (upsert) so
+  re-subscribing the same email is safe and won't cause errors.
+- The CORS policy on the API allows requests from https://alwaysready.uk
+  and https://www.alwaysready.uk only — requests from other origins will
+  be blocked, which is intentional.
+- Do not add this form to Netlify Forms (data-netlify="true"). The Netlify
+  Forms webhook for blog-signup can remain configured in Netlify dashboard
+  as a fallback, but the primary submission path is the direct API call.
