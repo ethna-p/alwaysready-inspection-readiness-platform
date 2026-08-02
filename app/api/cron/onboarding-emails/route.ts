@@ -191,20 +191,26 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_07',
     threshold: 42,
-    subject:   'Sharing access with external visitors',
+    subject:   'Sharing access with external visitors ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to tell you about visitor access.</p>
-      <p>There are times when you may want to give someone outside your organisation a temporary view of your
-      compliance position. A CQC inspector, for example, may ask to see your compliance records during an
-      inspection. A local authority contract manager may want to review your readiness ahead of a monitoring visit.</p>
-      <p>AlwaysReady allows you to create a time-limited visitor login for exactly these situations. The visitor
-      can view your KLOE ratings and evidence without being able to make any changes. You control how long the
-      access lasts, and you can revoke it at any time.</p>
-      <p>To set up a visitor login, go to the <strong>Team</strong> section in the main navigation and select
-      the visitor access option.</p>
-      <p>If you have any questions about visitor access, the <strong>Support</strong> tab inside the platform
-      is the best place to reach us.</p>
+      <p>This week we're focusing on visitor access ⭐</p>
+      <p><strong>Create secure, time-limited visitor logins</strong><br>
+      AlwaysReady lets you create a secure, time-limited visitor login for external reviewers. Visitors can
+      view your KLOE ratings and evidence, but they cannot make any changes. This keeps your records accurate
+      and protected.</p>
+      <p><strong>Ideal for CQC inspectors</strong><br>
+      Viewer logins are especially helpful during a CQC inspection. Inspectors can access the information they
+      need quickly and see your evidence exactly as you've organised it. This makes inspections smoother and
+      shows confidence in your governance.</p>
+      <p><strong>Useful for audits and peer reviews</strong><br>
+      You can also use visitor access for consultants, peer reviewers, and quality assurance partners. They can
+      review your compliance position directly and offer focused feedback, while you stay fully in control of
+      who sees what and for how long.</p>
+      <p><strong>Easy to set up</strong><br>
+      To create a visitor login, go to the <strong>Team</strong> section in the main navigation. Set the access
+      period, send the login, and revoke it whenever you choose.</p>
+      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {
