@@ -684,10 +684,22 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
     `],
     ['Week 9 — The HR module', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>The HR module helps you keep your staff records in order — DBS checks, right to work documentation,
-      training records, supervision and appraisal history, and employment status.</p>
-      <p><strong>Check that all staff records are complete.</strong> Look for gaps in DBS checks, training
-      certificates, or supervision dates.</p>
+      <p>This week we're focusing on your HR module ⭐</p>
+      <p><strong>Keep essential staff records organised</strong><br>
+      The HR module stores all key workforce documents in one place — DBS checks, right-to-work evidence,
+      training records, supervision and appraisal history, and employment status. Centralising these records
+      makes it easier to monitor compliance and respond quickly to inspectors or commissioners.</p>
+      <p><strong>Check every record is complete</strong><br>
+      Review each staff profile and look for gaps. Missing DBS checks, expired training certificates, or
+      overdue supervision dates can affect your Safe and Well-led ratings. Completing these records strengthens
+      safeguarding and shows you actively monitor workforce compliance.</p>
+      <p><strong>Automated reminders and leave calculations</strong><br>
+      The system sends automatic reminders to staff when their training is due, helping you stay ahead of
+      expiry dates. It also calculates annual leave in both days and hours, making workforce planning clearer
+      and reducing admin time.</p>
+      <p><strong>Support inspection readiness</strong><br>
+      CQC often asks for proof of training, DBS status, and supervision frequency. With the HR module, you
+      can provide this instantly. Clear, up-to-date records help demonstrate a well-managed, well-supported team.</p>
       <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ['Week 10 — How AlwaysReady keeps your data safe', `

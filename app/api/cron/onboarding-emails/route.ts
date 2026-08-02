@@ -242,26 +242,26 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_09',
     threshold: 56,
-    subject:   'The AlwaysReady HR module',
+    subject:   'The HR module ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to focus on the HR module, an area that CQC inspectors pay close attention to,
-      particularly in relation to the Well-led and Safe key questions.</p>
-      <p>The HR module in AlwaysReady is designed to help you keep your staff records in order. It covers the
-      information that inspectors are most likely to ask about: DBS checks, right to work documentation,
-      training records, supervision and appraisal history, and employment status.</p>
-      <p>Keeping these records current is not just about compliance. It is about being able to demonstrate,
-      quickly and confidently, that your team is properly recruited, trained, and supported.</p>
-      <p>Here are a few things we would encourage you to do this week.</p>
-      <p><strong>Check that all staff records are complete.</strong> Look for any gaps in DBS checks, training
-      certificates, or supervision dates.</p>
-      <p><strong>Set a reminder for upcoming renewals.</strong> DBS checks and certain training certificates
-      have expiry dates. Keeping on top of these is one of the most practical things you can do to stay
-      inspection-ready.</p>
-      <p><strong>Add staff who are not yet on the system.</strong> The more complete your records, the stronger
-      your position when an inspector asks to see them.</p>
-      <p>You can access the HR module from the main navigation inside the platform.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+      <p>This week we're focusing on your HR module ⭐</p>
+      <p><strong>Keep essential staff records organised</strong><br>
+      The HR module stores all key workforce documents in one place — DBS checks, right-to-work evidence,
+      training records, supervision and appraisal history, and employment status. Centralising these records
+      makes it easier to monitor compliance and respond quickly to inspectors or commissioners.</p>
+      <p><strong>Check every record is complete</strong><br>
+      Review each staff profile and look for gaps. Missing DBS checks, expired training certificates, or
+      overdue supervision dates can affect your Safe and Well-led ratings. Completing these records strengthens
+      safeguarding and shows you actively monitor workforce compliance.</p>
+      <p><strong>Automated reminders and leave calculations</strong><br>
+      The system sends automatic reminders to staff when their training is due, helping you stay ahead of
+      expiry dates. It also calculates annual leave in both days and hours, making workforce planning clearer
+      and reducing admin time.</p>
+      <p><strong>Support inspection readiness</strong><br>
+      CQC often asks for proof of training, DBS status, and supervision frequency. With the HR module, you
+      can provide this instantly. Clear, up-to-date records help demonstrate a well-managed, well-supported team.</p>
+      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {
