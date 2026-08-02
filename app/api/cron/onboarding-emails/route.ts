@@ -136,20 +136,27 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_05',
     threshold: 28,
-    subject:   'Have you tried the Daily Report?',
+    subject:   'Have you tried the Daily Report? ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to introduce you to the Daily Report.</p>
-      <p>The Daily Report gives you a snapshot of where your compliance stands right now. It shows you which
-      KLOEs are up to date, which are due for review, and which have never been assessed. It is designed to
-      be the first thing you check each morning.</p>
-      <p>Think of it as your daily dashboard. It tells you where attention is needed so that nothing slips
-      through the net.</p>
-      <p>You can access the Daily Report from the main navigation inside the platform. We would encourage you
-      to make it part of your daily routine. Even a quick five-minute check each morning can make a significant
-      difference to how prepared you feel over time.</p>
-      <p>If you have any questions about the Daily Report, the <strong>Support</strong> tab inside the platform
-      is the best place to reach us.</p>
+      <p>This week we're focusing on your Daily Report ⭐</p>
+      <p><strong>Understand your current compliance position</strong><br>
+      The Daily Report gives you a real-time snapshot of where your compliance stands today. It shows which KLOEs
+      are up to date, which need reviewing, and which have never been assessed. This helps you see your strengths
+      and your gaps at a glance. It also gives you a clear starting point for what to focus on next.</p>
+      <p><strong>Use it to guide your daily actions</strong><br>
+      We encourage you to make the Daily Report part of your everyday routine. Even a quick five-minute check each
+      morning helps you stay aware of what needs attention. Over time, these small daily check-ins build strong
+      habits. They also reduce the pressure that comes from trying to prepare everything right before an inspection.</p>
+      <p><strong>Spot issues early and act quickly</strong><br>
+      By reviewing your Daily Report regularly, you can identify gaps before they become risks. You'll see where
+      evidence is missing, where updates are overdue, and where improvements are needed. Early action is one of the
+      strongest indicators of good governance. It shows CQC that you monitor your service actively and respond promptly.</p>
+      <p><strong>Build confidence across your team</strong><br>
+      When the Daily Report becomes part of your routine, your whole team benefits. Everyone knows what's expected.
+      Everyone can see progress. And everyone feels more prepared for conversations with inspectors. This creates a
+      culture where compliance is continuous, not occasional.</p>
+      <p>Head over to the <strong>Support</strong> tab if you have any questions.</p>
     `,
   },
   {
