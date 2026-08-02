@@ -110,8 +110,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions, the <strong>Support</strong> tab inside the platform is the
-        best place to reach us.
+        The <strong>Support</strong> tab is always open — drop us a message anytime.
       </p>
     `,
   },
@@ -220,8 +219,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           </a>
         </p>
         <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-          If you need any help, the <strong>Support</strong> tab inside the platform is the
-          best place to reach us.
+          Drop us a message through the <strong>Support</strong> tab whenever you need us.
         </p>
       `
     },
@@ -378,8 +376,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions before you decide, the <strong>Support</strong> tab inside
-        the platform is the best place to reach us.
+        You'll always find us in the <strong>Support</strong> tab.
       </p>
     `,
   },

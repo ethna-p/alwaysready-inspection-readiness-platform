@@ -260,8 +260,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you need any help, the <strong>Support</strong> tab inside the platform is the
-        best place to reach us.
+        Drop us a message through the <strong>Support</strong> tab whenever you need us.
       </p>
     `),
     send("[Day 9] A few things you might not have tried yet", `
@@ -400,8 +399,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions before you decide, the <strong>Support</strong> tab inside
-        the platform is the best place to reach us.
+        You'll always find us in the <strong>Support</strong> tab.
       </p>
     `),
     send("[Day 13] Your trial ends tomorrow", `
