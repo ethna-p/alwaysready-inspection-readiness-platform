@@ -731,11 +731,25 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
     `],
     ['Week 11 — Your data, your rights', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>Under the UK GDPR, individuals whose personal data is held within AlwaysReady have the right to
-      access their data, request correction, request deletion in certain circumstances, and object to
-      certain types of processing.</p>
-      <p>As the data controller, your organisation is responsible for handling these requests from your staff.
-      General guidance is available at <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a>.</p>
+      <p>This week we're focusing on data rights and responsibilities ⭐</p>
+      <p><strong>People have rights over their personal data</strong><br>
+      Under the UK GDPR, anyone whose personal information is stored in AlwaysReady has important rights. They
+      can access the data you hold about them, ask for corrections, request deletion in certain circumstances,
+      and object to certain types of processing. These rights are designed to give individuals confidence and
+      control over how their information is used.</p>
+      <p><strong>Your organisation is the data controller</strong><br>
+      Your organisation decides what personal data is collected, why it's collected, and how it's used. That
+      means you are the data controller. You are responsible for responding to staff requests about their data
+      and making sure those requests are handled correctly and on time.</p>
+      <p><strong>AlwaysReady is the data processor</strong><br>
+      AlwaysReady acts as a data processor. This means we process data on your behalf, following your
+      instructions. We keep the platform secure, ensure data is stored safely, and provide the tools you need
+      to manage information — but we do not decide how your staff data is used. That responsibility stays
+      with your organisation.</p>
+      <p><strong>Clear guidance is available</strong><br>
+      If you're ever unsure how to respond to a data-rights request, the ICO provides straightforward guidance
+      at <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a>. It explains each right and what
+      organisations need to do to comply.</p>
       <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ["Week 12 — Thank you, and what's next", `
