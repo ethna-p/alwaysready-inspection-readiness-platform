@@ -101,7 +101,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Update little and often</strong><br>
       Small, regular updates keep you inspection-ready all year round. You do not need to set aside large blocks
       of time — even five minutes a day makes a real difference over weeks and months.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>Got a question? The <strong>Support</strong> tab is where to find us.</p>
     `,
   },
   {
@@ -130,7 +130,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       Whenever you upload evidence, include a short note explaining what happened, when it happened, and what the
       outcome was. This helps inspectors follow the journey from issue to action to improvement. It also shows that
       your governance processes are active, not passive.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>We're here whenever you need us — just head to the <strong>Support</strong> tab.</p>
     `,
   },
   {
@@ -210,7 +210,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Easy to set up</strong><br>
       To create a visitor login, go to the <strong>Team</strong> section in the main navigation. Set the access
       period, send the login, and revoke it whenever you choose.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>The <strong>Support</strong> tab is there whenever you need a hand.</p>
     `,
   },
   {
@@ -236,7 +236,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       During an inspection, inspectors want to understand your story. The Trend Report helps you explain what has
       changed, why it changed, and what you're doing next. It supports a confident, evidence-based narrative that
       reflects continuous improvement.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>Any questions at all? The <strong>Support</strong> tab is the quickest way to reach us.</p>
     `,
   },
   {
@@ -261,7 +261,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Support inspection readiness</strong><br>
       CQC often asks for proof of training, DBS status, and supervision frequency. With the HR module, you
       can provide this instantly. Clear, up-to-date records help demonstrate a well-managed, well-supported team.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>As always, if anything comes up, the <strong>Support</strong> tab is the best place to get in touch.</p>
     `,
   },
   {
@@ -295,7 +295,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       All of these protections work together to ensure your information is secure, traceable, and fully under
       your control. You can confidently upload evidence, staff records, and governance documents knowing they
       are protected at every stage.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>Questions? We're always happy to help — find us in the <strong>Support</strong> tab.</p>
     `,
   },
   {
