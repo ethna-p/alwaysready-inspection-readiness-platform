@@ -542,11 +542,17 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
     `],
     ['Week 2 — Setting up your team', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>This week we would like to focus on your team. You can invite staff members to AlwaysReady and assign
-      them specific KLOEs to manage. Sharing responsibility means evidence is added regularly, not all at once
-      before an inspection.</p>
+      <p>This week, we focus on setting up your team on the platform ⭐</p>
+      <p>You can invite staff members into AlwaysReady. You can also assign them specific KLOEs to manage.
+      When everyone contributes, evidence is added steadily over time. This prevents the last-minute rush
+      that often happens before an inspection.</p>
+      <p>Sharing the workload also helps your team become more inspection-ready. As staff take ownership of
+      their KLOEs, they learn what good governance looks like. They become more confident with compliance
+      expectations. They also feel more prepared to talk to inspectors about the work they've done.</p>
+      <p>Over time, this builds a stronger culture of everyday governance. It means compliance becomes part
+      of normal practice, not something that only happens when an inspection is due.</p>
       <p>To invite a team member, go to the <strong>Team</strong> section in the main navigation.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>If you need any help, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ['Week 3 — Getting the most from your KLOEs', `
       <p>Dear ${FIRST_NAME},</p>

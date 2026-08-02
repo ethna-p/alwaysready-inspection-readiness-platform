@@ -64,20 +64,20 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_02',
     threshold: 7,
-    subject:   'Setting up your team on AlwaysReady',
+    subject:   'Setting up your team on AlwaysReady ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to focus on your team.</p>
-      <p>AlwaysReady is built to be used across your organisation. You can invite staff members to the platform
-      and assign them specific KLOEs to manage. KLOEs are the Key Lines of Enquiry that CQC uses to assess your
-      service. Against each KLOE, your team can add evidence, update ratings, and record the work they are doing.</p>
-      <p>Sharing responsibility across your team has a number of benefits. It distributes the workload. It gives
-      your staff ownership of the areas they are responsible for. And it means that evidence is being added
-      regularly, rather than all at once before an inspection.</p>
-      <p>To invite a team member, go to the <strong>Team</strong> section in the main navigation. From there you
-      can add staff, assign roles, and control what each person can see and do within the platform.</p>
-      <p>If you have any questions about setting up your team, the <strong>Support</strong> tab inside the platform
-      is the best place to reach us.</p>
+      <p>This week, we focus on setting up your team on the platform ⭐</p>
+      <p>You can invite staff members into AlwaysReady. You can also assign them specific KLOEs to manage.
+      When everyone contributes, evidence is added steadily over time. This prevents the last-minute rush
+      that often happens before an inspection.</p>
+      <p>Sharing the workload also helps your team become more inspection-ready. As staff take ownership of
+      their KLOEs, they learn what good governance looks like. They become more confident with compliance
+      expectations. They also feel more prepared to talk to inspectors about the work they've done.</p>
+      <p>Over time, this builds a stronger culture of everyday governance. It means compliance becomes part
+      of normal practice, not something that only happens when an inspection is due.</p>
+      <p>To invite a team member, go to the <strong>Team</strong> section in the main navigation.</p>
+      <p>If you need any help, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {
