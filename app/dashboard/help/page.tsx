@@ -141,8 +141,22 @@ export default function HelpPage() {
 
         {/* ── What's in the platform ─────────────────────────────────────────── */}
         <Section id="platform-features" label="What's in the platform" colour="bg-[#014D4E]">
+          {/* Suggestion callout */}
+          <div className="rounded-xl border border-[#014D4E]/20 bg-[#014D4E]/5 px-5 py-4">
+            <p className="font-semibold text-brand mb-1">Got an idea for something new?</p>
+            <p className="text-sm text-ink mb-3">
+              If there is a feature you would find useful that is not listed above, we would genuinely love to hear about it. Your suggestions help shape the platform — and if it is something many services would benefit from, there is a good chance it will make it in.
+            </p>
+            <a
+              href="/dashboard/support/new"
+              className="inline-block text-sm font-medium bg-[#014D4E] text-white px-4 py-2 rounded-lg hover:bg-[#013838] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 transition-colors"
+            >
+              Share a suggestion →
+            </a>
+          </div>
+
           <P>
-            Here is everything currently available in AlwaysReady. If there is something you would like to see that is not on this list, we would love to hear from you — see the link at the bottom of this section.
+            Here is everything currently available in AlwaysReady.
           </P>
 
           <H3>KLOE Tracker</H3>
@@ -240,19 +254,6 @@ export default function HelpPage() {
             <p>• Email support at support@alwaysready.uk.</p>
           </div>
 
-          {/* Suggestion callout */}
-          <div className="mt-4 rounded-xl border border-[#014D4E]/20 bg-[#014D4E]/5 px-5 py-4">
-            <p className="font-semibold text-brand mb-1">Got an idea for something new?</p>
-            <p className="text-sm text-ink mb-3">
-              If there is a feature you would find useful that is not listed above, we would genuinely love to hear about it. Your suggestions help shape the platform — and if it is something many services would benefit from, there is a good chance it will make it in.
-            </p>
-            <a
-              href="/dashboard/support/new"
-              className="inline-block text-sm font-medium bg-[#014D4E] text-white px-4 py-2 rounded-lg hover:bg-[#013838] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 transition-colors"
-            >
-              Share a suggestion →
-            </a>
-          </div>
         </Section>
 
         {/* ── Understanding RAG ──────────────────────────────────────────────── */}
