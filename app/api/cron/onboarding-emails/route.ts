@@ -216,20 +216,27 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_08',
     threshold: 49,
-    subject:   'Track your progress with the Trend Report',
+    subject:   'Track your progress with the Trend Report ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to introduce you to the Trend Report.</p>
-      <p>The Trend Report is a tool that demonstrates your compliance position over time. It shows how your
-      KLOE ratings have changed since you started using AlwaysReady, giving you a clear picture of the progress
-      you have made.</p>
-      <p>This is useful in several ways. It helps you see which areas have improved and which still need
-      attention. It gives you something concrete to share with your board, your local authority, or your CQC
-      inspector. And it serves as a record of the sustained effort your team has put in.</p>
-      <p>The Trend Report is most useful when you have been using the platform consistently for several weeks.
-      If you have been keeping your ratings up to date, you should already be starting to see a picture emerge.</p>
-      <p>You can access the Trend Report from the main navigation inside the platform.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+      <p>This week we're focusing on your Trend Report ⭐</p>
+      <p><strong>See how your compliance has evolved</strong><br>
+      The Trend Report shows how your KLOE ratings have changed over time. It highlights improvements, dips,
+      and areas where your work has remained consistent. This gives you a clear picture of your journey since
+      you started using AlwaysReady. It helps you understand not just where you are today, but how you got there.</p>
+      <p><strong>Turn progress into evidence</strong><br>
+      Trend data is powerful because it shows movement. Inspectors and stakeholders want to see that you identify
+      issues, take action, and follow through. The Trend Report gives you concrete evidence of that process. It
+      shows that your governance is active, ongoing, and responsive.</p>
+      <p><strong>Share meaningful insights with stakeholders</strong><br>
+      You can use the Trend Report to update your board, your local authority, or a CQC inspector. It provides
+      a simple, visual way to demonstrate improvement and highlight areas that still need attention. This makes
+      conversations clearer, more focused, and more productive. It also shows that you monitor your service proactively.</p>
+      <p><strong>Strengthen your inspection narrative</strong><br>
+      During an inspection, inspectors want to understand your story. The Trend Report helps you explain what has
+      changed, why it changed, and what you're doing next. It supports a confident, evidence-based narrative that
+      reflects continuous improvement.</p>
+      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {
