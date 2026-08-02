@@ -766,7 +766,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `, 'marketing'))
     // Avoid Resend rate limits when sending 12 emails in quick succession during testing
-    await new Promise(resolve => setTimeout(resolve, 600))
+    await new Promise(resolve => setTimeout(resolve, 1000))
   }
   return results
 }
