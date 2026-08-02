@@ -329,29 +329,24 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_12',
     threshold: 77,
-    subject:   'Twelve weeks in — thank you, and what\'s next',
+    subject:   'Twelve weeks in — you\'re building something strong ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>Twelve weeks ago you started your AlwaysReady journey. We hope the platform has become a useful part
-      of how you manage your compliance, and that you feel more confident and prepared than you did at the start.</p>
-      <p>Over the past three months, we have walked you through the key features of the platform. You have had
-      the chance to build your evidence base, manage your team records, review your KLOE ratings, track your
-      progress over time, and keep a clear audit trail of everything you have done.</p>
-      <p>Inspection readiness is not a one-off exercise. It is an ongoing commitment. The care providers who
-      fare best in CQC inspections are those who make compliance part of their everyday routine rather than
-      something they rush to prepare for when an inspection is announced.</p>
-      <p>You are already doing that. Keep going.</p>
-      <p>Here is what we would encourage you to focus on in the weeks ahead.</p>
-      <ul style="margin:0 0 16px;padding-left:20px;line-height:1.8">
-        <li>Continue reviewing your lowest-rated KLOEs and building evidence against them.</li>
-        <li>Keep your HR records current, particularly DBS renewals, training certificates, and supervision records.</li>
-        <li>Use the Trend Report each month to measure your progress and identify where attention is needed.</li>
-      </ul>
-      <p>If there is anything you need from us, the <strong>Support</strong> tab inside the platform is always there.</p>
-      <p>Thank you for being an AlwaysReady customer. We are glad you are here.</p>
-      <p style="margin-top:24px">P.S. We publish regular articles on CQC compliance, inspection preparation,
-      and care sector best practice on our blog at
-      <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.</p>
+      <p>Twelve weeks in — you're building something strong ⭐</p>
+      <p>It's been 12 weeks since you began your AlwaysReady journey, and we hope the platform is becoming a
+      natural part of how you manage compliance day-to-day. The services that perform best in CQC inspections
+      are the ones that build small, steady habits. And you're doing exactly that.</p>
+      <p><strong>Keep strengthening your lowest-rated KLOEs</strong><br>
+      Continue focusing on the areas that need the most attention. Each improvement you make — even a small one
+      — builds a clearer picture of safe, effective, responsive and well-led care.</p>
+      <p><strong>Keep HR records current</strong><br>
+      Up-to-date DBS checks, training certificates, and supervision dates are simple wins that make a big
+      difference. They show strong governance and a well-supported team.</p>
+      <p><strong>Use your Trend Report to track progress</strong><br>
+      Check your Trend Report monthly to identify how far you've come and where to focus next. It turns your
+      progress into something visible and motivating.</p>
+      <p>Thank you for being an AlwaysReady customer. We're genuinely glad you're here, and we're excited to
+      see how your journey continues.</p>
     `,
   },
 ]
