@@ -22,6 +22,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': 'https://alwaysready.uk',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
+}
+
 export async function POST(req: NextRequest) {
   // ── Parse Netlify JSON payload ────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -195,5 +205,5 @@ export async function POST(req: NextRequest) {
     `,
   })
 
-  return NextResponse.json({ received: true }, { status: 200 })
+  return NextResponse.json({ received: true }, { status: 200, headers: CORS_HEADERS })
 }

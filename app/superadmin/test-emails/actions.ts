@@ -42,7 +42,16 @@ async function makeSender(to: string) {
     bodyHtml: string,
     type: 'transactional' | 'marketing' = 'transactional',
   ): Promise<TestEmailResult> {
-    const r = await sendEmail({ to, subject: `[TEST] ${subject}`, bodyHtml, type })
+    // For marketing emails, pass subscriberEmail so the opt-out DB check is
+    // skipped (no userId exists for the superadmin test recipient) while still
+    // rendering the unsubscribe footer as a real recipient would see it.
+    const r = await sendEmail({
+      to,
+      subject: `[TEST] ${subject}`,
+      bodyHtml,
+      type,
+      ...(type === 'marketing' ? { subscriberEmail: to } : {}),
+    })
     return { subject, sent: r.sent, error: r.error }
   }
 }
@@ -134,29 +143,29 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
         <strong>Support</strong> tab within the platform.
       </p>
     `),
-    send("[Day 3] Three things worth exploring in AlwaysReady", `
+    send("[Day 3] A question worth thinking about", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Now that you've had a couple of days to settle in, we wanted to highlight three features
-        that our users find particularly valuable.
+        The managers who feel most prepared for inspection are those who build their evidence
+        continuously, not in a rush when pressure hits.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If you haven't had a chance to log in yet, here's the best place to start:
       </p>
       <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The Daily Report</strong> gives you a snapshot of your
-        current compliance position — which KLOEs need attention, what's overdue, and what's
-        looking strong.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">Evidence uploads</strong> allow you to attach documents
-        directly to each KLOE — policies, audits, meeting minutes, certificates.
+        <strong style="color:#014D4E">Rate your KLOEs.</strong> Your KLOE tracker is pre-loaded
+        with every Key Line of Enquiry for your service type. Work through them and mark how each
+        area is looking right now — it gives you a clearer picture of where you stand.
       </p>
       <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The Inspection Pack</strong> generates a single
-        downloadable document summarising your readiness across all KLOEs.
+        <strong style="color:#014D4E">Upload one piece of evidence per KLOE.</strong> A policy,
+        an audit, a training record — anything relevant. Even a single document per KLOE starts
+        to build the evidence base an inspector will want to see.
       </p>
       <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard"
+        <a href="${PLATFORM_URL}/dashboard/kloes"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Go to your dashboard &rarr;
+          Go to your KLOE tracker &rarr;
         </a>
       </p>
     `),
