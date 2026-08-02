@@ -282,9 +282,10 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Every file is scanned before storage</strong><br>
       Every document you upload is automatically scanned for viruses and malicious content. This prevents
       harmful files from entering the system and protects your organisation's devices and records.</p>
-      <p><strong>Your data stays within the European Union</strong><br>
-      All information is stored securely within the EU. This ensures compliance with GDPR and other European
-      data-protection standards. It also means your data benefits from strict legal safeguards.</p>
+      <p><strong>Your data is stored securely</strong><br>
+      All data is stored securely and we are committed to full compliance with UK GDPR. Your information is
+      never transferred outside the European Economic Area, and benefits from the data protection standards
+      that apply within it.</p>
       <p><strong>Strong access controls: MFA and password security</strong><br>
       Security isn't only about where your data is stored — it's also about who can access it. AlwaysReady
       supports multi-factor authentication (MFA), which adds an extra layer of protection beyond your password.
