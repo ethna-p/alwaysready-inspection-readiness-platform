@@ -83,24 +83,25 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_03',
     threshold: 14,
-    subject:   'Getting the most from your KLOEs',
+    subject:   'Getting the most from your KLOEs ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we want to share some tips on how to get the most from the KLOE section of AlwaysReady.</p>
-      <p>CQC inspections are mainly unannounced. That means you cannot rely on knowing an inspection is coming
-      before you start preparing. The providers that perform best are those who keep their KLOE ratings current
-      and their evidence up to date as a matter of routine.</p>
-      <p>Here are three things we would encourage you to do this week.</p>
-      <p><strong>Start work on your weakest KLOEs.</strong> It can be tempting to focus on the areas where you
-      are already strong. But inspectors will pay close attention to the areas where improvement is needed.
-      Identify your lowest-rated KLOEs and begin building evidence against them.</p>
-      <p><strong>Review the rating descriptions.</strong> Each KLOE includes CQC's own rating characteristics,
-      which describe what Outstanding, Good, Requires Improvement, and Inadequate look like in practice.
-      Reading these carefully will help you understand exactly what inspectors are looking for.</p>
-      <p><strong>Add specific, dated evidence.</strong> Vague statements are less convincing than concrete
-      examples. When you add a note or upload a document, be as specific as you can about what you did,
-      when you did it, and what the outcome was.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+      <p>This week: getting the most from your KLOE section ⭐</p>
+      <p><strong>Start with your weakest KLOEs</strong><br>
+      Begin with the KLOEs you feel least confident about. It can be tempting to focus on areas where you are
+      already strong, but inspectors will pay close attention to areas where improvement is needed. Identify your
+      lowest-rated KLOEs and begin building evidence against them.</p>
+      <p><strong>Review the rating descriptions</strong><br>
+      Each KLOE includes CQC's rating characteristics, which describe what Outstanding, Good, Requires Improvement,
+      and Inadequate look like in practice. Reading these carefully will help you understand exactly what
+      inspectors are looking for.</p>
+      <p><strong>Add specific, dated evidence</strong><br>
+      Record what happened, when it happened, and what the outcome was. Vague statements are far less convincing
+      than concrete, dated examples. Be as specific as you can when adding notes or uploading documents.</p>
+      <p><strong>Update little and often</strong><br>
+      Small, regular updates keep you inspection-ready all year round. You do not need to set aside large blocks
+      of time — even five minutes a day makes a real difference over weeks and months.</p>
+      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {
