@@ -619,9 +619,27 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
     `],
     ['Week 6 — Your audit trail', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>Every change made in AlwaysReady is recorded — who made the change and when. This matters because
-      CQC inspectors are interested not just in where you are now, but in the journey you have been on.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>This week we're focusing on your audit trail ⭐</p>
+      <p><strong>Every change is recorded</strong><br>
+      Every update you make in AlwaysReady is automatically logged. The system records who made the change,
+      what was updated, and when it happened. This creates a clear, reliable audit trail. It shows how your
+      service thinks, responds, and improves over time. It also helps you track progress, understand
+      decision-making, and see how actions link to outcomes.</p>
+      <p><strong>Your journey matters to CQC</strong><br>
+      CQC inspectors are interested in more than your current position. They want to understand the journey
+      you've been on. They look for evidence that you identify issues, take action, and follow through. A
+      detailed audit trail shows that your governance is active, not reactive. It demonstrates that improvements
+      are intentional, recorded, and part of everyday practice.</p>
+      <p><strong>Show continuous improvement</strong><br>
+      When inspectors can see a timeline of changes, it becomes clear how your service learns and adapts. Small
+      updates, regular reviews, and steady improvements all build a strong narrative. This helps you evidence
+      compliance, leadership, and responsiveness. It also shows that your team works together to maintain
+      high standards.</p>
+      <p><strong>Strengthen accountability and transparency</strong><br>
+      A clear record of who made each change supports good governance. It encourages shared responsibility and
+      helps everyone understand their role. It also gives managers confidence that actions are being taken and
+      recorded properly. Transparency is one of the strongest indicators of a well-led service.</p>
+      <p>You know the drill by now. Questions? Head over to the <strong>Support</strong> tab.</p>
     `],
     ['Week 7 — Sharing access with external visitors', `
       <p>Dear ${FIRST_NAME},</p>

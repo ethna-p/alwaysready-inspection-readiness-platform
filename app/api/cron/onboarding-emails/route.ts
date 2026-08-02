@@ -162,21 +162,30 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_06',
     threshold: 35,
-    subject:   'Your AlwaysReady audit trail',
+    subject:   'Your audit trail ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to draw your attention to the Audit Trail.</p>
-      <p>Every change made in AlwaysReady is recorded. When a KLOE rating is updated, when a note is added,
-      when a file is uploaded, a timestamped entry is created in the audit trail. It shows who made the change
-      and when.</p>
-      <p>This matters for two reasons.</p>
-      <p>First, it gives you an accurate record of how your compliance position has changed over time. You can
-      see exactly what work has been done and by whom.</p>
-      <p>Second, it provides evidence of continuous improvement. CQC inspectors are interested not just in
-      where you are now, but in the journey you have been on. An audit trail that shows consistent, sustained
-      effort over time is a powerful thing to be able to demonstrate.</p>
-      <p>You can access the Audit Trail from the main navigation inside the platform.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+      <p>This week we're focusing on your audit trail ⭐</p>
+      <p><strong>Every change is recorded</strong><br>
+      Every update you make in AlwaysReady is automatically logged. The system records who made the change,
+      what was updated, and when it happened. This creates a clear, reliable audit trail. It shows how your
+      service thinks, responds, and improves over time. It also helps you track progress, understand
+      decision-making, and see how actions link to outcomes.</p>
+      <p><strong>Your journey matters to CQC</strong><br>
+      CQC inspectors are interested in more than your current position. They want to understand the journey
+      you've been on. They look for evidence that you identify issues, take action, and follow through. A
+      detailed audit trail shows that your governance is active, not reactive. It demonstrates that improvements
+      are intentional, recorded, and part of everyday practice.</p>
+      <p><strong>Show continuous improvement</strong><br>
+      When inspectors can see a timeline of changes, it becomes clear how your service learns and adapts. Small
+      updates, regular reviews, and steady improvements all build a strong narrative. This helps you evidence
+      compliance, leadership, and responsiveness. It also shows that your team works together to maintain
+      high standards.</p>
+      <p><strong>Strengthen accountability and transparency</strong><br>
+      A clear record of who made each change supports good governance. It encourages shared responsibility and
+      helps everyone understand their role. It also gives managers confidence that actions are being taken and
+      recorded properly. Transparency is one of the strongest indicators of a well-led service.</p>
+      <p>You know the drill by now. Questions? Head over to the <strong>Support</strong> tab.</p>
     `,
   },
   {
