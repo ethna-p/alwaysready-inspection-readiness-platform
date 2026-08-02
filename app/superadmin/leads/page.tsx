@@ -4,6 +4,7 @@
  */
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import DeleteLeadButton from './DeleteLeadButton'
 
 export default async function SuperadminLeadsPage() {
   const supabase = createAdminClient()
@@ -38,6 +39,7 @@ export default async function SuperadminLeadsPage() {
                 <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Marketing</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Signed up</th>
+                <th className="px-5 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
@@ -68,6 +70,9 @@ export default async function SuperadminLeadsPage() {
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-ink-muted text-xs">{date}</td>
+                    <td className="px-5 py-3.5 text-right">
+                      <DeleteLeadButton id={lead.id} />
+                    </td>
                   </tr>
                 )
               })}
