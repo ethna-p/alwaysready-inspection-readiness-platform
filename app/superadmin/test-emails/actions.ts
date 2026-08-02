@@ -556,22 +556,44 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
     `],
     ['Week 3 — Getting the most from your KLOEs', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>This week: tips on how to get the most from the KLOE section.</p>
-      <p><strong>Start with your weakest KLOEs.</strong> Identify your lowest-rated KLOEs and begin building
-      evidence against them.</p>
-      <p><strong>Review the rating descriptions.</strong> Each KLOE includes CQC's own rating characteristics.</p>
-      <p><strong>Add specific, dated evidence.</strong> Be as specific as you can about what you did, when,
-      and what the outcome was.</p>
+      <p>This week: getting the most from your KLOE section ⭐</p>
+      <p><strong>Start with your weakest KLOEs</strong><br>
+      Begin with the KLOEs you feel least confident about. These areas usually need the most attention, so
+      improving them early has the biggest impact. It also shows CQC that you can spot gaps and take action
+      straight away.</p>
+      <p><strong>Review the rating descriptions</strong><br>
+      Each KLOE includes CQC's rating characteristics. These tell you exactly what 'Good' and 'Outstanding'
+      look like. Use them as a checklist to understand what you already do well and what needs strengthening.</p>
+      <p><strong>Add specific, dated evidence</strong><br>
+      Record what happened, when it happened, and what the outcome was. Add documents, notes, or examples of
+      practice. Clear, dated evidence helps inspectors see your progress and understand your decision-making.</p>
+      <p><strong>Update little and often</strong><br>
+      Small, regular updates keep you inspection-ready all year round. They also make it easier to track
+      improvements and spot gaps early.</p>
       <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ['Week 4 — Building your evidence library', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>This week we focus on evidence. AlwaysReady allows you to upload documents directly against each KLOE.
-      Policies, procedures, meeting minutes, training records, audits, and satisfaction surveys are all examples
-      of relevant evidence.</p>
-      <p><strong>Quality matters more than quantity.</strong> A small number of clear, relevant, and recent
-      documents is more useful than a large outdated collection.</p>
-      <p><strong>Cover all five key questions.</strong> Safe, Effective, Caring, Responsive, and Well-led.</p>
+      <p>This week we're focusing on evidence ⭐</p>
+      <p><strong>Upload evidence directly to each KLOE</strong><br>
+      AlwaysReady lets you upload documents straight into the KLOE they relate to. This keeps everything organised
+      and easy to find. Policies, procedures, meeting minutes, training records, audits, and satisfaction surveys
+      are all useful examples. You can also add notes, screenshots, action plans, and examples of day-to-day practice.
+      The goal is to build a clear picture of how your service works and how you make decisions.</p>
+      <p><strong>Quality matters more than quantity</strong><br>
+      A small number of strong, relevant documents is far more valuable than a large collection of outdated files.
+      Inspectors want to see evidence that reflects your current practice. Choose documents that show what you do,
+      why you do it, and how it improves care. Clear, recent evidence helps demonstrate good governance and makes
+      your inspection smoother.</p>
+      <p><strong>Cover all five key questions</strong><br>
+      Make sure your evidence reflects all five areas: Safe, Effective, Caring, Responsive, and Well-led. Each key
+      question tells part of your story. Together, they show how your service protects people, supports them well,
+      listens to their needs, adapts to change, and leads with strong governance. Balanced evidence across all five
+      areas helps inspectors understand your service as a whole.</p>
+      <p><strong>Add dates, outcomes, and context</strong><br>
+      Whenever you upload evidence, include a short note explaining what happened, when it happened, and what the
+      outcome was. This helps inspectors follow the journey from issue to action to improvement. It also shows that
+      your governance processes are active, not passive.</p>
       <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ['Week 5 — Have you tried the Daily Report?', `

@@ -107,24 +107,30 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_04',
     threshold: 21,
-    subject:   'Building your evidence library',
+    subject:   'Building your evidence library ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to focus on evidence.</p>
-      <p>Evidence is what turns a good intention into a demonstrable fact. When a CQC inspector asks how you
-      know your service is safe, well-led, or responsive, your evidence library is your answer.</p>
-      <p>AlwaysReady allows you to upload documents directly against each KLOE. Policies, procedures, meeting
-      minutes, training records, audits, satisfaction surveys, and staff supervision records are all examples
-      of the kind of evidence that supports a strong inspection outcome.</p>
-      <p>Here are a few things to keep in mind as you build your library.</p>
-      <p><strong>Quality matters more than quantity.</strong> A small number of clear, relevant, and recent
-      documents is more useful than a large collection of outdated or generic materials.</p>
-      <p><strong>Keep it current.</strong> Evidence that is more than a year old may not reflect your current
-      practice. Aim to review and refresh your evidence regularly.</p>
-      <p><strong>Cover all five key questions.</strong> CQC assesses providers against five key questions:
-      Safe, Effective, Caring, Responsive, and Well-led. Make sure you have evidence that speaks to each of them.</p>
-      <p>If you have any questions about managing your evidence, the <strong>Support</strong> tab inside the
-      platform is the best place to reach us.</p>
+      <p>This week we're focusing on evidence ⭐</p>
+      <p><strong>Upload evidence directly to each KLOE</strong><br>
+      AlwaysReady lets you upload documents straight into the KLOE they relate to. This keeps everything organised
+      and easy to find. Policies, procedures, meeting minutes, training records, audits, and satisfaction surveys
+      are all useful examples. You can also add notes, screenshots, action plans, and examples of day-to-day practice.
+      The goal is to build a clear picture of how your service works and how you make decisions.</p>
+      <p><strong>Quality matters more than quantity</strong><br>
+      A small number of strong, relevant documents is far more valuable than a large collection of outdated files.
+      Inspectors want to see evidence that reflects your current practice. Choose documents that show what you do,
+      why you do it, and how it improves care. Clear, recent evidence helps demonstrate good governance and makes
+      your inspection smoother.</p>
+      <p><strong>Cover all five key questions</strong><br>
+      Make sure your evidence reflects all five areas: Safe, Effective, Caring, Responsive, and Well-led. Each key
+      question tells part of your story. Together, they show how your service protects people, supports them well,
+      listens to their needs, adapts to change, and leads with strong governance. Balanced evidence across all five
+      areas helps inspectors understand your service as a whole.</p>
+      <p><strong>Add dates, outcomes, and context</strong><br>
+      Whenever you upload evidence, include a short note explaining what happened, when it happened, and what the
+      outcome was. This helps inspectors follow the journey from issue to action to improvement. It also shows that
+      your governance processes are active, not passive.</p>
+      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {
