@@ -267,26 +267,35 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_10',
     threshold: 63,
-    subject:   'How AlwaysReady keeps your data safe',
+    subject:   'How AlwaysReady keeps your data safe ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we would like to tell you about how we protect the data you store in AlwaysReady.</p>
-      <p>We understand that the information you enter into the platform is sensitive. Staff HR records,
-      supervision notes, and compliance documentation are not things that should be left unsecured.
-      Here is what we do to keep your data safe.</p>
-      <ul style="margin:0 0 16px;padding-left:20px;line-height:1.8">
-        <li>All data is encrypted at rest and in transit.</li>
-        <li>Every file you upload is automatically scanned for viruses and malware before it is stored.</li>
-        <li>Your data is held within the European Union and is not transferred outside of it.</li>
-        <li>Each organisation's data is completely isolated from all other organisations on the platform.</li>
-      </ul>
-      <p>We take data protection seriously and are committed to full compliance with the UK General Data
-      Protection Regulation. AlwaysReady acts as a data processor on your behalf. You remain the data controller
-      and retain full ownership of your data at all times.</p>
-      <p>You can read our full Data Security Statement and Data Retention Policy in the Help section inside
-      the platform.</p>
-      <p>If you have any questions about data security, the <strong>Support</strong> tab inside the platform
-      is the best place to reach us.</p>
+      <p>This week we're focusing on data security ⭐</p>
+      <p><strong>Your information is handled with care</strong><br>
+      We understand that the information you enter into AlwaysReady is sensitive. Protecting it is central to
+      how the platform is built. Every upload, update, and record is stored using modern security standards
+      designed to keep your data safe at all times.</p>
+      <p><strong>Your data is encrypted at all times</strong><br>
+      All data is encrypted at rest and in transit. This means your information is protected when it's stored
+      and when it's moving between your device and our servers. Encryption ensures that even if data were
+      intercepted, it would be unreadable.</p>
+      <p><strong>Every file is scanned before storage</strong><br>
+      Every document you upload is automatically scanned for viruses and malicious content. This prevents
+      harmful files from entering the system and protects your organisation's devices and records.</p>
+      <p><strong>Your data stays within the European Union</strong><br>
+      All information is stored securely within the EU. This ensures compliance with GDPR and other European
+      data-protection standards. It also means your data benefits from strict legal safeguards.</p>
+      <p><strong>Strong access controls: MFA and password security</strong><br>
+      Security isn't only about where your data is stored — it's also about who can access it. AlwaysReady
+      supports multi-factor authentication (MFA), which adds an extra layer of protection beyond your password.
+      Even if someone guessed or stole a password, MFA prevents them from logging in. We also encourage strong
+      password practices: unique passwords, regular updates, and avoiding shared logins. These small habits make
+      a big difference to your overall security.</p>
+      <p><strong>Designed for safety, transparency, and control</strong><br>
+      All of these protections work together to ensure your information is secure, traceable, and fully under
+      your control. You can confidently upload evidence, staff records, and governance documents knowing they
+      are protected at every stage.</p>
+      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `,
   },
   {

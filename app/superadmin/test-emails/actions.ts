@@ -704,13 +704,31 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
     `],
     ['Week 10 — How AlwaysReady keeps your data safe', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>We understand that the information you enter is sensitive. Here is what we do to keep your data safe.</p>
-      <ul style="margin:0 0 16px;padding-left:20px;line-height:1.8">
-        <li>All data is encrypted at rest and in transit.</li>
-        <li>Every file is scanned for viruses before it is stored.</li>
-        <li>Your data is held within the European Union.</li>
-        <li>Each organisation's data is completely isolated from all others.</li>
-      </ul>
+      <p>This week we're focusing on data security ⭐</p>
+      <p><strong>Your information is handled with care</strong><br>
+      We understand that the information you enter into AlwaysReady is sensitive. Protecting it is central to
+      how the platform is built. Every upload, update, and record is stored using modern security standards
+      designed to keep your data safe at all times.</p>
+      <p><strong>Your data is encrypted at all times</strong><br>
+      All data is encrypted at rest and in transit. This means your information is protected when it's stored
+      and when it's moving between your device and our servers. Encryption ensures that even if data were
+      intercepted, it would be unreadable.</p>
+      <p><strong>Every file is scanned before storage</strong><br>
+      Every document you upload is automatically scanned for viruses and malicious content. This prevents
+      harmful files from entering the system and protects your organisation's devices and records.</p>
+      <p><strong>Your data stays within the European Union</strong><br>
+      All information is stored securely within the EU. This ensures compliance with GDPR and other European
+      data-protection standards. It also means your data benefits from strict legal safeguards.</p>
+      <p><strong>Strong access controls: MFA and password security</strong><br>
+      Security isn't only about where your data is stored — it's also about who can access it. AlwaysReady
+      supports multi-factor authentication (MFA), which adds an extra layer of protection beyond your password.
+      Even if someone guessed or stole a password, MFA prevents them from logging in. We also encourage strong
+      password practices: unique passwords, regular updates, and avoiding shared logins. These small habits make
+      a big difference to your overall security.</p>
+      <p><strong>Designed for safety, transparency, and control</strong><br>
+      All of these protections work together to ensure your information is secure, traceable, and fully under
+      your control. You can confidently upload evidence, staff records, and governance documents knowing they
+      are protected at every stage.</p>
       <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ['Week 11 — Your data, your rights', `
