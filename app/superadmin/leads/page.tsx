@@ -6,6 +6,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import DeleteLeadButton from './DeleteLeadButton'
 
+export const dynamic = 'force-dynamic'
+
 export default async function SuperadminLeadsPage() {
   const supabase = createAdminClient()
 
