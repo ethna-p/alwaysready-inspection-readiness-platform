@@ -532,11 +532,13 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
   const weeks: [string, string][] = [
     ['Week 1 — Welcome', `
       <p>Dear ${FIRST_NAME},</p>
-      <p>Welcome to AlwaysReady. We are delighted to have you on board.</p>
-      <p>This week, we would encourage you to start building your evidence base. Log in and take a look
-      at your KLOE ratings. Begin with the areas where you feel least confident. Add notes, upload documents,
-      and start recording the work you are doing to improve.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
+      <p>Welcome to AlwaysReady — we're delighted to have you on board ⭐</p>
+      <p>This week, we encourage you to begin building your evidence base straight away. A great first step
+      is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
+      next steps. You can add notes, upload documents, and start recording your actions as you go.</p>
+      <p>This early activity is incredibly valuable — it shows CQC that you've recognised an area for
+      improvement and taken clear, proactive steps to address it.</p>
+      <p>If you need any help along the way, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
     `],
     ['Week 2 — Setting up your team', `
       <p>Dear ${FIRST_NAME},</p>

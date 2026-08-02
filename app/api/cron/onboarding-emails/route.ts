@@ -46,18 +46,15 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_01',
     threshold: 1,
-    subject:   'Welcome to AlwaysReady',
+    subject:   'Welcome to AlwaysReady — we\'re delighted to have you on board ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>Welcome to AlwaysReady. We are delighted to have you on board.</p>
-      <p>AlwaysReady is designed to help care providers like you prepare for CQC inspections with confidence.
-      Over the coming weeks, we will be sending you a short series of emails. Each one will focus on a different
-      part of the platform and how to get the most from it.</p>
-      <p>This week, we would encourage you to start building your evidence base. Evidence is at the heart of
-      inspection readiness. The stronger your evidence, the more confident you can be when an inspector arrives.</p>
-      <p>Log in and take a look at your KLOE ratings. Begin with the areas where you feel least confident. Add
-      notes, upload documents, and start recording the work you are doing to improve.</p>
-      <p>You do not need everything to be perfect before you begin. The important thing is to start.</p>
+      <p>Welcome to AlwaysReady — we're delighted to have you on board ⭐</p>
+      <p>This week, we encourage you to begin building your evidence base straight away. A great first step
+      is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
+      next steps. You can add notes, upload documents, and start recording your actions as you go.</p>
+      <p>This early activity is incredibly valuable — it shows CQC that you've recognised an area for
+      improvement and taken clear, proactive steps to address it.</p>
       <p>We also publish regular articles on CQC compliance, inspection preparation, and care sector best practice
       on our blog at <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
       We hope you find it a useful resource alongside the platform.</p>
