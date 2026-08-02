@@ -262,6 +262,134 @@ export async function uploadTrainingCertificate(
   return { success: true, message: 'Certificate uploaded.', fileId: certRow.id }
 }
 
+// ── Absence records ───────────────────────────────────────────────────────────
+
+export async function saveAbsenceRecord(
+  userId: string,
+  data: {
+    absenceType: 'sick' | 'other'
+    startDate: string
+    endDate: string | null
+    absenceDays: number | null
+    reasonCategory: string | null
+    notes: string | null
+    rtwInterviewCompleted: boolean
+    rtwInterviewDate: string | null
+    rtwNotes: string | null
+  }
+): Promise<HrActionResult & { id?: string }> {
+  const profile = await requireAdmin()
+  if (!profile) return { success: false, error: 'Admin access required.' }
+
+  if (!data.startDate) return { success: false, error: 'Start date is required.' }
+  if (data.endDate && data.endDate < data.startDate) {
+    return { success: false, error: 'End date cannot be before start date.' }
+  }
+
+  // Default absence_days to calendar days if end date is set and days not manually provided
+  let absenceDays = data.absenceDays
+  if (absenceDays === null && data.endDate) {
+    const start = new Date(data.startDate)
+    const end   = new Date(data.endDate)
+    absenceDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1
+  }
+
+  const supabase = await createClient()
+
+  const { data: row, error } = await supabase
+    .from('hr_absence_records')
+    .insert({
+      organisation_id:         profile.organisation_id,
+      user_id:                 userId,
+      absence_type:            data.absenceType,
+      start_date:              data.startDate,
+      end_date:                data.endDate ?? null,
+      absence_days:            absenceDays,
+      reason_category:         (data.reasonCategory || null) as null,
+      notes:                   data.notes ?? null,
+      rtw_interview_completed: data.rtwInterviewCompleted,
+      rtw_interview_date:      data.rtwInterviewDate ?? null,
+      rtw_notes:               data.rtwNotes ?? null,
+      recorded_by:             profile.id,
+    })
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('[saveAbsenceRecord]', error)
+    return { success: false, error: 'Failed to save absence record.' }
+  }
+
+  revalidatePath(`/dashboard/hr/${userId}`)
+  return { success: true, message: 'Absence record saved.', id: row.id }
+}
+
+export async function updateAbsenceRecord(
+  recordId: string,
+  userId: string,
+  data: {
+    endDate: string | null
+    absenceDays: number | null
+    reasonCategory: string | null
+    notes: string | null
+    rtwInterviewCompleted: boolean
+    rtwInterviewDate: string | null
+    rtwNotes: string | null
+  }
+): Promise<HrActionResult> {
+  const profile = await requireAdmin()
+  if (!profile) return { success: false, error: 'Admin access required.' }
+
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('hr_absence_records')
+    .update({
+      end_date:                data.endDate ?? null,
+      absence_days:            data.absenceDays,
+      reason_category:         (data.reasonCategory || null) as null,
+      notes:                   data.notes ?? null,
+      rtw_interview_completed: data.rtwInterviewCompleted,
+      rtw_interview_date:      data.rtwInterviewDate ?? null,
+      rtw_notes:               data.rtwNotes ?? null,
+      updated_at:              new Date().toISOString(),
+    })
+    .eq('id', recordId)
+    .eq('organisation_id', profile.organisation_id)
+
+  if (error) {
+    console.error('[updateAbsenceRecord]', error)
+    return { success: false, error: 'Failed to update absence record.' }
+  }
+
+  revalidatePath(`/dashboard/hr/${userId}`)
+  return { success: true, message: 'Absence record updated.' }
+}
+
+export async function deleteAbsenceRecord(
+  recordId: string,
+  userId: string
+): Promise<HrActionResult> {
+  const profile = await requireAdmin()
+  if (!profile) return { success: false, error: 'Admin access required.' }
+
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('hr_absence_records')
+    .delete()
+    .eq('id', recordId)
+    .eq('organisation_id', profile.organisation_id)
+
+  if (error) {
+    console.error('[deleteAbsenceRecord]', error)
+    return { success: false, error: 'Failed to delete absence record.' }
+  }
+
+  revalidatePath(`/dashboard/hr/${userId}`)
+  return { success: true, message: 'Absence record deleted.' }
+}
+
 // ── Delete certificate ────────────────────────────────────────────────────────
 
 export async function deleteTrainingCertificate(

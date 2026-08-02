@@ -9,6 +9,7 @@
  *   6. Appraisal
  *   7. Training records (per training type, with certificate uploads)
  *   8. Holiday allowance
+ *   9. Absence records (sick leave + Bradford Factor)
  */
 
 import { redirect, notFound } from 'next/navigation'
@@ -18,6 +19,7 @@ import { getCurrentUserProfile } from '@/lib/session'
 import HrStaffForm from './HrStaffForm'
 import HrTrainingSection from './HrTrainingSection'
 import HrHolidaySection from './HrHolidaySection'
+import HrAbsenceSection from './HrAbsenceSection'
 
 export default async function HrStaffDetailPage({
   params,
@@ -69,8 +71,8 @@ export default async function HrStaffDetailPage({
         .eq('organisation_id', orgId),
     ])
 
-  // Load holiday allowances and org unit setting
-  const [{ data: holidayAllowances }, { data: org }] = await Promise.all([
+  // Load holiday allowances, org unit setting, and absence records
+  const [{ data: holidayAllowances }, { data: org }, { data: absenceRecords }] = await Promise.all([
     supabase
       .from('hr_holiday_allowances')
       .select('*')
@@ -82,6 +84,12 @@ export default async function HrStaffDetailPage({
       .select('holiday_unit')
       .eq('id', orgId)
       .single(),
+    supabase
+      .from('hr_absence_records')
+      .select('*')
+      .eq('organisation_id', orgId)
+      .eq('user_id', userId)
+      .order('start_date', { ascending: false }),
   ])
 
   // Generate signed URLs for certificates (15-minute expiry)
@@ -131,6 +139,13 @@ export default async function HrStaffDetailPage({
         userId={userId}
         allowances={holidayAllowances ?? []}
         holidayUnit={org?.holiday_unit ?? 'days'}
+      />
+
+      {/* Absence records */}
+      <HrAbsenceSection
+        userId={userId}
+        records={absenceRecords ?? []}
+        leaveYearStart={holidayAllowances?.[0]?.leave_year_start ?? null}
       />
     </div>
   )
