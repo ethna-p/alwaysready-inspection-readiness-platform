@@ -1166,30 +1166,28 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `],
 
-    // ── Email 8: Early access invitation ────────────────────────────────────
+    // ── Email 8: Beta Partner teaser ─────────────────────────────────────────
     ['[Waitlist 8] Beta Partner places — if you\'d like to get started now', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We're approaching the CQC framework publication date. AlwaysReady will open to customers
-        shortly after.
+        We're approaching the CQC framework publication date. AlwaysReady will open to new customers
+        shortly after — and as a waitlist member, you'll hear about it before anyone else.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        As a waitlist member, you'll have priority access at launch. We also have a small number of
-        Beta Partner places available now. These are for services that want to start building their
-        compliance record before the public opening.
+        There's something else worth knowing. We have a small number of Beta Partner places available
+        for providers who are willing to use the platform, share feedback along the way, and — after
+        a month or so — give an honest review of their experience.
       </p>
       <p style="margin:0 0 20px;padding:20px 24px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px">
-        <strong style="color:#014D4E;font-size:15px">Beta Partner: what's included</strong><br><br>
+        <strong style="color:#014D4E;font-size:15px">In return, Beta Partners receive:</strong><br><br>
         <span style="font-size:15px;line-height:1.8;color:#1a1a1a">
-          Full platform access · Priority support · Input into new features before they're built ·
-          A reduced subscription rate locked in for 12 months from the launch date
+          A reduced subscription rate · Locked in for life · Input into new features before they're built
         </span>
       </p>
-      <p style="margin:0 0 32px">
-        <a href="https://portal.alwaysready.uk/upgrade/beta"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Find out about Beta Partner access &rarr;
-        </a>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You don't need to do anything now. When you complete your free trial and reach the subscribe
+        step, the Beta Partner offer will be there waiting for you. Full details are unlocked at
+        that point.
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
         Questions? Reply to this email or visit
