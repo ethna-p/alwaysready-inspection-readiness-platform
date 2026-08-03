@@ -290,7 +290,7 @@ export default async function AccountPage({
                 },
                 {
                   name: 'Team Management',
-                  desc: 'Invite colleagues by email. Assign roles — Admin (full access), Staff (edit assigned KLOEs), Viewer (read-only). No limit on the number of Admins per organisation.',
+                  desc: 'Invite colleagues by email. Assign roles — Admin (full access), Staff (edit assigned KLOEs), Viewer (read-only). We recommend that only the Registered Manager holds Admin access.',
                   href: '/dashboard/account?tab=team',
                 },
                 {

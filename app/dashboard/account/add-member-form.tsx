@@ -13,7 +13,7 @@ import type { TeamActionState } from './team-actions'
 
 const ROLE_OPTIONS = [
   { value: 'user',  label: 'User — can edit their assigned KLOEs' },
-  { value: 'admin', label: 'Admin — full access, can assign KLOEs and manage team' },
+  { value: 'admin', label: 'Admin — full access (recommended for Registered Manager only)' },
 ]
 
 const inputClass = `

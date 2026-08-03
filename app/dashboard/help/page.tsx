@@ -223,7 +223,7 @@ export default function HelpPage() {
           <div className="space-y-1">
             <p>• Invite team members by email — they receive a link and set their own password.</p>
             <p>• Assign roles: Admin (full access), Staff / User (view all, edit assigned KLOEs), Viewer (read-only).</p>
-            <p>• Multiple Admins supported — no limit on the number of Admins per organisation.</p>
+            <p>• We recommend that only the Registered Manager holds the Admin role. All other team members should be Staff or Viewer.</p>
             <p>• Create temporary Visitor logins for inspectors or board members, with automatic expiry.</p>
             <p>• Revoke visitor access early at any time.</p>
             <p>• Reset any team member&apos;s password from the Team page.</p>
@@ -278,7 +278,7 @@ export default function HelpPage() {
         {/* ── For Admins ─────────────────────────────────────────────────────── */}
         <Section id="for-admins" label="For Admins" colour="bg-[#00b8a6]">
           <P>
-            As an Admin, you have full access to the platform. You can view and edit all KLOEs, manage your team, assign tasks, run mock inspections, and maintain HR records. You are responsible for keeping AlwaysReady up to date and making sure the right people have the right access. A care home can have as many Admin users as it needs — for example, the Registered Care Manager and senior team members can all be Admins.
+            As an Admin, you have full access to the platform. You can view and edit all KLOEs, manage your team, assign tasks, run mock inspections, and maintain HR records. You are responsible for keeping AlwaysReady up to date and making sure the right people have the right access. We recommend that only the Registered Manager holds the Admin role. All other team members should be given Staff or Viewer access, which limits what they can see and change.
           </P>
 
           <H3>Inviting team members</H3>
@@ -288,7 +288,7 @@ export default function HelpPage() {
 
           <H3>Understanding roles</H3>
           <div className="space-y-2">
-            <p><strong>Admin</strong> — full access. Can edit all KLOEs, manage the team, assign tasks, run mock inspections, maintain HR records, and create visitor logins. Usually the Registered Care Manager or a senior manager. A care home can have multiple Admins.</p>
+            <p><strong>Admin</strong> — full access. Can edit all KLOEs, manage the team, assign tasks, run mock inspections, maintain HR records, and create visitor logins. This role should be held by the Registered Manager only. Senior staff should be given the Staff role instead.</p>
             <p><strong>Staff (User)</strong> — can view all KLOEs and update the ones assigned to them. When they log in, they see their personal &ldquo;My KLOEs&rdquo; list first.</p>
             <p><strong>Visitor</strong> — read-only. Can view everything but cannot change anything. For inspectors and external visitors. Access expires automatically.</p>
           </div>
