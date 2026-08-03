@@ -149,7 +149,8 @@ export async function POST(req: NextRequest) {
     await sendEmail({
       to: email,
       subject: "You're on the AlwaysReady waitlist",
-      type: 'transactional',
+      type: 'marketing',
+      subscriberEmail: email,
       bodyHtml: `
         <p>Hi ${displayName},</p>
         <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>

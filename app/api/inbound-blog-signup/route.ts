@@ -83,7 +83,8 @@ export async function POST(req: NextRequest) {
   await sendEmail({
     to:      email,
     subject: "You're subscribed to the AlwaysReady blog",
-    type:    'transactional',
+    type:            'marketing',
+    subscriberEmail: email,
     bodyHtml: `
       <p>Hi ${displayName},</p>
 

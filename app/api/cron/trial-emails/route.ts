@@ -39,17 +39,19 @@ type WizardStatus = {
 }
 
 type TrialEmailDef = {
-  dayKey:   string   // used as entity_id in notification_log
-  dayIndex: number   // days since trial start (trial_expires_at - 14 + dayIndex = send date)
-  subject:  string
-  bodyHtml: (firstName: string, expiryDate: string, price: string, wizard?: WizardStatus) => string
+  dayKey:      string   // used as entity_id in notification_log
+  dayIndex:    number   // days since trial start (trial_expires_at - 14 + dayIndex = send date)
+  subject:     string
+  isMarketing: boolean  // true = include unsubscribe footer; false = transactional, no opt-out
+  bodyHtml:    (firstName: string, expiryDate: string, price: string, wizard?: WizardStatus) => string
 }
 
 const TRIAL_EMAILS: TrialEmailDef[] = [
   {
-    dayKey:   'day_01',
-    dayIndex: 1,
-    subject:  'Welcome to AlwaysReady',
+    dayKey:      'day_01',
+    dayIndex:    1,
+    isMarketing: false,
+    subject:     'Welcome to AlwaysReady',
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -78,9 +80,10 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     `,
   },
   {
-    dayKey:   'day_03',
-    dayIndex: 3,
-    subject:  'Three things worth exploring in AlwaysReady',
+    dayKey:      'day_03',
+    dayIndex:    3,
+    isMarketing: false,
+    subject:     'Three things worth exploring in AlwaysReady',
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -115,9 +118,10 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     `,
   },
   {
-    dayKey:   'day_05',
-    dayIndex: 5,
-    subject:  'How are you getting on?',
+    dayKey:      'day_05',
+    dayIndex:    5,
+    isMarketing: false,
+    subject:     'How are you getting on?',
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -155,9 +159,10 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     `,
   },
   {
-    dayKey:   'day_07',
-    dayIndex: 7,
-    subject:  'You\'re halfway through your trial — here\'s a quick checklist',
+    dayKey:      'day_07',
+    dayIndex:    7,
+    isMarketing: false,
+    subject:     'You\'re halfway through your trial — here\'s a quick checklist',
     bodyHtml: (firstName, _expiryDate, _price, wizard) => {
       const w = wizard ?? { hasKloeRating: false, hasEvidence: false, hasTeamMember: false, hasHrRecord: false }
       const completedCount = [w.hasKloeRating, w.hasEvidence, w.hasTeamMember, w.hasHrRecord].filter(Boolean).length
@@ -225,9 +230,10 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     },
   },
   {
-    dayKey:   'day_09',
-    dayIndex: 9,
-    subject:  'A few things you might not have tried yet',
+    dayKey:      'day_09',
+    dayIndex:    9,
+    isMarketing: false,
+    subject:     'A few things you might not have tried yet',
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -265,9 +271,10 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     `,
   },
   {
-    dayKey:   'day_11',
-    dayIndex: 11,
-    subject:  'Your AlwaysReady trial ends in 3 days',
+    dayKey:      'day_11',
+    dayIndex:    11,
+    isMarketing: true,
+    subject:     'Your AlwaysReady trial ends in 3 days',
     bodyHtml: (firstName, expiryDate, price) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -381,9 +388,10 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     `,
   },
   {
-    dayKey:   'day_13',
-    dayIndex: 13,
-    subject:  'Your trial ends tomorrow',
+    dayKey:      'day_13',
+    dayIndex:    13,
+    isMarketing: true,
+    subject:     'Your trial ends tomorrow',
     bodyHtml: (firstName, expiryDate, price) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -619,7 +627,8 @@ export async function GET(request: Request) {
         to:       admin.email,
         subject:  emailDef.subject,
         bodyHtml,
-        type:     'transactional',
+        type:     emailDef.isMarketing ? 'marketing' : 'transactional',
+        ...(emailDef.isMarketing ? { userId: admin.id } : {}),
       })
 
       if (result.sent) {
