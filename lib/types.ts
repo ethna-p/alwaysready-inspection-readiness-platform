@@ -790,6 +790,7 @@ export type Database = {
           last_name: string | null
           email: string
           marketing_opt_in: boolean
+          nurture_opt_in: boolean
           source: string
           created_at: string
         }
@@ -799,6 +800,7 @@ export type Database = {
           last_name?: string | null
           email: string
           marketing_opt_in?: boolean
+          nurture_opt_in?: boolean
           source?: string
           created_at?: string
         }
@@ -808,6 +810,7 @@ export type Database = {
           last_name?: string | null
           email?: string
           marketing_opt_in?: boolean
+          nurture_opt_in?: boolean
           source?: string
           created_at?: string
         }

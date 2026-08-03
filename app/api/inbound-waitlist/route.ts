@@ -79,6 +79,12 @@ export async function POST(req: NextRequest) {
     (payload['email-address']    as string | undefined)?.trim() ||
     ''
 
+  const nurtureOptIn =
+    payload['nurture_opt_in']    === 'yes'  ||
+    payload['nurture_opt_in']    === 'on'   ||
+    data['nurture_opt_in']       === 'yes'  ||
+    data['nurture_opt_in']       === 'on'
+
   const marketingOptIn =
     payload['newsletter']        === 'on'   ||
     payload['newsletter']        === 'true' ||
@@ -118,6 +124,7 @@ export async function POST(req: NextRequest) {
         last_name:        lastName || null,
         email,
         marketing_opt_in: marketingOptIn,
+        nurture_opt_in:   nurtureOptIn,
       },
       { onConflict: 'email', ignoreDuplicates: false }
     )
