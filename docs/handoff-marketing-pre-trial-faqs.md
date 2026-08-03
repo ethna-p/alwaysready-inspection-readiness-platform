@@ -40,7 +40,7 @@ Yes. AlwaysReady is a governance and inspection readiness tool, not a care manag
 ---
 
 **8. Can more than one person access the account?**
-Yes. You can invite as many team members as you need directly from the platform. Each person receives an invitation email and sets their own password — there are no credentials to share manually. You can assign different roles: Admin (full access), Staff (can update their assigned KLOEs), or Visitor (read-only, for inspectors or board members). A service can have multiple Admins — for example, the Registered Manager and a senior team member can both have full access.
+Yes. You can invite as many team members as you need directly from the platform. Each person receives an invitation email and sets their own password — there are no credentials to share manually. You can assign different roles: Admin (full access), Staff (can update their assigned KLOEs), or Visitor (read-only, for inspectors or board members). We recommend that only the Registered Manager holds the Admin role — see FAQs 24 and 25.
 
 ---
 
@@ -115,6 +115,16 @@ This data comes from the CQC Syndication API — the same source CQC uses to pow
 
 **22. Does entering my CQC Location ID at sign-up send any information to CQC?**
 No. When you enter your Location ID during sign-up, AlwaysReady uses it to look up your service on the CQC public register and confirm the ID is valid. This is a read-only lookup — CQC receives no notification that you have signed up for AlwaysReady, and no information from your account is passed to them. Only services with a valid CQC Location ID on the public register can create an AlwaysReady account.
+
+---
+
+**24. Who should have the Admin role on AlwaysReady?**
+We recommend that only the Registered Manager holds the Admin role. Admin users have full access to the platform — including HR records, staff employment data, training records, absence history, and team management settings. This is sensitive information that should only be accessible to those with a genuine business need. Most team members should be given the Staff role, which allows them to work on their assigned KLOEs without seeing HR records or management settings.
+
+---
+
+**25. Can the Registered Manager give their deputy Admin access?**
+Yes. The platform allows the Admin role to be assigned to any team member. If the Registered Manager wants their deputy to have full access — for example, to provide cover during leave — they can assign the Admin role from the Team page in Account settings. This should be a deliberate decision, given the level of access it grants, including full visibility of all HR records.
 
 ---
 
