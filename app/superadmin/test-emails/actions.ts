@@ -1003,8 +1003,8 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
     ['[Waitlist 3] How AlwaysReady tracks your KLOEs', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        At the heart of AlwaysReady is your KLOE tracker. It provides a structured view of every Key
-        Line of Enquiry that applies to your service, organised by CQC's five key questions: Safe,
+        At the heart of AlwaysReady is your KLOE tracker. It offers a structured view of every Key
+        Line of Enquiry relevant to your service, organised around CQC's five key questions: Safe,
         Effective, Caring, Responsive, and Well-led.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -1022,12 +1022,11 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
         KLOE is available at any time: who updated it, when, and what changed.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        The platform calculates your overall readiness percentage and shows a breakdown by key question.
-        At a glance, you can see where your service stands and which areas need attention.
+        The platform calculates your overall readiness percentage and provides a breakdown by key
+        question. At a glance, you can see where your service stands and which areas need attention.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Next time, we'll look at what CQC's five key questions mean and what Good looks like under
-        each one.
+        Next time, we'll look at what CQC's five key questions mean in practice.
       </p>
     `],
 
@@ -1035,41 +1034,42 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
     ['[Waitlist 4] CQC\'s five key questions: what they mean in practice', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC's inspection framework is built around five key questions. They apply to every service
+        CQC's inspection framework is built around five key questions. These apply to every service
         and shape every line of enquiry an inspector pursues. Understanding what each one means shapes
-        how you record and evidence your work all year.
+        how you record and evidence your work throughout the year.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Safe</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         People are protected from abuse, risks are assessed and managed, and safeguarding systems are
-        robust and kept current. Safe staffing, meaning the right people in the right numbers, is a
+        robust and up to date. Safe staffing, meaning the right people in the right numbers, is a
         consistent focus.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Effective</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        People receive care based on good practice and evidence. This covers consent, nutrition, and
-        hydration. It also covers whether staff have the training and skills to do their jobs well.
+        People receive care based on good practice and evidence. This covers issues such as consent,
+        nutrition, and hydration. It also covers whether staff have the training and skills to do
+        their jobs well.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Caring</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         People are treated with dignity and respect, their privacy is upheld, and they are involved in
-        decisions about their care. CQC often assesses this through conversations with residents and
-        their families.
+        decisions about their care. CQC often assesses this by speaking with residents and their families.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Responsive</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Care is personalised, complaints are handled well, and the service adapts to changing needs.
-        CQC looks for evidence that care is built around individuals rather than what suits the
-        organisation.
+        CQC looks for evidence that care is centred on individuals rather than on what suits the
+        organisation. For example, is care personalised, are complaints handled effectively, and does
+        the service adapt to changing needs.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Well-led</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        This covers the culture of the service, quality assurance processes, and learning from incidents.
-        CQC also looks at how well leadership understands the service's strengths and risks. A documented
-        governance trail is often the difference between Good and Outstanding.
+        This covers the service's culture, quality-assurance processes, and incident learning. CQC
+        also assesses how well leadership understands the service's strengths and risks. Without a
+        verified audit and governance trail, high-quality daily care cannot be formally recognised,
+        limiting the service to a "Good" rating under CQC criteria.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady maps every feature to these five areas. The work you do in the platform connects
+        AlwaysReady maps every feature to these five areas. The work you do on the platform connects
         directly to what CQC assesses.
       </p>
     `],
@@ -1078,12 +1078,13 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
     ['[Waitlist 5] Workforce records that hold up to scrutiny', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Workforce records are among the first things a CQC inspector reviews. DBS checks, mandatory
-        training, supervision frequency, and appraisal history are all central to Safe and Well-led.
-        When those records are spread across spreadsheets, paper files, and shared drives, gaps appear.
+        Workforce records are among the first items a CQC inspector reviews. DBS checks, mandatory
+        training, supervision frequency, and appraisal history are central to safe and well-led care.
+        When those records are spread across spreadsheets, paper files, and shared drives, gaps can arise.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady's HR module keeps all of it in one place. For each staff member, you can record:
+        AlwaysReady's HR module keeps everything in one place. For each staff member, you can record
+        the following details:
       </p>
       <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
         <li><strong>DBS checks:</strong> date, renewal date, and frequency tracking</li>
@@ -1091,12 +1092,10 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
         <li><strong>Supervision:</strong> date, next due, and frequency tracking</li>
         <li><strong>Appraisals:</strong> date, notes, and frequency tracking</li>
         <li><strong>Holiday allowance:</strong> annual entitlement tracked in either days or hours (set at organisation level)</li>
-        <li><strong>Absence episodes,</strong> with Bradford Factor calculation and return-to-work interview tracking</li>
+        <li><strong>Absence episodes,</strong> with return-to-work interview tracking</li>
       </ul>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        The platform sends automatic reminders when a DBS check or a training certificate is due for
-        renewal. It also automatically calculates the Bradford Factor for each staff member — a standard
-        HR measure of absence patterns that CQC asks about under Well-led.
+        The platform sends automatic reminders when a DBS check or a training certificate is due for renewal.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         Next week, we'll explore what separates Good from Outstanding.
