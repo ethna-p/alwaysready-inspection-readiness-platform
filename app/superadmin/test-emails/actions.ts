@@ -938,32 +938,26 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
     ['[Waitlist 1] Welcome to the AlwaysReady waitlist', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you for joining the AlwaysReady waitlist. You're in good company.
+        Thank you for joining the AlwaysReady waitlist.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is a governance and inspection readiness platform built specifically for CQC-regulated
-        adult social care providers. It gives Registered Managers a single, organised place to track
-        compliance, manage evidence, and keep their service inspection-ready — not just when an inspection
-        is due, but every day.
+        AlwaysReady is a governance platform for CQC-regulated adult social care providers. It gives
+        Registered Managers a single place to track compliance, manage evidence, and keep their workforce
+        records current — as a year-round practice, not a periodic task.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework, which is due
-        to be published in late autumn. We'll open to customers as soon as that happens — and as a waitlist
+        We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework, due to be
+        published in late autumn. We'll open to customers as soon as that happens — and as a waitlist
         member, you'll hear first.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        While you wait, we'll send you a short series of emails with useful information about inspection
-        readiness, a look at the platform's key features, and guidance that we hope you'll find genuinely
-        helpful — regardless of whether you go on to use AlwaysReady.
-      </p>
-      <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        If you have any questions in the meantime, please visit
-        <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>
-        or read our FAQs at
-        <a href="https://alwaysready.uk" style="color:#014D4E">alwaysready.uk</a>.
+        While you wait, we'll send you a short series of emails with useful information about CQC
+        compliance, a look at the platform's features, and practical guidance for Registered Managers —
+        whether or not you go on to use AlwaysReady.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you again for your interest. We look forward to sharing more with you soon.
+        If you have any questions in the meantime, visit
+        <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
       </p>
     `],
 
@@ -971,32 +965,25 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
     ['[Waitlist 2] Why we built AlwaysReady', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Registered Managers are some of the most capable, dedicated professionals in the country.
-        They lead complex services, manage large teams, and hold direct responsibility for the safety
-        and wellbeing of vulnerable people — often under significant pressure and with limited resources.
+        Registered Managers lead complex services, manage large teams, and hold direct responsibility for
+        the safety and wellbeing of vulnerable people — often under real pressure and with limited resources.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Yet when a CQC inspection arrives, many of those same managers spend the days beforehand in a
-        scramble — hunting for evidence, chasing missing records, and trying to remember what they did
-        and when. Not because their service isn't good. But because good practice, recorded consistently
-        over time, is genuinely hard to manage without the right tools.
+        The hardest part of that job is rarely the care itself. It's the evidence. Good practice, recorded
+        consistently over time, is hard to manage when records live across spreadsheets, paper files, and
+        shared drives — each system updated by a different person, at different times, in different formats.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady was built to change that.
+        AlwaysReady was built to give that work a proper home. A single place where compliance records
+        are updated as the work happens, where evidence is attached to the standard it evidences, and
+        where a complete, timestamped history builds itself in the background.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We built it because we believe that the quality of a service should not depend on how well
-        the manager can reconstruct their evidence record under pressure. It should be there, clearly
-        organised and ready, at any moment — because it was built up steadily, day by day, as a natural
-        part of how the service operates.
-      </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        That's what AlwaysReady is designed to do. Not to add to your workload, but to give the work you
-        already do a proper home — so that when the time comes, you can walk into an inspection with
-        confidence rather than anxiety.
+        The result is a service whose compliance record reflects what it actually does — accurate,
+        current, and held to a standard a CQC inspector can see for themselves.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Over the next few weeks we'll show you exactly how it works. We hope it's useful.
+        Over the next few weeks we'll show you exactly how it works.
       </p>
     `],
 
@@ -1015,78 +1002,73 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
         <li><strong>Set a compliance status</strong> — Not Started, In Progress, or Completed</li>
         <li><strong>Record a review date</strong> and set a review frequency — monthly, quarterly, annually, or custom</li>
         <li><strong>Upload evidence</strong> — policies, audits, training records, meeting minutes, and more</li>
-        <li><strong>Add notes</strong> — context that will help you explain your position to an inspector</li>
+        <li><strong>Add notes</strong> — context that sits alongside the record for anyone who needs it</li>
         <li><strong>Assign the KLOE to a team member</strong> — with email notifications sent automatically</li>
       </ul>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Every change is time-stamped and recorded in a permanent audit trail. So when an inspector asks
-        "when did you last review this?", the answer is right there — not something you need to recall
-        from memory.
+        Every change is timestamped and recorded in a permanent audit trail. The full history of each
+        KLOE — who updated it, when, and what changed — is available at any time.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        The platform also calculates your overall readiness percentage and shows a breakdown by key question,
-        so you always know at a glance where your service stands and which areas need the most attention.
+        The platform calculates your overall readiness percentage and shows a breakdown by key question,
+        so you can see at a glance where your service stands and which areas need attention.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Next time, we'll look at one of the things CQC checks most consistently — and how to make sure
-        you're ready for it.
+        Next time, we'll look at what CQC's five key questions actually mean — and what Good looks like
+        under each one.
       </p>
     `],
 
     // ── Email 4: Educational — 5 things CQC always check ────────────────────
-    ['[Waitlist 4] The 5 things CQC always check — and what they want to see', `
+    ['[Waitlist 4] CQC\'s five key questions — what they mean in practice', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC's inspection framework is built around five key questions. They're the same for every service,
-        and they shape every line of enquiry an inspector pursues. Understanding what each one really means
-        — and what "Good" looks like in practice — is one of the most useful things you can do before
-        any inspection.
+        CQC's inspection framework is built around five key questions. They apply to every service,
+        and they shape every line of enquiry an inspector pursues. Understanding what each one means
+        in practice shapes how you record and evidence your work throughout the year.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Safe</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC wants to see that people are protected from abuse, that risks are assessed and managed, and
-        that your safeguarding systems are robust and current. Safe staffing — having the right people in
-        the right numbers — is also a frequent focus.
+        People are protected from abuse, risks are assessed and managed, and safeguarding systems are
+        robust and kept current. Safe staffing — the right people in the right numbers — is a consistent
+        focus.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Effective</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        This is about whether people get the care and treatment they need, based on good practice and
-        evidence. It covers consent, nutrition, hydration, and whether staff have the training and skills
-        to do their jobs well.
+        People receive care based on good practice and evidence. This covers consent, nutrition,
+        hydration, and whether staff have the training and skills to do their jobs well.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Caring</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC looks at whether people are treated with dignity and respect, whether their privacy is upheld,
-        and whether they are genuinely involved in decisions about their care. This is often assessed
-        through conversations with residents and their families.
+        People are treated with dignity and respect, their privacy is upheld, and they are involved in
+        decisions about their care. This is often assessed through conversations with residents and
+        their families.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Responsive</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Is care personalised? Are complaints handled well? Does the service adapt to people's changing
-        needs? CQC looks for evidence that the service is genuinely responsive to individuals, not
-        operating to a rigid routine that suits the organisation rather than the people it cares for.
+        Care is personalised, complaints are handled well, and the service adapts to people's changing
+        needs. CQC looks for evidence that care is built around individuals, not around what suits
+        the organisation.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Well-led</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        This is where governance comes in. CQC looks at the culture of the service, quality assurance
-        processes, learning from incidents, and how well the leadership team understands the service's
-        strengths and risks. A clear, evidenced governance trail is often the difference between a Good
-        and an Outstanding rating.
+        The culture of the service, quality assurance processes, learning from incidents, and how well
+        leadership understands the service's strengths and risks. A documented governance trail is often
+        the difference between Good and Outstanding.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady maps every feature directly to these five areas — so the work you do in the platform
-        always connects back to what CQC will assess.
+        AlwaysReady maps every feature to these five areas, so the work you do in the platform connects
+        directly to what CQC assesses.
       </p>
     `],
 
     // ── Email 5: Feature spotlight — HR module ───────────────────────────────
-    ['[Waitlist 5] Inspection-ready workforce records, in one place', `
+    ['[Waitlist 5] Workforce records that hold up to scrutiny', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Workforce records are one of the first things a CQC inspector reviews. DBS checks, mandatory training,
-        supervision frequency, appraisal history — they form the backbone of your Safe and Well-led evidence.
-        And they're often the area where gaps are found when records are kept across spreadsheets, paper files,
-        and shared drives.
+        Workforce records are among the first things a CQC inspector reviews. DBS checks, mandatory
+        training, supervision frequency, appraisal history — they are central to Safe and Well-led.
+        When those records are spread across spreadsheets, paper files, and shared drives, gaps appear.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         AlwaysReady's HR module keeps all of it in one place. For each staff member, you can record:
@@ -1100,17 +1082,17 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
         <li><strong>Absence episodes</strong> — with Bradford Factor calculation and return-to-work interview tracking</li>
       </ul>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        The platform sends automatic email reminders when a DBS check or training certificate is approaching
-        its renewal date, so nothing slips through the gap between inspections.
+        The platform sends automatic email reminders when a DBS check or training certificate is
+        approaching its renewal date.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        It also calculates the Bradford Factor for each staff member — a standard HR measure of absence
-        patterns that CQC can ask about under Well-led. Having this calculated automatically, with a full
-        absence history behind it, means you can respond to any query with confidence.
+        It also calculates the Bradford Factor for each staff member automatically — a standard HR measure
+        of absence patterns that CQC asks about under Well-led. The full absence history sits behind
+        the calculation, available if it's ever needed.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        All HR records are accessible to Admin users only — never visible to general staff — and are
-        covered by the same row-level security that protects all data in the platform.
+        All HR records are accessible to Admin users only, covered by the same data controls that
+        protect all information in the platform.
       </p>
     `],
 
@@ -1118,90 +1100,82 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
     ['[Waitlist 6] What separates Good from Outstanding', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Most services rated Good are doing good things. The difference between Good and Outstanding is usually
-        not the quality of care — it's the quality of the evidence, and the story it tells.
+        Services rated Good are, by definition, doing good things. The gap between Good and Outstanding
+        usually comes down to the quality of the evidence, and the story it tells over time.
       </p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Outstanding services can show their practice, not just describe it</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Outstanding services tend to share a few common characteristics:
+        The evidence trail is dated, specific, and directly linked to outcomes for people. Inspectors
+        can follow it rather than take the manager's word for it.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">They can show, not just say</p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Outstanding services record their learning</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Good services often do excellent work but struggle to evidence it clearly. Outstanding services
-        have a paper trail that proves their practice — dated, specific, and directly linked to outcomes
-        for people.
+        Inspectors look for evidence of learning from incidents, complaints, audits, and feedback.
+        Outstanding services record what they learned, what they changed, and what the outcome was —
+        not just that the incident occurred.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">They learn and improve, visibly</p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Outstanding governance is active year-round</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Inspectors look for evidence of learning — from incidents, complaints, audits, and feedback. An
-        Outstanding service doesn't just learn; it records what it learned, what it changed, and what
-        the outcome was.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Their governance is active, not passive</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        An Outstanding Well-led rating almost always comes from a service where governance is clearly
-        embedded — regular audits, a proactive response to risk, and leadership that understands the
+        An Outstanding Well-led rating comes from services where governance is embedded in day-to-day
+        practice — regular audits, a proactive response to risk, and leadership that understands the
         service's strengths and weaknesses in detail.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">They are ready at any moment</p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">90% of inspections are unannounced</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC increasingly inspects unannounced or with very short notice. Outstanding services are
-        not "inspection-ready" once a year — they are inspection-ready as a default state. That is
-        exactly what AlwaysReady is built to help you achieve.
+        Outstanding services carry a current, evidenced compliance record as a matter of course —
+        because there is no preparation window. AlwaysReady is built on that principle.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We've written more about this on our blog at
-        <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>
-        — including a post on what the Good vs Outstanding distinction looks like in practice across
-        each of the five key questions.
+        We've written more on this at
+        <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
       </p>
     `],
 
     // ── Email 7: Feature spotlight — Evidence management ────────────────────
-    ['[Waitlist 7] Building an evidence trail that stands up to inspection', `
+    ['[Waitlist 7] Building an evidence trail that holds up', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        One of the most common inspection findings is not a lack of good practice — it's a lack of
-        evidence of good practice. The service was doing the right thing. They just couldn't prove it
-        on the day.
+        Inspectors regularly find services where the evidence record doesn't reflect the quality of
+        care being delivered. The practice is good. The record isn't there.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is built around the idea that evidence should be captured as you go, not assembled
-        in a rush before an inspection. Here's how it works in practice:
+        AlwaysReady is built around capturing evidence as the work happens. Here's how it works in practice:
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Upload directly to each KLOE</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Documents are uploaded into the specific KLOE they relate to — not into a general folder. When
-        an inspector asks about your safeguarding systems, you open the KLOE, and the evidence is right there.
+        Documents are uploaded into the KLOE they relate to. When a question comes up about
+        safeguarding systems, you open the KLOE, and the evidence is right there — dated, named,
+        and attached to the correct standard.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">The audit trail is automatic</p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">The audit trail builds itself</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Every change — every status update, evidence upload, review completion, and priority change — is
-        permanently recorded with the date, time, and name of the person who made it. The audit trail
-        builds itself as you work.
+        Every status update, evidence upload, review completion, and priority change is permanently
+        recorded with the date, time, and name of the person who made it — automatically, with
+        no extra steps.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">One click to your Evidence Pack</p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Your Evidence Pack is one click away</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        At any point, you can generate a printable PDF showing your full compliance position — RAG status,
-        review dates, priorities, and evidence notes for every KLOE. It's designed to be handed to an
-        inspector or presented at a board meeting without you needing to prepare anything in advance.
+        At any point, you can generate a printable PDF showing your full compliance position — RAG
+        status, review dates, priorities, and evidence notes for every KLOE. It can be handed to an
+        inspector or presented at a board meeting.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        When your evidence is organised this way, the inspection conversation changes. Instead of
-        explaining and justifying, you're simply showing.
+        When evidence is captured as you work, inspectors can see the record directly — the same
+        record that exists on every other day of the year.
       </p>
     `],
 
     // ── Email 8: Early access invitation ────────────────────────────────────
-    ['[Waitlist 8] Your early access invitation', `
+    ['[Waitlist 8] Beta Partner places — if you\'d like to get started now', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We're getting close to the CQC framework publication date — and that means we're getting close
-        to opening AlwaysReady to customers.
+        We're approaching the CQC framework publication date, and we're opening AlwaysReady to
+        customers shortly after.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        As a waitlist member, you'll receive priority access when we launch. But we also have a small
-        number of Beta Partner places available now, for services that want to get started ahead of
-        the public opening.
+        As a waitlist member, you'll have priority access at launch. We also have a small number of
+        Beta Partner places available now, for services that want to start building their compliance
+        record before the public opening.
       </p>
       <p style="margin:0 0 20px;padding:20px 24px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px">
         <strong style="color:#014D4E;font-size:15px">Beta Partner — what's included</strong><br><br>
@@ -1210,10 +1184,6 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
           A reduced subscription rate locked in for 12 months from the launch date
         </span>
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Beta Partners are services that want to build their compliance record now — so that when the
-        new framework arrives, they're already ahead. If that sounds like you, we'd love to hear from you.
-      </p>
       <p style="margin:0 0 32px">
         <a href="https://portal.alwaysready.uk/upgrade/beta"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
@@ -1221,21 +1191,17 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions, reply to this email or visit
+        Questions? Reply to this email or visit
         <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
       </p>
     `],
 
     // ── Email 9: New CQC framework explainer ────────────────────────────────
-    ['[Waitlist 9] The new CQC framework is here — what it means for your service', `
+    ['[Waitlist 9] The new CQC framework — what it means for your service', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC has now published the new Adult Social Care Assessment Framework. This is the framework
-        that will shape every inspection going forward — and understanding it now, before inspectors
-        begin applying it, gives you a real advantage.
-      </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Here is what you need to know:
+        CQC has now published the new Adult Social Care Assessment Framework. Understanding it now,
+        before inspectors begin applying it, shapes how you build your evidence record from the start.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">The five key questions remain</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -1245,36 +1211,36 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Evidence expectations are higher</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         The new framework places greater emphasis on continuous, documented governance activity.
-        Services that have been building their evidence base consistently will be significantly
-        better placed than those that review and record only when an inspection is approaching.
+        Services with a consistent evidence record built over time are better placed to demonstrate
+        compliance under it.
       </p>
       <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">AlwaysReady is built for this framework</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Every KLOE in AlwaysReady maps directly to the new framework. The moment you log in, your
-        compliance tracker reflects the structure CQC will use to assess your service.
+        Every KLOE in AlwaysReady maps directly to the new framework. From the moment you log in,
+        your compliance tracker reflects the structure CQC uses to assess your service.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We'll be publishing a detailed breakdown of the new framework on our blog shortly, with
-        practical guidance on what it means for each key question. We'll send you a link when it's live.
+        We're publishing a detailed breakdown of the new framework on our blog shortly, with practical
+        guidance on what it means for each key question. We'll send you the link when it's live.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is launching very soon. Watch for our next email.
+        AlwaysReady is launching very soon.
       </p>
     `],
 
     // ── Email 10: Launch announcement ────────────────────────────────────────
-    ['[Waitlist 10] AlwaysReady is now open — your access is ready', `
+    ['[Waitlist 10] AlwaysReady is open — your access is ready', `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         AlwaysReady is now open. As a waitlist member, you have priority access.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your 14-day free trial gives you full access to every feature — the KLOE tracker, the HR module,
-        evidence management, the audit trail, the mock inspection, and the Evidence Pack. No payment is
-        required until your trial ends.
+        Your 14-day free trial gives you full access to every feature — the KLOE tracker, HR module,
+        evidence management, audit trail, mock inspection, and Evidence Pack. No payment is required
+        until your trial ends.
       </p>
       <div style="margin:0 0 24px;padding:20px 24px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
-        <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">What's included in your trial</p>
+        <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">What's included</p>
         <ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.9;color:#1a1a1a">
           <li>KLOE tracker — pre-loaded with the new CQC framework</li>
           <li>Evidence uploads and document management</li>
@@ -1287,7 +1253,7 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
       </div>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         After your trial, a full subscription is <strong>£75/month</strong>. Cancel anytime.
-        If you subscribed as a charity, your discounted rate applies from day one.
+        Charity discount applies automatically if you registered as a charity.
       </p>
       <p style="margin:0 0 32px">
         <a href="https://portal.alwaysready.uk/trial"
@@ -1296,9 +1262,8 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions before getting started, our team is available at
+        Any questions before you start — we're at
         <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
-        We look forward to having you on board.
       </p>
     `],
   ]
