@@ -1181,7 +1181,7 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
       <p style="margin:0 0 20px;padding:20px 24px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px">
         <strong style="color:#014D4E;font-size:15px">In return, Beta Partners receive:</strong><br><br>
         <span style="font-size:15px;line-height:1.8;color:#1a1a1a">
-          A reduced subscription rate · Locked in for life · Input into new features before they're built
+          A reduced subscription rate, locked in for life · Input into new features before they're built
         </span>
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
