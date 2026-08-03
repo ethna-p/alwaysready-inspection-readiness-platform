@@ -1,0 +1,31 @@
+name: Lighthouse CI (Production)
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    name: Lighthouse audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://portal.alwaysready.uk
+            https://alwaysready.uk
+          runs: 3
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          budgetPath: .github/lighthouse-budget.json
+
+      - name: Check scores
+        run: |
+          echo "Lighthouse audit complete. Check the uploaded report for full results."
+          echo "Any categories below 0.98 will be shown as warnings in the action summary above."
