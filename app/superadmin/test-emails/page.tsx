@@ -18,7 +18,8 @@ const GROUPS: Group[] = [
   { id: 'kloe',       label: 'KLOE reminders',          description: 'KLOE assigned, due in 7 days, overdue', count: 3 },
   { id: 'hr',         label: 'HR reminders',            description: 'HR field due in 30 days, overdue', count: 2 },
   { id: 'account',    label: 'Account emails',          description: 'Password reset, password changed, new user welcome with credentials', count: 3 },
-  { id: 'waitlist',   label: 'Waitlist nurture',        description: 'Welcome, founder story, feature spotlights, early access, framework launch, open for business', count: 10 },
+  { id: 'waitlist',        label: 'Waitlist nurture (1–8)',   description: 'Welcome, founder story, feature spotlights, Beta Partner offer', count: 8 },
+  { id: 'waitlist-launch', label: 'Waitlist launch (9–10)',  description: 'Framework published, open for business — send manually from Leads page', count: 2 },
 ]
 
 interface GroupState {
