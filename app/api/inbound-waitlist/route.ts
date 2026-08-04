@@ -22,6 +22,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -151,24 +152,46 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Send auto-responder (new leads only) ──────────────────────────────────
+  // ── Send welcome email (new leads only) ───────────────────────────────────
   if (isNew) {
-    await sendEmail({
-      to: email,
-      subject: "You're on the AlwaysReady waitlist",
-      type: 'marketing',
-      subscriberEmail: email,
-      bodyHtml: `
-        <p>Hi ${displayName},</p>
-        <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>
-        <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
-           and we'll open to new customers as soon as the framework is published.
-           When that happens, you'll be the first to know.</p>
-        <p>In the meantime, if you have any questions about the platform, feel free to reply
-           to this email or visit
-           <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
-      `,
-    })
+    if (nurtureOptIn) {
+      // Send nurture Email 1 and record that it has been sent
+      const email1 = getWaitlistNurtureEmail(1, displayName)
+      if (email1) {
+        await sendEmail({
+          to: email,
+          subject: email1.subject,
+          type: 'marketing',
+          subscriberEmail: email,
+          bodyHtml: email1.bodyHtml,
+        })
+        await supabase
+          .from('waitlist_leads')
+          .update({
+            nurture_emails_sent: 1,
+            nurture_last_sent_at: new Date().toISOString(),
+          })
+          .eq('email', email)
+      }
+    } else {
+      // Simple auto-responder for non-nurture leads
+      await sendEmail({
+        to: email,
+        subject: "You're on the AlwaysReady waitlist",
+        type: 'marketing',
+        subscriberEmail: email,
+        bodyHtml: `
+          <p>Hi ${displayName},</p>
+          <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>
+          <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
+             and we'll open to new customers as soon as the framework is published.
+             When that happens, you'll be the first to know.</p>
+          <p>In the meantime, if you have any questions about the platform, feel free to reply
+             to this email or visit
+             <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
+        `,
+      })
+    }
   }
 
   // ── Send blog subscription confirmation ───────────────────────────────────

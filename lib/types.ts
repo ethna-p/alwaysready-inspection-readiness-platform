@@ -791,6 +791,8 @@ export type Database = {
           email: string
           marketing_opt_in: boolean
           nurture_opt_in: boolean
+          nurture_emails_sent: number
+          nurture_last_sent_at: string | null
           source: string
           created_at: string
         }
@@ -801,6 +803,8 @@ export type Database = {
           email: string
           marketing_opt_in?: boolean
           nurture_opt_in?: boolean
+          nurture_emails_sent?: number
+          nurture_last_sent_at?: string | null
           source?: string
           created_at?: string
         }
@@ -811,6 +815,8 @@ export type Database = {
           email?: string
           marketing_opt_in?: boolean
           nurture_opt_in?: boolean
+          nurture_emails_sent?: number
+          nurture_last_sent_at?: string | null
           source?: string
           created_at?: string
         }
