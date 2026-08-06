@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import type { MockInspectionRating } from '@/lib/types'
 import PrintButton from './PrintButton'
+import CreateActionFromFinding from './CreateActionFromFinding'
 
 export const metadata = { title: 'Mock Inspection Report — AlwaysReady' }
 
@@ -116,9 +117,21 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
     byKeyQuestion[kqId].findings.push(f)
   }
 
+  // Load team members for the action item assignee dropdown
+  const { data: teamRows } = await supabase
+    .from('users')
+    .select('id, full_name, email')
+    .eq('organisation_id', profile!.organisation_id!)
+    .neq('role', 'viewer')
+    .order('full_name')
+  const teamMembers = (teamRows ?? []).map(u => ({
+    id:   u.id,
+    name: u.full_name ?? u.email ?? 'Unknown',
+  }))
+
   // Build action plan tiers
-  const mustAddress: { title: string; action: string; rating: MockInspectionRating }[] = []
-  const strengthen:  { title: string; action: string; rating: MockInspectionRating }[] = []
+  const mustAddress: { kloItemId: string; title: string; action: string; rating: MockInspectionRating }[] = []
+  const strengthen:  { kloItemId: string; title: string; action: string; rating: MockInspectionRating }[] = []
   const maintain:    { title: string }[] = []
 
   for (const f of findings) {
@@ -143,6 +156,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
         : f.notes ?? 'Review evidence and strengthen your approach for this area.'
 
       mustAddress.push({
+        kloItemId: kloId,
         title,
         action: gapText || f.notes || 'Review and strengthen evidence for this KLOE.',
         rating,
@@ -151,6 +165,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
       const partialGaps = gaps.filter((g: ResponseWithItem) => g.response === 'partial')
       if (partialGaps.length > 0 || !gaps.length) {
         strengthen.push({
+          kloItemId: kloId,
           title,
           action: partialGaps.length > 0
             ? partialGaps.map((g: ResponseWithItem) => {
@@ -261,6 +276,12 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
                   <p className="text-sm text-ink leading-relaxed">
                     You need to: {item.action}
                   </p>
+                  <CreateActionFromFinding
+                    kloItemId={item.kloItemId}
+                    kloTitle={item.title}
+                    suggestedAction={item.action}
+                    teamMembers={teamMembers}
+                  />
                 </div>
               ))}
             </div>
@@ -281,6 +302,12 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
                   <p className="text-sm text-ink leading-relaxed">
                     We recommend: {item.action}
                   </p>
+                  <CreateActionFromFinding
+                    kloItemId={item.kloItemId}
+                    kloTitle={item.title}
+                    suggestedAction={item.action}
+                    teamMembers={teamMembers}
+                  />
                 </div>
               ))}
             </div>
