@@ -3,32 +3,13 @@
  * Admin only.
  */
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import StartMockInspectionForm from './StartMockInspectionForm'
+import MockInspectionsList from './MockInspectionsList'
+import type { InspectionListItem } from './MockInspectionsList'
 
 export const metadata = { title: 'Mock Inspections — AlwaysReady' }
-
-type InspectionListItem = {
-  id: string
-  type: 'full' | 'partial'
-  status: 'in_progress' | 'completed'
-  started_at: string
-  completed_at: string | null
-  key_questions: { name: string } | null
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric',
-  })
-}
-
-const STATUS_STYLE: Record<string, string> = {
-  in_progress: 'bg-yellow-100 text-yellow-700',
-  completed:   'bg-green-100 text-green-700',
-}
 
 export default async function MockInspectionsPage() {
   const profile = await getCurrentUserProfile()
@@ -74,40 +55,7 @@ export default async function MockInspectionsPage() {
 
       {/* Past inspections */}
       {inspections && inspections.length > 0 && (
-        <div>
-          <h2 className="text-base font-semibold text-brand mb-3">Previous inspections</h2>
-          <div className="space-y-3">
-            {inspections.map((insp: InspectionListItem) => {
-              const label = insp.type === 'full'
-                ? 'Full inspection'
-                : `Partial — ${insp.key_questions?.name ?? 'Unknown'}`
-              const statusLabel = insp.status === 'completed' ? 'Completed' : 'In progress'
-              const statusStyle = STATUS_STYLE[insp.status] ?? 'bg-fill-dim text-ink-muted'
-              const target = insp.status === 'completed'
-                ? `/dashboard/mock-inspections/${insp.id}/report`
-                : `/dashboard/mock-inspections/${insp.id}`
-
-              return (
-                <Link
-                  key={insp.id}
-                  href={target}
-                  className="flex items-center justify-between bg-card border border-line rounded-xl px-5 py-4 hover:border-[#00b8a6] transition-colors group"
-                >
-                  <div>
-                    <p className="text-sm font-semibold text-ink group-hover:text-brand">{label}</p>
-                    <p className="text-xs text-ink-muted mt-0.5">Started {formatDate(insp.started_at)}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyle}`}>
-                      {statusLabel}
-                    </span>
-                    <span className="text-ink-muted group-hover:text-brand text-sm">→</span>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
+        <MockInspectionsList inspections={inspections} />
       )}
     </div>
   )
