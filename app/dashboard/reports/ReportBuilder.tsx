@@ -48,12 +48,23 @@ export type HrRow = {
   mandatory_training_complete: boolean
 }
 
+export type MockInspectionYear = {
+  id: string
+  type: 'full' | 'partial'
+  started_at: string
+  completed_at: string | null
+  conducted_by_name: string | null
+  key_question_name: string | null   // for partial inspections
+  ratings: { name: string; worstRating: string }[]
+}
+
 interface Props {
   orgName: string
   keyQuestions: string[]
   kloes: KloeRow[]
   actions: ActionRow[]
   hrStaff: HrRow[]
+  mockInspections: MockInspectionYear[]
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -100,6 +111,32 @@ const HR_STATUS_COLOURS: Record<string, string> = {
   not_set:  '#6b7280',
 }
 
+const MOCK_RATING_LABELS: Record<string, string> = {
+  outstanding:          'Outstanding',
+  good:                 'Good',
+  requires_improvement: 'Requires Improvement',
+  inadequate:           'Inadequate',
+}
+
+const MOCK_RATING_COLOURS: Record<string, string> = {
+  outstanding:          '#7e22ce',
+  good:                 '#15803d',
+  requires_improvement: '#b45309',
+  inadequate:           '#b91c1c',
+}
+
+const RATING_ORDER: Record<string, number> = {
+  inadequate: 0, requires_improvement: 1, good: 2, outstanding: 3,
+}
+
+function trendArrow(prev: string | undefined, curr: string): { symbol: string; colour: string } | null {
+  if (!prev) return null
+  const diff = (RATING_ORDER[curr] ?? 0) - (RATING_ORDER[prev] ?? 0)
+  if (diff > 0)  return { symbol: '↑', colour: '#15803d' }
+  if (diff < 0)  return { symbol: '↓', colour: '#b91c1c' }
+  return { symbol: '→', colour: '#6b7280' }
+}
+
 // ─── Filter toggle ────────────────────────────────────────────────────────────
 
 function Toggle({
@@ -140,14 +177,16 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, hrStaff }: Props) {
+export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, hrStaff, mockInspections }: Props) {
   // ── Filter state ────────────────────────────────────────────────────────────
   const [selectedKQs, setSelectedKQs]         = useState<Set<string>>(new Set(keyQuestions))
   const [showKloes, setShowKloes]             = useState(true)
   const [showActions, setShowActions]         = useState(true)
   const [showHr, setShowHr]                   = useState(true)
+  const [showAnnualReview, setShowAnnualReview] = useState(true)
   const [actionStatus, setActionStatus]       = useState('all')
   const [selectedStaff, setSelectedStaff]     = useState('all')
+  const [reviewYear, setReviewYear]           = useState(new Date().getFullYear())
 
   function toggleKQ(name: string, checked: boolean) {
     setSelectedKQs(prev => {
@@ -183,6 +222,17 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
     [hrStaff, selectedStaff]
   )
 
+  const filteredMocks = useMemo(() =>
+    mockInspections.filter(m => new Date(m.started_at).getFullYear() === reviewYear),
+    [mockInspections, reviewYear]
+  )
+
+  // Available years from inspection history
+  const availableYears = useMemo(() => {
+    const years = [...new Set(mockInspections.map(m => new Date(m.started_at).getFullYear()))]
+    return years.sort((a, b) => b - a)
+  }, [mockInspections])
+
   const allKQsSelected = selectedKQs.size === keyQuestions.length
 
   const generatedAt = new Date().toLocaleDateString('en-GB', {
@@ -203,9 +253,10 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
         <div className="bg-card border border-line rounded-xl p-5">
           <p className="text-sm font-semibold text-ink mb-3">Sections to include</p>
           <div className="flex flex-wrap gap-4">
-            <Toggle label="KLOE Summary"       checked={showKloes}   onChange={setShowKloes} />
-            <Toggle label="Action Plan Items"  checked={showActions} onChange={setShowActions} />
-            <Toggle label="HR Compliance"      checked={showHr}      onChange={setShowHr} />
+            <Toggle label="KLOE Summary"       checked={showKloes}         onChange={setShowKloes} />
+            <Toggle label="Action Plan Items"  checked={showActions}       onChange={setShowActions} />
+            <Toggle label="HR Compliance"      checked={showHr}            onChange={setShowHr} />
+            <Toggle label="Annual Review"      checked={showAnnualReview}  onChange={setShowAnnualReview} />
           </div>
         </div>
 
@@ -262,6 +313,26 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                     {h.full_name ?? h.user_id}
                   </option>
                 ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Annual review year selector */}
+        {showAnnualReview && mockInspections.length > 0 && (
+          <div className="bg-card border border-line rounded-xl p-5">
+            <p className="text-sm font-semibold text-ink mb-3">Annual review filters</p>
+            <div className="max-w-xs">
+              <label className="block text-xs font-medium text-ink-dim mb-1">Year</label>
+              <select
+                value={reviewYear}
+                onChange={e => setReviewYear(Number(e.target.value))}
+                className={inputClass}
+              >
+                {availableYears.length > 0
+                  ? availableYears.map(y => <option key={y} value={y}>{y}</option>)
+                  : <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+                }
               </select>
             </div>
           </div>
@@ -421,6 +492,96 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                 </tbody>
               </table>
             )}
+          </div>
+        )}
+
+        {/* ── Section 4: Annual Review ─────────────────────────────────────── */}
+        {showAnnualReview && (
+          <div>
+            <SectionHeading>Annual Review — Mock Inspections {reviewYear} ({filteredMocks.length})</SectionHeading>
+            {filteredMocks.length === 0 ? (
+              <p style={{ color: '#6b7280', fontSize: '12px' }}>No completed mock inspections found for {reviewYear}.</p>
+            ) : (() => {
+              // Build a map of previous ratings per key question per inspection
+              // so we can show trend arrows
+              const prevRatings: Record<string, string> = {}
+
+              return filteredMocks.map((insp, inspIdx) => {
+                const label = insp.type === 'full'
+                  ? 'Full Inspection'
+                  : `Partial — ${insp.key_question_name ?? 'Unknown'}`
+
+                const section = (
+                  <div key={insp.id} style={{ marginBottom: '20px', pageBreakInside: 'avoid' }}>
+                    {/* Inspection header */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '8px 12px', marginBottom: '8px' }}>
+                      <div>
+                        <span style={{ fontWeight: 600, fontSize: '13px' }}>{label}</span>
+                        {insp.conducted_by_name && (
+                          <span style={{ color: '#6b7280', fontSize: '11px', marginLeft: '12px' }}>
+                            Conducted by {insp.conducted_by_name}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                        {formatDate(insp.started_at)}
+                        {insp.completed_at && insp.completed_at !== insp.started_at
+                          ? ` – ${formatDate(insp.completed_at)}`
+                          : ''}
+                      </span>
+                    </div>
+
+                    {/* Ratings table */}
+                    {insp.ratings.length > 0 ? (
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                        <thead>
+                          <tr style={{ backgroundColor: '#f3f4f6' }}>
+                            {['Key Question', 'Self-Assessed Rating', 'Trend'].map(h => (
+                              <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 600, fontSize: '11px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
+                                {h}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {insp.ratings.map((r, i) => {
+                            const prevKey  = `${r.name}`
+                            const trend    = trendArrow(prevRatings[prevKey], r.worstRating)
+                            // Update prevRatings for next inspection
+                            prevRatings[prevKey] = r.worstRating
+                            return (
+                              <tr key={r.name} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                                <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{r.name}</td>
+                                <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                                  <span style={{ color: MOCK_RATING_COLOURS[r.worstRating] ?? '#374151', fontWeight: 600 }}>
+                                    {MOCK_RATING_LABELS[r.worstRating] ?? r.worstRating}
+                                  </span>
+                                </td>
+                                <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                                  {trend ? (
+                                    <span style={{ color: trend.colour, fontWeight: 700, fontSize: '14px' }}>
+                                      {trend.symbol}
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: '#9ca3af', fontSize: '11px' }}>
+                                      {inspIdx === 0 ? 'First inspection' : '—'}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <p style={{ color: '#6b7280', fontSize: '12px', paddingLeft: '8px' }}>No ratings recorded.</p>
+                    )}
+                  </div>
+                )
+
+                return section
+              })
+            })()}
           </div>
         )}
 
