@@ -14,7 +14,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
-import PeoplesVoiceClient, { type StatementWithEvidence } from './PeoplesVoiceClient'
+import PeoplesVoiceClient, { type StatementWithEvidence, type EvidenceHistoryEntry } from './PeoplesVoiceClient'
 
 export const metadata = { title: "People's Voice | AlwaysReady" }
 
@@ -47,13 +47,51 @@ export default async function PeoplesVoicePage() {
     (evidenceRows ?? []).map(e => [e.i_statement_id, e])
   )
 
-  // Merge statements with their evidence and group by key_question
+  // Fetch evidence history and build a name lookup for who made each change
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: historyRows } = await (supabase as any)
+    .from('i_statement_evidence_history')
+    .select('i_statement_id, confidence, evidence_summary, action_needed, recorded_by, recorded_at')
+    .order('recorded_at', { ascending: false })
+
+  // Resolve recorder names
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const typedHistory = (historyRows ?? []) as any[]
+  const recorderIds = [...new Set(typedHistory.map((h: any) => h.recorded_by).filter(Boolean))] as string[]
+  const recorderMap = new Map<string, string>()
+  if (recorderIds.length > 0) {
+    const { data: recorders } = await supabase
+      .from('users')
+      .select('id, full_name, email')
+      .in('id', recorderIds)
+    for (const u of recorders ?? []) {
+      recorderMap.set(u.id, u.full_name ?? u.email ?? 'Unknown')
+    }
+  }
+
+  // Group history by i_statement_id
+  const historyByStatement = new Map<string, EvidenceHistoryEntry[]>()
+  for (const h of typedHistory) {
+    if (!historyByStatement.has(h.i_statement_id)) {
+      historyByStatement.set(h.i_statement_id, [])
+    }
+    historyByStatement.get(h.i_statement_id)!.push({
+      confidence:       h.confidence,
+      evidence_summary: h.evidence_summary,
+      action_needed:    h.action_needed,
+      recorded_by_name: h.recorded_by ? (recorderMap.get(h.recorded_by) ?? null) : null,
+      recorded_at:      h.recorded_at,
+    })
+  }
+
+  // Merge statements with their evidence + history, group by key_question
   const grouped: Record<string, StatementWithEvidence[]> = {}
   for (const stmt of statements) {
     if (!grouped[stmt.key_question]) grouped[stmt.key_question] = []
     grouped[stmt.key_question].push({
       ...stmt,
       evidence: evidenceMap.get(stmt.id) ?? null,
+      history:  historyByStatement.get(stmt.id) ?? [],
     })
   }
 
@@ -105,7 +143,7 @@ export default async function PeoplesVoicePage() {
       )}
 
       {/* Statement groups */}
-      <PeoplesVoiceClient grouped={grouped} isViewer={isViewer} />
+      <PeoplesVoiceClient grouped={grouped} isViewer={isViewer} orgId={profile?.organisation_id ?? ''} />
 
     </div>
   )

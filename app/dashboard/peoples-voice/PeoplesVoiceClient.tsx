@@ -6,13 +6,23 @@ import type { IStatement, IStatementEvidence, IStatementConfidence } from '@/lib
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export type EvidenceHistoryEntry = {
+  confidence:       string
+  evidence_summary: string | null
+  action_needed:    string | null
+  recorded_by_name: string | null
+  recorded_at:      string
+}
+
 export type StatementWithEvidence = IStatement & {
   evidence: IStatementEvidence | null
+  history:  EvidenceHistoryEntry[]
 }
 
 interface Props {
   grouped: Record<string, StatementWithEvidence[]>
   isViewer: boolean
+  orgId: string
 }
 
 // ─── Key question display config ──────────────────────────────────────────────
@@ -52,6 +62,12 @@ function ConfidenceBadge({ confidence }: { confidence: IStatementConfidence }) {
 
 // ─── Single statement row ─────────────────────────────────────────────────────
 
+function formatHistoryDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric',
+  })
+}
+
 function StatementRow({
   item,
   isViewer,
@@ -61,6 +77,7 @@ function StatementRow({
 }) {
   const existing = item.evidence
   const [open, setOpen]                         = useState(false)
+  const [showHistory, setShowHistory]           = useState(false)
   const [confidence, setConfidence]             = useState<IStatementConfidence>(existing?.confidence ?? 'not_assessed')
   const [evidenceSummary, setEvidenceSummary]   = useState(existing?.evidence_summary ?? '')
   const [actionNeeded, setActionNeeded]         = useState(existing?.action_needed ?? '')
@@ -69,6 +86,7 @@ function StatementRow({
   const [isPending, startTransition]            = useTransition()
 
   const currentConfidence: IStatementConfidence = existing?.confidence ?? 'not_assessed'
+  const history = item.history ?? []
 
   function handleSave() {
     setErrorMsg(null)
@@ -117,6 +135,54 @@ function StatementRow({
             <p className="mt-1 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 leading-relaxed">
               <span className="font-semibold">Action needed: </span>{existing.action_needed}
             </p>
+          )}
+        </div>
+      )}
+
+      {/* Read-only evidence for viewers */}
+      {isViewer && existing?.evidence_summary && (
+        <div className="px-4 pb-3">
+          <p className="text-xs text-ink-dim bg-[#f0faf9] border border-[#c0eae5] rounded px-3 py-2 leading-relaxed">
+            {existing.evidence_summary}
+          </p>
+          {existing.action_needed && (
+            <p className="mt-1 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 leading-relaxed">
+              <span className="font-semibold">Action needed: </span>{existing.action_needed}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* History toggle — shown when there are history entries */}
+      {history.length > 0 && (
+        <div className="px-4 pb-3">
+          <button
+            type="button"
+            onClick={() => setShowHistory(v => !v)}
+            className="text-xs text-ink-dim hover:text-ink underline underline-offset-2 focus:outline-none focus:ring-1 focus:ring-brand rounded"
+          >
+            {showHistory ? 'Hide history' : `Show history (${history.length} update${history.length !== 1 ? 's' : ''})`}
+          </button>
+
+          {showHistory && (
+            <div className="mt-2 space-y-2">
+              {history.map((entry, i) => (
+                <div key={i} className="flex items-start gap-3 text-xs border-l-2 border-line pl-3 py-1">
+                  <div className="shrink-0 mt-0.5">
+                    <ConfidenceBadge confidence={entry.confidence as IStatementConfidence} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    {entry.evidence_summary && (
+                      <p className="text-ink leading-snug mb-0.5 line-clamp-2">{entry.evidence_summary}</p>
+                    )}
+                    <p className="text-ink-dim">
+                      {formatHistoryDate(entry.recorded_at)}
+                      {entry.recorded_by_name && <> · {entry.recorded_by_name}</>}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -196,7 +262,8 @@ function StatementRow({
 
 // ─── Main panel ───────────────────────────────────────────────────────────────
 
-export default function PeoplesVoiceClient({ grouped, isViewer }: Props) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function PeoplesVoiceClient({ grouped, isViewer, orgId }: Props) {
   return (
     <div className="space-y-8">
       {KQ_ORDER.filter(kq => grouped[kq]?.length > 0).map(kq => {
