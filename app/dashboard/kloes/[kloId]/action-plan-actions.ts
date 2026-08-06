@@ -7,6 +7,9 @@
  * updateActionItem   — edit title, description, due date, priority, assignee, status
  * signOffActionItem  — mark complete with optional completion notes
  * deleteActionItem   — admin only; hard delete
+ *
+ * Note: action_items is a runtime-migrated table not yet in Supabase's generated
+ * types, so we cast the client to `any` to bypass the type checker.
  */
 
 import { revalidatePath } from 'next/cache'
@@ -38,7 +41,8 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
     return { success: false, error: 'Invalid priority.' }
   }
 
-  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = await createClient() as any
 
   const { error } = await supabase.from('action_items').insert({
     organisation_id: profile.organisation_id,
@@ -80,7 +84,8 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
     return { success: false, error: 'Missing required fields.' }
   }
 
-  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = await createClient() as any
 
   const { error } = await supabase
     .from('action_items')
@@ -109,7 +114,8 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
 
   if (!id || !kloItemId) return { success: false, error: 'Missing required fields.' }
 
-  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = await createClient() as any
 
   const { error } = await supabase
     .from('action_items')
@@ -142,7 +148,8 @@ export async function deleteActionItem(formData: FormData): Promise<ActionResult
 
   if (!id || !kloItemId) return { success: false, error: 'Missing required fields.' }
 
-  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = await createClient() as any
 
   const { error } = await supabase.from('action_items').delete().eq('id', id)
 

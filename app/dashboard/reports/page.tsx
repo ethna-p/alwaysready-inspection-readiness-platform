@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import ReportBuilder from './ReportBuilder'
-import type { KloeRow, ActionRow, HrRow } from './ReportBuilder'
+import type { KloeRow, ActionRow, HrRow, MockInspectionYear } from './ReportBuilder'
 
 export const metadata = { title: 'Custom Reports — AlwaysReady' }
 
@@ -89,7 +89,8 @@ export default async function ReportsPage() {
   })
 
   // ── Action items ──────────────────────────────────────────────────────────
-  const { data: actionRows } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: actionRows } = await (supabase as any)
     .from('action_items')
     .select(`
       id,
@@ -109,7 +110,8 @@ export default async function ReportsPage() {
     .eq('organisation_id', orgId)
     .order('due_date', { ascending: true, nullsFirst: false })
 
-  const actions: ActionRow[] = (actionRows ?? []).map(a => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const actions: ActionRow[] = (actionRows ?? []).map((a: any) => {
     const item = a.klo_items as unknown as {
       title: string
       key_questions: { name: string } | null
@@ -157,6 +159,59 @@ export default async function ReportsPage() {
     }
   })
 
+  // ── Mock inspections (all completed, for annual review) ──────────────────
+  const { data: mockRows } = await supabase
+    .from('mock_inspections')
+    .select('id, type, status, started_at, completed_at, conducted_by, key_questions ( name )')
+    .eq('organisation_id', orgId)
+    .eq('status', 'completed')
+    .order('started_at', { ascending: true })
+
+  // For each inspection, fetch findings grouped by key question
+  const mockInspections: MockInspectionYear[] = await Promise.all(
+    (mockRows ?? []).map(async (insp) => {
+      const { data: findings } = await supabase
+        .from('mock_inspection_findings')
+        .select('rating, klo_items ( key_question_id, key_questions ( name ) )')
+        .eq('mock_inspection_id', insp.id)
+
+      // Aggregate worst rating per key question
+      const RATING_ORDER: Record<string, number> = {
+        inadequate: 0, requires_improvement: 1, good: 2, outstanding: 3,
+      }
+
+      const kqRatings: Record<string, { name: string; worstRating: string }> = {}
+      for (const f of findings ?? []) {
+        const klo = f.klo_items as unknown as { key_question_id: string; key_questions: { name: string } | null } | null
+        if (!klo?.key_question_id) continue
+        const kqId   = klo.key_question_id
+        const kqName = klo.key_questions?.name ?? 'Unknown'
+        const rating = f.rating as string
+        if (!kqRatings[kqId]) {
+          kqRatings[kqId] = { name: kqName, worstRating: rating }
+        } else {
+          if ((RATING_ORDER[rating] ?? 99) < (RATING_ORDER[kqRatings[kqId].worstRating] ?? 99)) {
+            kqRatings[kqId].worstRating = rating
+          }
+        }
+      }
+
+      const kq = insp.key_questions as unknown as { name: string } | null
+
+      return {
+        id:              insp.id,
+        type:            insp.type,
+        started_at:      insp.started_at,
+        completed_at:    insp.completed_at,
+        conducted_by_name: nameById.get(insp.conducted_by) ?? null,
+        key_question_name: kq?.name ?? null,
+        ratings: Object.values(kqRatings).sort((a, b) =>
+          keyQuestions.indexOf(a.name) - keyQuestions.indexOf(b.name)
+        ),
+      }
+    })
+  )
+
   return (
     <div className="max-w-5xl mx-auto">
       {/* Page header — hidden when printing */}
@@ -173,6 +228,7 @@ export default async function ReportsPage() {
         kloes={kloes}
         actions={actions}
         hrStaff={hrStaff}
+        mockInspections={mockInspections}
       />
     </div>
   )
