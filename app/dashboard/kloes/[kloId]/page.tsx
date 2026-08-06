@@ -20,6 +20,8 @@ import ChecklistPanel from './checklist-panel'
 import type { ItemWithCompletion } from './checklist-panel'
 import EvidencePanel from './EvidencePanel'
 import type { EvidenceFile } from './EvidencePanel'
+import ActionPlanPanel from './ActionPlanPanel'
+import type { ActionItem } from './ActionPlanPanel'
 
 type Props = { params: Promise<{ kloId: string }> }
 
@@ -193,6 +195,28 @@ export default async function KloeDetailPage({ params }: Props) {
     if (members) teamMembers.push(...members)
   }
 
+  // ── Fetch action items for this KLOE ─────────────────────────────────
+  const { data: actionItemRows } = await supabase
+    .from('action_items')
+    .select('*')
+    .eq('klo_item_id', kloId)
+    .order('status', { ascending: true })        // open/in_progress before completed
+    .order('due_date', { ascending: true, nullsFirst: false })
+
+  const actionItems: ActionItem[] = (actionItemRows ?? []) as ActionItem[]
+
+  // For action panel, non-admins still need team members to display assignee names
+  let actionTeamMembers = teamMembers
+  if (!isAdmin) {
+    const { data: allMembers } = await supabase
+      .from('users')
+      .select('id, email, full_name, role')
+      .eq('organisation_id', profile.organisation_id)
+      .in('role', ['admin', 'user'])
+      .order('full_name', { ascending: true })
+    actionTeamMembers = allMembers ?? []
+  }
+
   // ── Resolve assigned-to display name ─────────────────────────────────
   const assignedToName = record?.assigned_to
     ? (teamMembers.find(m => m.id === record.assigned_to)?.full_name
@@ -364,6 +388,27 @@ export default async function KloeDetailPage({ params }: Props) {
             />
           </section>
         )}
+
+        {/* Action plan */}
+        <section
+          className="bg-card rounded-xl border border-line p-5"
+          aria-labelledby="action-plan-heading"
+        >
+          <h2 id="action-plan-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
+            Action plan
+          </h2>
+          <p className="text-sm text-ink-dim mb-4">
+            Create and assign actions to ensure nothing gets missed. Completed actions are retained for the audit trail.
+          </p>
+          <ActionPlanPanel
+            kloItemId={kloId}
+            items={actionItems}
+            teamMembers={actionTeamMembers}
+            currentUserId={profile.id}
+            isAdmin={isAdmin}
+            isViewer={isViewer}
+          />
+        </section>
 
         {/* Assignment panel — admins only */}
         {isAdmin && (
