@@ -140,11 +140,22 @@ export default async function DashboardPage() {
   const cqcDateFormatted = formatCqcDate(cqcInspectionDate)
 
   // ── Data fetch ────────────────────────────────────────────────────────────
-  const [{ data: keyQuestions }, { data: kloItems }, { data: records }] =
+  const [
+    { data: keyQuestions },
+    { data: kloItems },
+    { data: records },
+    { count: openIncidentCount },
+  ] =
     await Promise.all([
       supabase.from('key_questions').select('id, name, display_order').order('display_order'),
       supabase.from('klo_items').select('id, key_question_id'),
       supabase.from('compliance_records').select('*'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any)
+        .from('incidents')
+        .select('id', { count: 'exact', head: true })
+        .eq('organisation_id', profile?.organisation_id)
+        .in('status', ['open', 'under_review']),
     ])
 
   const recordByKloId = new Map<string, ComplianceRecord>(
@@ -164,8 +175,66 @@ export default async function DashboardPage() {
     overallRag[calculateRAG(recordByKloId.get(k.id), now)]++
   }
 
-  // ── Team workload (admins only) ───────────────────────────────────────────
+  // ── Governance alerts (admins only) ──────────────────────────────────────
+  // Surfaces issues that fall through the cracks of individual reminders:
+  //   1. Overdue KLOEs with no assignee (existing cron won't email anyone)
+  //   2. KLOEs never started (grey — no review date set)
+  //   3. Overdue action items (no existing reminder for these)
+  //   4. Open incidents (already fetched above)
   const isAdmin = profile?.role === 'admin'
+
+  let overdueUnassignedCount = 0
+  let neverStartedCount      = 0
+  let overdueActionCount     = 0
+
+  if (isAdmin) {
+    for (const k of allKlos) {
+      const rec = recordByKloId.get(k.id)
+      const rag = calculateRAG(rec, now)
+      if (rag === 'grey') neverStartedCount++
+      if (rag === 'red' && !rec?.assigned_to) overdueUnassignedCount++
+    }
+
+    const todayStr = now.toISOString().split('T')[0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count: actionCount } = await (supabase as any)
+      .from('action_items')
+      .select('id', { count: 'exact', head: true })
+      .eq('organisation_id', profile?.organisation_id)
+      .in('status', ['open', 'in_progress'])
+      .lt('due_date', todayStr)
+      .not('due_date', 'is', null)
+    overdueActionCount = actionCount ?? 0
+  }
+
+  const governanceAlerts = isAdmin
+    ? [
+        overdueUnassignedCount > 0 && {
+          count: overdueUnassignedCount,
+          label: `overdue KLOE${overdueUnassignedCount !== 1 ? 's' : ''} with no assignee`,
+          href:  '/dashboard/daily-report',
+          colour: 'red' as const,
+        },
+        neverStartedCount > 0 && {
+          count: neverStartedCount,
+          label: `KLOE${neverStartedCount !== 1 ? 's' : ''} never started`,
+          href:  '/dashboard/kloes',
+          colour: 'grey' as const,
+        },
+        overdueActionCount > 0 && {
+          count: overdueActionCount,
+          label: `overdue action item${overdueActionCount !== 1 ? 's' : ''}`,
+          href:  '/dashboard/kloes',
+          colour: 'amber' as const,
+        },
+        (openIncidentCount ?? 0) > 0 && {
+          count: openIncidentCount as number,
+          label: `open incident${(openIncidentCount ?? 0) !== 1 ? 's' : ''} requiring review`,
+          href:  '/dashboard/incidents',
+          colour: 'red' as const,
+        },
+      ].filter(Boolean) as { count: number; label: string; href: string; colour: 'red' | 'amber' | 'grey' }[]
+    : []
 
   type TeamMemberStats = {
     id: string
@@ -389,6 +458,40 @@ export default async function DashboardPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Governance alerts ────────────────────────────────────────────── */}
+      {governanceAlerts.length > 0 && (
+        <section aria-label="Governance alerts" className="mb-8">
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+            <div className="flex items-start gap-3">
+              <span className="text-amber-500 text-xl shrink-0" aria-hidden="true">⚠</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-amber-900 mb-2">Governance attention needed</p>
+                <ul className="space-y-2">
+                  {governanceAlerts.map((alert, i) => {
+                    const dotColour = alert.colour === 'red'
+                      ? 'bg-red-500'
+                      : alert.colour === 'amber'
+                      ? 'bg-amber-500'
+                      : 'bg-gray-400'
+                    return (
+                      <li key={i} className="flex items-center gap-2">
+                        <span className={`h-2 w-2 rounded-full shrink-0 ${dotColour}`} aria-hidden="true" />
+                        <span className="text-sm text-amber-900">
+                          <strong>{alert.count}</strong> {alert.label} —{' '}
+                          <Link href={alert.href} className="text-brand underline underline-offset-2 hover:text-[#013636]">
+                            review now
+                          </Link>
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Per-key-question breakdown ───────────────────────────────────── */}
       <section aria-labelledby="breakdown-heading">
