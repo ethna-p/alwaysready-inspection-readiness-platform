@@ -111,6 +111,12 @@ export default async function SiteHeader() {
             </Link>
           )}
           <Link
+            href="/dashboard/incidents"
+            className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+          >
+            Incidents
+          </Link>
+          <Link
             href="/dashboard/peoples-voice"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
