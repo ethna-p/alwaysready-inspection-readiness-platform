@@ -110,6 +110,14 @@ export default async function SiteHeader() {
               Reports
             </Link>
           )}
+          {isAdmin && (
+            <Link
+              href="/dashboard/governance"
+              className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            >
+              Governance
+            </Link>
+          )}
           <Link
             href="/dashboard/incidents"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
