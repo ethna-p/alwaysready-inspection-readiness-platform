@@ -4,11 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { type ReviewDetail, type FacItem } from './page'
-import {
-  RATING_LABEL,
-  RATING_COLOURS,
-  RATING_STRIP,
-} from '../PostInspectionListClient'
+import { RATING_LABEL, RATING_COLOURS, RATING_STRIP } from '../rating-utils'
 import { type CqcRating, type ReviewStatus, type FacDisputeType, type FacStatus } from '../post-inspection-actions'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
