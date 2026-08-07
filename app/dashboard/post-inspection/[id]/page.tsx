@@ -65,12 +65,20 @@ export default async function PostInspectionDetailPage({
   const orgId    = profile.organisation_id
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: row } = await (supabase as any)
+  const { data: row, error: rowError } = await (supabase as any)
     .from('post_inspection_reviews')
     .select('*')
     .eq('id', params.id)
     .eq('organisation_id', orgId)
-    .single()
+    .maybeSingle()
+
+  if (rowError) {
+    return (
+      <div className="bg-red-50 border border-red-300 rounded-xl p-4 text-sm text-red-700">
+        <strong>Error loading inspection:</strong> {rowError.message}
+      </div>
+    )
+  }
 
   if (!row) notFound()
 
