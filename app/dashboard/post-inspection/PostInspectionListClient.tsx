@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { type PostInspectionReview } from './page'
 import { type CqcRating, type ReviewStatus } from './post-inspection-actions'
 
@@ -84,12 +83,11 @@ function NewReviewForm({
   onSubmit,
   onCancel,
 }: {
-  onSubmit: (fd: FormData) => Promise<{ error?: string; id?: string }>
+  onSubmit: (fd: FormData) => Promise<{ error?: string }>
   onCancel: () => void
 }) {
   const [pending, startTransition] = useTransition()
   const [error, setError]          = useState<string | null>(null)
-  const router                     = useRouter()
 
   const inp = 'w-full border border-line rounded-lg px-3 py-2 text-sm text-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand'
   const ta  = `${inp} resize-y`
@@ -101,8 +99,8 @@ function NewReviewForm({
     const fd = new FormData(e.currentTarget)
     startTransition(async () => {
       const result = await onSubmit(fd)
-      if (result.error) { setError(result.error); return }
-      if (result.id) router.push(`/dashboard/post-inspection/${result.id}`)
+      if (result?.error) setError(result.error)
+      // on success, server action calls redirect() — navigation is automatic
     })
   }
 
@@ -263,7 +261,7 @@ export default function PostInspectionListClient({
 }: {
   reviews: PostInspectionReview[]
   isAdmin: boolean
-  createReview: (fd: FormData) => Promise<{ error?: string; id?: string }>
+  createReview: (fd: FormData) => Promise<{ error?: string }>
 }) {
   const [showForm, setShowForm] = useState(false)
 

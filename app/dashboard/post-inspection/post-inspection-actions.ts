@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 
@@ -13,7 +14,7 @@ export type FacStatus   = 'pending' | 'submitted' | 'upheld' | 'rejected'
 
 // ── Review actions ────────────────────────────────────────────────────────────
 
-export async function createReview(formData: FormData): Promise<{ error?: string; id?: string }> {
+export async function createReview(formData: FormData): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
@@ -55,9 +56,10 @@ export async function createReview(formData: FormData): Promise<{ error?: string
     .single()
 
   if (error) return { error: error.message }
+  if (!data?.id) return { error: 'Record created but ID was not returned. Please refresh.' }
 
   revalidatePath('/dashboard/post-inspection')
-  return { id: data.id }
+  redirect(`/dashboard/post-inspection/${data.id}`)
 }
 
 export async function updateReview(id: string, formData: FormData): Promise<{ error?: string }> {
