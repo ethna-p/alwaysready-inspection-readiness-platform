@@ -56,8 +56,9 @@ export type ReviewDetail = {
 export default async function PostInspectionDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
+  const { id } = await params
   const profile = await getCurrentUserProfile()
   if (!profile) redirect('/login')
 
@@ -68,7 +69,7 @@ export default async function PostInspectionDetailPage({
   const { data: row, error: rowError } = await (supabase as any)
     .from('post_inspection_reviews')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('organisation_id', orgId)
     .maybeSingle()
 
@@ -86,7 +87,7 @@ export default async function PostInspectionDetailPage({
   const { data: facRows } = await (supabase as any)
     .from('fac_items')
     .select('*')
-    .eq('review_id', params.id)
+    .eq('review_id', id)
     .eq('organisation_id', orgId)
     .order('key_question')
     .order('created_at')
