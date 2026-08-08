@@ -291,7 +291,7 @@ export async function GET(request: Request) {
 
     // Log to prevent re-send this week
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any).from('notification_log').insert({
+    await supabase.from('notification_log').insert({
       organisation_id:   org.id,
       notification_type: 'weekly_digest',
       entity_type:       'governance_digest',

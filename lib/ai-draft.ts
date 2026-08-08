@@ -59,7 +59,10 @@ Visitor logins: temporary read-only logins for inspectors or board members. Crea
 Password reset: team members can change their own password from the Account page. Admins can reset any team member's password from the Team page — a temporary password is shown on screen.
 
 HR Records (Admin only)
-Accessed from HR in the navigation bar. Contains: employment details (job title, contracted hours, start date); compliance dates (DBS renewal, right to work, references); supervision and appraisal next due dates; training records (completion date, renewal frequency, next due date calculated automatically, certificate uploads); holiday allowances (entitlement and days/hours taken per leave year, tracked in days or hours); and special category data for equality monitoring (date of birth, gender, ethnicity, disability status — visible to Admins only, never shared with CQC). The HR overview dashboard shows RAG summary cards for DBS, Supervision, Appraisal, and Mandatory Training across the whole team, plus a Needs attention section for individuals who are overdue or due soon.
+Accessed from HR in the navigation bar. Contains: employment details (job title, contracted hours, start date); compliance dates (DBS renewal, right to work, references); supervision and appraisal next due dates; training records (completion date, renewal frequency, next due date calculated automatically, certificate uploads); holiday allowances (entitlement and days/hours taken per leave year, tracked in days or hours); absence records (sick leave and other absence episodes, each logged with start date, end date, days absent, reason category, notes, and return-to-work interview fields — RTW completed, date, notes); Bradford Factor calculated automatically for each staff member from absence records over a rolling 52-week period, displayed as Low, Medium, or High; year-to-date sick days shown per staff member; and special category data for equality monitoring (date of birth, gender, ethnicity, disability status — visible to Admins only, never shared with CQC). The HR overview dashboard shows RAG summary cards for DBS, Supervision, Appraisal, and Mandatory Training across the whole team, plus a Needs attention section for individuals who are overdue or due soon.
+
+Absence reason categories: Musculoskeletal, Respiratory / Cold / Flu, Mental health / Stress / Anxiety, Gastrointestinal, Injury, Other.
+Absence types: sick, other. Bradford Factor formula: S² × D (S = number of separate sickness absences in rolling 52 weeks, D = total sick days in same period). Bands: Low (0–50), Medium (51–450), High (451+).
 
 Staff members appear in HR automatically once added via the Team page — no separate HR setup is needed.
 
@@ -247,6 +250,24 @@ A: Special category data includes fields such as date of birth, gender, ethnicit
 
 Q: Can holiday be tracked in hours instead of days?
 A: Yes. Holiday allowances can be tracked in days or hours. You can change the unit for your whole organisation on the HR settings page.
+
+Q: Does AlwaysReady track sick leave and absence?
+A: Yes. The HR module includes an absence records section for each staff member where you log each episode individually — recording start and end dates, the number of days absent, a reason category, and any notes. This builds a complete absence history over time, which supports management review and demonstrates thorough workforce oversight to CQC.
+
+Q: What types of absence can I record?
+A: You can record sick leave and other absences. For each episode you select a reason category: Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other. The number of days absent is calculated automatically from the start and end dates but can be edited manually if needed.
+
+Q: Does AlwaysReady calculate the Bradford Factor?
+A: Yes. The Bradford Factor (S² × D, where S is the number of separate sickness absences and D is total days absent in a rolling 52-week period) is calculated automatically from each staff member's logged absence records and displayed as Low, Medium, or High. You do not need to calculate it manually.
+
+Q: Does AlwaysReady track return-to-work interviews?
+A: Yes. Each absence record includes fields to record whether a return-to-work interview has been completed, the date it took place, and any notes from the interview. Return-to-work interviews are a standard HR expectation in the care sector and a CQC inspection point under Safe and Well-led.
+
+Q: Can I log the reason for each absence episode?
+A: Yes. When recording an absence you can select a reason category — Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other. This lets you identify patterns across your team over time, which can inform management decisions and demonstrate proactive workforce oversight.
+
+Q: Who can access absence records?
+A: Absence records are visible to Admin users only. Staff and Viewer accounts cannot access any HR data, including absence records.
 
 ## SPECIALIST SERVICES AND SUB-SPECIALISMS
 

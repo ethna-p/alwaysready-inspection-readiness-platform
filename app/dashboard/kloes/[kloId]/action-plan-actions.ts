@@ -42,7 +42,7 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase.from('action_items').insert({
     organisation_id: profile.organisation_id,
@@ -50,7 +50,7 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
     title,
     description,
     due_date:        dueDate || null,
-    priority,
+    priority:        priority as 'high' | 'medium' | 'low',
     assigned_to:     assignedTo || null,
     created_by:      profile.id,
   })
@@ -85,11 +85,11 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('action_items')
-    .update({ title, description, due_date: dueDate || null, priority, assigned_to: assignedTo || null, status })
+    .update({ title, description, due_date: dueDate || null, priority: priority as 'high' | 'medium' | 'low', assigned_to: assignedTo || null, status: status as 'open' | 'in_progress' | 'completed' })
     .eq('id', id)
 
   if (error) {
@@ -115,7 +115,7 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
   if (!id || !kloItemId) return { success: false, error: 'Missing required fields.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('action_items')
@@ -149,7 +149,7 @@ export async function deleteActionItem(formData: FormData): Promise<ActionResult
   if (!id || !kloItemId) return { success: false, error: 'Missing required fields.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase.from('action_items').delete().eq('id', id)
 

@@ -19,7 +19,7 @@ export async function createReview(formData: FormData): Promise<{ error?: string
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const inspection_date     = formData.get('inspection_date') as string
   const draft_received_date = (formData.get('draft_received_date') as string) || null
@@ -67,7 +67,7 @@ export async function updateReview(id: string, formData: FormData): Promise<{ er
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('post_inspection_reviews')
@@ -101,7 +101,7 @@ export async function deleteReview(id: string): Promise<{ error?: string }> {
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('post_inspection_reviews')
@@ -122,9 +122,9 @@ export async function createFacItem(reviewId: string, formData: FormData): Promi
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
-  const key_question       = formData.get('key_question') as string
+  const key_question       = formData.get('key_question') as 'Safe' | 'Effective' | 'Caring' | 'Responsive' | 'Well-led'
   const inspector_finding  = (formData.get('inspector_finding') as string)?.trim()
   const dispute_type       = formData.get('dispute_type') as FacDisputeType
   const our_position       = (formData.get('our_position') as string)?.trim()
@@ -157,12 +157,12 @@ export async function updateFacItem(id: string, reviewId: string, formData: Form
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('fac_items')
     .update({
-      key_question:       formData.get('key_question') as string,
+      key_question:       formData.get('key_question') as 'Safe' | 'Effective' | 'Caring' | 'Responsive' | 'Well-led',
       inspector_finding:  (formData.get('inspector_finding') as string)?.trim(),
       dispute_type:       formData.get('dispute_type') as FacDisputeType,
       our_position:       (formData.get('our_position') as string)?.trim(),
@@ -183,7 +183,7 @@ export async function deleteFacItem(id: string, reviewId: string): Promise<{ err
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('fac_items')

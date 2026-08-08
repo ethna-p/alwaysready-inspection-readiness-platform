@@ -141,7 +141,7 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
 
   for (const table of directTables) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (supabase as any)
+    const { error } = await supabase
       .from(table)
       .delete()
       .eq('organisation_id', orgId)

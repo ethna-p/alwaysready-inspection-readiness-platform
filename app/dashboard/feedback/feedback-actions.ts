@@ -19,7 +19,7 @@ export async function createFeedback(formData: FormData): Promise<{ error?: stri
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const feedback_type          = formData.get('feedback_type') as FeedbackType
   const received_date          = formData.get('received_date') as string
@@ -68,7 +68,7 @@ export async function updateFeedback(
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const feedback_type        = formData.get('feedback_type') as FeedbackType
   const received_date        = formData.get('received_date') as string
@@ -115,7 +115,7 @@ export async function deleteFeedback(id: string): Promise<{ error?: string }> {
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('feedback_records')

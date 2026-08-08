@@ -236,6 +236,7 @@ export default function HelpPage() {
             <p>• Supervision and appraisal due dates, with RAG status tracking across the whole team.</p>
             <p>• Training records: completion dates, renewal frequency, next due date calculated automatically, certificate uploads.</p>
             <p>• Holiday allowances: entitlement and days or hours taken, tracked per leave year.</p>
+            <p>• Absence records: sick leave and other absence episodes, with reason categories, return-to-work interview tracking, Bradford Factor calculation (rolling 52 weeks), and year-to-date sick days.</p>
             <p>• HR overview dashboard showing DBS, Supervision, Appraisal, and Mandatory Training compliance across the team at a glance.</p>
             <p>• Needs attention section highlighting individual staff members who are overdue or due soon.</p>
             <p>• Special category data fields for equality monitoring (held under Equality Act 2010 obligations).</p>
@@ -389,6 +390,17 @@ export default function HelpPage() {
             Scroll to the <strong>Holiday Allowance</strong> section on a staff member&apos;s page. You can record their entitlement and days taken for the current leave year. Holiday can be tracked in days or hours — you can change the unit for your whole organisation by going to <strong>HR</strong> and clicking <strong>Change</strong> next to the holiday unit setting.
           </P>
 
+          <H3>Absence records</H3>
+          <P>
+            Scroll to the <strong>Absence Records</strong> section on a staff member&apos;s page to record sick leave and other absences. Each absence episode is logged individually with a start date, end date, and the number of days absent (calculated automatically from the dates, but editable if needed). You can select a reason category — Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other — and add any notes. This builds a complete absence history over time, supporting management review and demonstrating thorough workforce oversight to CQC.
+          </P>
+          <P>
+            Return-to-work interview details can be recorded for each absence episode — whether the interview was completed, the date it took place, and any notes. Return-to-work interviews are a standard HR expectation in the care sector and a CQC inspection point under Safe and Well-led.
+          </P>
+          <P>
+            The section also shows the staff member&apos;s <strong>Bradford Factor</strong> for the rolling 52 weeks — a standard HR measure (S&sup2; × D, where S is the number of separate sickness absences and D is total days absent) displayed as Low, Medium, or High — alongside total sick days in the current leave year.
+          </P>
+
           <H3>Special category data</H3>
           <P>
             Personal details such as date of birth, gender, ethnicity, disability status, and marital status are held in the HR record for equality monitoring purposes, as required under the Equality Act 2010 and your obligations as an employer. This data is visible only to Admin users within your organisation. It is never shared with CQC or any third party.
@@ -508,6 +520,18 @@ export default function HelpPage() {
             <FAQ
               question="How does the HR RAG dashboard work?"
               answer="The four cards at the top of the HR page (DBS, Supervision, Appraisal, Mandatory Training) show the compliance status across your whole team. Each card shows the percentage overdue, due soon, or current. If any staff member is overdue, the card turns red and shows the percentage overdue. The Needs attention section below lists those individuals by name so you can act quickly."
+            />
+            <FAQ
+              question="Can I track staff absences and sick leave?"
+              answer="Yes. The HR module includes an Absence Records section on each staff member's profile. You can log each absence episode individually with a start date, end date, days absent, a reason category, and notes. Go to HR in the navigation bar, open a staff member's record, and scroll to Absence Records."
+            />
+            <FAQ
+              question="Does AlwaysReady calculate the Bradford Factor?"
+              answer="Yes. The Bradford Factor (S² × D, where S is the number of separate sickness absences and D is total days absent over a rolling 52-week period) is calculated automatically for each staff member from their logged absence records and displayed as Low, Medium, or High. You do not need to calculate it manually."
+            />
+            <FAQ
+              question="Does AlwaysReady track return-to-work interviews?"
+              answer="Yes. Each absence episode includes fields to record whether a return-to-work interview was completed, the date it took place, and any notes. Return-to-work interviews are a standard HR expectation and a CQC inspection point under Safe and Well-led."
             />
             <FAQ
               question="What is a mock inspection?"
@@ -639,6 +663,11 @@ export default function HelpPage() {
             <FAQ question="Can staff complete daily care notes in AlwaysReady?" answer="No. AlwaysReady is not a care-planning or daily-notes system. It focuses on governance, oversight, and inspection-readiness, not on recording care." />
             <FAQ question="What is special category data and why does AlwaysReady hold it?" answer="Special category data includes fields such as date of birth, gender, ethnicity, disability status, and marital status. AlwaysReady stores this data in staff HR records for equality monitoring, as required by the Equality Act 2010 for employers. This data is visible only to Admin users within your organisation and is never shared with CQC or any third party." />
             <FAQ question="Can holiday be tracked in hours instead of days?" answer="Yes. Holiday allowances can be tracked in days or hours. You can change the unit for your whole organisation on the HR settings page." />
+            <FAQ question="Does AlwaysReady track sick leave and absence?" answer="Yes. The HR module includes an absence records section for each staff member where you log each episode individually — recording start and end dates, the number of days absent, a reason category, and any notes. This builds a complete absence history over time, which supports management review and demonstrates thorough workforce oversight to CQC." />
+            <FAQ question="What types of absence can I record?" answer="You can record sick leave and other absences. For each episode you select a reason category: Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other. The number of days absent is calculated automatically from the start and end dates but can be edited manually." />
+            <FAQ question="Does AlwaysReady calculate the Bradford Factor?" answer="Yes. The Bradford Factor (S² × D, where S is the number of separate sickness absences and D is total days absent in a rolling 52-week period) is calculated automatically from logged absence records and displayed as Low, Medium, or High." />
+            <FAQ question="Does AlwaysReady track return-to-work interviews?" answer="Yes. Each absence record includes fields to record whether a return-to-work interview has been completed, the date it took place, and any notes. Return-to-work interviews are a standard HR expectation in the care sector and a CQC inspection point under Safe and Well-led." />
+            <FAQ question="Who can see absence records?" answer="Absence records are visible to Admin users only. Staff and Viewer accounts cannot access HR data, including absence records." />
           </div>
 
           <H3>Specialist Services and Sub-Specialisms</H3>

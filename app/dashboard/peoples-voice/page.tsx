@@ -56,7 +56,7 @@ export default async function PeoplesVoicePage() {
 
   // Resolve recorder names
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const typedHistory = (historyRows ?? []) as any[]
+  const typedHistory = historyRows ?? []
   const recorderIds = [...new Set(typedHistory.map((h: any) => h.recorded_by).filter(Boolean))] as string[]
   const recorderMap = new Map<string, string>()
   if (recorderIds.length > 0) {

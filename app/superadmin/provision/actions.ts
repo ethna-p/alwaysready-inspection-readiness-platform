@@ -214,7 +214,7 @@ export async function provisionOrganisation(
     const charityLabel = isCharity ? 'Yes' : 'No'
 
     await sendEmail({
-      to: 'hello@alwaysready.uk',
+      to: process.env.SUPERADMIN_EMAIL ?? 'support@alwaysready.uk',
       subject: `[AlwaysReady] New org provisioned — ${orgName}`,
       type: 'transactional',
       bodyHtml: `

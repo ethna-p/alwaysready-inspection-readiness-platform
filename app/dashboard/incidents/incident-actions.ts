@@ -33,7 +33,7 @@ export async function createIncident(formData: FormData): Promise<{ error?: stri
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any).from('incidents').insert({
+  const { error } = await supabase.from('incidents').insert({
     organisation_id:    profile.organisation_id,
     title,
     incident_type,

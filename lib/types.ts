@@ -642,8 +642,8 @@ export type Database = {
         Row: {
           id:                string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -652,8 +652,8 @@ export type Database = {
         Insert: {
           id?:               string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -1341,6 +1341,385 @@ export type Database = {
         Relationships: []
       }
 
+      // ── Action Items ──────────────────────────────────────────────────
+
+      action_items: {
+        Row: {
+          id: string
+          organisation_id: string
+          klo_item_id: string
+          title: string
+          description: string | null
+          due_date: string | null
+          priority: 'high' | 'medium' | 'low'
+          status: 'open' | 'in_progress' | 'completed'
+          assigned_to: string | null
+          completion_notes: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          klo_item_id: string
+          title: string
+          description?: string | null
+          due_date?: string | null
+          priority?: 'high' | 'medium' | 'low'
+          status?: 'open' | 'in_progress' | 'completed'
+          assigned_to?: string | null
+          completion_notes?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          klo_item_id?: string
+          title?: string
+          description?: string | null
+          due_date?: string | null
+          priority?: 'high' | 'medium' | 'low'
+          status?: 'open' | 'in_progress' | 'completed'
+          assigned_to?: string | null
+          completion_notes?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      // ── Incidents ─────────────────────────────────────────────────────
+
+      incidents: {
+        Row: {
+          id: string
+          organisation_id: string
+          title: string
+          incident_type: 'safety' | 'safeguarding' | 'near_miss' | 'complaint' | 'other'
+          date_of_incident: string
+          description: string
+          immediate_action: string | null
+          people_involved: string | null
+          reported_externally: boolean
+          external_ref: string | null
+          status: 'open' | 'under_review' | 'closed'
+          learning_outcome: string | null
+          reported_by: string | null
+          closed_by: string | null
+          closed_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          title: string
+          incident_type: 'safety' | 'safeguarding' | 'near_miss' | 'complaint' | 'other'
+          date_of_incident: string
+          description: string
+          immediate_action?: string | null
+          people_involved?: string | null
+          reported_externally?: boolean
+          external_ref?: string | null
+          status?: 'open' | 'under_review' | 'closed'
+          learning_outcome?: string | null
+          reported_by?: string | null
+          closed_by?: string | null
+          closed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          title?: string
+          incident_type?: 'safety' | 'safeguarding' | 'near_miss' | 'complaint' | 'other'
+          date_of_incident?: string
+          description?: string
+          immediate_action?: string | null
+          people_involved?: string | null
+          reported_externally?: boolean
+          external_ref?: string | null
+          status?: 'open' | 'under_review' | 'closed'
+          learning_outcome?: string | null
+          reported_by?: string | null
+          closed_by?: string | null
+          closed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      // ── Governance Meetings ───────────────────────────────────────────
+
+      governance_meetings: {
+        Row: {
+          id: string
+          organisation_id: string
+          title: string
+          meeting_date: string
+          attendees: string | null
+          agenda: string | null
+          key_decisions: string | null
+          actions_arising: string | null
+          status: 'draft' | 'signed_off'
+          signed_off_by: string | null
+          signed_off_at: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          title: string
+          meeting_date: string
+          attendees?: string | null
+          agenda?: string | null
+          key_decisions?: string | null
+          actions_arising?: string | null
+          status?: 'draft' | 'signed_off'
+          signed_off_by?: string | null
+          signed_off_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          title?: string
+          meeting_date?: string
+          attendees?: string | null
+          agenda?: string | null
+          key_decisions?: string | null
+          actions_arising?: string | null
+          status?: 'draft' | 'signed_off'
+          signed_off_by?: string | null
+          signed_off_at?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      // ── Feedback Records ──────────────────────────────────────────────
+
+      feedback_records: {
+        Row: {
+          id: string
+          organisation_id: string
+          feedback_type: 'complaint' | 'compliment' | 'suggestion' | 'concern'
+          received_date: string
+          source: 'person_using_service' | 'family_or_carer' | 'professional' | 'anonymous' | 'other'
+          source_detail: string | null
+          summary: string
+          action_taken: string | null
+          outcome: string | null
+          status: 'open' | 'actioned' | 'closed'
+          related_key_question: string | null
+          reported_to_cqc: boolean
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          feedback_type: 'complaint' | 'compliment' | 'suggestion' | 'concern'
+          received_date: string
+          source: 'person_using_service' | 'family_or_carer' | 'professional' | 'anonymous' | 'other'
+          source_detail?: string | null
+          summary: string
+          action_taken?: string | null
+          outcome?: string | null
+          status?: 'open' | 'actioned' | 'closed'
+          related_key_question?: string | null
+          reported_to_cqc?: boolean
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          feedback_type?: 'complaint' | 'compliment' | 'suggestion' | 'concern'
+          received_date?: string
+          source?: 'person_using_service' | 'family_or_carer' | 'professional' | 'anonymous' | 'other'
+          source_detail?: string | null
+          summary?: string
+          action_taken?: string | null
+          outcome?: string | null
+          status?: 'open' | 'actioned' | 'closed'
+          related_key_question?: string | null
+          reported_to_cqc?: boolean
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      // ── Post-Inspection Reviews ───────────────────────────────────────
+
+      post_inspection_reviews: {
+        Row: {
+          id: string
+          organisation_id: string
+          inspection_date: string
+          draft_received_date: string | null
+          final_report_date: string | null
+          overall_rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          safe_rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          effective_rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          caring_rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          responsive_rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          well_led_rating: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          inspector_name: string | null
+          key_findings: string | null
+          staff_briefing: string | null
+          status: 'draft_received' | 'fac_submitted' | 'final_report' | 'action_plan_active' | 'closed'
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          inspection_date: string
+          draft_received_date?: string | null
+          final_report_date?: string | null
+          overall_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          safe_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          effective_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          caring_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          responsive_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          well_led_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          inspector_name?: string | null
+          key_findings?: string | null
+          staff_briefing?: string | null
+          status?: 'draft_received' | 'fac_submitted' | 'final_report' | 'action_plan_active' | 'closed'
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          inspection_date?: string
+          draft_received_date?: string | null
+          final_report_date?: string | null
+          overall_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          safe_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          effective_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          caring_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          responsive_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          well_led_rating?: 'outstanding' | 'good' | 'requires_improvement' | 'inadequate' | 'not_rated'
+          inspector_name?: string | null
+          key_findings?: string | null
+          staff_briefing?: string | null
+          status?: 'draft_received' | 'fac_submitted' | 'final_report' | 'action_plan_active' | 'closed'
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      fac_items: {
+        Row: {
+          id: string
+          organisation_id: string
+          review_id: string
+          key_question: 'Safe' | 'Effective' | 'Caring' | 'Responsive' | 'Well-led'
+          inspector_finding: string
+          dispute_type: 'factual_error' | 'subjective_judgment'
+          our_position: string
+          evidence_reference: string | null
+          status: 'pending' | 'submitted' | 'upheld' | 'rejected'
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          review_id: string
+          key_question: 'Safe' | 'Effective' | 'Caring' | 'Responsive' | 'Well-led'
+          inspector_finding: string
+          dispute_type: 'factual_error' | 'subjective_judgment'
+          our_position: string
+          evidence_reference?: string | null
+          status?: 'pending' | 'submitted' | 'upheld' | 'rejected'
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          review_id?: string
+          key_question?: 'Safe' | 'Effective' | 'Caring' | 'Responsive' | 'Well-led'
+          inspector_finding?: string
+          dispute_type?: 'factual_error' | 'subjective_judgment'
+          our_position?: string
+          evidence_reference?: string | null
+          status?: 'pending' | 'submitted' | 'upheld' | 'rejected'
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      // ── I Statement Evidence History ──────────────────────────────────
+
+      i_statement_evidence_history: {
+        Row: {
+          id: string
+          organisation_id: string
+          i_statement_id: string
+          confidence: string
+          evidence_summary: string | null
+          action_needed: string | null
+          recorded_by: string | null
+          recorded_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          i_statement_id: string
+          confidence: string
+          evidence_summary?: string | null
+          action_needed?: string | null
+          recorded_by?: string | null
+          recorded_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          i_statement_id?: string
+          confidence?: string
+          evidence_summary?: string | null
+          action_needed?: string | null
+          recorded_by?: string | null
+          recorded_at?: string
+        }
+        Relationships: []
+      }
+
     }
     Views: Record<string, never>
     Functions: {
@@ -1422,7 +1801,27 @@ export interface MockInspectionFinding {
   updated_at: string
 }
 
-export type NotificationLog = Database['public']['Tables']['notification_log']['Row']
+export type NotificationLog         = Database['public']['Tables']['notification_log']['Row']
+export type ActionItem              = Database['public']['Tables']['action_items']['Row']
+export type Incident                = Database['public']['Tables']['incidents']['Row']
+export type GovernanceMeeting       = Database['public']['Tables']['governance_meetings']['Row']
+export type FeedbackRecord          = Database['public']['Tables']['feedback_records']['Row']
+export type PostInspectionReview    = Database['public']['Tables']['post_inspection_reviews']['Row']
+export type FacItem                 = Database['public']['Tables']['fac_items']['Row']
+export type IStatementEvidenceHistory = Database['public']['Tables']['i_statement_evidence_history']['Row']
+
+export type ActionItemPriority      = ActionItem['priority']
+export type ActionItemStatus        = ActionItem['status']
+export type IncidentType            = Incident['incident_type']
+export type IncidentStatus          = Incident['status']
+export type GovernanceMeetingStatus = GovernanceMeeting['status']
+export type FeedbackType            = FeedbackRecord['feedback_type']
+export type FeedbackSource          = FeedbackRecord['source']
+export type FeedbackStatus          = FeedbackRecord['status']
+export type PostInspectionStatus    = PostInspectionReview['status']
+export type InspectionRating        = PostInspectionReview['overall_rating']
+export type FacItemStatus           = FacItem['status']
+export type FacDisputeType          = FacItem['dispute_type']
 
 export interface MockInspectionChecklistResponse {
   id: string
