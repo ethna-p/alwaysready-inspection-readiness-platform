@@ -21,6 +21,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -110,21 +111,44 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient()
 
   // ── Create support ticket ─────────────────────────────────────────────────
-  const { error: ticketError } = await supabase
+  const ticketMessage = company
+    ? `From: ${fullName} (${company})\n\n${message}`
+    : `From: ${fullName}\n\n${message}`
+
+  const { data: newTicket, error: ticketError } = await supabase
     .from('support_tickets')
     .insert({
       subject,
-      message: company
-        ? `From: ${fullName} (${company})\n\n${message}`
-        : `From: ${fullName}\n\n${message}`,
+      message:        ticketMessage,
       status:         'open',
       source:         'website_contact',
       external_email: email,
       external_name:  fullName,
     })
+    .select('id')
+    .single()
 
-  if (ticketError) {
-    console.error('[inbound-contact] ticket insert error:', ticketError.message)
+  if (ticketError || !newTicket) {
+    console.error('[inbound-contact] ticket insert error:', ticketError?.message)
+  }
+
+  // ── Generate AI draft reply ───────────────────────────────────────────────
+  if (newTicket) {
+    const thread: TicketThread = {
+      subject,
+      senderName:      fullName || null,
+      originalMessage: ticketMessage,
+      replies:         [],
+    }
+    try {
+      const draft = await generateSupportDraft(thread)
+      await supabase
+        .from('support_tickets')
+        .update({ draft_reply: draft })
+        .eq('id', newTicket.id)
+    } catch (err) {
+      console.error('[inbound-contact] AI draft generation failed (non-fatal):', err)
+    }
   }
 
   // ── Blog opt-in ───────────────────────────────────────────────────────────
