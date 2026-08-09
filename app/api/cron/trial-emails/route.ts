@@ -665,6 +665,15 @@ export async function GET(request: Request) {
     .lt('trial_expires_at',  `${yesterdayStr}T23:59:59.999Z`)
 
   for (const org of lapsedOrgs ?? []) {
+    // Set data_deletion_due_at (idempotent — only if not already set)
+    const trialDeletionDue = new Date()
+    trialDeletionDue.setDate(trialDeletionDue.getDate() + 30)
+    await supabase
+      .from('organisations')
+      .update({ data_deletion_due_at: trialDeletionDue.toISOString() })
+      .eq('id', org.id)
+      .is('data_deletion_due_at', null)   // don't overwrite if already set
+
     const { data: admins } = await supabase
       .from('users')
       .select('email, full_name')
@@ -688,9 +697,10 @@ export async function GET(request: Request) {
 
       if (existing) { emailsSkipped++; continue }
 
-      const firstName  = admin.full_name?.split(' ')[0] ?? 'there'
-      const expiryDate = formatDate(`${yesterdayStr}T00:00:00Z`)
-      const upgradeUrl = `${PLATFORM_URL}/upgrade`
+      const firstName    = admin.full_name?.split(' ')[0] ?? 'there'
+      const expiryDate   = formatDate(`${yesterdayStr}T00:00:00Z`)
+      const deletionDate = formatDate(trialDeletionDue.toISOString())
+      const upgradeUrl   = `${PLATFORM_URL}/upgrade`
 
       const result = await sendEmail({
         to:      admin.email,
@@ -699,10 +709,10 @@ export async function GET(request: Request) {
         bodyHtml: `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            Your AlwaysReady trial ended on ${expiryDate}. Your data is safe and will be
-            retained by us for 30 days. To regain access to the AlwaysReady platform,
-            click the <strong>Subscribe</strong> button below at any time — everything
-            will be exactly as you left it.
+            Your AlwaysReady trial ended on ${expiryDate}. Your data is safe and available
+            to download until <strong>${deletionDate}</strong>, after which it will be
+            permanently deleted. To regain access and keep your data, click the
+            <strong>Subscribe</strong> button below — everything will be exactly as you left it.
           </p>
           <p style="margin:0 0 32px">
             <a href="${upgradeUrl}"

@@ -145,6 +145,7 @@ export type Database = {
           terms_accepted_at: string | null
           terms_version: string | null
           holiday_unit: 'days' | 'hours'
+          data_deletion_due_at: string | null
           created_at: string
         }
         Insert: {
@@ -167,6 +168,7 @@ export type Database = {
           terms_accepted_at?: string | null
           terms_version?: string | null
           holiday_unit?: 'days' | 'hours'
+          data_deletion_due_at?: string | null
           created_at?: string
         }
         Update: {
@@ -189,6 +191,7 @@ export type Database = {
           terms_accepted_at?: string | null
           terms_version?: string | null
           holiday_unit?: 'days' | 'hours'
+          data_deletion_due_at?: string | null
           created_at?: string
         }
         Relationships: [
@@ -642,8 +645,8 @@ export type Database = {
         Row: {
           id:                string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -652,8 +655,8 @@ export type Database = {
         Insert: {
           id?:               string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -662,8 +665,8 @@ export type Database = {
         Update: {
           id?:               string
           organisation_id?:  string
-          notification_type?: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding'
-          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user'
+          notification_type?: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning'
+          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation'
           entity_id?:        string
           due_date?:         string
           recipient_email?:  string

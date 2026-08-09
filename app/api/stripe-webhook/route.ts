@@ -120,15 +120,63 @@ export async function POST(req: NextRequest) {
 
   // ── customer.subscription.deleted ─────────────────────────────────────
   // Fired when a subscription is cancelled and the period ends.
+  // Set data_deletion_due_at to 30 days from now so the user has a window
+  // to download their data before the deletion cron removes the organisation.
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription
 
-    const { error } = await supabase
-      .from('organisations')
-      .update({ subscription_tier: 'canceled' as 'trial' | 'active' })
-      .eq('stripe_subscription_id' as never, sub.id)
+    const deletionDue = new Date()
+    deletionDue.setDate(deletionDue.getDate() + 30)
 
-    if (error) console.error('[stripe-webhook] subscription delete error:', error.message)
+    const { data: org, error } = await supabase
+      .from('organisations')
+      .update({
+        subscription_tier:    'canceled' as 'trial' | 'active',
+        data_deletion_due_at: deletionDue.toISOString(),
+      })
+      .eq('stripe_subscription_id' as never, sub.id)
+      .select('id, name')
+      .single()
+
+    if (error) {
+      console.error('[stripe-webhook] subscription delete error:', error.message)
+    } else if (org) {
+      // Notify the org's admin(s) that their data will be deleted in 30 days
+      const { data: admins } = await supabase
+        .from('users')
+        .select('id')
+        .eq('organisation_id', org.id)
+        .eq('role', 'admin')
+
+      if (admins && admins.length > 0) {
+        const { data: authUsers } = await supabase.auth.admin.listUsers()
+        const adminIds = new Set(admins.map(a => a.id))
+        const adminEmails = (authUsers?.users ?? [])
+          .filter(u => adminIds.has(u.id) && u.email)
+          .map(u => u.email!)
+
+        const deletionDateStr = deletionDue.toLocaleDateString('en-GB', {
+          day: 'numeric', month: 'long', year: 'numeric',
+        })
+
+        await Promise.all(adminEmails.map(email =>
+          sendEmail({
+            to:      email,
+            subject: 'Your AlwaysReady subscription has ended — download your data',
+            type:    'transactional',
+            bodyHtml: `
+              <p>Your AlwaysReady subscription for <strong>${org.name}</strong> has ended.</p>
+              <p>Your data is safe and available to download until <strong>${deletionDateStr}</strong>.
+              After that date, it will be permanently deleted.</p>
+              <p>To download your data, log in at
+              <a href="https://portal.alwaysready.uk/login" style="color:#014D4E">portal.alwaysready.uk</a>
+              and use the download buttons on the page shown.</p>
+              <p>If you'd like to resubscribe and keep your data, you can do so from the same page.</p>
+            `,
+          }).catch(err => console.error('[stripe-webhook] deletion notice email failed:', err))
+        ))
+      }
+    }
   }
 
   // ── invoice.payment_succeeded ──────────────────────────────────────────
