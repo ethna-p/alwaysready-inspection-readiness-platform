@@ -294,6 +294,96 @@ A: No. You must not include personal details of residents, patients, families, o
 Q: Does AlwaysReady send newsletters on my behalf?
 A: No. AlwaysReady generates a draft for you to copy and paste into your preferred channel — email, WhatsApp, a printed notice, or any other channel. You remain fully in control of what goes out and when.
 
+## ACTION PLAN
+
+Q: What is the Action Plan?
+A: The Action Plan is a task management tool built into each KLOE. When a KLOE review identifies an area for improvement, you can create an action item directly from the KLOE detail page. Each action item has a title, description, due date, priority (High, Medium, or Low), and an assignee. Admins and Users can create, update, and sign off action items. Viewers can read them but cannot make changes.
+
+Q: Who can create and manage action items?
+A: Admins and Users can create, update, and sign off action items. Viewers can see them but cannot create or edit them.
+
+Q: How do I close an action item?
+A: Open the KLOE detail page and find the action item in the Action Plan panel. Click Sign Off, add any completion notes, and confirm. The item is marked Completed, and the completion date and the name of the person who signed it off are permanently recorded.
+
+Q: Can I assign an action item to a specific team member?
+A: Yes. When creating or editing an action item, you can select any team member as the assignee. The assignee receives a notification and can see their assigned items when they log in.
+
+## INCIDENT LOG
+
+Q: What is the Incident Log?
+A: The Incident Log lets you record and track incidents that occur within your service. Each record captures the incident type, date, description, immediate actions taken, people involved, whether it was reported externally (for example to CQC or the Local Authority), and its current status. CQC inspectors expect to see that incidents are recorded, reviewed, and that learning is documented — the Incident Log provides a structured, time-stamped record that demonstrates this.
+
+Q: What types of incidents can I record?
+A: You can categorise incidents as: Safety, Safeguarding, Near Miss, Complaint, or Other.
+
+Q: Can I record the learning outcome from an incident?
+A: Yes. Each incident record includes a Learning Outcome field. Recording what changed as a result of an incident — whether a process was updated, training was delivered, or a risk was mitigated — is a key element of demonstrating a learning culture to CQC under Well-led.
+
+Q: How do I record that an incident was reported externally?
+A: Each incident record includes a toggle to indicate that the incident was reported externally, along with a field for an external reference number.
+
+Q: Who can view and manage incident records?
+A: Admins can create, edit, and close incidents. Users can create and update them. Viewers can read them. All records are private to your organisation and never shared with CQC.
+
+## FEEDBACK LOG
+
+Q: What is the Feedback Log?
+A: The Feedback Log is a structured register for recording all feedback received by your service — complaints, compliments, suggestions, and concerns. CQC inspectors look for evidence that feedback is actively sought, recorded, and acted upon. The Feedback Log provides a clear, time-stamped record that demonstrates this.
+
+Q: What types of feedback can I log?
+A: You can categorise feedback as: Complaint, Compliment, Suggestion, or Concern. Each record captures the source (person using the service, family or carer, professional, anonymous, or other), a summary, the action taken, and the outcome.
+
+Q: Can I link feedback to a specific CQC key question?
+A: Yes. When creating a feedback record, you can tag it to the most relevant CQC key question — Safe, Effective, Caring, Responsive, or Well-led.
+
+Q: Does the Feedback Log record whether feedback was reported to CQC?
+A: Yes. Each record includes a field to indicate whether the matter was reported to CQC, which is relevant for complaints that meet the threshold for statutory notification.
+
+## GOVERNANCE MEETINGS
+
+Q: What is the Governance Meetings log?
+A: The Governance Meetings log lets you record the minutes, key decisions, and actions arising from your governance and management meetings. CQC inspectors routinely ask for evidence of governance activity under Well-led. Having a structured, signed-off record — searchable and accessible in seconds — is a significant advantage during an inspection.
+
+Q: What information is captured for each governance meeting?
+A: Each record captures: meeting title and date, attendees, agenda, key decisions made, and actions arising. Once all actions have been addressed, an Admin can sign off the record, at which point the sign-off date and the name of the person who signed it off are permanently recorded.
+
+Q: Who can sign off a governance meeting record?
+A: Only Admins can sign off a meeting record. Once signed off, the record is timestamped and marked completed. Users can view and contribute to meeting records but cannot sign them off.
+
+Q: Is there a weekly digest for governance activity?
+A: Yes. AlwaysReady sends a weekly governance digest to Admins every Monday morning, summarising any meeting records created or updated in the previous seven days.
+
+## PEOPLE'S VOICE
+
+Q: What is the People's Voice module?
+A: The People's Voice module is built around the 19 "I" statements published by TLAP (Think Local Act Personal) as part of CQC's 2026 draft assessment framework. CQC gathers evidence against these statements directly from people using services, their families, and carers during inspections. AlwaysReady gives your team a structured way to record your own evidence against each statement in advance, so you can approach an inspection with confidence.
+
+Q: What are the "I" statements?
+A: The "I" statements are 19 first-person statements representing what good care looks like from the perspective of the person receiving it — for example "I feel safe" and "I am treated with dignity and respect." Each is linked to one of the five CQC key questions.
+
+Q: How does AlwaysReady help with the People's Voice module?
+A: For each of the 19 statements, your team can record a confidence level (Green, Amber, or Red), a summary of supporting evidence, and any actions needed to strengthen it. Each entry is time-stamped and attributed to the team member who made it. A full history of entries is retained.
+
+Q: Who can update People's Voice records?
+A: Admins and Users can record evidence against the "I" statements. Viewers can read them but cannot add or amend them.
+
+## POST-INSPECTION REVIEWS AND FAC
+
+Q: What is the Post-Inspection module?
+A: The Post-Inspection module helps you manage the period after a CQC inspection. You can record the inspection date, when the draft report was received, and when the final report was published. You can also log CQC ratings across all five key questions and track any Factual Accuracy Check (FAC) submissions.
+
+Q: What is a Factual Accuracy Check (FAC)?
+A: A Factual Accuracy Check is the formal process by which a registered provider can challenge factual errors in a draft CQC inspection report before it is published. AlwaysReady lets you log each FAC item, categorise it as a factual error or a subjective judgment, record your position and supporting evidence, and track whether CQC upheld or rejected the challenge.
+
+Q: What statuses can a post-inspection review have?
+A: Draft Received, FAC Submitted, Final Report, Action Plan Active, or Closed.
+
+Q: Can I record ratings for individual key questions?
+A: Yes. Each review captures CQC ratings for all five key questions individually — Safe, Effective, Caring, Responsive, and Well-led — as well as the overall rating. Options are: Outstanding, Good, Requires Improvement, Inadequate, or Not Rated.
+
+Q: Who can access Post-Inspection records?
+A: Admins can create and manage post-inspection reviews and FAC items. Users and Viewers can read them.
+
 ## INSPECTION DAY
 
 Q: How does AlwaysReady help on inspection day?
@@ -475,12 +565,13 @@ WELL-LED — the leadership, management and governance of the organisation make 
 
 ## What support covers
 1. Platform fields and processes — what a field means, where to find it, how to use it
-2. KLOE tracker and RAG status
+2. KLOE tracker, RAG status, and action plans
 3. Team management, roles, and access
 4. HR records and how they work
 5. Mock inspections, inspection pack, dashboard, daily review, trend
 6. Account, security, 2FA, and billing
 7. Technical issues — login problems, errors, unexpected behaviour
+8. Incident Log, Feedback Log, Governance Meetings, People's Voice, Post-Inspection Reviews and FAC
 
 ## What support does NOT cover
 - Clinical guidance, care delivery advice, or best practice
