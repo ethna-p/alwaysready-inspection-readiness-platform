@@ -183,7 +183,7 @@ Q: What types of documents can I upload?
 A: You can upload any non-clinical governance-related document: policies, audits, meeting minutes, training records, anonymised incident reviews, action plans, and more. Supported file types include PDF, Word (.docx), Excel (.xlsx), and images (JPG and PNG). The maximum file size is 10 MB per file. Note: legacy .doc and .xls formats are not accepted for security reasons — please save files in the current .docx or .xlsx format before uploading.
 
 Q: Is there a limit on file size?
-A: Each file can be up to 10 MB. There is no limit on the number of files you can upload.
+A: Each file must be 10 MB or less. You can upload as many files as you need — there is no limit imposed on your account.
 
 Q: Can I delete files I have uploaded?
 A: Yes. Uploaded evidence files can be deleted directly from the KLOE by clicking the delete button.
