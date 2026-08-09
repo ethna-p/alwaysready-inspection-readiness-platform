@@ -14,6 +14,7 @@ type Props = {
   trainingRecords: HrTrainingRecord[]
   certificates: HrTrainingCertificate[]
   certUrls: Record<string, string>
+  isViewer?: boolean
 }
 
 const DUE_SOON_DAYS = 30
@@ -40,7 +41,7 @@ function statusColour(s: ReturnType<typeof getStatus>) {
   }[s]
 }
 
-export default function HrTrainingSection({ userId, trainingTypes, trainingRecords, certificates, certUrls }: Props) {
+export default function HrTrainingSection({ userId, trainingTypes, trainingRecords, certificates, certUrls, isViewer = false }: Props) {
   const [isPending, startTransition] = useTransition()
   const [expandedType, setExpandedType] = useState<string | null>(null)
   const [messages, setMessages] = useState<Record<string, string>>({})
@@ -244,16 +245,18 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 mb-5">
-                    <button
-                      type="button"
-                      onClick={() => handleSave(type.id)}
-                      disabled={isPending}
-                      className="rounded-lg bg-[#014D4E] text-white text-sm font-medium px-4 py-2 hover:bg-[#013a3b] disabled:opacity-60 transition-colors"
-                    >
-                      {isPending ? 'Saving…' : 'Save'}
-                    </button>
-                  </div>
+                  {!isViewer && (
+                    <div className="flex items-center gap-3 mb-5">
+                      <button
+                        type="button"
+                        onClick={() => handleSave(type.id)}
+                        disabled={isPending}
+                        className="rounded-lg bg-[#014D4E] text-white text-sm font-medium px-4 py-2 hover:bg-[#013a3b] disabled:opacity-60 transition-colors"
+                      >
+                        {isPending ? 'Saving…' : 'Save'}
+                      </button>
+                    </div>
+                  )}
 
                   {/* Certificates */}
                   <div className="border-t border-line pt-4">
@@ -281,14 +284,16 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                                 <span className="text-xs text-green-600 bg-green-50 px-1.5 py-0.5 rounded">✓ Scanned</span>
                               )}
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteCert(cert.id, type.id)}
-                              disabled={isPending}
-                              className="text-xs text-red-600 hover:underline"
-                            >
-                              Delete
-                            </button>
+                            {!isViewer && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteCert(cert.id, type.id)}
+                                disabled={isPending}
+                                className="text-xs text-red-600 hover:underline"
+                              >
+                                Delete
+                              </button>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -296,22 +301,24 @@ export default function HrTrainingSection({ userId, trainingTypes, trainingRecor
                       <p className="text-sm text-ink-muted mb-3">No certificates uploaded yet.</p>
                     )}
 
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png"
-                        ref={el => { fileInputRefs.current[type.id] = el }}
-                        className="text-sm text-ink"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleUpload(type.id)}
-                        disabled={isPending}
-                        className="rounded-lg border border-[#014D4E] text-brand text-sm font-medium px-3 py-1.5 hover:bg-[#014D4E] hover:text-white disabled:opacity-60 transition-colors"
-                      >
-                        Upload
-                      </button>
-                    </div>
+                    {!isViewer && (
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="file"
+                          accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png"
+                          ref={el => { fileInputRefs.current[type.id] = el }}
+                          className="text-sm text-ink"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleUpload(type.id)}
+                          disabled={isPending}
+                          className="rounded-lg border border-[#014D4E] text-brand text-sm font-medium px-3 py-1.5 hover:bg-[#014D4E] hover:text-white disabled:opacity-60 transition-colors"
+                        >
+                          Upload
+                        </button>
+                      </div>
+                    )}
                     <p className="text-sm text-ink-muted mt-1">
                       PDF, Word (.docx), Excel (.xlsx), JPG, or PNG — max 10 MB.
                       Legacy .doc and .xls files are not accepted for security reasons.

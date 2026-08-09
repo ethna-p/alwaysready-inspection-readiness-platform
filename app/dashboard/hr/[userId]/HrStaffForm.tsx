@@ -12,6 +12,7 @@ import type { HrStaffProfile } from '@/lib/types'
 type Props = {
   userId: string
   hrProfile: HrStaffProfile | null
+  isViewer?: boolean
 }
 
 function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -46,7 +47,7 @@ const selectClass = `
   focus:outline-none focus:ring-2 focus:ring-[#014D4E]
 `
 
-export default function HrStaffForm({ userId, hrProfile }: Props) {
+export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Props) {
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -145,8 +146,11 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
     })
   }
 
+  // When viewing as a viewer, prevent any submit
+  function handleViewerSubmit(e: React.FormEvent) { e.preventDefault() }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 mb-8">
+    <form onSubmit={isViewer ? handleViewerSubmit : handleSubmit} className="space-y-6 mb-8">
 
       {message && (
         <div role="status" className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
@@ -160,15 +164,17 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
       )}
 
       {/* Save — top */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="rounded-lg bg-[#014D4E] text-white text-sm font-semibold px-6 py-2.5 hover:bg-[#013a3b] disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]"
-        >
-          {isPending ? 'Saving…' : 'Save staff record'}
-        </button>
-      </div>
+      {!isViewer && (
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={isPending}
+            className="rounded-lg bg-[#014D4E] text-white text-sm font-semibold px-6 py-2.5 hover:bg-[#013a3b] disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]"
+          >
+            {isPending ? 'Saving…' : 'Save staff record'}
+          </button>
+        </div>
+      )}
 
       {/* ── Employment ─────────────────────────────────────────────────── */}
       <section className="bg-card rounded-xl border border-line p-6">
@@ -443,16 +449,18 @@ export default function HrStaffForm({ userId, hrProfile }: Props) {
         </Field>
       </section>
 
-      {/* Save */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="rounded-lg bg-[#014D4E] text-white text-sm font-semibold px-6 py-2.5 hover:bg-[#013a3b] disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]"
-        >
-          {isPending ? 'Saving…' : 'Save staff record'}
-        </button>
-      </div>
+      {/* Save — bottom */}
+      {!isViewer && (
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={isPending}
+            className="rounded-lg bg-[#014D4E] text-white text-sm font-semibold px-6 py-2.5 hover:bg-[#013a3b] disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]"
+          >
+            {isPending ? 'Saving…' : 'Save staff record'}
+          </button>
+        </div>
+      )}
     </form>
   )
 }

@@ -12,9 +12,10 @@ type Props = {
   userId: string
   allowances: HrHolidayAllowance[]
   holidayUnit: string
+  isViewer?: boolean
 }
 
-export default function HrHolidaySection({ userId, allowances, holidayUnit }: Props) {
+export default function HrHolidaySection({ userId, allowances, holidayUnit, isViewer = false }: Props) {
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError]     = useState<string | null>(null)
@@ -133,15 +134,17 @@ export default function HrHolidaySection({ userId, allowances, holidayUnit }: Pr
             ))}
           </div>
 
-          <div className="flex justify-end pt-1">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="rounded-lg bg-[#014D4E] text-white text-sm font-medium px-4 py-2 hover:bg-[#013a3b] disabled:opacity-60 transition-colors"
-            >
-              {isPending ? 'Saving…' : 'Save allowance'}
-            </button>
-          </div>
+          {!isViewer && (
+            <div className="flex justify-end pt-1">
+              <button
+                type="submit"
+                disabled={isPending}
+                className="rounded-lg bg-[#014D4E] text-white text-sm font-medium px-4 py-2 hover:bg-[#013a3b] disabled:opacity-60 transition-colors"
+              >
+                {isPending ? 'Saving…' : 'Save allowance'}
+              </button>
+            </div>
+          )}
         </form>
 
         {/* Previous years */}

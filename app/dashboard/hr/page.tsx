@@ -233,20 +233,24 @@ function StatusPill({ status, label }: { status: StatusBadge; label: string }) {
 
 export default async function HrOverviewPage() {
   const profile = await getCurrentUserProfile()
-  if (!profile || profile.role !== 'admin') redirect('/dashboard')
+  if (!profile || (profile.role !== 'admin' && profile.role !== 'viewer')) redirect('/dashboard')
+
+  const isViewer = profile.role === 'viewer'
 
   const supabase = await createClient()
   const adminClient = createAdminClient()
   const orgId = profile.organisation_id
 
-  // Seed default training types if this org has none yet
-  const { count: typeCount } = await supabase
-    .from('hr_training_types')
-    .select('id', { count: 'exact', head: true })
-    .eq('organisation_id', orgId)
+  // Seed default training types on first visit (admin only — avoid viewer triggering writes)
+  if (!isViewer) {
+    const { count: typeCount } = await supabase
+      .from('hr_training_types')
+      .select('id', { count: 'exact', head: true })
+      .eq('organisation_id', orgId)
 
-  if ((typeCount ?? 0) === 0) {
-    await adminClient.rpc('seed_default_training_types', { p_organisation_id: orgId })
+    if ((typeCount ?? 0) === 0) {
+      await adminClient.rpc('seed_default_training_types', { p_organisation_id: orgId })
+    }
   }
 
   // Get all staff for this org
@@ -342,12 +346,14 @@ export default async function HrOverviewPage() {
             Staff employment, training, and compliance records.
           </p>
         </div>
-        <Link
-          href="/dashboard/hr/settings"
-          className="text-sm text-brand hover:underline"
-        >
-          HR Settings
-        </Link>
+        {!isViewer && (
+          <Link
+            href="/dashboard/hr/settings"
+            className="text-sm text-brand hover:underline"
+          >
+            HR Settings
+          </Link>
+        )}
       </div>
 
       {/* Holiday unit notice */}
@@ -355,9 +361,11 @@ export default async function HrOverviewPage() {
         <p className="text-sm text-brand">
           Holiday allowances are tracked in <strong>{org?.holiday_unit ?? 'days'}</strong>.
         </p>
-        <Link href="/dashboard/hr/settings" className="text-xs text-brand hover:underline">
-          Change →
-        </Link>
+        {!isViewer && (
+          <Link href="/dashboard/hr/settings" className="text-xs text-brand hover:underline">
+            Change →
+          </Link>
+        )}
       </div>
 
       {/* ── RAG summary dashboard ─────────────────────────────────────────── */}

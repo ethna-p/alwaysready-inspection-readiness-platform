@@ -70,6 +70,7 @@ type Props = {
   userId: string
   records: HrAbsenceRecord[]
   leaveYearStart: string | null   // e.g. '2026-04-01' from hr_holiday_allowances, or null
+  isViewer?: boolean
 }
 
 type FormState = {
@@ -109,7 +110,7 @@ function calcDays(start: string, end: string): string {
   return String(Math.round((e.getTime() - s.getTime()) / 86400000) + 1)
 }
 
-export default function HrAbsenceSection({ userId, records, leaveYearStart }: Props) {
+export default function HrAbsenceSection({ userId, records, leaveYearStart, isViewer = false }: Props) {
   const [isPending, startTransition] = useTransition()
   const [showForm, setShowForm]       = useState(false)
   const [form, setForm]               = useState<FormState>(emptyForm())
@@ -316,21 +317,23 @@ export default function HrAbsenceSection({ userId, records, leaveYearStart }: Pr
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => editingId === r.id ? setEditingId(null) : startEdit(r)}
-                      className="text-xs text-brand hover:underline"
-                    >
-                      {editingId === r.id ? 'Cancel' : 'Edit'}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(r.id)}
-                      disabled={isPending}
-                      className="text-xs text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  {!isViewer && (
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => editingId === r.id ? setEditingId(null) : startEdit(r)}
+                        className="text-xs text-brand hover:underline"
+                      >
+                        {editingId === r.id ? 'Cancel' : 'Edit'}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(r.id)}
+                        disabled={isPending}
+                        className="text-xs text-red-600 hover:underline disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Notes (collapsed unless present) */}
@@ -446,14 +449,15 @@ export default function HrAbsenceSection({ userId, records, leaveYearStart }: Pr
         )}
 
         {/* Add episode form */}
-        {!showForm ? (
+        {!isViewer && !showForm && (
           <button
             onClick={() => { setShowForm(true); setMessage(null); setError(null) }}
             className="text-sm text-brand hover:underline font-medium"
           >
             + Add absence episode
           </button>
-        ) : (
+        )}
+        {showForm && (
           <form onSubmit={handleSubmit} className="space-y-4 border-t border-line pt-5 mt-2">
             <h3 className="text-sm font-semibold text-ink">New absence episode</h3>
 

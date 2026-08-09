@@ -29,7 +29,9 @@ export default async function HrStaffDetailPage({
   const { userId } = await params
 
   const profile = await getCurrentUserProfile()
-  if (!profile || profile.role !== 'admin') redirect('/dashboard')
+  if (!profile || (profile.role !== 'admin' && profile.role !== 'viewer')) redirect('/dashboard')
+
+  const isViewer = profile.role === 'viewer'
 
   const supabase = await createClient()
   const orgId = profile.organisation_id
@@ -123,6 +125,7 @@ export default async function HrStaffDetailPage({
       <HrStaffForm
         userId={userId}
         hrProfile={hrProfile}
+        isViewer={isViewer}
       />
 
       {/* Training records */}
@@ -132,6 +135,7 @@ export default async function HrStaffDetailPage({
         trainingRecords={trainingRecords ?? []}
         certificates={certificates ?? []}
         certUrls={certUrls}
+        isViewer={isViewer}
       />
 
       {/* Holiday allowance */}
@@ -139,6 +143,7 @@ export default async function HrStaffDetailPage({
         userId={userId}
         allowances={holidayAllowances ?? []}
         holidayUnit={org?.holiday_unit ?? 'days'}
+        isViewer={isViewer}
       />
 
       {/* Absence records */}
@@ -146,6 +151,7 @@ export default async function HrStaffDetailPage({
         userId={userId}
         records={absenceRecords ?? []}
         leaveYearStart={holidayAllowances?.[0]?.leave_year_start ?? null}
+        isViewer={isViewer}
       />
     </div>
   )
