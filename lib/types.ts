@@ -891,6 +891,8 @@ export type Database = {
           confidence: 'green' | 'amber' | 'red' | 'not_assessed'
           evidence_summary: string | null
           action_needed: string | null
+          date_reviewed: string | null
+          next_review_due: string | null
           last_updated_at: string
           updated_by: string | null
         }
@@ -901,6 +903,8 @@ export type Database = {
           confidence?: 'green' | 'amber' | 'red' | 'not_assessed'
           evidence_summary?: string | null
           action_needed?: string | null
+          date_reviewed?: string | null
+          next_review_due?: string | null
           last_updated_at?: string
           updated_by?: string | null
         }
@@ -911,6 +915,8 @@ export type Database = {
           confidence?: 'green' | 'amber' | 'red' | 'not_assessed'
           evidence_summary?: string | null
           action_needed?: string | null
+          date_reviewed?: string | null
+          next_review_due?: string | null
           last_updated_at?: string
           updated_by?: string | null
         }
@@ -1723,6 +1729,63 @@ export type Database = {
         Relationships: []
       }
 
+      // ── I Statement Actions ───────────────────────────────────────────
+
+      i_statement_actions: {
+        Row: {
+          id: string
+          organisation_id: string
+          i_statement_id: string
+          title: string
+          description: string | null
+          due_date: string | null
+          priority: 'high' | 'medium' | 'low'
+          status: 'open' | 'in_progress' | 'completed'
+          assigned_to: string | null
+          completion_notes: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          i_statement_id: string
+          title: string
+          description?: string | null
+          due_date?: string | null
+          priority?: 'high' | 'medium' | 'low'
+          status?: 'open' | 'in_progress' | 'completed'
+          assigned_to?: string | null
+          completion_notes?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organisation_id?: string
+          i_statement_id?: string
+          title?: string
+          description?: string | null
+          due_date?: string | null
+          priority?: 'high' | 'medium' | 'low'
+          status?: 'open' | 'in_progress' | 'completed'
+          assigned_to?: string | null
+          completion_notes?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
     }
     Views: Record<string, never>
     Functions: {
@@ -1812,6 +1875,9 @@ export type FeedbackRecord          = Database['public']['Tables']['feedback_rec
 export type PostInspectionReview    = Database['public']['Tables']['post_inspection_reviews']['Row']
 export type FacItem                 = Database['public']['Tables']['fac_items']['Row']
 export type IStatementEvidenceHistory = Database['public']['Tables']['i_statement_evidence_history']['Row']
+export type IStatementAction          = Database['public']['Tables']['i_statement_actions']['Row']
+export type IStatementActionPriority  = IStatementAction['priority']
+export type IStatementActionStatus    = IStatementAction['status']
 
 export type ActionItemPriority      = ActionItem['priority']
 export type ActionItemStatus        = ActionItem['status']

@@ -3,7 +3,8 @@
  *
  * Displays the 19 authentic TLAP "I" statements published by CQC as part
  * of the draft 2026 assessment framework. Staff record evidence against
- * each statement and rate their confidence (Green / Amber / Red).
+ * each statement, rate evidence quality, set review dates, and manage
+ * action plans for gaps.
  *
  * CQC gathers this evidence directly from people using services, their
  * families, and carers during inspections. This module helps teams
@@ -14,7 +15,9 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
+import { calculateRAG } from '@/lib/rag'
 import PeoplesVoiceClient, { type StatementWithEvidence, type EvidenceHistoryEntry } from './PeoplesVoiceClient'
+import type { TeamMember } from './IStatementActionPanel'
 
 export const metadata = { title: "People's Voice | AlwaysReady" }
 
@@ -22,8 +25,9 @@ export default async function PeoplesVoicePage() {
   const supabase = await createClient()
   const profile  = await getCurrentUserProfile()
   const isViewer = profile?.role === 'viewer'
+  const isAdmin  = profile?.role === 'admin'
 
-  // Fetch all 19 statements ordered by key_question natural order then statement_order
+  // ── Fetch all 19 statements ───────────────────────────────────────────────
   const { data: statements, error: stmtError } = await supabase
     .from('i_statements')
     .select('*')
@@ -37,24 +41,22 @@ export default async function PeoplesVoicePage() {
     )
   }
 
-  // Fetch this org's evidence (RLS scopes to org automatically)
+  // ── Fetch this org's evidence (RLS scopes to org automatically) ───────────
   const { data: evidenceRows } = await supabase
     .from('i_statement_evidence')
     .select('*')
 
-  // Build a lookup: i_statement_id → evidence row
   const evidenceMap = new Map(
     (evidenceRows ?? []).map(e => [e.i_statement_id, e])
   )
 
-  // Fetch evidence history and build a name lookup for who made each change
+  // ── Fetch evidence history ────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: historyRows } = await (supabase as any)
     .from('i_statement_evidence_history')
     .select('i_statement_id, confidence, evidence_summary, action_needed, recorded_by, recorded_at')
     .order('recorded_at', { ascending: false })
 
-  // Resolve recorder names
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const typedHistory = historyRows ?? []
   const recorderIds = [...new Set(typedHistory.map((h: any) => h.recorded_by).filter(Boolean))] as string[]
@@ -69,7 +71,6 @@ export default async function PeoplesVoicePage() {
     }
   }
 
-  // Group history by i_statement_id
   const historyByStatement = new Map<string, EvidenceHistoryEntry[]>()
   for (const h of typedHistory) {
     if (!historyByStatement.has(h.i_statement_id)) {
@@ -84,7 +85,36 @@ export default async function PeoplesVoicePage() {
     })
   }
 
-  // Merge statements with their evidence + history, group by key_question
+  // ── Fetch action items ────────────────────────────────────────────────────
+  const { data: actionRows } = await supabase
+    .from('i_statement_actions')
+    .select('*')
+    .order('status', { ascending: true })
+    .order('due_date', { ascending: true, nullsFirst: false })
+
+  const actionsByStatement = new Map<string, typeof actionRows>()
+  for (const a of actionRows ?? []) {
+    if (!actionsByStatement.has(a.i_statement_id)) {
+      actionsByStatement.set(a.i_statement_id, [])
+    }
+    actionsByStatement.get(a.i_statement_id)!.push(a)
+  }
+
+  // ── Fetch team members for action plan assignment ─────────────────────────
+  const { data: teamRows } = await supabase
+    .from('users')
+    .select('id, full_name, email')
+    .eq('organisation_id', profile?.organisation_id ?? '')
+    .in('role', ['admin', 'user'])
+    .order('full_name', { ascending: true })
+
+  const teamMembers: TeamMember[] = (teamRows ?? []).map(u => ({
+    id:        u.id,
+    full_name: u.full_name,
+    email:     u.email,
+  }))
+
+  // ── Merge statements with evidence, history, and actions ─────────────────
   const grouped: Record<string, StatementWithEvidence[]> = {}
   for (const stmt of statements) {
     if (!grouped[stmt.key_question]) grouped[stmt.key_question] = []
@@ -92,15 +122,24 @@ export default async function PeoplesVoicePage() {
       ...stmt,
       evidence: evidenceMap.get(stmt.id) ?? null,
       history:  historyByStatement.get(stmt.id) ?? [],
+      actions:  actionsByStatement.get(stmt.id) ?? [],
     })
   }
 
-  // Summary counts
+  // ── Summary counts ────────────────────────────────────────────────────────
   const total      = statements.length
-  const green      = (evidenceRows ?? []).filter(e => e.confidence === 'green').length
-  const amber      = (evidenceRows ?? []).filter(e => e.confidence === 'amber').length
-  const red        = (evidenceRows ?? []).filter(e => e.confidence === 'red').length
-  const unassessed = total - (evidenceRows ?? []).filter(e => e.confidence !== 'not_assessed').length
+  const evidList   = evidenceRows ?? []
+  const green      = evidList.filter(e => e.confidence === 'green').length
+  const amber      = evidList.filter(e => e.confidence === 'amber' || e.confidence === 'red').length
+  const unassessed = total - evidList.filter(e => e.confidence !== 'not_assessed').length
+
+  // RAG counts (date-driven)
+  const ragCounts = { green: 0, amber: 0, red: 0, grey: 0 }
+  for (const e of evidList) {
+    const rag = calculateRAG({ date_reviewed: e.date_reviewed, next_review_due: e.next_review_due })
+    ragCounts[rag]++
+  }
+  ragCounts.grey += (total - evidList.length) // statements with no evidence row at all
 
   return (
     <div className="space-y-8">
@@ -112,7 +151,8 @@ export default async function PeoplesVoicePage() {
           These are the <strong>"I" statements</strong> published by CQC as part of the draft 2026 assessment
           framework, drawn from the Think Local Act Personal (TLAP) standards. During inspections, CQC gathers
           evidence directly from residents, families, and carers to assess whether each statement is met.
-          Use this page to record what evidence you hold and identify gaps before an inspection.
+          Use this page to record what evidence you hold, rate its quality, set review dates, and track
+          actions for any gaps.
         </p>
         <p className="text-sm text-ink-muted mt-2">
           Source: CQC draft assessment framework v9 (2026). Well-Led has no published "I" statements in the
@@ -120,19 +160,42 @@ export default async function PeoplesVoicePage() {
         </p>
       </div>
 
-      {/* Summary strip */}
-      <div className="grid grid-cols-4 gap-3">
-        {[
-          { label: 'Green',        value: green,      style: 'bg-green-50 text-green-700 border-green-200' },
-          { label: 'Amber',        value: amber,      style: 'bg-amber-50 text-amber-700 border-amber-200' },
-          { label: 'Red',          value: red,        style: 'bg-red-50   text-red-700   border-red-200'   },
-          { label: 'Not assessed', value: unassessed, style: 'bg-fill  text-ink-muted  border-line'  },
-        ].map(({ label, value, style }) => (
-          <div key={label} className={`rounded-xl border px-4 py-3 text-center ${style}`}>
-            <p className="text-2xl font-bold">{value}</p>
-            <p className="text-xs font-medium mt-0.5">{label}</p>
+      {/* Summary strips */}
+      <div className="space-y-3">
+        {/* Review schedule (RAG) */}
+        <div>
+          <p className="text-xs font-semibold text-ink-dim mb-2 uppercase tracking-wide">Review schedule</p>
+          <div className="grid grid-cols-4 gap-3">
+            {[
+              { label: 'Up to date',   value: ragCounts.green, style: 'bg-green-50 text-green-700 border-green-200' },
+              { label: 'Due soon',     value: ragCounts.amber, style: 'bg-amber-50 text-amber-700 border-amber-200' },
+              { label: 'Overdue',      value: ragCounts.red,   style: 'bg-red-50   text-red-700   border-red-200'   },
+              { label: 'Not reviewed', value: ragCounts.grey,  style: 'bg-fill  text-ink-muted  border-line'        },
+            ].map(({ label, value, style }) => (
+              <div key={label} className={`rounded-xl border px-4 py-3 text-center ${style}`}>
+                <p className="text-2xl font-bold">{value}</p>
+                <p className="text-xs font-medium mt-0.5">{label}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Evidence quality */}
+        <div>
+          <p className="text-xs font-semibold text-ink-dim mb-2 uppercase tracking-wide">Evidence quality</p>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Evidence strong',     value: green,      style: 'bg-green-50 text-green-700 border-green-200' },
+              { label: 'Evidence needs work', value: amber,      style: 'bg-amber-50 text-amber-700 border-amber-200' },
+              { label: 'Not assessed',        value: unassessed, style: 'bg-fill  text-ink-muted  border-line'        },
+            ].map(({ label, value, style }) => (
+              <div key={label} className={`rounded-xl border px-4 py-3 text-center ${style}`}>
+                <p className="text-2xl font-bold">{value}</p>
+                <p className="text-xs font-medium mt-0.5">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Viewer notice */}
@@ -143,7 +206,14 @@ export default async function PeoplesVoicePage() {
       )}
 
       {/* Statement groups */}
-      <PeoplesVoiceClient grouped={grouped} isViewer={isViewer} orgId={profile?.organisation_id ?? ''} />
+      <PeoplesVoiceClient
+        grouped={grouped}
+        isViewer={isViewer}
+        isAdmin={isAdmin}
+        orgId={profile?.organisation_id ?? ''}
+        currentUserId={profile?.id ?? ''}
+        teamMembers={teamMembers}
+      />
 
     </div>
   )
