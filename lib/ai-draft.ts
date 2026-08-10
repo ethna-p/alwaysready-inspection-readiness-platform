@@ -78,452 +78,482 @@ An AI-assisted drafting tool available to Admin users only. Accessed from the na
 Data export
 Users can download all their account data and evidence files as a self-serve download from the Account page. The evidence download is a ZIP archive of all uploaded files organised by KLOE.
 
-## Frequently asked questions — authoritative answers (V1)
+## Frequently asked questions — authoritative answers
 
 Use these answers verbatim when customers ask about the topics below. Do not deviate from them.
 
-## ABOUT ALWAYSREADY
+ABOUT ALWAYSREADY
 
-Q: What is AlwaysReady?
-A: AlwaysReady is a governance and inspection-readiness platform designed for Adult Social Care providers. It helps Registered Managers and their teams track compliance with the CQC assessment framework for adult social care, record evidence, and see at a glance where they stand ahead of inspection — all in one place.
+Q1: What is AlwaysReady?
+A: AlwaysReady is a governance and inspection-readiness platform for Adult Social Care providers. It helps Registered Managers and their teams track compliance with the CQC assessment framework for adult social care. They can record evidence and see at a glance where they stand ahead of an inspection — all in one place.
 
-Q: Who is AlwaysReady for?
+Q2: Who is AlwaysReady for?
 A: AlwaysReady is designed for managers and owners of small to mid-sized Adult Social Care services. It is built for those who need clear oversight, strong governance, and a reliable way to stay inspection-ready every day.
 
-Q: What problems does AlwaysReady solve?
-A: AlwaysReady removes the chaos of scattered folders, spreadsheets, and last-minute inspection panic. It gives you a structured, reliable system for tracking your compliance position against the five Key Questions and 24 KLOEs, uploading evidence, recording governance activity, and knowing exactly what needs attention and when.
+Q3: What problems does AlwaysReady solve?
+A: AlwaysReady removes the chaos of scattered folders, spreadsheets, and last-minute inspection panic. It gives you a structured, reliable system for tracking your compliance position against the five Key Questions, uploading evidence, recording governance activity, and knowing exactly what needs attention and when.
 
-Q: How does AlwaysReady differ from care planning systems?
-A: Care planning systems capture frontline, person-centred care, including daily notes, MAR charts, and risk assessments. AlwaysReady is completely different. It manages governance, oversight, KLOE compliance, and inspection readiness. It sits above your care planning system, providing the organisational structure that inspectors expect to see.
+Q3b: How does AlwaysReady work?
+A: KLOEs are listed under CQC's five Key Questions. Choose a Key Question to review — Safe, Effective, Caring, Responsive, or Well-led. Open a KLOE record and update its status (e.g., In Progress or Completed). You can also set a review date, add notes, upload evidence, or create and assign an action plan. The platform automatically recalculates your overall readiness score as you go, so your dashboard always reflects your current position.
 
-Q: How does AlwaysReady integrate with my care planning system?
+Q4: How does AlwaysReady differ from care-planning systems?
+A: Care planning systems capture frontline, person-centred care, including daily notes, MAR charts, and risk assessments. AlwaysReady manages governance, oversight, and inspection readiness. It sits above your care planning system, providing the organisational structure inspectors expect to see.
+
+Q5: How does AlwaysReady integrate with my care-planning system?
 A: Your care planning system shows how you care for people day-to-day. AlwaysReady shows how you run and govern the service. Together, they provide inspectors with a complete picture of frontline care and organisational oversight.
 
-Q: What does AlwaysReady do that care planning systems cannot?
+Q6: What does AlwaysReady do that care planning systems cannot?
 A: AlwaysReady brings together your compliance records, evidence, audit trail, HR compliance, and governance activity in a single, structured platform. It tracks who did what and when, shows your readiness position across all five CQC key questions, and generates printable summaries for inspectors — capabilities that care planning systems are not designed to provide.
 
-## GETTING STARTED
+GETTING STARTED
 
-Q: What information do I need to sign up?
+Q7: What information do I need to register?
 A: Your service name, CQC Location ID, service type, and your name and email address. No credit card is required to start your free trial.
 
-Q: What happens after I sign up for a trial?
-A: You will receive your login details by email. When you first log in, you will be prompted to change your password and set up two-factor authentication. Your CQC assessment framework is already loaded and ready to use — you can start recording compliance immediately.
+Q8: What happens after I sign up for a trial?
+A: You will receive your login details by email. On first login, you will be prompted to change your password and enable two-factor authentication. Your CQC assessment framework is already loaded and ready to use — you can start recording compliance data straight away.
 
-Q: How long does it take to fully set up the platform?
-A: Signing up takes less than a minute. The platform is fully configured. Your main task is to populate it with your data — statuses, review dates, evidence, and HR records — for your whole team. Most managers find the KLOE tracker usable within an hour and fully up to date within a few days.
+Q9: How long does it take to set up the platform fully?
+A: Signing up takes less than a minute. The platform is fully configured. Your main task is to populate it with your data — e.g., statuses, review dates, evidence, and HR records — for your whole team. The time required will vary depending on the size of your service.
 
-Q: Do I need to transfer data from my existing system?
+Q10: Do I need to migrate data from my existing system?
 A: No. AlwaysReady does not import data from other systems. You start fresh and build your compliance picture as you go. Because the platform is pre-loaded, no setup is required — you simply start recording your current position against each KLOE.
 
-Q: Is AlwaysReady suitable for homecare agencies as well as care homes?
-A: Yes. Homecare agencies are among the eleven supported service types. Each service type has a tailored checklist aligned with CQC guidance for that setting.
+Q11: Is AlwaysReady suitable for homecare agencies as well as for care homes?
+A: Yes. Homecare agencies are among the eleven supported service types. Each service type has a tailored checklist aligned with CQC guidance for its setting.
 
-Q: Can our admin team access the platform?
-A: Yes — your admin team can be added to the platform, like any other admin user, to manage it alongside the Registered Manager.
+Q12: Can our admin team access the platform?
+A: Yes — team members can be added to the platform with varying levels of access. For security reasons, we recommend that only the Registered Manager have admin access. Other team members, including admin staff, should be given user access. This allows them to work on their assigned KLOEs without accessing HR records or team management settings.
 
-## HOW THE PLATFORM WORKS
+HOW THE PLATFORM WORKS
 
-Q: How does the AlwaysReady platform work?
-A: AlwaysReady is structured around the five CQC key questions, their linked KLOEs, and the CQC 'I' questions. For each KLOE or 'I' question, you record a RAG status, set a review date, add notes, and upload evidence. This tracks your compliance position over time. Your dashboard provides a live view of where you stand, and your Daily Review Report highlights what needs attention today.
+Q13: How does the AlwaysReady platform work?
+A: AlwaysReady is structured around the five CQC key questions and their linked KLOEs. Open a KLOE and set its status — In Progress or Completed. This action automatically updates the platform's RAG status. You can also add notes and upload evidence for each KLOE. Your dashboard reflects your current compliance position in real time.
 
-Q: What does a daily routine with AlwaysReady look like?
-A: You log in to your dashboard and review your Daily Review Report, which highlights the KLOEs most overdue for review and those rated Red or Amber. You update statuses, add notes, upload evidence, and set next review dates. Over time, this builds a live, accurate picture of your compliance health.
+Q14: What does a daily routine using AlwaysReady look like?
+A: You log in to your dashboard and review your Daily Review Report. It highlights overdue KLOEs for review, in priority order. You open any flagged KLOE, set it to In Progress or Completed, add notes, and upload evidence. The platform automatically updates your RAG status. Over time, this builds a live, accurate picture of your compliance health.
 
-Q: How does AlwaysReady map evidence to requirements?
+Q15: How does AlwaysReady map evidence to requirements?
 A: AlwaysReady is structured around the five CQC key questions and their linked KLOEs. You attach evidence directly to each KLOE, so when an inspector requests evidence for a particular area, it is already organised and ready to share.
 
-Q: Can I see a snapshot of our compliance status?
+Q16: Can I see a snapshot of our compliance status?
 A: Yes. Your Readiness Dashboard provides a live view of your compliance position across all five CQC key questions, including RAG ratings, priority indicators, and review dates. You can see at a glance where you are strong and where to focus next.
 
-Q: What is the RAG status system?
-A: RAG stands for Red, Amber, Green — a colour-coded status system used across the platform to show inspection readiness at a glance. Green means a KLOE has been reviewed and is up to date. Amber means it is in progress or due for review within 30 days. Red means it is overdue and requires urgent attention. Grey means no review has yet been recorded. The RAG status updates automatically based on the dates and statuses you enter — you never have to set it manually.
+Q17: What is the RAG status system?
+A: RAG stands for Red, Amber, Green — a colour-coded status system used across the platform to show inspection readiness at a glance. Green indicates that a KLOE has been reviewed and is up to date. Amber indicates that it is in progress or due for review within 30 days. Red indicates that it is overdue and requires urgent attention. Grey indicates that no review has yet been recorded. The RAG status updates automatically based on the dates and statuses you enter into the system.
 
-Q: Is there a way to test how prepared we are before a real inspection?
+Q18: Is there a way to assess how prepared we are before an actual inspection?
 A: Yes — AlwaysReady includes a mock inspection tool. It guides you through each KLOE and prompts you to self-assess your evidence as Outstanding, Good, Requires Improvement, or Inadequate. At the end, it produces a report showing a self-assessed rating for each of the five key question areas. These ratings are for internal self-assessment only and do not represent the views of CQC or any regulatory body.
 
-Q: How does AlwaysReady help with review deadlines?
-A: Every KLOE has a review date. Your Daily Review Report highlights the KLOEs that are most overdue for review and sorts them by priority, so you always know what needs attention first. Nothing falls through the cracks.
+Q19: How does AlwaysReady help meet review deadlines?
+A: Every KLOE has a review date. Your Daily Review Report highlights the KLOEs most overdue for review and sorts them by priority, so you always know what needs attention first. Nothing falls through the cracks.
 
-Q: Does AlwaysReady work on a tablet or mobile?
+Q20: Does AlwaysReady work on a tablet or a mobile?
 A: Yes. AlwaysReady is a web-based platform optimised to run in any browser — on desktops, laptops, tablets, or smartphones. No app download is required.
 
-Q: Does AlwaysReady work offline?
+Q21: Does AlwaysReady work offline?
 A: No. AlwaysReady requires an internet connection. All data is securely stored in the cloud, so you can access it from any device with a web browser.
 
-Q: Is there a dark mode?
+Q22: Is there a dark mode?
 A: Yes. Click the sun/moon icon in the navigation bar to switch between light and dark modes. The platform also respects your device's system preference by default if you have not set a manual preference.
 
-Q: Why am I signed out when I close my browser tab?
-A: AlwaysReady automatically signs you out when you close the browser tab. This deliberate security feature protects compliance and staff data on shared devices — it ensures nobody can access your account simply by reopening the browser after you have finished. When you are ready to use AlwaysReady again, simply sign back in.
+Q23: Why am I signed out when I close my browser tab?
+A: AlwaysReady automatically signs you out when you close the browser tab. This deliberate security feature protects data on shared devices. It ensures that nobody can access your account simply by reopening the browser after you have finished. When you are ready to use AlwaysReady again, simply sign back in.
 
-## THE KLOE TRACKER
+THE KLOE TRACKER
 
-Q: Can I add my own KLOEs or customise the list?
-A: No. The 24 KLOEs are fixed within the CQC framework and cannot be added to or removed. This ensures your compliance records always map accurately to the framework used by inspectors. However, you can add your own notes and evidence to each KLOE.
+Q24: Can I add my own KLOEs or customise the list?
+A: No. The 24 KLOEs are fixed within the CQC framework and cannot be added to or removed. This ensures your compliance records always map accurately to the framework inspectors use. However, you can add your own notes and evidence to each KLOE.
 
-Q: What is the priority level for?
+Q25: What is the priority level for?
 A: The priority level (1 to 5, with 1 highest) reflects how serious non-compliance in that area would be for your service. You set it yourself, based on your knowledge of your service. Priority is used to sort your Daily Review Report, so the most critical overdue KLOEs always appear at the top.
 
-Q: What is the difference between evidence location notes and uploading a file?
+Q26: What is the difference between evidence location notes and uploading a file?
 A: Evidence location notes are a free-text field where you specify where a document is stored — for example, a shared drive folder, a filing cabinet, or a policy management system. Uploading a file attaches the document to the KLOE in AlwaysReady. You can use one, the other, or both for each KLOE.
 
-Q: How does review frequency work?
+Q27: How does review frequency work?
 A: For each KLOE, you can set how often it needs to be reviewed — monthly, quarterly, annually, or a custom number of days. When you record a review date, the platform automatically calculates the next review due date based on the frequency you have set. This determines the RAG status and your Daily Review Report.
 
-Q: Can I assign the same KLOE to more than one person?
+Q28: Can I assign the same KLOE to multiple people?
 A: No — each KLOE can be assigned to one team member at a time. If ownership needs to change, an Admin can reassign it at any time from the KLOE detail page.
 
-## DOCUMENT AND EVIDENCE MANAGEMENT
+DOCUMENT AND EVIDENCE MANAGEMENT
 
-Q: How does document management work in AlwaysReady?
-A: You can upload evidence files directly to each KLOE. Every upload is virus-scanned, time-stamped, and linked to the relevant key question, so your evidence trail builds naturally as you work. Everything is securely stored and easy to retrieve.
+Q29: How does document management work in AlwaysReady?
+A: You can upload evidence files directly to each KLOE. Each upload is virus-scanned, time-stamped, and linked to the relevant key question, so your evidence trail builds naturally as you work. Everything is securely stored and easy to retrieve.
 
-Q: What types of documents can I upload?
+Q30: What types of documents can I upload?
 A: You can upload any non-clinical governance-related document: policies, audits, meeting minutes, training records, anonymised incident reviews, action plans, and more. Supported file types include PDF, Word (.docx), Excel (.xlsx), and images (JPG and PNG). The maximum file size is 10 MB per file. Note: legacy .doc and .xls formats are not accepted for security reasons — please save files in the current .docx or .xlsx format before uploading.
 
-Q: Is there a limit on file size?
-A: Each file must be 10 MB or less. You can upload as many files as you need — there is no limit imposed on your account.
+Q31: Is there a file size limit?
+A: Each file can be up to 10 MB. There is no limit on the number of files you can upload.
 
-Q: Can I delete files I have uploaded?
-A: Yes. Uploaded evidence files can be deleted directly from the KLOE by clicking the delete button.
+Q31b: How much storage do I receive?
+A: You can upload files up to 10 MB. You can upload as many files as you need — there is no limit on your account. Only store the most recent version of your files. CQC will not be interested in reviewing last year's files.
 
-Q: Does AlwaysReady provide policy templates?
-A: No. AlwaysReady does not provide generic policy templates because they can pose legal and clinical risks if not tailored. Instead, it helps you organise, evidence, and track your service-specific policies.
+Q32: Can I delete the files I have uploaded?
+A: Yes. Uploaded evidence files can be deleted directly in the KLOE by clicking the delete button. We recommend downloading documents before deleting them.
 
-Q: Can I export data from AlwaysReady?
-A: Yes. The Inspection Pack generates a one-click, printable summary of your compliance position across all KLOEs, formatted for inspectors, boards, and commissioners. You can also download a full CSV export of all your compliance records and a separate ZIP archive of all your uploaded evidence files — both available at any time from Account > Organisation, without needing to contact support.
+Q33: Does AlwaysReady provide policy templates?
+A: No. AlwaysReady does not provide generic policy templates because they can pose legal and clinical risks if not tailored to your needs. Instead, it helps you organise, evidence, and track your service-specific policies.
 
-Q: Can I export my evidence files separately?
-A: Yes. Go to Account > Organisation, then click Download evidence archive. This creates a ZIP file containing all documents your team has uploaded across all KLOEs. The records export on the same page covers your compliance data, audit trail, and team information, provided in CSV format.
+Q34: Can I export data from AlwaysReady?
+A: Yes. The Inspection Pack generates a one-click, printable summary of your compliance position across all KLOEs, formatted for inspectors, boards, and commissioners. You can also download a full CSV export of all your compliance records and a separate ZIP archive of all your uploaded evidence files — both available at any time from Account > Organisation, without contacting support.
 
-## CQC FRAMEWORK AND GOVERNANCE
+Q35: Can I export my evidence files individually?
+A: Yes. Go to Account > Organisation, then click Download evidence archive. This creates a ZIP file containing all documents your team has uploaded across all KLOEs. The records export on the same page covers your compliance data, audit trail, and team information, and is provided as a CSV.
 
-Q: Does AlwaysReady guarantee a good CQC rating?
-A: No. AlwaysReady helps you organise your evidence, track your compliance activity, and prepare for inspection. Your readiness score and RAG status are calculated from your self-assessed inputs, not from an independent audit of your service. CQC inspection outcomes depend on a wide range of factors entirely outside our knowledge or control — including how your team performs on the day, what inspectors observe, and how evidence is assessed against the standards. AlwaysReady helps you arrive at inspection better organised and with your evidence ready. That is a real advantage — but it is not a guarantee.
+CQC FRAMEWORK AND GOVERNANCE
 
-Q: How does AlwaysReady support the CQC regulatory framework?
+Q36: Does AlwaysReady guarantee a good CQC rating?
+A: No. AlwaysReady helps you organise your evidence, track your compliance activity, and prepare for inspection. Your readiness score and RAG status are calculated from your self-assessed inputs, not from an independent audit of your service. CQC inspection outcomes depend on a wide range of factors entirely outside our knowledge or control — including your team's performance on the day, what inspectors observe, and how evidence is assessed against the standards. AlwaysReady helps you arrive at inspection better organised and with your evidence ready. That is a real advantage — but it is not a guarantee.
+
+Q37: How does AlwaysReady support the CQC regulatory framework?
 A: AlwaysReady is built around the five CQC key questions — Safe, Effective, Caring, Responsive, and Well-led — and their associated KLOEs. Every feature on the platform maps to this framework, so you always know what to collect, where it fits, and how to demonstrate it.
 
-Q: Does AlwaysReady provide an audit trail?
+Q38: Does AlwaysReady provide an audit trail?
 A: Yes. AlwaysReady maintains a secure, time-stamped record of every change made on the platform — including who made the change, what was changed, and when. This record cannot be altered or deleted.
 
-Q: Does AlwaysReady keep a record of changes for inspection purposes?
-A: Yes. Every update to a KLOE — including who made it, what changed, and when — is permanently recorded in an audit trail. This record cannot be altered or deleted. During an inspection, it provides verifiable evidence that your team has been actively managing compliance over time, rather than merely preparing on the day.
+Q39: Does AlwaysReady maintain a record of changes for inspection purposes?
+A: Yes. Every update to a KLOE — including who made it, what changed, and when — is permanently recorded in an audit trail. This record cannot be altered or deleted. During an inspection, it provides verifiable evidence that your team has actively managed compliance over time.
 
-Q: What happens to our KLOEs if the CQC framework changes?
+Q40: What happens to our KLOEs if the CQC framework changes?
 A: AlwaysReady is designed so that any updates to the framework can be applied with a simple data change, not a rebuild. Your existing compliance records remain unaffected by framework updates.
 
-## TEAM ACCESS AND WORKFORCE
+TEAM ACCESS AND WORKFORCE
 
-Q: How does team access work in AlwaysReady?
-A: You can invite your team and assign each person a role — Admin, User, or Viewer. Each role has a different level of access, allowing you to share governance responsibilities while maintaining control over who can see and change what.
+Q41: How does team access work in AlwaysReady?
+A: You can invite your team and assign each person a role — Admin, User, or Viewer. Each role has a different level of access, allowing you to share governance responsibilities while maintaining control over who can view and modify records.
 
-Q: Can I control user permissions?
+Q42: Can I control user permissions?
 A: Yes. Role-based permissions let you control who can view, update, or manage different areas of the platform. Viewer access can also be set to expire.
 
-Q: Can I track workforce compliance using AlwaysReady?
+Q43: Can I track workforce compliance with AlwaysReady?
 A: Yes. The HR module lets you track staff records, training, DBS renewals, supervision, and appraisals.
 
-Q: Can more than one person access the account?
-A: Yes. You can invite as many team members as needed. Roles: Admin (full access), User (can update their assigned KLOEs), or Viewer (read-only).
+Q44: Can more than one person access the account?
+A: Yes. You can invite as many team members as needed. Roles: admin (full access), user (can update their assigned KLOEs), or viewer (read-only). We recommend that only the Registered Manager holds the admin role.
 
-Q: How do staff members get access?
-A: Admins add team members to the platform via the Team section. Enter the team member's name, email address, and role, then click Send invite. The team member receives login details by email and sets their own password on first login.
+Q44a: Who should have the admin role on AlwaysReady?
+A: We recommend that only the Registered Manager holds the admin role. Admin users have full access to the platform — including HR records, staff employment data, training records, absence history, and team management settings. This information is sensitive and should be accessible only to those with a genuine business need. Most team members should be given the user role, which allows them to work on their assigned KLOEs without access to HR records or management settings.
 
-Q: Can I give a CQC inspector read-only access during a visit?
-A: Yes. Create a Visitor login on the Team page. You set the access duration, and it expires automatically. The visitor can view the KLOE tracker, audit trail, readiness trend, and inspection pack. They cannot make any changes, and you can revoke access at any time before expiry.
+Q44b: Can the Registered Manager grant their deputy Admin access?
+A: Yes. The platform allows the admin role to be assigned to any team member. Registered Managers can add admin users on the Team page in Account settings. This should be a deliberate decision, given the level of access it grants, including full visibility of all HR records.
 
-## HR MODULE
+Q45: How do staff members obtain access?
+A: Admins add team members to the platform via the Team section. Enter the team member's name, email address, and role, then click Send Invite. The team member receives login details by email and sets their password and MFA on first login.
 
-Q: What is the HR module?
-A: The HR module enables Admins to manage staff and compliance records. You can record employment details, DBS check dates, supervision and appraisal due dates, training completions, and holiday allowances for each staff member. An overview dashboard provides a clear view of the team's compliance status at a glance.
+Q46: Can I grant a CQC inspector read-only access during a visit?
+A: Yes. Create a viewer login on the Team page. You set the access duration, and it expires automatically.
 
-Q: Does AlwaysReady track mandatory training?
+Q47: What can a viewer see?
+A: Visitors have read-only access to the KLOE tracker, audit trail and timeline, readiness trends, daily review report, inspection pack, incident log, feedback log, governance meetings, people's voice, post-inspection reviews and FAC, and HR records. They cannot make any changes, and you can revoke access at any time before expiry.
+
+HR MODULE
+
+Q48: What is the HR module?
+A: The HR module enables admin users to manage staff records in one place. For each team member, you can record employment details, DBS check dates, supervision and appraisal due dates, training completions, holiday allowances, and sick leave and absence episodes. The overview dashboard provides a clear view of the team's overall compliance status.
+
+Q49: Does AlwaysReady track mandatory training?
 A: Yes. The HR module includes a training records section for each staff member. You can record completion dates, set renewal frequencies, upload certificates, and view automatically calculated next-due dates.
 
-Q: Can staff complete daily care notes in AlwaysReady?
+Q50: Can staff complete daily care notes in AlwaysReady?
 A: No. AlwaysReady is not a care-planning or daily-notes system. It focuses on governance, oversight, and inspection-readiness, not on recording care.
 
-Q: What is special category data and why does AlwaysReady hold it?
-A: Special category data includes fields such as date of birth, gender, ethnicity, disability status, and marital status. AlwaysReady stores this data in staff HR records for equality monitoring, as required by the Equality Act 2010 for employers. This data is visible only to Admin users within your organisation and is never shared with CQC or any third party.
+Q51: What is special category data and why does AlwaysReady hold it?
+A: Special category data includes fields such as date of birth, gender, ethnicity, disability status, and marital status. AlwaysReady stores this data in staff HR records for equality monitoring, as required by the Equality Act 2010 for employers.
 
-Q: Can holiday be tracked in hours instead of days?
+Q52: Can holiday be tracked in hours rather than days?
 A: Yes. Holiday allowances can be tracked in days or hours. You can change the unit for your whole organisation on the HR settings page.
 
-Q: Does AlwaysReady track sick leave and absence?
-A: Yes. The HR module includes an absence records section for each staff member where you log each episode individually — recording start and end dates, the number of days absent, a reason category, and any notes. This builds a complete absence history over time, which supports management review and demonstrates thorough workforce oversight to CQC.
+Q53: Does AlwaysReady track sick leave and absences?
+A: Yes. The HR module includes an absence records section for each team member. You log each episode individually — recording the start and end dates, the number of days absent, a reason category, and any notes. This builds a complete absence history over time, supporting management review and demonstrating thorough workforce oversight to CQC.
 
-Q: What types of absence can I record?
-A: You can record sick leave and other absences. For each episode you select a reason category: Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other. The number of days absent is calculated automatically from the start and end dates but can be edited manually if needed.
+Q54: What is the Bradford Factor, and does AlwaysReady calculate it?
+A: The Bradford Factor is a formula (S² × D, where S is the number of separate absences and D is the total number of days absent in a rolling 52-week period) used by employers to identify patterns of frequent short-term sickness absence. AlwaysReady automatically calculates each team member's Bradford Factor from their logged absence episodes and displays a Low, Medium, or High risk band alongside the score.
 
-Q: Does AlwaysReady calculate the Bradford Factor?
-A: Yes. The Bradford Factor (S² × D, where S is the number of separate sickness absences and D is total days absent in a rolling 52-week period) is calculated automatically from each staff member's logged absence records and displayed as Low, Medium, or High. You do not need to calculate it manually.
+Q55: Does AlwaysReady track return-to-work interviews?
+A: Yes. Each absence record includes fields to indicate whether a return-to-work interview has been completed, the date it took place, and any notes. Return-to-work interviews are a standard HR expectation in the care sector and a CQC inspection point under Safe and Well-led.
 
-Q: Does AlwaysReady track return-to-work interviews?
-A: Yes. Each absence record includes fields to record whether a return-to-work interview has been completed, the date it took place, and any notes from the interview. Return-to-work interviews are a standard HR expectation in the care sector and a CQC inspection point under Safe and Well-led.
+Q56: Can I log the reason for each absence?
+A: Yes. When recording an absence, you can select a reason category — Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other. This helps you identify patterns across your team over time, informing occupational health decisions and demonstrating proactive workforce management.
 
-Q: Can I log the reason for each absence episode?
-A: Yes. When recording an absence you can select a reason category — Musculoskeletal, Respiratory or Cold and Flu, Mental Health and Stress, Gastrointestinal, Injury, or Other. This lets you identify patterns across your team over time, which can inform management decisions and demonstrate proactive workforce oversight.
+Q57: Does AlwaysReady track DBS renewal dates?
+A: Yes. The HR module records the date of each staff member's most recent DBS check and calculates the next renewal due date according to the frequency you set. Renewal status is visible for all staff on the HR overview page.
 
-Q: Who can access absence records?
-A: Absence records are visible to Admin users only. Staff and Viewer accounts cannot access any HR data, including absence records.
+Q58: Can I upload training certificates to AlwaysReady?
+A: Yes. You can upload a certificate against any training record. Uploaded certificates are stored securely, virus-scanned, and linked to the relevant training type for that staff member, so evidence is ready if an inspector requests it.
 
-## SPECIALIST SERVICES AND SUB-SPECIALISMS
+Q59: Does AlwaysReady flag when training is due for renewal?
+A: Yes. Each training type has a renewal frequency that you set. The HR overview highlights staff members whose training is overdue or due, so nothing is missed.
 
-Q: Does AlwaysReady cater for specialist care such as dementia or learning disabilities?
-A: Yes. When you sign up, you select your service type and any sub-specialisms you offer. AlwaysReady tailors the compliance checklist accordingly, adding relevant items for your service context.
+Q60: Does AlwaysReady track supervision and appraisal dates?
+A: Yes. The HR module records each staff member's last supervision and appraisal dates, the frequency for each, and automatically calculates the next due dates. CQC inspects supervision and appraisal records under the Effective and Well-led domains.
 
-Q: What sub-specialisms does AlwaysReady support?
-A: AlwaysReady currently supports the following sub-specialisms: Dementia Care, Learning Disabilities, Mental Health, End of Life Care, Acquired Brain Injury (ABI), Physical Disabilities, Bariatric Care, Sensory Impairment, Epilepsy, and Autism. Sub-specialisms can be selected at sign-up or updated in your account settings.
+Q61: Who can access HR records in AlwaysReady?
+A: HR records are visible to Admin users and to any read-only users invited to your organisation, such as CQC inspectors or board members. Read-only users can view HR data but cannot edit it. User and Viewer accounts without read-only access cannot access HR data.
 
-## NEWSLETTER DRAFTING TOOL
+Q62: Is there an HR overview of the whole team\'s compliance status?
+A: Yes. The HR Records page displays all team members in your organisation, with at-a-glance compliance indicators. You can open any team member's full record to view their employment details, training, DBS, supervision, appraisal, holiday, and absence history.
 
-Q: What is the newsletter drafting tool?
+SPECIALIST SERVICES AND SUB-SPECIALISMS
+
+Q63: Does AlwaysReady provide specialist care tracking for conditions such as dementia or learning disabilities?
+A: Yes. When you sign in, you can select any sub-specialisms you offer. AlwaysReady tailors the compliance checklist to your service context, adding relevant items.
+
+Q64: Which sub-specialisms does AlwaysReady support?
+A: AlwaysReady currently supports the following sub-specialisms: Dementia Care, Learning Disabilities, Mental Health, End-of-Life Care, Acquired Brain Injury (ABI), Physical Disabilities, Bariatric Care, Sensory Impairment, Epilepsy, and Autism. You can select sub-specialisms after you log in.
+
+NEWSLETTER DRAFTING TOOL
+
+Q65: What is the newsletter drafting tool?
 A: The newsletter drafting tool is an AI-assisted feature available to organisation admins. You choose your audience (staff, families and residents, or both), a topic or occasion, and a tone, then add any key points — the platform generates a ready-to-copy draft in seconds using Anthropic's Claude AI. It is a drafting aid only: AlwaysReady never sends newsletters on your behalf, and all output should be reviewed and edited before use.
 
-Q: Who can use the newsletter drafting tool?
-A: The tool is available to Admin users. Staff and Viewer logins do not have access.
+Q66: Who can use the newsletter drafting tool?
+A: The tool is available to admin users.
 
-Q: Is there a limit on how many newsletter drafts I can generate?
+Q67: Is there a limit to the number of newsletter drafts I can generate?
 A: Yes — each organisation can create up to 10 drafts per calendar month.
 
-Q: Can I include resident or patient details in my newsletter prompt?
-A: No. You must not include personal details of residents, patients, families, or individual staff members in the drafting tool. The tool is for generating general compliance communications only. A notice reminding you of this is prominently displayed at the top of the tool.
+Q68: Can I include resident or patient details in my newsletter prompt?
+A: No. Do not include personal details of residents, patients, families, or individual staff members in the drafting tool. The tool is for generating general compliance communications only. A notice reminding you of this is prominently displayed at the top of the tool.
 
-Q: Does AlwaysReady send newsletters on my behalf?
+Q69: Does AlwaysReady send newsletters on my behalf?
 A: No. AlwaysReady generates a draft for you to copy and paste into your preferred channel — email, WhatsApp, a printed notice, or any other channel. You remain fully in control of what goes out and when.
 
-## ACTION PLAN
+INSPECTION DAY
 
-Q: What is the Action Plan?
-A: The Action Plan is a task management tool built into each KLOE. When a KLOE review identifies an area for improvement, you can create an action item directly from the KLOE detail page. Each action item has a title, description, due date, priority (High, Medium, or Low), and an assignee. Admins and Users can create, update, and sign off action items. Viewers can read them but cannot make changes.
+Q70: How does AlwaysReady help on the day of inspection?
+A: Your Inspection Pack provides a one-click, printable summary of your compliance position for each KLOE, with statuses, priorities, and evidence notes already organised and time-stamped.
 
-Q: Who can create and manage action items?
-A: Admins and Users can create, update, and sign off action items. Viewers can see them but cannot create or edit them.
-
-Q: How do I close an action item?
-A: Open the KLOE detail page and find the action item in the Action Plan panel. Click Sign Off, add any completion notes, and confirm. The item is marked Completed, and the completion date and the name of the person who signed it off are permanently recorded.
-
-Q: Can I assign an action item to a specific team member?
-A: Yes. When creating or editing an action item, you can select any team member as the assignee. The assignee receives a notification and can see their assigned items when they log in.
-
-## INCIDENT LOG
-
-Q: What is the Incident Log?
-A: The Incident Log lets you record and track incidents that occur within your service. Each record captures the incident type, date, description, immediate actions taken, people involved, whether it was reported externally (for example to CQC or the Local Authority), and its current status. CQC inspectors expect to see that incidents are recorded, reviewed, and that learning is documented — the Incident Log provides a structured, time-stamped record that demonstrates this.
-
-Q: What types of incidents can I record?
-A: You can categorise incidents as: Safety, Safeguarding, Near Miss, Complaint, or Other.
-
-Q: Can I record the learning outcome from an incident?
-A: Yes. Each incident record includes a Learning Outcome field. Recording what changed as a result of an incident — whether a process was updated, training was delivered, or a risk was mitigated — is a key element of demonstrating a learning culture to CQC under Well-led.
-
-Q: How do I record that an incident was reported externally?
-A: Each incident record includes a toggle to indicate that the incident was reported externally, along with a field for an external reference number.
-
-Q: Who can view and manage incident records?
-A: Admins can create, edit, and close incidents. Users can create and update them. Viewers can read them. All records are private to your organisation and never shared with CQC.
-
-## FEEDBACK LOG
-
-Q: What is the Feedback Log?
-A: The Feedback Log is a structured register for recording all feedback received by your service — complaints, compliments, suggestions, and concerns. CQC inspectors look for evidence that feedback is actively sought, recorded, and acted upon. The Feedback Log provides a clear, time-stamped record that demonstrates this.
-
-Q: What types of feedback can I log?
-A: You can categorise feedback as: Complaint, Compliment, Suggestion, or Concern. Each record captures the source (person using the service, family or carer, professional, anonymous, or other), a summary, the action taken, and the outcome.
-
-Q: Can I link feedback to a specific CQC key question?
-A: Yes. When creating a feedback record, you can tag it to the most relevant CQC key question — Safe, Effective, Caring, Responsive, or Well-led.
-
-Q: Does the Feedback Log record whether feedback was reported to CQC?
-A: Yes. Each record includes a field to indicate whether the matter was reported to CQC, which is relevant for complaints that meet the threshold for statutory notification.
-
-## GOVERNANCE MEETINGS
-
-Q: What is the Governance Meetings log?
-A: The Governance Meetings log lets you record the minutes, key decisions, and actions arising from your governance and management meetings. CQC inspectors routinely ask for evidence of governance activity under Well-led. Having a structured, signed-off record — searchable and accessible in seconds — is a significant advantage during an inspection.
-
-Q: What information is captured for each governance meeting?
-A: Each record captures: meeting title and date, attendees, agenda, key decisions made, and actions arising. Once all actions have been addressed, an Admin can sign off the record, at which point the sign-off date and the name of the person who signed it off are permanently recorded.
-
-Q: Who can sign off a governance meeting record?
-A: Only Admins can sign off a meeting record. Once signed off, the record is timestamped and marked completed. Users can view and contribute to meeting records but cannot sign them off.
-
-Q: Is there a weekly digest for governance activity?
-A: Yes. AlwaysReady sends a weekly governance digest to Admins every Monday morning, summarising any meeting records created or updated in the previous seven days.
-
-## PEOPLE'S VOICE
-
-Q: What is the People's Voice module?
-A: The People's Voice module is built around the 19 "I" statements published by TLAP (Think Local Act Personal) as part of CQC's 2026 draft assessment framework. CQC gathers evidence against these statements directly from people using services, their families, and carers during inspections. AlwaysReady gives your team a structured way to record your own evidence against each statement in advance, so you can approach an inspection with confidence.
-
-Q: What are the "I" statements?
-A: The "I" statements are 19 first-person statements representing what good care looks like from the perspective of the person receiving it — for example "I feel safe" and "I am treated with dignity and respect." Each is linked to one of the five CQC key questions.
-
-Q: How does AlwaysReady help with the People's Voice module?
-A: For each of the 19 statements, your team can record a confidence level (Green, Amber, or Red), a summary of supporting evidence, and any actions needed to strengthen it. Each entry is time-stamped and attributed to the team member who made it. A full history of entries is retained.
-
-Q: Who can update People's Voice records?
-A: Admins and Users can record evidence against the "I" statements. Viewers can read them but cannot add or amend them.
-
-## POST-INSPECTION REVIEWS AND FAC
-
-Q: What is the Post-Inspection module?
-A: The Post-Inspection module helps you manage the period after a CQC inspection. You can record the inspection date, when the draft report was received, and when the final report was published. You can also log CQC ratings across all five key questions and track any Factual Accuracy Check (FAC) submissions.
-
-Q: What is a Factual Accuracy Check (FAC)?
-A: A Factual Accuracy Check is the formal process by which a registered provider can challenge factual errors in a draft CQC inspection report before it is published. AlwaysReady lets you log each FAC item, categorise it as a factual error or a subjective judgment, record your position and supporting evidence, and track whether CQC upheld or rejected the challenge.
-
-Q: What statuses can a post-inspection review have?
-A: Draft Received, FAC Submitted, Final Report, Action Plan Active, or Closed.
-
-Q: Can I record ratings for individual key questions?
-A: Yes. Each review captures CQC ratings for all five key questions individually — Safe, Effective, Caring, Responsive, and Well-led — as well as the overall rating. Options are: Outstanding, Good, Requires Improvement, Inadequate, or Not Rated.
-
-Q: Who can access Post-Inspection records?
-A: Admins can create and manage post-inspection reviews and FAC items. Users and Viewers can read them.
-
-## INSPECTION DAY
-
-Q: How does AlwaysReady help on inspection day?
-A: Your Inspection Pack provides a one-click, printable summary of your compliance position for every KLOE, with statuses, priorities, and evidence notes already organised and time-stamped.
-
-Q: What if an inspector disputes our records?
+Q71: What if an inspector disputes our records?
 A: Every entry is time-stamped and linked to a specific KLOE. The audit trail shows exactly who made each change and when, providing a robust basis for any challenge to factual accuracy.
 
-Q: Can AlwaysReady help with factual accuracy challenges?
+Q72: Can AlwaysReady help with factual accuracy issues?
 A: Yes. You can quickly export relevant records and evidence to support your challenge, allowing you to respond clearly and confidently within tight deadlines.
 
-## SECURITY AND DATA
+SECURITY AND DATA
 
-Q: How secure is AlwaysReady?
+Q73: How secure is AlwaysReady?
 A: AlwaysReady uses enterprise-grade infrastructure. All data is encrypted in transit and at rest, hosted on infrastructure compliant with UK GDPR standards, and protected by role-based access controls and multi-factor authentication.
 
-Q: Where is my data stored?
+Q74: Where is my data stored?
 A: On secure cloud infrastructure that meets the data protection standards required for regulated sectors in the UK.
 
-Q: Is AlwaysReady GDPR compliant?
+Q75: Is AlwaysReady GDPR compliant?
 A: Yes. AlwaysReady operates in full compliance with UK GDPR. Full details are available in the Privacy Policy at alwaysready.uk/legal.
 
-Q: Who can access my data?
-A: Only the users you authorise. AlwaysReady staff do not access your service data without your permission.
+Q76: Who can access my data?
+A: Only users you authorise can access your service data. AlwaysReady staff do not access it without your permission.
 
-Q: Is our account secure?
+Q77: Is our account secure?
 A: Yes. All accounts require two-factor authentication (2FA). Data is stored in an encrypted, access-controlled database.
 
-Q: Which authenticator apps work with AlwaysReady?
+Q78: Which authenticator apps are compatible with AlwaysReady?
 A: AlwaysReady works with any TOTP-compatible authenticator app, including Google Authenticator, Authy, and Microsoft Authenticator. If you do not have a smartphone, you can also use a browser-based authenticator extension for Chrome or Firefox, or the Authy desktop app for Windows and Mac.
 
-Q: Do Visitor accounts need two-factor authentication?
+Q79: Do visitor accounts require two-factor authentication?
 A: No. Two-factor authentication is required only for Admin and Staff accounts. Visitor accounts, which are read-only and time-limited, are not subject to 2FA.
 
-Q: What if I lose access to my authenticator app?
-A: You can add another authenticator app at any time through the Account section of your dashboard. You do not need to contact us to regain access.
+Q80: What if I lose access to my authenticator app?
+A: You can add another authenticator app at any time via the Account section of your dashboard.
 
-Q: Does AlwaysReady share our data with CQC?
+Q81: Does AlwaysReady share our data with the CQC?
 A: No. The data you enter into AlwaysReady is private and visible only to those you grant access. AlwaysReady does not submit any data to CQC, does not connect to any internal CQC system, and does not share your compliance position with any regulator or third party.
 
-Q: Does AlwaysReady connect to CQC at all?
+Q82: Does AlwaysReady connect to CQC at all?
 A: Yes — but only in one direction and solely to read publicly available information. AlwaysReady connects to the CQC Syndication API to retrieve your service's current CQC rating, registered service name, and last inspection date. This connection is read-only. No data from your AlwaysReady account is sent to CQC. AlwaysReady is neither affiliated with nor endorsed by the Care Quality Commission.
 
-Q: What CQC data does AlwaysReady display, and where does it come from?
-A: AlwaysReady displays your current overall CQC rating, your registered service name as recorded by CQC, and the date of your most recent CQC inspection, along with a direct link to your service's CQC page. This data is sourced from the CQC Syndication API and is refreshed automatically every 24 hours.
+Q83: Which CQC data does AlwaysReady display, and where does it come from?
+A: AlwaysReady displays your current overall CQC rating, your registered service name as recorded by the CQC, and the date of your most recent CQC inspection, along with a direct link to your service's CQC page. This data is sourced from the CQC Syndication API and is refreshed automatically every 24 hours.
 
-Q: Does entering my CQC Location ID at sign-up send any information to CQC?
+Q84: Does entering my CQC Location ID at sign-up send any information to CQC?
 A: No. AlwaysReady uses the Location ID to look up your service on the CQC public register and confirm its validity. CQC receives no notification of your sign-up, and no information from your account is shared with them.
 
-Q: Where is AlwaysReady heading with its CQC connection?
-A: The current integration reads from the public register. Future development may include structured data exchange with the CQC provider portal, but any such feature would be clearly explained and opt-in. No changes will be made to the current read-only setup without notice.
+Q85: Where is AlwaysReady heading with its CQC connection?
+A: The current integration reads from the public register. Future development may include structured data exchange with the CQC provider portal, but any such feature would be clearly explained and opt-in. No changes will be made to the current read-only setup without prior notice.
 
-## PRICING AND SUBSCRIPTION
+PRICING AND SUBSCRIPTION
 
-Q: How much does AlwaysReady cost?
+Q86: How much does AlwaysReady cost?
 A: £75 per month per CQC-registered location. No setup fees, hidden costs, or tiers — everything is included.
 
-Q: Is the subscription monthly or annual?
+Q87: Is the subscription monthly or annual?
 A: Monthly. There is no annual commitment or long-term contract, and you can cancel at any time.
 
-Q: When does billing start?
+Q88: When does billing start?
 A: Billing begins after your 14-day free trial ends, but only if you choose to subscribe. There is no automatic charge at the end of the trial.
 
-Q: Can I cancel my subscription?
+Q89: Can I cancel my subscription?
 A: Yes, at any time via the Account section. No long-term contracts or cancellation penalties apply. Access continues until the end of the current billing period.
 
-Q: How do I update my payment details?
-A: Go to Account > Billing, then click "Manage subscription". This opens the Stripe billing portal, where you can update your payment method, view invoices, and manage your subscription. AlwaysReady does not store any card or financial data — everything is handled securely by Stripe.
+Q90: How do I update my payment details?
+A: Go to Account > Billing, then click \"Manage subscription\". This opens the Stripe billing portal, where you can update your payment method, view invoices, and manage your subscription. AlwaysReady does not store any card or financial data — all data is handled securely by Stripe.
 
-Q: What happens if a payment fails?
-A: If a payment fails, you will be notified by email. Go to Account > Billing, then click "Manage subscription" to update your payment method in the Stripe billing portal. If the payment cannot be collected, access to the platform may be suspended until the issue is resolved.
+Q91: What happens if a payment fails?
+A: If a payment fails, you will be notified by email. Go to Account > Billing, then click \"Manage subscription\" to update your payment method in the Stripe billing portal. If payment cannot be collected, access to the platform may be suspended until the issue is resolved.
 
-Q: Can I download my data before I cancel?
-A: Yes. You can download a full export of your compliance records and a ZIP archive of your evidence files at any time from Account > Organisation. Your data is retained for 30 days after cancellation, during which you can still export all data.
+Q92: Can I download my data before cancelling?
+A: Yes. You can download a full export of your compliance records and a ZIP archive of your evidence files at any time from Account > Organisation. Your data is retained by AlwaysReady for 30 days after cancellation, during which you can still export all data.
 
-Q: Is there a charity discount?
+Q93: Is there a charity discount?
 A: Yes — registered charities receive a discount on every monthly payment for the duration of their subscription. Provide your charity registration number at sign-up, and the discount is applied automatically once your registration is verified.
 
-Q: Can we use AlwaysReady for more than one service?
+Q94: Can we use AlwaysReady across multiple services?
 A: Each account is for a single CQC-registered service location. If you operate multiple services, each requires its own account. Contact support@alwaysready.uk to discuss multi-site pricing.
 
-Q: What is included in the subscription?
-A: Full platform access, evidence file storage, KLOE tracker, readiness dashboard, daily review report, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, team access with role-based permissions, and support. Everything is included.
+Q95: What is included in the subscription?
+A: Full platform access, including unlimited support. We regularly add new features. Everything is included.
 
-## SUPPORT AND CONTACT
+SUPPORT AND CONTACT
 
-Q: What support is available if we have a problem?
-A: Raise a support ticket from within the platform via the Support link in the navigation bar, or email support@alwaysready.uk.
+Q96: What support is available? How do I contact a person? Can I speak to a human? How do I get help?
+A: Email support@alwaysready.uk — a real person will respond.
 
-Q: How do I contact AlwaysReady?
-A: Website visitors can use the contact form at alwaysready.uk/contact. Existing platform users should open a support ticket in the platform or email support@alwaysready.uk.
+Q97: Can I reply to a support ticket by email?
+A: Yes. When you receive a reply to your support ticket by email, you can reply directly to that email, and your response will be automatically threaded back into the ticket. You do not need to log in to the platform to continue the conversation.
 
-Q: Can I reply to a support ticket by email?
-A: Yes. When you receive a reply to your support ticket by email, you can reply directly to that email and your response will be automatically threaded back into the ticket. You do not need to log in to the platform to continue the conversation.
+FREE TRIAL
 
-## FREE TRIAL
+Q98: Is there a free trial?
+A: Yes. When the platform launches, you can sign up for a free 14-day trial with no credit card required. You will have full access to all features from day one.
 
-Q: Is there a free trial?
-A: Yes — a 14-day free trial with no credit card required. You will have full access to all features from day one.
+Q99: How long is the free trial?
+A: 14 days of full, unrestricted access to the platform.
 
-Q: How long is the free trial?
-A: 14 days with full, unrestricted access throughout.
-
-Q: Do I need a credit card to start the free trial?
+Q100: Do I need a credit card to start the free trial?
 A: No. You only need your service name, CQC Location ID, service type, and your name and email address.
 
-Q: What is included in the free trial?
-A: Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, and team access. Data entered during the trial is retained if you subscribe.
+Q101: What is included in the free trial?
+A: Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, team access, and more. Data entered during the trial is retained if you subscribe.
 
-Q: How long does it take to get started?
-A: Under a minute. Fill in a short form, receive your login details by email, and your CQC KLOE framework is already loaded and ready to use.
+Q102: How long does it take to get started?
+A: In under a minute. Fill in a short form, receive your login details by email, and your CQC KLOE framework is already loaded and ready to use.
 
-Q: Which service types does AlwaysReady currently support?
+Q103: Which service types does AlwaysReady currently support?
 A: Eleven service types: ARBD Specialist Care Homes, Community Drug and Alcohol Services, Dual-Registered Care Homes, Extra Care Housing, Homecare Agencies, Nursing Homes, Residential Care Homes, Residential Rehabilitation Services, Shared Lives Schemes, Specialist Colleges, and Supported Living. Each has a tailored checklist aligned with CQC guidance.
 
-Q: Is my data safe, and what happens to it if I do not subscribe?
-A: Your data is stored securely and never shared with third parties. If you do not subscribe, your data is retained for 30 days and can be downloaded at any time from Account > Organisation. After 30 days, it is permanently deleted. You can also request early deletion by contacting us.
+Q104: Is my data safe, and what happens to it if I do not subscribe?
+A: Your data is stored securely and never shared with third parties. If you do not subscribe, your data is retained for 30 days and can be downloaded at any time from Account > Organisation. After 30 days, it is permanently deleted. You can also request early deletion by contacting us at support@alwaysready.uk.
 
-Q: Will AlwaysReady work alongside my existing systems?
-A: Yes. AlwaysReady integrates with your existing care planning, medication, and rostering software. It does not store any resident or clinical information — it is focused entirely on compliance and inspection preparedness.
+Q105: Will AlwaysReady work alongside my existing systems?
+A: Yes. AlwaysReady works alongside your existing care planning, medication, and rostering software. It does not store any resident or clinical information — it is focused solely on compliance and inspection preparedness.
 
-Q: How do I start the free trial?
-A: Click the Start Free Trial button on the AlwaysReady website at alwaysready.uk. No credit card required — full access in minutes.
+Q106: How do I start the free trial?
+A: When the platform launches, click the Start Free Trial button on the AlwaysReady website at alwaysready.uk. No credit card required — full access in minutes.
 
-Q: What happens when my free trial ends?
+Q107: What happens when my free trial ends?
 A: You will be invited to subscribe. There is no automatic charge or obligation to do so.
 
-Q: Can I extend my free trial?
+Q108: Can I extend my free trial?
 A: Contact us at support@alwaysready.uk, and we will do our best to help.
 
-## ABOUT THE BLOG
+ACTION PLAN
 
-Q: Who writes the AlwaysReady blog?
-A: All blog posts are written by Dr Ethna Parker, founder and developer of AlwaysReady, who holds a doctorate and has a professional background in health and adult social care.
+Q112: What is the Action Plan?
+A: The Action Plan is a task management tool built into each KLOE. When a KLOE is reviewed and an area for improvement is identified, you can create an action item directly from the KLOE detail page. Each action item includes a title, description, due date, priority (High, Medium, or Low), and an assignee. Admins and Users can create, update, and sign off on action items.
 
-Q: What is the blog about?
-A: Practical insights, real-world tips, and straightforward strategies to help registered managers strengthen their evidence base and streamline their processes. Not regulatory advice — focused on good governance practice.
+Q113: Who can create and manage action items?
+A: Admins and Users can create, update, and sign off on action items. Viewers can see them but cannot create or edit them.
 
-Q: How often is the blog updated?
-A: New posts are published regularly. Subscribe via the signup form at alwaysready.uk/blog to receive them by email.
+Q114: How do I close an action item?
+A: Open the KLOE detail page and locate the action item in the Action Plan panel. Click Sign Off, add any completion notes, then confirm. The item is marked as Completed, and the completion date and the name of the person who signed it off are recorded permanently.
+
+Q115: Can I assign an action item to a specific team member?
+A: Yes. When creating or editing an action item, you can select any team member as the assignee. The assignee receives a notification and can view their assigned items when they log in.
+
+Q116: Are action items included in data exports?
+A: Yes. The CSV export from Account > Organisation includes all action items, along with their status, due dates, assignees, and completion records.
+
+INCIDENT LOG
+
+Q117: What is the Incident Log?
+A: The Incident Log allows you to record and track incidents within your service. Each incident record captures the incident type, date, description, immediate actions taken, people involved, whether it was reported externally (for example, to CQC or the Local Authority), and its current status. CQC inspectors expect to see that incidents are recorded and reviewed, and that learning is documented. The Incident Log provides a structured, searchable record that demonstrates this. Note on recording practice: AlwaysReady recommends using resident reference numbers rather than names when recording details of people involved in incidents. For staff, use job title or role rather than full name. This ensures incident records comply with GDPR data minimisation principles and remain appropriate for records that may be viewed by multiple users across your organisation.
+
+Q118: What types of incidents can I record?
+A: You can categorise incidents as: Safety, Safeguarding, Near Miss, Complaint, or Other. This categorisation helps you identify patterns over time and provides the structure inspectors expect to see when reviewing your incident management records.
+
+Q119: Who can view and manage incident records?
+A: Admins can create, edit, and close incidents. Users can create and update incidents. Viewers can read incident records but cannot add or amend them.
+
+Q120: How do I record that an incident was reported externally?
+A: Each incident record includes a toggle to indicate that the incident was reported externally, along with a field for an external reference number. This provides a clear record that your reporting obligations were met and enables you to cross-reference with the external body if needed.
+
+Q121: Can I record the learning outcome of an incident?
+A: Yes. Each incident record includes a Learning Outcome field. Recording what changed as a result of an incident — whether a process was updated, training delivered, or a risk mitigated — is a key element in demonstrating a learning culture to CQC under the Well-led key question.
+
+FEEDBACK LOG
+
+Q122: What is the Feedback Log?
+A: The Feedback Log is a structured register for recording all feedback your service receives — complaints, compliments, suggestions, and concerns. CQC inspectors look for evidence that feedback is actively sought, recorded, and acted upon. The Feedback Log provides a clear, time-stamped record demonstrating this.
+
+Q123: What types of feedback can I log?
+A: You can categorise feedback as: Complaint, Compliment, Suggestion, or Concern. Each record captures the source (person using the service, family or carer, professional, anonymous, or other), a summary of the feedback, the action taken, and the outcome.
+
+Q124: Can I link feedback to a specific CQC key question?
+A: Yes. When creating a feedback record, you can tag it to the most relevant CQC key question — Safe, Effective, Caring, Responsive, or Well-led. This makes it easier to surface relevant evidence during an inspection or an internal review.
+
+Q125: Does the Feedback Log record whether feedback was reported to CQC?
+A: Yes. Each feedback record includes a field indicating whether the matter was reported to CQC. This is particularly relevant for complaints that meet the threshold for statutory notification.
+
+Q126: Who can access the Feedback Log?
+A: Admins can create, update, and close feedback records. Users can create and update records. Viewers can read records.
+
+GOVERNANCE MEETINGS
+
+Q127: What is the Governance Meetings log?
+A: The Governance Meetings log helps you record minutes, key decisions, and actions from your governance and management meetings. CQC inspectors routinely request evidence of governance activity for the Well-led key question. A structured, signed-off record of governance meetings — searchable and accessible in seconds — is a significant advantage during an inspection.
+
+Q128: What information is recorded for each governance meeting?
+A: Each meeting record captures: the meeting title and date, attendees, agenda, key decisions, and actions arising. Once all actions have been addressed, an admin can sign off the record, at which point the sign-off date and the name of the person who signed it off are permanently recorded. Governance meeting records should capture decisions and actions at the organisational or thematic level. Do not include named residents, clinical details, or individual case information in any meeting field. If a meeting agenda item relates to a specific incident, reference the incident log number rather than describing the case.
+
+Q129: Who can sign off on a governance meeting record?
+A: Only Admins can sign off a meeting record. Once signed off, the record is marked as completed and the sign-off is timestamped. Users can view and contribute to meeting records but cannot sign them off.
+
+Q130: Is there a weekly digest of governance activity?
+A: Yes. AlwaysReady sends a weekly governance digest to Admins every Monday morning. It summarises governance meeting records created or updated in the previous seven days, providing a regular oversight prompt without requiring a manual login.
+
+PEOPLE\'S VOICE
+
+Q133: What is the People\'s Voice module?
+A: The People's Voice module includes the 19 \"I\" statements published by CQC as part of the draft 2026 Adult Social Care assessment framework, drawn from the Think Local Act Personal (TLAP) standards. During inspections, CQC collects evidence on these statements directly from residents, families, and carers. The module provides your team with a structured way to record the evidence you hold for each statement, identify gaps, and demonstrate that the statements are actively maintained.
+
+Q134: How does the review schedule function in the People\'s Voice module?
+A: Each statement has a review date and a next review due date. These dates drive an automatic RAG status — the same date-driven system used across the rest of the platform. A statement not reviewed within the expected timeframe will move to Amber or Red, prompting your team to revisit it before an inspection. Every update is time-stamped and attributed to the team member who made it, and a full history of all entries is retained.
+
+Q135: Can I track actions within People\'s Voice statements?
+A: Yes. Each statement has an evidence quality indicator — either Evidence Strong or Evidence Needs Work — alongside a free-text field to describe the supporting evidence you hold. If a gap is identified, you can create a structured action item directly against the statement, including a title, description, due date, priority level, and an assigned team member. Actions are tracked through to sign-off, with completion notes permanently recorded in the audit trail.
+
+Q136: Who can update People\'s Voice records?
+A: Admins and Users can record evidence against the \"I\" statements. Viewers can read the records but cannot add to or amend them.
+
+POST-INSPECTION REVIEWS AND FAC
+
+Q137: What is the Post-Inspection module?
+A: The Post-Inspection module helps you manage the period following a CQC inspection. You can record the inspection date, the date the draft report was received, and the date the final report was published. For each inspection record, you can log the CQC ratings awarded across all five key questions and track the progress of any Factual Accuracy Check (FAC) submissions.
+
+Q138: What is a Factual Accuracy Check (FAC)?
+A: A Factual Accuracy Check is the formal process by which a registered provider can challenge factual errors in a draft CQC inspection report before publication. If your draft report contains a factually incorrect statement or a finding you dispute, you can raise a FAC. AlwaysReady allows you to log each FAC item, categorise it as a factual error or a subjective judgement, record your position and supporting evidence, and track whether CQC upheld or rejected the challenge.
+
+Q139: What statuses can a post-inspection review have?
+A: A post-inspection review can be in one of five statuses: Draft Received (CQC has sent you the draft report), FAC Submitted (you have submitted a Factual Accuracy Check), Final Report (the final report has been published), Action Plan Active (you are working through an improvement action plan), or Closed (the inspection cycle is complete).
+
+Q140: Who can access Post-Inspection records?
+A: Admins can create and manage post-inspection reviews and FAC items. Users and Viewers can read them. Post-inspection records are visible to all logged-in team members.
+
+Q141: Can I record ratings for individual key questions?
+A: Yes. Each post-inspection review captures CQC ratings for all five key questions: Safe, Effective, Caring, Responsive, and Well-led, as well as the overall rating. Rating options are: Outstanding, Good, Requires Improvement, Inadequate, or Not Rated.
+
+ABOUT THE BLOG
+
+Q142: Who writes the AlwaysReady blog?
+A: All blog posts are written by Ethna Parker, PhD, founder and developer of AlwaysReady, who holds a doctorate and has a professional background in health and adult social care.
+
+Q143: What is the blog about?
+A: The blog offers practical insights, real-world tips, and straightforward strategies to help registered managers strengthen their evidence base and streamline their processes. Not regulatory advice — focused on good governance practice.
+
+Q144: How often is the blog updated?
+A: New posts are published regularly. Subscribe via the signup form on alwaysready.uk/blog to receive them by email.
 
 ## The 24 KLOEs in the platform
 

@@ -735,6 +735,58 @@ export default function HelpPage() {
             <FAQ question="Can I extend my free trial?" answer="Contact us at support@alwaysready.uk, and we will do our best to help." />
           </div>
 
+          <H3>Action Plan</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the Action Plan?" answer="The Action Plan is a task management tool built into each KLOE. When a KLOE is reviewed and an area for improvement is identified, you can create an action item directly from the KLOE detail page. Each action item includes a title, description, due date, priority (High, Medium, or Low), and an assignee. Admins and Users can create, update, and sign off on action items." />
+            <FAQ question="Who can create and manage action items?" answer="Admins and Users can create, update, and sign off on action items. Viewers can see them but cannot create or edit them." />
+            <FAQ question="How do I close an action item?" answer="Open the KLOE detail page and locate the action item in the Action Plan panel. Click Sign Off, add any completion notes, then confirm. The item is marked as Completed, and the completion date and the name of the person who signed it off are recorded permanently." />
+            <FAQ question="Can I assign an action item to a specific team member?" answer="Yes. When creating or editing an action item, you can select any team member as the assignee. The assignee can view their assigned items when they log in." />
+            <FAQ question="Are action items included in data exports?" answer="Yes. The CSV export from Account > Organisation includes all action items, along with their status, due dates, assignees, and completion records." />
+          </div>
+
+          <H3>Incident Log</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the Incident Log?" answer="The Incident Log allows you to record and track incidents within your service. Each incident record captures the incident type, date, description, immediate actions taken, people involved, whether it was reported externally, and its current status. CQC inspectors expect to see that incidents are recorded and reviewed, and that learning is documented. The Incident Log provides a structured, searchable record that demonstrates this." />
+            <FAQ question="What types of incidents can I record?" answer="You can categorise incidents as: Safety, Safeguarding, Near Miss, Complaint, or Other. This categorisation helps you identify patterns over time and provides the structure inspectors expect to see when reviewing your incident management records." />
+            <FAQ question="Who can view and manage incident records?" answer="Admins can create, edit, and close incidents. Users can create and update incidents. Viewers can read incident records but cannot add or amend them." />
+            <FAQ question="How do I record that an incident was reported externally?" answer="Each incident record includes a toggle to indicate that the incident was reported externally, along with a field for an external reference number. This provides a clear record that your reporting obligations were met and enables you to cross-reference with the external body if needed." />
+            <FAQ question="Can I record the learning outcome of an incident?" answer="Yes. Each incident record includes a Learning Outcome field. Recording what changed as a result of an incident — whether a process was updated, training delivered, or a risk mitigated — is a key element in demonstrating a learning culture to CQC under the Well-led key question." />
+          </div>
+
+          <H3>Feedback Log</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the Feedback Log?" answer="The Feedback Log is a structured register for recording all feedback your service receives — complaints, compliments, suggestions, and concerns. CQC inspectors look for evidence that feedback is actively sought, recorded, and acted upon. The Feedback Log provides a clear, time-stamped record demonstrating this." />
+            <FAQ question="What types of feedback can I log?" answer="You can categorise feedback as: Complaint, Compliment, Suggestion, or Concern. Each record captures the source (person using the service, family or carer, professional, anonymous, or other), a summary of the feedback, the action taken, and the outcome." />
+            <FAQ question="Can I link feedback to a specific CQC key question?" answer="Yes. When creating a feedback record, you can tag it to the most relevant CQC key question — Safe, Effective, Caring, Responsive, or Well-led. This makes it easier to surface relevant evidence during an inspection or an internal review." />
+            <FAQ question="Does the Feedback Log record whether feedback was reported to CQC?" answer="Yes. Each feedback record includes a field indicating whether the matter was reported to CQC. This is particularly relevant for complaints that meet the threshold for statutory notification." />
+            <FAQ question="Who can access the Feedback Log?" answer="Admins can create, update, and close feedback records. Users can create and update records. Viewers can read records." />
+          </div>
+
+          <H3>Governance Meetings</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the Governance Meetings log?" answer="The Governance Meetings log helps you record minutes, key decisions, and actions from your governance and management meetings. CQC inspectors routinely request evidence of governance activity for the Well-led key question. A structured, signed-off record of governance meetings — searchable and accessible in seconds — is a significant advantage during an inspection." />
+            <FAQ question="What information is recorded for each governance meeting?" answer="Each meeting record captures: the meeting title and date, attendees, agenda, key decisions, and actions arising. Once all actions have been addressed, an Admin can sign off the record, at which point the sign-off date and the name of the person who signed it off are permanently recorded. Governance meeting records should capture decisions and actions at the organisational or thematic level — do not include named residents, clinical details, or individual case information in any meeting field." />
+            <FAQ question="Who can sign off on a governance meeting record?" answer="Only Admins can sign off a meeting record. Once signed off, the record is marked as completed and the sign-off is timestamped. Users can view and contribute to meeting records but cannot sign them off." />
+            <FAQ question="Is there a weekly digest of governance activity?" answer="Yes. AlwaysReady sends a weekly governance digest to Admins every Monday morning. It summarises governance meeting records created or updated in the previous seven days, providing a regular oversight prompt without requiring a manual login." />
+          </div>
+
+          <H3>People&apos;s Voice</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the People's Voice module?" answer="The People's Voice module includes the 19 'I' statements published by CQC as part of the draft 2026 Adult Social Care assessment framework, drawn from the Think Local Act Personal (TLAP) standards. During inspections, CQC collects evidence on these statements directly from residents, families, and carers. The module provides your team with a structured way to record the evidence you hold for each statement, identify gaps, and demonstrate that the statements are actively maintained." />
+            <FAQ question="How does the review schedule work in People's Voice?" answer="Each statement has a review date and a next review due date. These dates drive an automatic RAG status — the same date-driven system used across the rest of the platform. A statement not reviewed within the expected timeframe will move to Amber or Red, prompting your team to revisit it before an inspection. Every update is time-stamped and attributed to the team member who made it, and a full history of all entries is retained." />
+            <FAQ question="Can I track actions within People's Voice statements?" answer="Yes. Each statement has an evidence quality indicator — either Evidence Strong or Evidence Needs Work — alongside a free-text field to describe the supporting evidence you hold. If a gap is identified, you can create a structured action item directly against the statement, including a title, description, due date, priority level, and an assigned team member. Actions are tracked through to sign-off, with completion notes permanently recorded in the audit trail." />
+            <FAQ question="Who can update People's Voice records?" answer="Admins and Users can record evidence against the 'I' statements. Viewers can read the records but cannot add to or amend them." />
+          </div>
+
+          <H3>Post-Inspection Reviews and FAC</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the Post-Inspection module?" answer="The Post-Inspection module helps you manage the period following a CQC inspection. You can record the inspection date, the date the draft report was received, and the date the final report was published. For each inspection record, you can log the CQC ratings awarded across all five key questions and track the progress of any Factual Accuracy Check (FAC) submissions." />
+            <FAQ question="What is a Factual Accuracy Check (FAC)?" answer="A Factual Accuracy Check is the formal process by which a registered provider can challenge factual errors in a draft CQC inspection report before publication. AlwaysReady allows you to log each FAC item, categorise it as a factual error or a subjective judgement, record your position and supporting evidence, and track whether CQC upheld or rejected the challenge." />
+            <FAQ question="What statuses can a post-inspection review have?" answer="A post-inspection review can be in one of five statuses: Draft Received (CQC has sent you the draft report), FAC Submitted (you have submitted a Factual Accuracy Check), Final Report (the final report has been published), Action Plan Active (you are working through an improvement action plan), or Closed (the inspection cycle is complete)." />
+            <FAQ question="Who can access Post-Inspection records?" answer="Admins can create and manage post-inspection reviews and FAC items. Users and Viewers can read them. Post-inspection records are visible to all logged-in team members." />
+            <FAQ question="Can I record ratings for individual key questions?" answer="Yes. Each post-inspection review captures CQC ratings for all five key questions: Safe, Effective, Caring, Responsive, and Well-led, as well as the overall rating. Rating options are: Outstanding, Good, Requires Improvement, Inadequate, or Not Rated." />
+          </div>
+
         </Section>
 
       </div>
