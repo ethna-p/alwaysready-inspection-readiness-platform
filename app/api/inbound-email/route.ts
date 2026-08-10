@@ -67,7 +67,7 @@ function isAutomatedSender(from: string): boolean {
     'daemon', 'root',
   ]
   const localPart = lower.split('@')[0] ?? ''
-  if (automatedPrefixes.some(p => localPart === p || localPart.startsWith(p + '+') || localPart.startsWith(p + '.'))) {
+  if (automatedPrefixes.some(p => localPart === p || localPart.startsWith(p + '+') || localPart.startsWith(p + '.') || localPart.startsWith(p + '-'))) {
     return true
   }
 
@@ -107,6 +107,11 @@ function isAutomatedSender(from: string): boolean {
     'supabase.io',
     'mail.app.supabase.io',
     'pm-bounces.mail.app.supabase.io',
+    // DMARC aggregate report senders
+    'dmarc.postmarkapp.com',
+    'dmarc.yahoo.com',
+    'dmarc.microsoft.com',
+    'dmarc-support.google.com',
   ]
   const domain = lower.split('@')[1] ?? ''
   if (automatedDomains.some(d => domain === d || domain.endsWith('.' + d))) {
