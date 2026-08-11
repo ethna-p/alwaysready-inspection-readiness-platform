@@ -8,7 +8,7 @@ the AlwaysReady platform API. The API endpoint already exists and is ready
 to receive submissions — it saves the subscriber to the database and sends
 a welcome email automatically.
 
-The marketing site is an Eleventy static site hosted on Netlify.
+The marketing site is an Eleventy static site hosted on Cloudflare Pages.
 
 
 WHAT NEEDS TO HAPPEN
@@ -95,7 +95,7 @@ is the correct approach.
 
 
 Step 5 — Deploy
-Commit and push. Netlify will rebuild the site automatically.
+Commit and push. Cloudflare Pages will redeploy automatically.
 
 
 HOW TO TEST

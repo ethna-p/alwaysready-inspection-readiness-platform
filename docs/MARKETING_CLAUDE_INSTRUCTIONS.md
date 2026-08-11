@@ -36,11 +36,11 @@ The platform build folder is mounted and available to you. Read these files befo
 
 ---
 
-## Netlify deploy rules — non-negotiable
+## Cloudflare Pages deploy rules — non-negotiable
 
-**Never commit directly to `main` or any branch configured as the Netlify production branch.**
+**Always commit and push to `main`.** The marketing site is hosted on Cloudflare Pages, which is configured to deploy from the `main` branch. Pushing to `main` IS deploying to production — that is correct and intended.
 
-All work must go to a preview branch and deploy to a Netlify preview URL only. Do not trigger a production deploy under any circumstances unless AJ explicitly says "deploy to production" or "go live". This applies to every session, every commit, without exception.
+Do not use the `preview` branch. It is not connected to any deploy and exists only as a legacy branch.
 
 ---
 

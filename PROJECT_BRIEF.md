@@ -10,7 +10,7 @@ A subscription-based, coded inspection-readiness platform for CQC-regulated adul
 
 **The platform is built and deployed.** It is live on Vercel at the URLs below, connected to a Supabase production database. This is not a planning document for a future build — it is the standing reference for an active, deployed product.
 
-This is a **separate, independently deployable product** from the existing AlwaysReady marketing site (static HTML/CSS on Netlify). That site is untouched by this project — different repo, different hosting, no shared codebase.
+This is a **separate, independently deployable product** from the existing AlwaysReady marketing site (Eleventy/11ty on Cloudflare Pages). That site is untouched by this project — different repo, different hosting, no shared codebase.
 
 ---
 
@@ -251,7 +251,7 @@ Before the platform is opened to real paying customers:
 
 ## Infrastructure Notes
 
-- **Domain registrar:** FastHosts. Existing site DNS points to Netlify and must not be disturbed.
+- **Domain registrar:** FastHosts. Existing site DNS points to Cloudflare Pages and must not be disturbed.
 - **Supabase Data API grants:** Every table migration must include explicit `GRANT` statements (e.g. `GRANT SELECT ON public.table TO authenticated;`) alongside RLS policies. This has been a Supabase requirement for new projects since 30 May 2026.
 - **Free-tier Supabase** pauses after 7 days of inactivity (20–30 second cold start). A keep-alive ping mitigates this during the pre-launch period if traffic is infrequent.
 

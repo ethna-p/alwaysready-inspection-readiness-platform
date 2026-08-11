@@ -8,13 +8,33 @@ These instructions must be followed every time changes are made to the marketing
 
 The marketing site uses a three-step deployment chain:
 
-**Local files → GitHub → Netlify (live site)**
+**Local files → GitHub (`main` branch) → Cloudflare Pages (live site)**
 
-1. Changes are made to the local files in the `alwaysready-site` folder
-2. Those changes are pushed to GitHub (`ethna-p/alwaysready-marketing`)
-3. Netlify detects the push and automatically deploys to alwaysready.uk
+1. Claude makes changes to the local files in the `alwaysready-site` folder
+2. AJ pushes those changes to GitHub via Terminal
+3. Cloudflare Pages detects the push to `main` and automatically deploys to alwaysready.uk
 
-Claude makes changes to the local files directly. AJ then pushes to GitHub via Terminal. Netlify handles the rest automatically.
+Cloudflare deploys within 1–2 minutes of a push to `main`. There is no manual deploy step.
+
+---
+
+## The branch rule — non-negotiable
+
+**Always commit and push to `main`.** `main` is the production branch. Cloudflare Pages is configured to deploy from `main`.
+
+The `preview` branch exists but is NOT connected to any deploy. Do not use it for routine work.
+
+If you are ever unsure which branch is checked out, run:
+
+```bash
+git branch
+```
+
+The branch with `*` next to it is the active one. If it is not `main`, switch before committing:
+
+```bash
+git checkout main
+```
 
 ---
 
@@ -23,27 +43,60 @@ Claude makes changes to the local files directly. AJ then pushes to GitHub via T
 Once file edits are complete, give AJ the following Terminal commands to run in order:
 
 ```bash
-cd ~/alwaysready-site
+cd ~/Sites/alwaysready-site
 git add .
 git commit -m "Brief description of what changed"
-git push
+git push origin main
 ```
 
-AJ should replace "Brief description of what changed" with a short plain-English summary of what was updated — for example:
+AJ should replace "Brief description of what changed" with a short plain-English summary — for example:
 - `"Update pricing page"`
-- `"Add security and data protection page"`
+- `"Add founder photo to About page"`
 - `"Fix typo on home page hero section"`
+
+---
+
+## CSS versioning
+
+When editing `style.css` or `chatbot.css`, bump the `?v=N` query string on the relevant `<link>` tag in `src/_includes/layouts/base.njk`:
+
+```html
+<link rel="stylesheet" href="/css/style.css?v=5">
+<link rel="stylesheet" href="/css/chatbot.css?v=5">
+```
+
+Increment the number by 1 each time. This ensures browsers pick up the updated file.
 
 ---
 
 ## Checking the live site
 
-After pushing, Netlify usually deploys within 1–2 minutes. AJ can check the live site at:
+After pushing, Cloudflare usually deploys within 1–2 minutes. AJ can check:
 
-- **alwaysready.uk** — home page
-- **Netlify dashboard** — for deploy status and logs
+- **alwaysready.uk** — live site
+- **Cloudflare Pages dashboard** — for deploy status and logs (Pages → alwaysready-marketing → Deployments)
 
 If a change isn't showing, ask AJ to hard-refresh the browser (Cmd+Shift+R on Mac).
+
+---
+
+## If a git push fails
+
+**Non-fast-forward rejection** (`Updates were rejected because the remote contains work`):
+
+```bash
+git pull --rebase origin main
+git push origin main
+```
+
+**Authentication error** (`could not read Username`): AJ needs to use their GitHub Personal Access Token. Tokens expire every 3 months — if expired, generate a new one at github.com → Settings → Developer settings → Personal access tokens.
+
+**`.git/index.lock` exists error**: Another git process was interrupted. Remove the lock file and retry:
+
+```bash
+rm .git/index.lock
+git push origin main
+```
 
 ---
 
@@ -52,9 +105,8 @@ If a change isn't showing, ask AJ to hard-refresh the browser (Cmd+Shift+R on Ma
 - **Never touch the platform app** — the `alwaysready-inspection-readiness-platform` folder is a completely separate project. Never edit, reference, or push changes to it from this project.
 - **Never commit secrets** — no API keys, passwords, or credentials should ever appear in these files.
 - **All copy changes should be reviewed by AJ** before pushing to GitHub.
-- **Never write clinical content** — AlwaysReady is a governance tool. No resident-specific care or clinical content, ever.
-- **Check the brief** — before writing any new copy, read `marketing-site-brief.md` to ensure tone, pricing, and facts are consistent.
-- **Check the security statement** — before writing any security or data protection copy, read `security-statement-draft.md`. Do not make claims that go beyond what is documented there.
+- **Never write clinical content** — AlwaysReady is a governance tool only.
+- **Check the CLAUDE.md** — the marketing site repo's own `CLAUDE.md` has the canonical rules for blog posts, OG images, and site structure.
 
 ---
 
@@ -62,26 +114,21 @@ If a change isn't showing, ask AJ to hard-refresh the browser (Cmd+Shift+R on Ma
 
 ```
 alwaysready-site/
-├── index.html              — Home page
-├── about.html              — About AlwaysReady
-├── how-it-works.html       — How the platform works
-├── pricing.html            — Pricing and trial information
-├── blog.html               — Blog index
-├── blog-*.html             — Individual blog posts (~19 published)
-├── contact.html            — Contact page
-├── legal.html              — Privacy policy and terms
-├── resources.html          — Resources for care managers
-├── waitlist.html           — Waitlist / early access signup
-├── start-free-trial.html   — Free trial / demo CTA page
-├── css/                    — Stylesheets
-├── js/                     — JavaScript files
-├── images/                 — Image assets
-├── fonts/                  — Font files
-├── blog/                   — Blog assets folder
-├── data/                   — Data files
-├── tools/                  — Tools folder
-├── netlify/                — Netlify configuration
-└── netlify.toml            — Netlify build settings
+├── src/
+│   ├── _includes/layouts/  — Nunjucks layouts (base.njk, blog-post.njk)
+│   ├── _data/              — Global data files
+│   ├── css/style.css       — Single stylesheet
+│   ├── js/                 — JavaScript (main.js, chatbot.js)
+│   ├── images/             — Image assets
+│   ├── fonts/              — Font files
+│   ├── downloads/          — Downloadable resources
+│   ├── .well-known/        — security.txt
+│   └── *.njk               — Page files
+├── functions/
+│   └── chat.js             — Cloudflare Pages Function (Ara chatbot proxy)
+├── _headers                — Cloudflare security headers
+├── .eleventy.js            — Eleventy configuration
+└── scripts/make_og.py      — OG image generator
 ```
 
 ---
@@ -89,11 +136,10 @@ alwaysready-site/
 ## GitHub details
 
 - **Repository:** `ethna-p/alwaysready-marketing`
-- **Branch:** `main`
+- **Production branch:** `main`
 - **Remote:** configured as `origin`
-
-If git push fails with an authentication error, AJ will need to use their GitHub Personal Access Token. The token has a 3-month expiry — if it has expired, a new one needs to be generated at github.com → Settings → Developer settings → Personal access tokens.
+- **Hosting:** Cloudflare Pages — auto-deploys on push to `main`
 
 ---
 
-*These instructions were written in July 2026. Update if the deployment setup changes.*
+*Last updated: August 2026*

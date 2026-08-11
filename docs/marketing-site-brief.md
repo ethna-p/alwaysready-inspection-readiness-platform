@@ -91,7 +91,7 @@ KLOEs in the current platform are based on the CQC draft adult social care asses
 
 ## Key URLs
 
-- **Marketing site:** alwaysready.uk (hosted on Netlify, auto-deploys from GitHub: ethna-p/alwaysready-marketing)
+- **Marketing site:** alwaysready.uk (hosted on Cloudflare Pages, auto-deploys from `main` branch of GitHub: ethna-p/alwaysready-marketing)
 - **Platform / app:** app.alwaysready.uk (hosted on Vercel, auto-deploys from GitHub: ethna-p/alwaysready-inspection-readiness-platform)
 - **Demo:** app.alwaysready.uk/demo
 - **Legal:** alwaysready.uk/legal

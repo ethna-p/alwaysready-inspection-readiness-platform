@@ -40,7 +40,7 @@ We collect name, work email, organisation name, CQC Location ID, service type an
 
 #### How we store it
 
-Form data submitted via our website is processed by Netlify Forms (held for up to 30 days, then deleted from Netlify) and transferred to our secure database hosted on Supabase as a contact or lead record.
+Form data submitted via our website is sent directly to the AlwaysReady platform API and stored as a contact or lead record in our Supabase database.
 
 ---
 
@@ -119,7 +119,7 @@ We use the following third-party services to deliver our website and platform. E
 | Cloudflare | DNS, security, and inbound email routing | US (global edge) |
 | Stripe | Subscription payment processing | US / UK |
 | Resend | Transactional email delivery | US |
-| Netlify | Marketing website hosting and form processing | US |
+| Cloudflare Pages | Marketing website hosting | US (global edge) |
 | Anthropic | AI processing for newsletter draft generation (admin feature only) | US |
 
 All data transfers outside the UK are protected by appropriate safeguards including UK adequacy decisions, standard contractual clauses, or the UK International Data Transfer Agreement (IDTA).
@@ -130,7 +130,7 @@ All data transfers outside the UK are protected by appropriate safeguards includ
 
 | Data type | Retention period |
 |---|---|
-| Marketing website form submissions (Netlify) | Up to 30 days, then deleted from Netlify |
+| Marketing website form submissions | Retained as contact/lead records in Supabase until deletion is requested |
 | Contact and lead records (Supabase) | Retained until you request deletion |
 | Platform account and compliance data | Retained for the duration of your subscription, plus 30 days after cancellation to allow for data export |
 | Support ticket correspondence | Retained for 3 years |
