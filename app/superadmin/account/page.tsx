@@ -8,7 +8,7 @@
  * only what the superadmin needs: two-factor authentication.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -20,6 +20,14 @@ type Factor = {
 }
 
 export default function SuperadminAccountPage() {
+  return (
+    <Suspense>
+      <AccountContent />
+    </Suspense>
+  )
+}
+
+function AccountContent() {
   const router       = useRouter()
   const searchParams = useSearchParams()
   const supabase     = createClient()
