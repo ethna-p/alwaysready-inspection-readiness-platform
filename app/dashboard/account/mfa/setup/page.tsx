@@ -33,7 +33,8 @@ function MfaSetupForm() {
   const router       = useRouter()
   const searchParams = useSearchParams()
   const supabase     = createClient()
-  const isMandatory  = searchParams.get('required') === '1'
+  const isMandatory    = searchParams.get('required') === '1'
+  const fromSuperadmin = searchParams.get('from') === 'superadmin'
 
   const [factorId, setFactorId]   = useState<string | null>(null)
   const [qrCode, setQrCode]       = useState<string | null>(null)
@@ -96,7 +97,7 @@ function MfaSetupForm() {
     // Enrolment complete — session is now aal2.
     // Hard-navigate so the middleware reads fresh aal2 cookies rather than the
     // stale aal1 session that a soft router.replace() can race against.
-    window.location.replace('/dashboard/account?mfa=enrolled')
+    window.location.replace(fromSuperadmin ? '/superadmin/account?mfa=enrolled' : '/dashboard/account?mfa=enrolled')
   }
 
   // Standalone layout (outside dashboard layout) for mandatory setup
