@@ -13,12 +13,13 @@ create table if not exists report_snapshots (
   total           int         not null default 0,
   open_actions    int         not null default 0,
   overdue_actions int         not null default 0,
+  captured_date   date        not null default current_date,
   captured_at     timestamptz not null default now()
 );
 
--- One snapshot per org per view per calendar day (UTC)
+-- One snapshot per org per view per calendar day
 create unique index if not exists report_snapshots_org_view_day
-  on report_snapshots (organisation_id, view_key, date(captured_at));
+  on report_snapshots (organisation_id, view_key, captured_date);
 
 -- Index for fast "previous snapshot" queries
 create index if not exists report_snapshots_org_view_time

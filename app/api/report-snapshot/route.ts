@@ -44,17 +44,17 @@ export async function GET(req: NextRequest) {
 
   const supabase = await createClient()
 
-  // Today in UTC (YYYY-MM-DD)
+  // Today's date string (YYYY-MM-DD)
   const todayUtc = new Date().toISOString().slice(0, 10)
 
-  // Most recent snapshot strictly before today
+  // Most recent snapshot strictly before today (compare on the date column)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)
     .from('report_snapshots')
     .select('id, view_key, green, amber, red, grey, total, open_actions, overdue_actions, captured_at')
     .eq('organisation_id', profile.organisation_id)
     .eq('view_key', viewKey)
-    .lt('captured_at', todayUtc)          // strictly before midnight UTC today
+    .lt('captured_date', todayUtc)        // strictly before today
     .order('captured_at', { ascending: false })
     .limit(1)
     .maybeSingle() as { data: SnapshotRow | null; error: unknown }
@@ -94,6 +94,8 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient()
 
   // Upsert: if a row already exists for (org, view_key, today), update it
+  const todayDate = new Date().toISOString().slice(0, 10)
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase as any)
     .from('report_snapshots')
@@ -108,9 +110,10 @@ export async function POST(req: NextRequest) {
         total:           body.total,
         open_actions:    body.open_actions,
         overdue_actions: body.overdue_actions,
+        captured_date:   todayDate,
         captured_at:     new Date().toISOString(),
       },
-      { onConflict: 'organisation_id,view_key,date(captured_at)' }
+      { onConflict: 'organisation_id,view_key,captured_date' }
     )
 
   if (error) {
