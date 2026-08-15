@@ -39,8 +39,8 @@
   --fill-dim:  #f3f4f6;
 
   --ink:       #1a1a1a;
-  --ink-dim:   #4b5563;
-  --ink-muted: #6b7280;
+  --ink-dim:   #374151;   /* gray-700 — was #4b5563, now 8.9:1 on white vs 6.8:1 */
+  --ink-muted: #4b5563;   /* gray-600 — was #6b7280, now 6.8:1 on white vs 4.6:1 */
 
   --line:      #e5e7eb;
 
@@ -62,8 +62,8 @@
   --fill-dim:  #252d40;
 
   --ink:       #f1f5f9;
-  --ink-dim:   #94a3b8;
-  --ink-muted: #64748b;
+  --ink-dim:   #cbd5e1;   /* slate-300 — was #94a3b8, now 13.4:1 on dark canvas */
+  --ink-muted: #94a3b8;   /* slate-400 — was #64748b, now 8.2:1 on dark canvas  */
 
   --line:      #2d3748;
 
@@ -79,7 +79,7 @@
    Global base
 ───────────────────────────────────────────── */
 html {
-  font-size: 112.5%; /* 18px base — scales all rem units up from the default 16px */
+  font-size: 118.75%; /* 19px base — scales all rem units up from the default 16px */
 }
 
 body {
