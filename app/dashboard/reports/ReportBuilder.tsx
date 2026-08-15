@@ -32,6 +32,7 @@ export type KloeRow = {
 
 export type ActionRow = {
   id: string
+  klo_item_id: string
   klo_title: string
   key_question_name: string
   title: string
@@ -184,7 +185,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 // ─── View definitions ─────────────────────────────────────────────────────────
 
-type ViewKey = 'governance' | 'attention-needed' | 'evidence-gaps' | 'hr-compliance'
+type ViewKey = 'governance' | 'attention-needed' | 'evidence-gaps' | 'hr-compliance' | 'kloe-with-actions'
 
 const SYSTEM_VIEWS: { key: ViewKey; label: string; description: string; adminOnly?: boolean }[] = [
   {
@@ -201,6 +202,11 @@ const SYSTEM_VIEWS: { key: ViewKey; label: string; description: string; adminOnl
     key:         'evidence-gaps',
     label:       'Evidence Gaps',
     description: 'KLOEs with no evidence uploaded, ordered Unassessed → Red → Amber. Use this to find where compliance is claimed but proof is missing.',
+  },
+  {
+    key:         'kloe-with-actions',
+    label:       'KLOEs with Actions',
+    description: 'Each KLOE followed by its linked action items. Useful for team briefings and progress reviews.',
   },
   {
     key:         'hr-compliance',
@@ -243,6 +249,10 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
         break
       case 'evidence-gaps':
         setShowKloes(true); setShowActions(false); setShowHr(false); setShowAnnualReview(false)
+        setActionStatus('all')
+        break
+      case 'kloe-with-actions':
+        setShowKloes(true); setShowActions(true); setShowHr(false); setShowAnnualReview(false)
         setActionStatus('all')
         break
       case 'hr-compliance':
@@ -496,8 +506,67 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
           )}
         </div>
 
+        {/* ── KLOE with Actions combined view ─────────────────────────────── */}
+        {activeView === 'kloe-with-actions' && (
+          <div>
+            <SectionHeading>KLOEs with Actions ({filteredKloes.length} KLOEs)</SectionHeading>
+            {filteredKloes.length === 0 ? (
+              <p style={{ color: '#6b7280', fontSize: '14px' }}>No KLOEs match the selected filters.</p>
+            ) : (
+              filteredKloes.map(k => {
+                const linkedActions = filteredActions.filter(a => a.klo_item_id === k.klo_item_id)
+                return (
+                  <div key={k.id} style={{ marginBottom: '20px', pageBreakInside: 'avoid' }}>
+                    {/* KLOE header row */}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      backgroundColor: '#f9fafb', border: '1px solid #e5e7eb',
+                      borderRadius: '6px', padding: '10px 14px', marginBottom: '6px',
+                    }}>
+                      <span style={{ color: RAG_COLOURS[k.rag] ?? '#6b7280', fontSize: '18px', lineHeight: 1 }}>●</span>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: 0, fontWeight: 600, fontSize: '15px' }}>{k.title}</p>
+                        <p style={{ margin: '2px 0 0', fontSize: '13px', color: '#6b7280' }}>
+                          {k.key_question_name} · {k.status.replace('_', ' ')} · Next review: {formatDate(k.next_review_due)}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Linked actions */}
+                    {linkedActions.length === 0 ? (
+                      <p style={{ margin: '0 0 0 14px', fontSize: '13px', color: '#9ca3af' }}>No action items linked to this KLOE.</p>
+                    ) : (
+                      <table style={{ width: 'calc(100% - 14px)', borderCollapse: 'collapse', fontSize: '14px', marginLeft: '14px' }}>
+                        <thead>
+                          <tr style={{ backgroundColor: '#f3f4f6' }}>
+                            {['Action', 'Priority', 'Status', 'Due Date', 'Assigned To'].map(h => (
+                              <th key={h} style={{ padding: '6px 10px', textAlign: 'left', fontWeight: 600, fontSize: '12px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
+                                {h}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {linkedActions.map((a, i) => (
+                            <tr key={a.id} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                              <td style={{ padding: '6px 10px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{a.title}</td>
+                              <td style={{ padding: '6px 10px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{a.priority}</td>
+                              <td style={{ padding: '6px 10px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{a.status.replace('_', ' ')}</td>
+                              <td style={{ padding: '6px 10px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(a.due_date)}</td>
+                              <td style={{ padding: '6px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{a.assigned_to_name ?? '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                )
+              })
+            )}
+          </div>
+        )}
+
         {/* ── Section 1: KLOE Summary ──────────────────────────────────────── */}
-        {showKloes && (
+        {showKloes && activeView !== 'kloe-with-actions' && (
           <div>
             <SectionHeading>KLOE Summary ({filteredKloes.length} KLOEs)</SectionHeading>
             {filteredKloes.length === 0 ? (
@@ -536,7 +605,7 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
         )}
 
         {/* ── Section 2: Action Plan Items ─────────────────────────────────── */}
-        {showActions && (
+        {showActions && activeView !== 'kloe-with-actions' && (
           <div>
             <SectionHeading>Action Plan Items ({filteredActions.length})</SectionHeading>
             {filteredActions.length === 0 ? (

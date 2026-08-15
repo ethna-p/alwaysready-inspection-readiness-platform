@@ -38,9 +38,9 @@ export default async function SiteHeader() {
             <Image
               src="/alwaysready-logo.svg"
               alt="AlwaysReady"
-              width={280}
-              height={62}
-              style={{ height: 'auto' }}
+              width={400}
+              height={88}
+              style={{ width: '400px', height: 'auto' }}
               priority
             />
           </a>

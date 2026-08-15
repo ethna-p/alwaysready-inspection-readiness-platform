@@ -131,6 +131,7 @@ export default async function ReportsPage() {
 
     return {
       id:                a.id,
+      klo_item_id:       a.klo_item_id,
       klo_title:         item?.title ?? '—',
       key_question_name: item?.key_questions?.name ?? '—',
       title:             a.title,
