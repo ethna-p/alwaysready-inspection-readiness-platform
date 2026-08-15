@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   const origin = req.headers.get('origin')
   const headers = corsHeaders(origin)
 
-  let body: { email?: unknown; name?: unknown }
+  let body: { email?: unknown; name?: unknown; 'cf-turnstile-response'?: unknown }
 
   try {
     body = await req.json()
@@ -52,6 +52,29 @@ export async function POST(req: NextRequest) {
   // Basic email validation
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400, headers })
+  }
+
+  // ── Turnstile verification ────────────────────────────────────────────────
+  const secretKey = process.env.TURNSTILE_SECRET_KEY
+  if (secretKey) {
+    const token = typeof body['cf-turnstile-response'] === 'string' ? body['cf-turnstile-response'] : ''
+    if (!token) {
+      return NextResponse.json({ error: 'Security check required.' }, { status: 400, headers })
+    }
+    try {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
+      })
+      const verifyData = await verifyRes.json() as { success: boolean }
+      if (!verifyData.success) {
+        return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers })
+      }
+    } catch (err) {
+      console.error('[blog-subscribe] Turnstile verification error:', err)
+      // Soft-pass if Cloudflare is unreachable
+    }
   }
 
   try {
