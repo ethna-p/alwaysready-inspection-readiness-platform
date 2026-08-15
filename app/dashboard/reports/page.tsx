@@ -213,7 +213,7 @@ export default async function ReportsPage() {
   )
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div>
       {/* Page header — hidden when printing */}
       <div className="print:hidden mb-8">
         <h1 className="text-2xl font-bold text-brand mb-1">Custom Reports</h1>
