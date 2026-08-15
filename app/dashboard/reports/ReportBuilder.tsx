@@ -212,6 +212,8 @@ const SYSTEM_VIEWS: { key: ViewKey; label: string; description: string; adminOnl
 
 // Sort order for gap views: Unassessed → Red → Amber (Green excluded)
 const GAP_RAG_ORDER: Record<string, number> = { grey: 0, red: 1, amber: 2, green: 99 }
+// Sort order for governance view: Red → Amber → Unassessed → Green
+const GOV_RAG_ORDER: Record<string, number> = { red: 0, amber: 1, grey: 2, green: 3 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -272,7 +274,10 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
   const filteredKloes = useMemo(() => {
     let list = kloes.filter(k => selectedKQs.has(k.key_question_name))
 
-    if (activeView === 'attention-needed') {
+    if (activeView === 'governance') {
+      // Red → Amber → Unassessed → Green
+      list = list.sort((a, b) => (GOV_RAG_ORDER[a.rag] ?? 99) - (GOV_RAG_ORDER[b.rag] ?? 99))
+    } else if (activeView === 'attention-needed') {
       // Exclude green; sort unassessed → red → amber
       list = list
         .filter(k => k.rag !== 'green')
@@ -473,7 +478,7 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
       </div>
 
       {/* ── Report output ─────────────────────────────────────────────────── */}
-      <div style={{ fontFamily: 'system-ui, sans-serif', fontSize: '13px', color: '#111' }}>
+      <div style={{ fontFamily: 'system-ui, sans-serif', fontSize: '15px', color: '#111' }}>
 
         {/* Report header */}
         <div style={{ marginBottom: '24px', borderBottom: '2px solid #014D4E', paddingBottom: '12px' }}>
@@ -500,11 +505,11 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
             {filteredKloes.length === 0 ? (
               <p style={{ color: '#6b7280', fontSize: '12px' }}>No KLOEs match the selected filters.</p>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                 <thead>
                   <tr style={{ backgroundColor: '#f3f4f6' }}>
                     {['Key Question', 'KLOE', 'Status', 'RAG', 'Next Review', 'Priority', 'Assigned To'].map(h => (
-                      <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 600, fontSize: '11px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
+                      <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
                         {h}
                       </th>
                     ))}
@@ -513,17 +518,17 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                 <tbody>
                   {filteredKloes.map((k, i) => (
                     <tr key={k.id} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', color: '#6b7280', fontSize: '11px' }}>{k.key_question_name}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{k.title}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{k.status.replace('_', ' ')}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280', fontSize: '13px' }}>{k.key_question_name}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{k.title}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{k.status.replace('_', ' ')}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
                         <span style={{ color: RAG_COLOURS[k.rag] ?? '#6b7280', fontWeight: 600 }}>
                           ● {RAG_LABELS[k.rag] ?? k.rag}
                         </span>
                       </td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(k.next_review_due)}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', textAlign: 'center' }}>{k.priority}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{k.assigned_to_name ?? '—'}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(k.next_review_due)}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textAlign: 'center' }}>{k.priority}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{k.assigned_to_name ?? '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -539,11 +544,11 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
             {filteredActions.length === 0 ? (
               <p style={{ color: '#6b7280', fontSize: '12px' }}>No action items match the selected filters.</p>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                 <thead>
                   <tr style={{ backgroundColor: '#f3f4f6' }}>
                     {['KLOE', 'Action', 'Priority', 'Status', 'Due Date', 'Assigned To', 'Completion Notes'].map(h => (
-                      <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 600, fontSize: '11px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
+                      <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
                         {h}
                       </th>
                     ))}
@@ -552,13 +557,13 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                 <tbody>
                   {filteredActions.map((a, i) => (
                     <tr key={a.id} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', color: '#6b7280', fontSize: '11px' }}>{a.klo_title}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{a.title}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{a.priority}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{a.status.replace('_', ' ')}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(a.due_date)}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{a.assigned_to_name ?? '—'}</td>
-                      <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', color: '#6b7280', fontSize: '11px' }}>{a.completion_notes ?? '—'}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280', fontSize: '13px' }}>{a.klo_title}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{a.title}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{a.priority}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{a.status.replace('_', ' ')}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(a.due_date)}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{a.assigned_to_name ?? '—'}</td>
+                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280', fontSize: '13px' }}>{a.completion_notes ?? '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -574,11 +579,11 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
             {filteredHr.length === 0 ? (
               <p style={{ color: '#6b7280', fontSize: '12px' }}>No staff records found.</p>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                 <thead>
                   <tr style={{ backgroundColor: '#f3f4f6' }}>
                     {['Name', 'Job Title', 'DBS', 'Supervision', 'Appraisal', 'Mandatory Training'].map(h => (
-                      <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 600, fontSize: '11px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
+                      <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
                         {h}
                       </th>
                     ))}
@@ -591,16 +596,16 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                     const appStatus  = dateStatus(h.appraisal_next_due)
                     return (
                       <tr key={h.user_id} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                        <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{h.full_name ?? '—'}</td>
-                        <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{h.job_title ?? '—'}</td>
+                        <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{h.full_name ?? '—'}</td>
+                        <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{h.job_title ?? '—'}</td>
                         {[dbsStatus, supStatus, appStatus].map((s, idx) => (
-                          <td key={idx} style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                          <td key={idx} style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
                             <span style={{ color: HR_STATUS_COLOURS[s], fontWeight: 600 }}>
                               {HR_STATUS_LABELS[s]}
                             </span>
                           </td>
                         ))}
-                        <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                        <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
                           <span style={{ color: h.mandatory_training_complete ? '#15803d' : '#b91c1c', fontWeight: 600 }}>
                             {h.mandatory_training_complete ? 'Complete' : 'Incomplete'}
                           </span>
@@ -635,14 +640,14 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                     {/* Inspection header */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '8px 12px', marginBottom: '8px' }}>
                       <div>
-                        <span style={{ fontWeight: 600, fontSize: '13px' }}>{label}</span>
+                        <span style={{ fontWeight: 600, fontSize: '15px' }}>{label}</span>
                         {insp.conducted_by_name && (
-                          <span style={{ color: '#6b7280', fontSize: '11px', marginLeft: '12px' }}>
+                          <span style={{ color: '#6b7280', fontSize: '13px', marginLeft: '12px' }}>
                             Conducted by {insp.conducted_by_name}
                           </span>
                         )}
                       </div>
-                      <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                      <span style={{ fontSize: '13px', color: '#6b7280' }}>
                         {formatDate(insp.started_at)}
                         {insp.completed_at && insp.completed_at !== insp.started_at
                           ? ` – ${formatDate(insp.completed_at)}`
@@ -652,11 +657,11 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
 
                     {/* Ratings table */}
                     {insp.ratings.length > 0 ? (
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead>
                           <tr style={{ backgroundColor: '#f3f4f6' }}>
                             {['Key Question', 'Self-Assessed Rating', 'Trend'].map(h => (
-                              <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontWeight: 600, fontSize: '11px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
+                              <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
                                 {h}
                               </th>
                             ))}
@@ -670,19 +675,19 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
                             prevRatings[prevKey] = r.worstRating
                             return (
                               <tr key={r.name} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                                <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{r.name}</td>
-                                <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                                <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{r.name}</td>
+                                <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
                                   <span style={{ color: MOCK_RATING_COLOURS[r.worstRating] ?? '#374151', fontWeight: 600 }}>
                                     {MOCK_RATING_LABELS[r.worstRating] ?? r.worstRating}
                                   </span>
                                 </td>
-                                <td style={{ padding: '5px 8px', borderBottom: '1px solid #e5e7eb' }}>
+                                <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
                                   {trend ? (
-                                    <span style={{ color: trend.colour, fontWeight: 700, fontSize: '14px' }}>
+                                    <span style={{ color: trend.colour, fontWeight: 700, fontSize: '16px' }}>
                                       {trend.symbol}
                                     </span>
                                   ) : (
-                                    <span style={{ color: '#9ca3af', fontSize: '11px' }}>
+                                    <span style={{ color: '#9ca3af', fontSize: '13px' }}>
                                       {inspIdx === 0 ? 'First inspection' : '—'}
                                     </span>
                                   )}
