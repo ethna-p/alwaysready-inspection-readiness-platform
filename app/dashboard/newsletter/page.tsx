@@ -20,7 +20,7 @@ export default async function NewsletterPage() {
   const { remaining } = await getNewsletterUsage()
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div>
       {/* Breadcrumb */}
       <nav className="text-sm text-ink-muted mb-2" aria-label="Breadcrumb">
         <ol className="flex flex-wrap gap-1">
