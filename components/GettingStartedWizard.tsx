@@ -92,15 +92,28 @@ function fireCompletionConfetti() {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function GettingStartedWizard() {
-  // Lazy initialisers read localStorage synchronously on first render so the
-  // component never starts in the wrong visual state (avoids the flash where
-  // the panel briefly appears open before collapsing on every hard refresh).
-  const [dismissed, setDismissed]   = useState(() => ls(LS_DISMISSED) === '1')
-  const [open, setOpen]             = useState(() => ls(LS_DISMISSED) !== '1' && ls(LS_OPEN) !== '0')
+  // `mounted` gates the entire render until the client has hydrated.
+  // Without this, Next.js server-renders the component with localStorage = null
+  // (open = true, dismissed = false), then the client hydrates with the real
+  // localStorage values — causing a visible flash on every page load.
+  // Returning null until mounted means the server HTML is always empty for this
+  // component, so there is no mismatch and no flash.
+  const [mounted, setMounted]       = useState(false)
+  const [dismissed, setDismissed]   = useState(false)
+  const [open, setOpen]             = useState(false)
   const [status, setStatus]         = useState<WizardStatus | null>(null)
   const [allDone, setAllDone]       = useState(false)
   const prevAllDone                 = useRef(false)
-  const openConfettiFired           = useRef(ls(LS_CONFETTI) === '1')
+  const openConfettiFired           = useRef(false)
+
+  // Read localStorage only after mount (client-side only)
+  useEffect(() => {
+    const isDismissed = ls(LS_DISMISSED) === '1'
+    setDismissed(isDismissed)
+    setOpen(!isDismissed && ls(LS_OPEN) !== '0')
+    openConfettiFired.current = ls(LS_CONFETTI) === '1'
+    setMounted(true)
+  }, [])
 
   // ── Fetch wizard status ────────────────────────────────────────────────────
   const fetchStatus = useCallback(async () => {
@@ -159,7 +172,7 @@ export default function GettingStartedWizard() {
     setDismissed(true)
   }
 
-  if (dismissed) return null
+  if (!mounted || dismissed) return null
 
   const completedCount = status
     ? STEPS.filter(s => status[s.key]).length
