@@ -109,9 +109,36 @@ export async function POST(req: NextRequest) {
     data['blog_opt_in']          === 'yes'  ||
     data['blog_opt_in']          === 'on'
 
+  const turnstileToken =
+    (payload['cf-turnstile-response'] as string | undefined)?.trim() ||
+    (data['cf-turnstile-response']    as string | undefined)?.trim() ||
+    ''
+
   if (!email) {
     console.error('[inbound-waitlist] missing email — full payload:', JSON.stringify(payload))
     return NextResponse.json({ error: 'Missing email' }, { status: 400, headers: CORS_HEADERS })
+  }
+
+  // ── Turnstile verification ────────────────────────────────────────────────
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
+  if (turnstileSecret) {
+    if (!turnstileToken) {
+      return NextResponse.json({ error: 'Security check required.' }, { status: 400, headers: CORS_HEADERS })
+    }
+    try {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(turnstileSecret)}&response=${encodeURIComponent(turnstileToken)}`,
+      })
+      const verifyData = await verifyRes.json() as { success: boolean }
+      if (!verifyData.success) {
+        return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers: CORS_HEADERS })
+      }
+    } catch (err) {
+      console.error('[inbound-waitlist] Turnstile verification error:', err)
+      // Soft-pass if Cloudflare is unreachable
+    }
   }
 
   // ── CQC Location ID validation ─────────────────────────────────────────────
