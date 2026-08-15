@@ -14,7 +14,7 @@
  *   platform and cannot be deleted. Admins can save/delete custom views.
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -186,7 +186,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 // ─── View definitions ─────────────────────────────────────────────────────────
 
-type ViewKey = 'governance' | 'attention-needed' | 'evidence-gaps' | 'hr-compliance' | 'kloe-with-actions'
+type ViewKey = 'governance' | 'attention-needed' | 'evidence-gaps' | 'hr-compliance' | 'kloe-with-actions' | 'pre-inspection'
 
 const SYSTEM_VIEWS: { key: ViewKey; label: string; description: string; adminOnly?: boolean }[] = [
   {
@@ -208,6 +208,11 @@ const SYSTEM_VIEWS: { key: ViewKey; label: string; description: string; adminOnl
     key:         'kloe-with-actions',
     label:       'KLOEs with Actions',
     description: 'Each KLOE followed by its linked action items. Useful for team briefings and progress reviews.',
+  },
+  {
+    key:         'pre-inspection',
+    label:       'Inspection Readiness',
+    description: 'Ordered by urgency with evidence count per KLOE. Shows open actions and HR compliance. Formatted for CQC inspection day.',
   },
   {
     key:         'hr-compliance',
@@ -236,6 +241,11 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
   const [selectedStaff, setSelectedStaff]       = useState('all')
   const [reviewYear, setReviewYear]             = useState(new Date().getFullYear())
 
+  // ── AI narrative ────────────────────────────────────────────────────────
+  const [narrative, setNarrative]           = useState<string | null>(null)
+  const [narrativeLoading, setNarrativeLoading] = useState(false)
+  const [narrativeError, setNarrativeError]     = useState<string | null>(null)
+
   function selectView(key: ViewKey) {
     setActiveView(key)
     setSelectedKQs(new Set(keyQuestions))  // all views use all KQs
@@ -255,6 +265,10 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
       case 'kloe-with-actions':
         setShowKloes(true); setShowActions(true); setShowHr(false); setShowAnnualReview(false)
         setActionStatus('all')
+        break
+      case 'pre-inspection':
+        setShowKloes(true); setShowActions(true); setShowHr(isAdmin); setShowAnnualReview(true)
+        setActionStatus('open')
         break
       case 'hr-compliance':
         setShowKloes(false); setShowActions(false); setShowHr(isAdmin); setShowAnnualReview(false)
@@ -296,6 +310,9 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
       list = list
         .filter(k => (evidenceCounts[k.klo_item_id] ?? 0) === 0)
         .sort((a, b) => (GAP_RAG_ORDER[a.rag] ?? 99) - (GAP_RAG_ORDER[b.rag] ?? 99))
+    } else if (activeView === 'pre-inspection') {
+      // All KLOEs sorted by urgency: Unassessed → Red → Amber → Green
+      list = list.sort((a, b) => (GAP_RAG_ORDER[a.rag] ?? 99) - (GAP_RAG_ORDER[b.rag] ?? 99))
     }
 
     return list
@@ -330,9 +347,63 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
 
   const allKQsSelected = selectedKQs.size === keyQuestions.length
 
+  // ── RAG summary stats ───────────────────────────────────────────────────
+  const ragCounts = useMemo(() => ({
+    green:  filteredKloes.filter(k => k.rag === 'green').length,
+    amber:  filteredKloes.filter(k => k.rag === 'amber').length,
+    red:    filteredKloes.filter(k => k.rag === 'red').length,
+    grey:   filteredKloes.filter(k => k.rag === 'grey').length,
+    total:  filteredKloes.length,
+  }), [filteredKloes])
+
+  const actionCounts = useMemo(() => {
+    const now = new Date()
+    const open     = filteredActions.filter(a => a.status !== 'completed')
+    const overdue  = open.filter(a => a.due_date && new Date(a.due_date) < now)
+    return { open: open.length, overdue: overdue.length, total: filteredActions.length }
+  }, [filteredActions])
+
   const generatedAt = new Date().toLocaleDateString('en-GB', {
     day: 'numeric', month: 'long', year: 'numeric',
   })
+
+  const generateNarrative = useCallback(async () => {
+    setNarrativeLoading(true)
+    setNarrativeError(null)
+    try {
+      const activeViewEntry = activeView ? SYSTEM_VIEWS.find(v => v.key === activeView) : null
+      const res  = await fetch('/api/report-narrative', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orgName,
+          generatedAt,
+          viewLabel: activeViewEntry?.label ?? null,
+          kloes: {
+            total:      filteredKloes.length,
+            green:      filteredKloes.filter(k => k.rag === 'green').length,
+            amber:      filteredKloes.filter(k => k.rag === 'amber').length,
+            red:        filteredKloes.filter(k => k.rag === 'red').length,
+            unassessed: filteredKloes.filter(k => k.rag === 'grey').length,
+            items:      filteredKloes.map(k => ({ title: k.title, keyQuestion: k.key_question_name, rag: k.rag, status: k.status })),
+          },
+          actions: {
+            total:   filteredActions.length,
+            open:    filteredActions.filter(a => a.status !== 'completed').length,
+            overdue: filteredActions.filter(a => a.status !== 'completed' && a.due_date && new Date(a.due_date) < new Date()).length,
+            items:   filteredActions.map(a => ({ title: a.title, status: a.status, dueDate: a.due_date, priority: a.priority })),
+          },
+        }),
+      })
+      const json = await res.json() as { narrative?: string; error?: string }
+      if (!res.ok || json.error) { setNarrativeError(json.error ?? 'Failed to generate summary.'); return }
+      setNarrative(json.narrative ?? null)
+    } catch {
+      setNarrativeError('Network error — please try again.')
+    } finally {
+      setNarrativeLoading(false)
+    }
+  }, [activeView, orgName, generatedAt, filteredKloes, filteredActions])
 
   const inputClass = `
     border border-line rounded-lg px-3 py-2 text-sm text-ink bg-card w-full
@@ -471,19 +542,39 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
           </div>
         )}
 
-        {/* Print button */}
-        <button
-          type="button"
-          onClick={() => window.print()}
-          className="
-            inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
-            bg-[#014D4E] text-white text-sm font-semibold
-            hover:bg-[#013636] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-            transition-colors
-          "
-        >
-          <span aria-hidden="true">🖨</span> Print / Save as PDF
-        </button>
+        {/* Action buttons */}
+        <div className="flex flex-wrap items-center gap-3">
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={generateNarrative}
+              disabled={narrativeLoading}
+              className="
+                inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
+                bg-fill border border-line text-ink text-sm font-semibold
+                hover:border-brand hover:text-brand disabled:opacity-50
+                focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+                transition-colors
+              "
+            >
+              <span aria-hidden="true">✨</span>
+              {narrativeLoading ? 'Generating…' : narrative ? 'Regenerate summary' : 'Generate AI summary'}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="
+              inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
+              bg-[#014D4E] text-white text-sm font-semibold
+              hover:bg-[#013636] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
+              transition-colors
+            "
+          >
+            <span aria-hidden="true">🖨</span> Print / Save as PDF
+          </button>
+        </div>
+        {narrativeError && <p className="text-sm text-red-600 mt-2">{narrativeError}</p>}
       </div>
 
       {/* ── Report output ─────────────────────────────────────────────────── */}
@@ -503,7 +594,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
               )}
               <div>
                 <p style={{ fontSize: '20px', fontWeight: 700, color: '#014D4E', margin: 0 }}>
-                  Custom Report
+                  {activeView === 'pre-inspection' ? 'Inspection Readiness Report' : 'Custom Report'}
                 </p>
                 <p style={{ fontSize: '14px', color: '#374151', margin: '2px 0 0' }}>{orgName}</p>
               </div>
@@ -516,6 +607,54 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
             </p>
           )}
         </div>
+
+        {/* ── RAG scorecard ────────────────────────────────────────────────── */}
+        {showKloes && ragCounts.total > 0 && (
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '20px 0' }}>
+            {[
+              { label: 'Green',      value: ragCounts.green,  bg: '#f0fdf4', border: '#86efac', text: '#15803d' },
+              { label: 'Amber',      value: ragCounts.amber,  bg: '#fffbeb', border: '#fcd34d', text: '#b45309' },
+              { label: 'Red',        value: ragCounts.red,    bg: '#fef2f2', border: '#fca5a5', text: '#b91c1c' },
+              { label: 'Unassessed', value: ragCounts.grey,   bg: '#f9fafb', border: '#d1d5db', text: '#6b7280' },
+            ].map(s => (
+              <div key={s.label} style={{
+                background: s.bg, border: `1px solid ${s.border}`,
+                borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center',
+              }}>
+                <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: s.text, lineHeight: 1 }}>{s.value}</p>
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: s.text, fontWeight: 500 }}>{s.label}</p>
+              </div>
+            ))}
+            {showActions && (
+              <>
+                <div style={{ width: '1px', background: '#e5e7eb', margin: '0 4px', alignSelf: 'stretch' }} />
+                <div style={{ background: '#eff6ff', border: '1px solid #93c5fd', borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center' }}>
+                  <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#1d4ed8', lineHeight: 1 }}>{actionCounts.open}</p>
+                  <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#1d4ed8', fontWeight: 500 }}>Open actions</p>
+                </div>
+                {actionCounts.overdue > 0 && (
+                  <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center' }}>
+                    <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#b91c1c', lineHeight: 1 }}>{actionCounts.overdue}</p>
+                    <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b91c1c', fontWeight: 500 }}>Overdue</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ── AI narrative ─────────────────────────────────────────────────── */}
+        {narrative && (
+          <div style={{
+            background: '#f0fdf9', border: '1px solid #99f6e4',
+            borderRadius: '8px', padding: '16px 20px', margin: '0 0 24px',
+          }}>
+            <p style={{ margin: '0 0 6px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#0d9488' }}>
+              Summary
+            </p>
+            <p style={{ margin: 0, fontSize: '15px', color: '#1a1a1a', lineHeight: 1.6 }}>{narrative}</p>
+          </div>
+        )}
 
         {/* ── KLOE with Actions combined view ─────────────────────────────── */}
         {activeView === 'kloe-with-actions' && (
@@ -579,14 +718,19 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
         {/* ── Section 1: KLOE Summary ──────────────────────────────────────── */}
         {showKloes && activeView !== 'kloe-with-actions' && (
           <div>
-            <SectionHeading>KLOE Summary ({filteredKloes.length} KLOEs)</SectionHeading>
+            <SectionHeading>
+              {activeView === 'pre-inspection' ? 'Inspection Readiness' : 'KLOE Summary'} ({filteredKloes.length} KLOEs)
+            </SectionHeading>
             {filteredKloes.length === 0 ? (
               <p style={{ color: '#6b7280', fontSize: '12px' }}>No KLOEs match the selected filters.</p>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                 <thead>
                   <tr style={{ backgroundColor: '#f3f4f6' }}>
-                    {['Key Question', 'KLOE', 'Status', 'RAG', 'Next Review', 'Priority', 'Assigned To'].map(h => (
+                    {[
+                      'Key Question', 'KLOE', 'Status', 'RAG', 'Next Review', 'Priority', 'Assigned To',
+                      ...(activeView === 'pre-inspection' ? ['Evidence'] : []),
+                    ].map(h => (
                       <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#374151', borderBottom: '1px solid #d1d5db' }}>
                         {h}
                       </th>
@@ -607,6 +751,11 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
                       <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(k.next_review_due)}</td>
                       <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textAlign: 'center' }}>{k.priority}</td>
                       <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#6b7280' }}>{k.assigned_to_name ?? '—'}</td>
+                      {activeView === 'pre-inspection' && (
+                        <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textAlign: 'center', color: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? '#ef4444' : '#374151', fontWeight: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? 600 : 400 }}>
+                          {evidenceCounts[k.klo_item_id] ?? 0}
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
