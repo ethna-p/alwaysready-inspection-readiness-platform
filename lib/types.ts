@@ -1901,3 +1901,24 @@ export interface MockInspectionChecklistResponse {
   created_at: string
   updated_at: string
 }
+
+// ── Report views ──────────────────────────────────────────────────────────────
+
+export interface ReportViewConfig {
+  selectedKQs:      string[] | 'all'   // key question names, or 'all'
+  showKloes:        boolean
+  showActions:      boolean
+  showHr:           boolean
+  showAnnualReview: boolean
+  actionStatus:     'all' | 'open' | 'in_progress' | 'completed'
+}
+
+export interface SavedReportView {
+  id:         string
+  org_id:     string | null
+  name:       string
+  config:     ReportViewConfig
+  is_system:  boolean
+  created_by: string | null
+  created_at: string
+}

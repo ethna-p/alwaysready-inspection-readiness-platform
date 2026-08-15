@@ -229,6 +229,7 @@ export default async function ReportsPage() {
         actions={actions}
         hrStaff={hrStaff}
         mockInspections={mockInspections}
+        isAdmin={profile?.role === 'admin'}
       />
     </div>
   )

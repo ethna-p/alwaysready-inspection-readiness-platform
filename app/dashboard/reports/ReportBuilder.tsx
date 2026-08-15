@@ -8,9 +8,14 @@
  *   Sections        — KLOE Summary / Action Plan Items / HR Compliance
  *   Action status   — All / Open / In progress / Completed
  *   Staff member    — All staff / specific individual (HR section only)
+ *
+ * Views:
+ *   Saved filter configurations per organisation. System views ship with the
+ *   platform and cannot be deleted. Admins can save/delete custom views.
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
+import type { SavedReportView, ReportViewConfig } from '@/lib/types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -65,6 +70,7 @@ interface Props {
   actions: ActionRow[]
   hrStaff: HrRow[]
   mockInspections: MockInspectionYear[]
+  isAdmin: boolean
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -177,16 +183,87 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, hrStaff, mockInspections }: Props) {
+export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, hrStaff, mockInspections, isAdmin }: Props) {
   // ── Filter state ────────────────────────────────────────────────────────────
-  const [selectedKQs, setSelectedKQs]         = useState<Set<string>>(new Set(keyQuestions))
-  const [showKloes, setShowKloes]             = useState(true)
-  const [showActions, setShowActions]         = useState(true)
-  const [showHr, setShowHr]                   = useState(true)
+  const [selectedKQs, setSelectedKQs]           = useState<Set<string>>(new Set(keyQuestions))
+  const [showKloes, setShowKloes]               = useState(true)
+  const [showActions, setShowActions]           = useState(true)
+  const [showHr, setShowHr]                     = useState(true)
   const [showAnnualReview, setShowAnnualReview] = useState(true)
-  const [actionStatus, setActionStatus]       = useState('all')
-  const [selectedStaff, setSelectedStaff]     = useState('all')
-  const [reviewYear, setReviewYear]           = useState(new Date().getFullYear())
+  const [actionStatus, setActionStatus]         = useState<ReportViewConfig['actionStatus']>('all')
+  const [selectedStaff, setSelectedStaff]       = useState('all')
+  const [reviewYear, setReviewYear]             = useState(new Date().getFullYear())
+
+  // ── View state ──────────────────────────────────────────────────────────────
+  const [views, setViews]                 = useState<SavedReportView[]>([])
+  const [activeViewId, setActiveViewId]   = useState<string | null>(null)
+  const [savePrompt, setSavePrompt]       = useState(false)
+  const [saveName, setSaveName]           = useState('')
+  const [saving, setSaving]               = useState(false)
+  const [saveError, setSaveError]         = useState<string | null>(null)
+
+  const fetchViews = useCallback(async () => {
+    try {
+      const res = await fetch('/api/report-views')
+      if (res.ok) setViews(await res.json())
+    } catch { /* network error — silently ignore */ }
+  }, [])
+
+  useEffect(() => { fetchViews() }, [fetchViews])
+
+  // Apply a saved view's config to current filter state
+  function applyView(view: SavedReportView) {
+    const c = view.config
+    setSelectedKQs(c.selectedKQs === 'all' ? new Set(keyQuestions) : new Set(c.selectedKQs))
+    setShowKloes(c.showKloes)
+    setShowActions(c.showActions)
+    // HR section only visible to admins regardless of view config
+    setShowHr(c.showHr && isAdmin)
+    setShowAnnualReview(c.showAnnualReview)
+    setActionStatus(c.actionStatus)
+    setActiveViewId(view.id)
+  }
+
+  async function handleSaveView() {
+    if (!saveName.trim()) { setSaveError('Please enter a name.'); return }
+    setSaving(true)
+    setSaveError(null)
+    const config: ReportViewConfig = {
+      selectedKQs:      [...selectedKQs],
+      showKloes,
+      showActions,
+      showHr,
+      showAnnualReview,
+      actionStatus,
+    }
+    try {
+      const res = await fetch('/api/report-views', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: saveName.trim(), config }),
+      })
+      if (!res.ok) {
+        const err = await res.json() as { error?: string }
+        setSaveError(err.error ?? 'Failed to save view.')
+      } else {
+        const newView: SavedReportView = await res.json()
+        setViews(prev => [newView, ...prev])
+        setActiveViewId(newView.id)
+        setSavePrompt(false)
+        setSaveName('')
+      }
+    } catch { setSaveError('Network error — please try again.') }
+    finally { setSaving(false) }
+  }
+
+  async function handleDeleteView(id: string) {
+    if (!confirm('Delete this view?')) return
+    const res = await fetch(`/api/report-views?id=${id}`, { method: 'DELETE' })
+    if (res.ok || res.status === 204) {
+      setViews(prev => prev.filter(v => v.id !== id))
+      if (activeViewId === id) setActiveViewId(null)
+    }
+  }
 
   function toggleKQ(name: string, checked: boolean) {
     setSelectedKQs(prev => {
@@ -194,11 +271,16 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
       checked ? next.add(name) : next.delete(name)
       return next
     })
+    setActiveViewId(null)  // unsaved change
   }
 
   function toggleAllKQs(checked: boolean) {
     setSelectedKQs(checked ? new Set(keyQuestions) : new Set())
+    setActiveViewId(null)
   }
+
+  const systemViews  = views.filter(v => v.is_system)
+  const customViews  = views.filter(v => !v.is_system)
 
   // ── Filtered data ───────────────────────────────────────────────────────────
   const filteredKloes = useMemo(() =>
@@ -249,14 +331,124 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
       {/* ── Filter panel (hidden when printing) ──────────────────────────── */}
       <div className="print:hidden space-y-6 mb-8">
 
+        {/* ── Views ──────────────────────────────────────────────────────── */}
+        <div className="bg-card border border-line rounded-xl p-5">
+          <p className="text-sm font-semibold text-ink mb-3">Views</p>
+
+          {/* System views */}
+          {systemViews.length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-2">Standard views</p>
+              <div className="flex flex-wrap gap-2">
+                {systemViews.map(v => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => applyView(v)}
+                    className={`
+                      px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
+                      ${activeViewId === v.id
+                        ? 'bg-[#014D4E] text-white border-[#014D4E]'
+                        : 'bg-fill text-ink border-line hover:border-brand hover:text-brand'}
+                    `}
+                  >
+                    {v.name}
+                    {v.name === 'HR Compliance' && !isAdmin && (
+                      <span className="ml-1 text-xs opacity-60">(admin)</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Custom views */}
+          {customViews.length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide mb-2">Saved views</p>
+              <div className="flex flex-wrap gap-2">
+                {customViews.map(v => (
+                  <div key={v.id} className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => applyView(v)}
+                      className={`
+                        px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
+                        ${activeViewId === v.id
+                          ? 'bg-[#014D4E] text-white border-[#014D4E]'
+                          : 'bg-fill text-ink border-line hover:border-brand hover:text-brand'}
+                      `}
+                    >
+                      {v.name}
+                    </button>
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteView(v.id)}
+                        aria-label={`Delete view: ${v.name}`}
+                        className="text-ink-muted hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 rounded p-0.5 transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Save current view (admin only) */}
+          {isAdmin && (
+            savePrompt ? (
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                  type="text"
+                  value={saveName}
+                  onChange={e => { setSaveName(e.target.value); setSaveError(null) }}
+                  placeholder="View name…"
+                  className="border border-line rounded-lg px-3 py-1.5 text-sm text-ink bg-card w-48 focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent"
+                  onKeyDown={e => { if (e.key === 'Enter') handleSaveView(); if (e.key === 'Escape') { setSavePrompt(false); setSaveName('') } }}
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  onClick={handleSaveView}
+                  disabled={saving}
+                  className="px-3 py-1.5 rounded-lg bg-[#014D4E] text-white text-sm font-medium hover:bg-[#013838] disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#014D4E] transition-colors"
+                >
+                  {saving ? 'Saving…' : 'Save'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSavePrompt(false); setSaveName(''); setSaveError(null) }}
+                  className="px-3 py-1.5 rounded-lg text-sm text-ink-muted hover:text-ink hover:bg-fill focus:outline-none transition-colors"
+                >
+                  Cancel
+                </button>
+                {saveError && <p className="text-xs text-red-600">{saveError}</p>}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSavePrompt(true)}
+                className="mt-1 text-sm font-medium text-brand hover:underline focus:outline-none"
+              >
+                + Save current filters as a view
+              </button>
+            )
+          )}
+        </div>
+
         {/* Sections */}
         <div className="bg-card border border-line rounded-xl p-5">
           <p className="text-sm font-semibold text-ink mb-3">Sections to include</p>
           <div className="flex flex-wrap gap-4">
-            <Toggle label="KLOE Summary"       checked={showKloes}         onChange={setShowKloes} />
-            <Toggle label="Action Plan Items"  checked={showActions}       onChange={setShowActions} />
-            <Toggle label="HR Compliance"      checked={showHr}            onChange={setShowHr} />
-            <Toggle label="Annual Review"      checked={showAnnualReview}  onChange={setShowAnnualReview} />
+            <Toggle label="KLOE Summary"       checked={showKloes}         onChange={v => { setShowKloes(v);        setActiveViewId(null) }} />
+            <Toggle label="Action Plan Items"  checked={showActions}       onChange={v => { setShowActions(v);      setActiveViewId(null) }} />
+            {isAdmin && <Toggle label="HR Compliance"  checked={showHr}   onChange={v => { setShowHr(v);           setActiveViewId(null) }} />}
+            <Toggle label="Annual Review"      checked={showAnnualReview}  onChange={v => { setShowAnnualReview(v); setActiveViewId(null) }} />
           </div>
         </div>
 
@@ -290,7 +482,7 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
             <p className="text-sm font-semibold text-ink mb-3">Action plan filters</p>
             <div className="max-w-xs">
               <label className="block text-xs font-medium text-ink-dim mb-1">Action status</label>
-              <select value={actionStatus} onChange={e => setActionStatus(e.target.value)} className={inputClass}>
+              <select value={actionStatus} onChange={e => { setActionStatus(e.target.value as ReportViewConfig['actionStatus']); setActiveViewId(null) }} className={inputClass}>
                 <option value="all">All statuses</option>
                 <option value="open">Open</option>
                 <option value="in_progress">In progress</option>
