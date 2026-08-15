@@ -63,7 +63,7 @@ export default async function IncidentsPage() {
   }))
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-brand mb-1">Incident Log</h1>
         <p className="text-sm text-ink-dim">

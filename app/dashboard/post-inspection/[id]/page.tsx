@@ -123,7 +123,7 @@ export default async function PostInspectionDetailPage({
   }))
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-ink-dim">
         <Link href="/dashboard/post-inspection" className="hover:text-brand transition-colors">
