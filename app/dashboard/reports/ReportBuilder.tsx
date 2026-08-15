@@ -14,7 +14,7 @@
  *   platform and cannot be deleted. Admins can save/delete custom views.
  */
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -250,9 +250,25 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
   const [pdfLoading, setPdfLoading] = useState(false)
   const [pdfError, setPdfError]     = useState<string | null>(null)
 
+  // ── Progress vs last run ──────────────────────────────────────────────────
+  interface SnapshotData {
+    green: number; amber: number; red: number; grey: number; total: number
+    open_actions: number; overdue_actions: number; captured_at: string
+  }
+  const [previousSnapshot, setPreviousSnapshot] = useState<SnapshotData | null>(null)
+
   function selectView(key: ViewKey) {
     setActiveView(key)
     setSelectedKQs(new Set(keyQuestions))  // all views use all KQs
+    setNarrative(null)
+    setPreviousSnapshot(null)  // clear while loading
+
+    // Fetch previous snapshot (fire-and-forget, non-blocking)
+    fetch(`/api/report-snapshot?view_key=${encodeURIComponent(key)}`)
+      .then(r => r.ok ? r.json() as Promise<{ snapshot: SnapshotData | null }> : Promise.resolve({ snapshot: null }))
+      .then(({ snapshot }) => setPreviousSnapshot(snapshot))
+      .catch(() => { /* non-critical */ })
+
     switch (key) {
       case 'governance':
         setShowKloes(true); setShowActions(true); setShowHr(isAdmin); setShowAnnualReview(true)
@@ -370,6 +386,26 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
   const generatedAt = new Date().toLocaleDateString('en-GB', {
     day: 'numeric', month: 'long', year: 'numeric',
   })
+
+  // Auto-save a snapshot whenever a system view is active and counts are ready
+  useEffect(() => {
+    if (!activeView || ragCounts.total === 0) return
+    fetch('/api/report-snapshot', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        view_key:        activeView,
+        green:           ragCounts.green,
+        amber:           ragCounts.amber,
+        red:             ragCounts.red,
+        grey:            ragCounts.grey,
+        total:           ragCounts.total,
+        open_actions:    actionCounts.open,
+        overdue_actions: actionCounts.overdue,
+      }),
+    }).catch(() => { /* non-critical */ })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeView])   // only on view change — not on every count recalc
 
   const generateNarrative = useCallback(async () => {
     setNarrativeLoading(true)
@@ -691,39 +727,81 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
         </div>
 
         {/* ── RAG scorecard ────────────────────────────────────────────────── */}
-        {showKloes && ragCounts.total > 0 && (
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '20px 0' }}>
-            {[
-              { label: 'Green',      value: ragCounts.green,  bg: '#f0fdf4', border: '#86efac', text: '#15803d' },
-              { label: 'Amber',      value: ragCounts.amber,  bg: '#fffbeb', border: '#fcd34d', text: '#b45309' },
-              { label: 'Red',        value: ragCounts.red,    bg: '#fef2f2', border: '#fca5a5', text: '#b91c1c' },
-              { label: 'Unassessed', value: ragCounts.grey,   bg: '#f9fafb', border: '#d1d5db', text: '#6b7280' },
-            ].map(s => (
-              <div key={s.label} style={{
-                background: s.bg, border: `1px solid ${s.border}`,
-                borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center',
-              }}>
-                <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: s.text, lineHeight: 1 }}>{s.value}</p>
-                <p style={{ margin: '4px 0 0', fontSize: '12px', color: s.text, fontWeight: 500 }}>{s.label}</p>
-              </div>
-            ))}
-            {showActions && (
-              <>
-                <div style={{ width: '1px', background: '#e5e7eb', margin: '0 4px', alignSelf: 'stretch' }} />
-                <div style={{ background: '#eff6ff', border: '1px solid #93c5fd', borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center' }}>
-                  <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#1d4ed8', lineHeight: 1 }}>{actionCounts.open}</p>
-                  <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#1d4ed8', fontWeight: 500 }}>Open actions</p>
-                </div>
-                {actionCounts.overdue > 0 && (
-                  <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center' }}>
-                    <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#b91c1c', lineHeight: 1 }}>{actionCounts.overdue}</p>
-                    <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b91c1c', fontWeight: 500 }}>Overdue</p>
+        {showKloes && ragCounts.total > 0 && (() => {
+          // Delta helpers
+          const snap = previousSnapshot
+          const snapDate = snap
+            ? new Date(snap.captured_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+            : null
+
+          // delta(current, previous, lowerIsBetter)
+          // Returns { diff, label, colour } or null if no snapshot
+          function delta(current: number, prev: number | undefined, lowerIsBetter: boolean): { diff: number; colour: string } | null {
+            if (prev === undefined || prev === null) return null
+            const diff = current - prev
+            if (diff === 0) return null
+            // improving = green, worsening = red
+            const improving = lowerIsBetter ? diff < 0 : diff > 0
+            return { diff, colour: improving ? '#15803d' : '#b91c1c' }
+          }
+
+          function DeltaBadge({ d }: { d: { diff: number; colour: string } | null }) {
+            if (!d || !snapDate) return null
+            const arrow = d.diff > 0 ? '↑' : '↓'
+            return (
+              <p style={{ margin: '3px 0 0', fontSize: '11px', color: d.colour, fontWeight: 600 }}>
+                {arrow}{Math.abs(d.diff)} since {snapDate}
+              </p>
+            )
+          }
+
+          const kloeStats = [
+            { label: 'Green',      value: ragCounts.green, prev: snap?.green, bg: '#f0fdf4', border: '#86efac', text: '#15803d', lowerIsBetter: false },
+            { label: 'Amber',      value: ragCounts.amber, prev: snap?.amber, bg: '#fffbeb', border: '#fcd34d', text: '#b45309', lowerIsBetter: true  },
+            { label: 'Red',        value: ragCounts.red,   prev: snap?.red,   bg: '#fef2f2', border: '#fca5a5', text: '#b91c1c', lowerIsBetter: true  },
+            { label: 'Unassessed', value: ragCounts.grey,  prev: snap?.grey,  bg: '#f9fafb', border: '#d1d5db', text: '#6b7280', lowerIsBetter: true  },
+          ]
+
+          return (
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '20px 0' }}>
+              {kloeStats.map(s => {
+                const d = delta(s.value, s.prev, s.lowerIsBetter)
+                return (
+                  <div key={s.label} style={{
+                    background: s.bg, border: `1px solid ${s.border}`,
+                    borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center',
+                  }}>
+                    <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: s.text, lineHeight: 1 }}>{s.value}</p>
+                    <p style={{ margin: '4px 0 0', fontSize: '12px', color: s.text, fontWeight: 500 }}>{s.label}</p>
+                    <DeltaBadge d={d} />
                   </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
+                )
+              })}
+              {showActions && (
+                <>
+                  <div style={{ width: '1px', background: '#e5e7eb', margin: '0 4px', alignSelf: 'stretch' }} />
+                  <div style={{ background: '#eff6ff', border: '1px solid #93c5fd', borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center' }}>
+                    <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#1d4ed8', lineHeight: 1 }}>{actionCounts.open}</p>
+                    <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#1d4ed8', fontWeight: 500 }}>Open actions</p>
+                    <DeltaBadge d={delta(actionCounts.open, snap?.open_actions, true)} />
+                  </div>
+                  {actionCounts.overdue > 0 && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', padding: '10px 18px', minWidth: '90px', textAlign: 'center' }}>
+                      <p style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#b91c1c', lineHeight: 1 }}>{actionCounts.overdue}</p>
+                      <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#b91c1c', fontWeight: 500 }}>Overdue</p>
+                      <DeltaBadge d={delta(actionCounts.overdue, snap?.overdue_actions, true)} />
+                    </div>
+                  )}
+                </>
+              )}
+              {snap && snapDate && (
+                <p style={{ alignSelf: 'flex-end', fontSize: '11px', color: '#9ca3af', margin: '0 0 10px 4px' }}>
+                  vs {snapDate}
+                </p>
+              )}
+            </div>
+          )
+        })()}
 
         {/* ── AI narrative ─────────────────────────────────────────────────── */}
         {narrative && (
