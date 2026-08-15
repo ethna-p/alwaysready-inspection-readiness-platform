@@ -60,6 +60,17 @@ export default async function ReportsPage() {
     `)
     .eq('organisation_id', orgId)
 
+  // ── Evidence counts per KLOE (for Evidence Gaps view) ────────────────────
+  const { data: evidenceRows } = await supabase
+    .from('kloe_evidence')
+    .select('klo_item_id')
+    .eq('organisation_id', orgId)
+
+  const evidenceCounts: Record<string, number> = {}
+  for (const row of evidenceRows ?? []) {
+    evidenceCounts[row.klo_item_id] = (evidenceCounts[row.klo_item_id] ?? 0) + 1
+  }
+
   const kloes: KloeRow[] = (complianceRows ?? []).map(r => {
     const item = r.klo_items as unknown as {
       title: string
@@ -74,6 +85,7 @@ export default async function ReportsPage() {
 
     return {
       id:                r.id,
+      klo_item_id:       r.klo_item_id,
       title:             item?.title ?? '—',
       key_question_name: item?.key_questions?.name ?? '—',
       status:            r.status,
@@ -229,6 +241,7 @@ export default async function ReportsPage() {
         actions={actions}
         hrStaff={hrStaff}
         mockInspections={mockInspections}
+        evidenceCounts={evidenceCounts}
         isAdmin={profile?.role === 'admin'}
       />
     </div>
