@@ -59,8 +59,9 @@ export async function POST(req: NextRequest) {
   if (secretKey) {
     const token = typeof body['cf-turnstile-response'] === 'string' ? body['cf-turnstile-response'] : ''
     if (!token) {
-      return NextResponse.json({ error: 'Security check required.' }, { status: 400, headers })
-    }
+      // Soft-pass: no token (Turnstile may not have loaded). Honeypot still provides basic bot protection.
+      console.warn('[blog-subscribe] No Turnstile token — soft-pass')
+    } else {
     try {
       const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
@@ -75,6 +76,7 @@ export async function POST(req: NextRequest) {
       console.error('[blog-subscribe] Turnstile verification error:', err)
       // Soft-pass if Cloudflare is unreachable
     }
+    } // end else (token present)
   }
 
   try {
