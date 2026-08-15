@@ -8,8 +8,12 @@
  *   - At 14 minutes: shows a warning dialog with a "Stay logged in" button.
  *   - At 15 minutes: signs the user out via Supabase and redirects to /login.
  *
- * Usage: drop into any layout that wraps authenticated routes. It renders nothing
- * visible until the warning triggers.
+ * Implementation notes:
+ *   - The warning state is tracked in BOTH a React state (for rendering) and a ref
+ *     (for the reset handler). Using only state would cause the event-listener
+ *     useEffect to re-run whenever showWarning changes, which would clear the
+ *     in-flight logout timer and restart the timers — so the logout never fires.
+ *     The ref breaks that dependency cycle while keeping the state for UI rendering.
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react'
@@ -30,6 +34,11 @@ export default function IdleTimeout() {
   const warnTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const logoutTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
   const countdownRef    = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Mirror showWarning in a ref so the event handler can check it without
+  // becoming a dep of the event-listener useEffect.
+  const showWarningRef = useRef(false)
+  useEffect(() => { showWarningRef.current = showWarning }, [showWarning])
 
   const clearAllTimers = useCallback(() => {
     if (warnTimerRef.current)   clearTimeout(warnTimerRef.current)
@@ -71,29 +80,32 @@ export default function IdleTimeout() {
     }, WARN_AT_MS)
   }, [clearAllTimers, signOut])
 
-  const resetTimer = useCallback(() => {
-    if (showWarning) return  // don't reset mid-warning via accidental mouse move
-    startTimers()
-  }, [showWarning, startTimers])
-
   const stayLoggedIn = useCallback(() => {
     startTimers()
   }, [startTimers])
 
+  // Register activity listeners once — uses ref to check showWarning so
+  // the effect doesn't re-run (and clear timers) when warning state changes.
   useEffect(() => {
     startTimers()
 
+    const handleActivity = () => {
+      if (showWarningRef.current) return   // don't reset mid-warning
+      startTimers()
+    }
+
     for (const event of ACTIVITY_EVENTS) {
-      window.addEventListener(event, resetTimer, { passive: true })
+      window.addEventListener(event, handleActivity, { passive: true })
     }
 
     return () => {
       clearAllTimers()
       for (const event of ACTIVITY_EVENTS) {
-        window.removeEventListener(event, resetTimer)
+        window.removeEventListener(event, handleActivity)
       }
     }
-  }, [startTimers, resetTimer, clearAllTimers])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])  // intentionally empty — startTimers/clearAllTimers are stable
 
   if (!showWarning) return null
 
