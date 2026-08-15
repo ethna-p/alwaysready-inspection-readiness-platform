@@ -23,6 +23,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
+import { fetchCqcLocation } from '@/lib/cqc'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -80,6 +81,16 @@ export async function POST(req: NextRequest) {
     (payload['email-address']    as string | undefined)?.trim() ||
     ''
 
+  const cqcLocationId =
+    (payload['cqc_location_id'] as string | undefined)?.trim() ||
+    (data['cqc_location_id']    as string | undefined)?.trim() ||
+    ''
+
+  const serviceType =
+    (payload['service_type'] as string | undefined)?.trim() ||
+    (data['service_type']    as string | undefined)?.trim() ||
+    ''
+
   const nurtureOptIn =
     payload['nurture_opt_in']    === 'yes'  ||
     payload['nurture_opt_in']    === 'on'   ||
@@ -100,7 +111,26 @@ export async function POST(req: NextRequest) {
 
   if (!email) {
     console.error('[inbound-waitlist] missing email — full payload:', JSON.stringify(payload))
-    return NextResponse.json({ error: 'Missing email' }, { status: 400 })
+    return NextResponse.json({ error: 'Missing email' }, { status: 400, headers: CORS_HEADERS })
+  }
+
+  // ── CQC Location ID validation ─────────────────────────────────────────────
+  let cqcLocationName: string | null = null
+  let cqcRating: string | null = null
+
+  if (cqcLocationId) {
+    const cqcResult = await fetchCqcLocation(cqcLocationId)
+    if (cqcResult.status === 'not_found') {
+      return NextResponse.json(
+        { error: 'CQC Location ID not found. Please check your ID and try again.' },
+        { status: 400, headers: CORS_HEADERS }
+      )
+    }
+    if (cqcResult.status === 'found') {
+      cqcLocationName = cqcResult.data.locationName ?? null
+      cqcRating       = cqcResult.data.overallRating ?? null
+    }
+    // 'unavailable' — CQC API is down, soft-pass and continue
   }
 
   const displayName = firstName || 'there'
@@ -117,15 +147,20 @@ export async function POST(req: NextRequest) {
   const isNew = !existing
 
   // ── Upsert waitlist lead ──────────────────────────────────────────────────
-  const { error: leadError } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: leadError } = await (supabase as any)
     .from('waitlist_leads')
     .upsert(
       {
-        first_name:       firstName || email,
-        last_name:        lastName || null,
+        first_name:        firstName || email,
+        last_name:         lastName || null,
         email,
-        marketing_opt_in: marketingOptIn,
-        nurture_opt_in:   nurtureOptIn,
+        marketing_opt_in:  marketingOptIn,
+        nurture_opt_in:    nurtureOptIn,
+        service_type:      serviceType || null,
+        cqc_location_id:   cqcLocationId || null,
+        cqc_location_name: cqcLocationName,
+        cqc_rating:        cqcRating,
       },
       { onConflict: 'email', ignoreDuplicates: false }
     )
@@ -210,5 +245,5 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  return NextResponse.json({ received: true }, { status: 200, headers: CORS_HEADERS })
+  return NextResponse.json({ ok: true }, { status: 200, headers: CORS_HEADERS })
 }
