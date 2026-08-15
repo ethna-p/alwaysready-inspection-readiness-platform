@@ -34,7 +34,7 @@ export default async function MockInspectionsPage() {
   const inspections = inspectionsRaw as InspectionListItem[] | null
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
+    <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-brand mb-1">Mock Inspections</h1>
         <p className="text-sm text-ink-dim">
