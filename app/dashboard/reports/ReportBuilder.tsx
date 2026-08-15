@@ -210,10 +210,8 @@ const SYSTEM_VIEWS: { key: ViewKey; label: string; description: string; adminOnl
   },
 ]
 
-// Sort order for gap views: Unassessed → Red → Amber (Green excluded)
+// Sort order: Unassessed → Red → Amber → Green
 const GAP_RAG_ORDER: Record<string, number> = { grey: 0, red: 1, amber: 2, green: 99 }
-// Sort order for governance view: Red → Amber → Unassessed → Green
-const GOV_RAG_ORDER: Record<string, number> = { red: 0, amber: 1, grey: 2, green: 3 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -275,8 +273,8 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
     let list = kloes.filter(k => selectedKQs.has(k.key_question_name))
 
     if (activeView === 'governance') {
-      // Red → Amber → Unassessed → Green
-      list = list.sort((a, b) => (GOV_RAG_ORDER[a.rag] ?? 99) - (GOV_RAG_ORDER[b.rag] ?? 99))
+      // Unassessed → Red → Amber → Green
+      list = list.sort((a, b) => (GAP_RAG_ORDER[a.rag] ?? 99) - (GAP_RAG_ORDER[b.rag] ?? 99))
     } else if (activeView === 'attention-needed') {
       // Exclude green; sort unassessed → red → amber
       list = list
