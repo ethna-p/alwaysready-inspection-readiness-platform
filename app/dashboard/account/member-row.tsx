@@ -18,7 +18,6 @@ interface Props {
   member: {
     id: string
     full_name: string | null
-    username: string | null
     email: string
     role: string
   }
@@ -50,9 +49,6 @@ export default function MemberRow({ member, isSelf }: Props) {
             </span>
           )}
         </p>
-        {member.username && (
-          <p className="text-xs text-ink-dim mt-0.5 font-mono">{member.username}</p>
-        )}
         {!isStaffAccount && (
           <p className="text-xs text-ink-dim mt-0.5">{member.email}</p>
         )}

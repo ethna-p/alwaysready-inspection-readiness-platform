@@ -63,7 +63,7 @@ export default async function AccountPage({
         .single(),
       supabase
         .from('users')
-        .select('id, full_name, username, email, role, viewer_expires_at, created_at')
+        .select('id, full_name, email, role, viewer_expires_at, created_at')
         .eq('organisation_id', profile.organisation_id)
         .order('full_name', { ascending: true }),
     ])
@@ -440,7 +440,7 @@ export default async function AccountPage({
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-                      <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
+                      <th scope="col" className="text-left px-4 py-3 font-medium">Name</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Role</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Password</th>
                     </tr>
@@ -518,7 +518,7 @@ export default async function AccountPage({
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-                      <th scope="col" className="text-left px-4 py-3 font-medium">Name / Login ID</th>
+                      <th scope="col" className="text-left px-4 py-3 font-medium">Name</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Access expires</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Revoke</th>
                     </tr>

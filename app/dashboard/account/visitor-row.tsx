@@ -12,7 +12,6 @@ import type { TeamActionState } from './team-actions'
 interface Visitor {
   id: string
   full_name: string | null
-  username: string | null
   email: string
   viewer_expires_at: string | null
 }
@@ -47,9 +46,7 @@ export default function VisitorRow({ visitor }: Props) {
     <tr className="hover:bg-canvas transition-colors">
       <td className="px-4 py-3">
         <p className="font-medium text-ink">{displayName}</p>
-        {visitor.username && (
-          <p className="text-xs font-mono text-ink-dim mt-0.5">{visitor.username}</p>
-        )}
+
       </td>
 
       <td className="px-4 py-3">

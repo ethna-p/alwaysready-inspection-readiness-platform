@@ -126,14 +126,10 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   const authUserId = authData.user.id
 
   // ── 4. Create public.users row ───────────────────────────────────────────────
-  const emailPrefix = managerEmail.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
-  const username    = `${emailPrefix}_${Math.random().toString(36).slice(2, 6)}`
-
   const { error: userError } = await supabase.from('users').insert({
     id:                  authUserId,
     email:               managerEmail.trim(),
     full_name:           managerName.trim(),
-    username,
     role:                'admin',
     organisation_id:     org.id,
     onboarding_complete: false,
