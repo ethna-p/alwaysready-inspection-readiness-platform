@@ -8,8 +8,9 @@
  * No payment required. Trial runs for 14 days.
  */
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import Image from 'next/image'
+import Script from 'next/script'
 import { useRouter } from 'next/navigation'
 import { startTrial } from './actions'
 
@@ -55,6 +56,17 @@ export default function TrialPage() {
   // CQC Location ID lookup state
   const [cqcLookupStatus,  setCqcLookupStatus]  = useState<'idle' | 'loading' | 'found' | 'not_found' | 'unavailable'>('idle')
   const [cqcFoundName,     setCqcFoundName]     = useState<string | null>(null)
+  const [turnstileToken,   setTurnstileToken]   = useState('')
+
+  // Register global Turnstile callback
+  useEffect(() => {
+    ;(window as Window & { onTurnstileVerified?: (t: string) => void }).onTurnstileVerified = setTurnstileToken
+    ;(window as Window & { onTurnstileExpired?: () => void }).onTurnstileExpired = () => setTurnstileToken('')
+    return () => {
+      delete (window as Window & { onTurnstileVerified?: (t: string) => void }).onTurnstileVerified
+      delete (window as Window & { onTurnstileExpired?: () => void }).onTurnstileExpired
+    }
+  }, [])
 
   async function handleCqcLookup() {
     const id = cqcLocationId.trim()
@@ -95,6 +107,7 @@ export default function TrialPage() {
         charityNumber: charityNumber.trim() || null,
         marketingConsent,
         termsAccepted,
+        turnstileToken,
       })
 
       if (!result.success) {
@@ -369,6 +382,15 @@ export default function TrialPage() {
                 </span>
               </label>
 
+              {/* Turnstile */}
+              <div
+                className="cf-turnstile"
+                data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                data-callback="onTurnstileVerified"
+                data-expired-callback="onTurnstileExpired"
+                data-theme="light"
+              />
+
               {/* Error */}
               {error && (
                 <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
@@ -460,6 +482,11 @@ export default function TrialPage() {
 
         </div>
       </main>
+
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        strategy="lazyOnload"
+      />
 
       {/* Footer */}
       <footer className="border-t border-line bg-canvas px-6 py-6 text-center">

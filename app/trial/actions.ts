@@ -31,6 +31,7 @@ export type TrialSignupInput = {
   charityNumber: string | null
   marketingConsent: boolean
   termsAccepted: boolean
+  turnstileToken?: string
 }
 
 export type TrialSignupResult =
@@ -38,7 +39,28 @@ export type TrialSignupResult =
   | { success: false; error: string }
 
 export async function startTrial(input: TrialSignupInput): Promise<TrialSignupResult> {
-  const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, charityNumber, marketingConsent, termsAccepted } = input
+  const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, charityNumber, marketingConsent, termsAccepted, turnstileToken } = input
+
+  // ── Turnstile verification ───────────────────────────────────────────────────
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
+  if (turnstileSecret) {
+    if (!turnstileToken) {
+      return { success: false, error: 'Security check required. Please complete the verification and try again.' }
+    }
+    try {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(turnstileSecret)}&response=${encodeURIComponent(turnstileToken)}`,
+      })
+      const verifyData = await verifyRes.json() as { success: boolean }
+      if (!verifyData.success) {
+        return { success: false, error: 'Security check failed. Please refresh the page and try again.' }
+      }
+    } catch {
+      // Soft-pass if Cloudflare is unreachable
+    }
+  }
 
   // ── Validate ────────────────────────────────────────────────────────────────
   if (!serviceName.trim() || !cqcLocationId.trim() || !serviceType || !managerName.trim() || !managerEmail.trim()) {
