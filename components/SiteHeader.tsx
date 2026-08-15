@@ -23,6 +23,15 @@ export default async function SiteHeader() {
 
   const hasUnread = (unreadCount ?? 0) > 0
 
+  // Org logo — shown in header if the org has uploaded one
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: orgData } = await (supabase as any)
+    .from('organisations')
+    .select('logo_url')
+    .eq('id', profile?.organisation_id ?? '')
+    .single() as { data: { logo_url: string | null } | null }
+  const orgLogoUrl = orgData?.logo_url ?? null
+
   return (
     <header className="bg-card border-b border-line print:hidden">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -34,12 +43,12 @@ export default async function SiteHeader() {
             rel="noopener noreferrer"
             aria-label="AlwaysReady — visit marketing site"
           >
-            {/* Plain img — Next.js Image mis-sizes SVGs with fixed viewBox */}
+            {/* Show org logo if uploaded, otherwise fall back to AlwaysReady wordmark */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/alwaysready-logo.svg"
-              alt="AlwaysReady"
-              style={{ width: '260px', height: 'auto', display: 'block' }}
+              src={orgLogoUrl ?? '/alwaysready-logo.svg'}
+              alt={orgLogoUrl ? 'Organisation logo' : 'AlwaysReady'}
+              style={{ height: '48px', maxWidth: '280px', width: 'auto', display: 'block', objectFit: 'contain' }}
             />
           </a>
         </div>

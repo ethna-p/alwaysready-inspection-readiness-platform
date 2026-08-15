@@ -20,12 +20,13 @@ export default async function ReportsPage() {
   const supabase = await createClient()
   const orgId = profile.organisation_id
 
-  // ── Org name ─────────────────────────────────────────────────────────────
-  const { data: org } = await supabase
+  // ── Org name + logo ──────────────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: org } = await (supabase as any)
     .from('organisations')
-    .select('name')
+    .select('name, logo_url')
     .eq('id', orgId)
-    .single()
+    .single() as { data: { name: string; logo_url: string | null } | null }
 
   // ── Key questions (ordered) ───────────────────────────────────────────────
   const { data: kqRows } = await supabase
@@ -237,6 +238,7 @@ export default async function ReportsPage() {
 
       <ReportBuilder
         orgName={org?.name ?? 'Your Organisation'}
+        orgLogoUrl={org?.logo_url ?? null}
         keyQuestions={keyQuestions}
         kloes={kloes}
         actions={actions}

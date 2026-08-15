@@ -66,6 +66,7 @@ export type MockInspectionYear = {
 
 interface Props {
   orgName: string
+  orgLogoUrl: string | null
   keyQuestions: string[]
   kloes: KloeRow[]
   actions: ActionRow[]
@@ -221,7 +222,7 @@ const GAP_RAG_ORDER: Record<string, number> = { grey: 0, red: 1, amber: 2, green
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, hrStaff, mockInspections, evidenceCounts, isAdmin }: Props) {
+export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes, actions, hrStaff, mockInspections, evidenceCounts, isAdmin }: Props) {
   // ── View state ──────────────────────────────────────────────────────────────
   const [activeView, setActiveView] = useState<ViewKey | null>(null)
 
@@ -491,11 +492,21 @@ export default function ReportBuilder({ orgName, keyQuestions, kloes, actions, h
         {/* Report header */}
         <div style={{ marginBottom: '24px', borderBottom: '2px solid #014D4E', paddingBottom: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-            <div>
-              <p style={{ fontSize: '20px', fontWeight: 700, color: '#014D4E', margin: 0 }}>
-                Custom Report
-              </p>
-              <p style={{ fontSize: '14px', color: '#374151', margin: '2px 0 0' }}>{orgName}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {orgLogoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={orgLogoUrl}
+                  alt={`${orgName} logo`}
+                  style={{ height: '52px', maxWidth: '180px', width: 'auto', objectFit: 'contain' }}
+                />
+              )}
+              <div>
+                <p style={{ fontSize: '20px', fontWeight: 700, color: '#014D4E', margin: 0 }}>
+                  Custom Report
+                </p>
+                <p style={{ fontSize: '14px', color: '#374151', margin: '2px 0 0' }}>{orgName}</p>
+              </div>
             </div>
             <p style={{ fontSize: '11px', color: '#6b7280', margin: 0 }}>Generated {generatedAt}</p>
           </div>

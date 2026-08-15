@@ -10,6 +10,7 @@ import ChangePasswordForm from './ChangePasswordForm'
 import PersonalContactForm from './PersonalContactForm'
 import MfaSection from './MfaSection'
 import SubServicesForm from './SubServicesForm'
+import OrgLogoUpload from './OrgLogoUpload'
 import AddMemberForm from './add-member-form'
 import MemberRow from './member-row'
 import AddVisitorForm from './add-visitor-form'
@@ -47,6 +48,7 @@ export default async function AccountPage({
   let enabledSubServices: string[] = []
   let subscriptionTier = 'trial'
   let hasStripeCustomer = false
+  let orgLogoUrl: string | null = null
   let members: Awaited<ReturnType<typeof supabase.from>>['data'] = []
   let visitors: typeof members = []
 
@@ -56,11 +58,12 @@ export default async function AccountPage({
         .from('organisation_sub_services')
         .select('sub_service')
         .eq('organisation_id', profile.organisation_id),
-      supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any)
         .from('organisations')
-        .select('subscription_tier, stripe_customer_id')
+        .select('subscription_tier, stripe_customer_id, logo_url')
         .eq('id', profile.organisation_id)
-        .single(),
+        .single() as Promise<{ data: { subscription_tier: string; stripe_customer_id: string | null; logo_url: string | null } | null; error: unknown }>,
       supabase
         .from('users')
         .select('id, full_name, email, role, viewer_expires_at, created_at')
@@ -70,6 +73,7 @@ export default async function AccountPage({
     enabledSubServices = (subServices ?? []).map(r => r.sub_service)
     subscriptionTier   = org?.subscription_tier ?? 'trial'
     hasStripeCustomer  = !!org?.stripe_customer_id
+    orgLogoUrl         = org?.logo_url ?? null
     members  = (allUsers ?? []).filter(u => u.role !== 'viewer')
     visitors = (allUsers ?? []).filter(u => u.role === 'viewer')
   }
@@ -362,6 +366,15 @@ export default async function AccountPage({
       {/* ══ ORGANISATION tab ══════════════════════════════════════════════ */}
       {activeTab === 'organisation' && isAdmin && (
         <div className="space-y-8">
+
+          {/* Organisation logo */}
+          <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
+            <h2 className="text-base font-semibold text-brand mb-1">Organisation logo</h2>
+            <p className="text-sm text-ink-dim mb-4">
+              Upload your care home&apos;s logo. It will appear in the platform header and on printed reports.
+            </p>
+            <OrgLogoUpload currentLogoUrl={orgLogoUrl} />
+          </div>
 
           {/* Sub-services */}
           <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
