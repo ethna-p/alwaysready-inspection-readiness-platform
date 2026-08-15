@@ -92,19 +92,15 @@ function fireCompletionConfetti() {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function GettingStartedWizard() {
-  const [dismissed, setDismissed]   = useState(false)
-  const [open, setOpen]             = useState(true)
+  // Lazy initialisers read localStorage synchronously on first render so the
+  // component never starts in the wrong visual state (avoids the flash where
+  // the panel briefly appears open before collapsing on every hard refresh).
+  const [dismissed, setDismissed]   = useState(() => ls(LS_DISMISSED) === '1')
+  const [open, setOpen]             = useState(() => ls(LS_DISMISSED) !== '1' && ls(LS_OPEN) !== '0')
   const [status, setStatus]         = useState<WizardStatus | null>(null)
   const [allDone, setAllDone]       = useState(false)
   const prevAllDone                 = useRef(false)
-  const openConfettiFired           = useRef(false)
-
-  // ── Initialise from localStorage ───────────────────────────────────────────
-  useEffect(() => {
-    if (ls(LS_DISMISSED) === '1') { setDismissed(true); return }
-    if (ls(LS_OPEN) === '0')      setOpen(false)
-    openConfettiFired.current = ls(LS_CONFETTI) === '1'
-  }, [])
+  const openConfettiFired           = useRef(ls(LS_CONFETTI) === '1')
 
   // ── Fetch wizard status ────────────────────────────────────────────────────
   const fetchStatus = useCallback(async () => {
