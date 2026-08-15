@@ -39,7 +39,7 @@ export default async function HrStaffDetailPage({
   // Verify the user belongs to this org
   const { data: staffUser } = await supabase
     .from('users')
-    .select('id, full_name, username, role')
+    .select('id, full_name, email, role')
     .eq('id', userId)
     .eq('organisation_id', orgId)
     .single()
@@ -116,7 +116,7 @@ export default async function HrStaffDetailPage({
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-brand">
-          {staffUser.full_name ?? staffUser.username}
+          {staffUser.full_name ?? staffUser.email}
         </h1>
         <p className="text-sm text-ink-muted mt-1 capitalize">{staffUser.role}</p>
       </div>

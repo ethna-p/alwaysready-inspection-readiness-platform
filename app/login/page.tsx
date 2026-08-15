@@ -9,18 +9,13 @@ import { requestPasswordReset } from './actions'
 /**
  * Login page.
  *
- * Accepts either:
- *   - A real email address (admin accounts)
- *   - A username (staff accounts, e.g. sarah.jones.f7a2e1)
- *     The login page appends @staff.alwaysready.uk before calling Supabase auth.
+ * All users log in with their real email address.
  *
  * After successful login, redirects based on role:
  *   admin / viewer → /dashboard
  *   user           → /dashboard/my-kloes
  *
- * "Forgot password?" flow:
- *   - Email users   → Supabase sends reset email directly
- *   - Staff users   → server action generates recovery link, sends to personal_email via Resend
+ * "Forgot password?" → Supabase sends reset email directly.
  */
 
 export default function LoginPage() {
@@ -57,15 +52,12 @@ function LoginForm() {
     setError(null)
     setLoading(true)
 
-    // Resolve email — if no @ present, treat as staff username
-    const email = login.includes('@')
-      ? login.trim()
-      : `${login.trim()}@staff.alwaysready.uk`
+    const email = login.trim()
 
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
     if (authError) {
-      setError('Incorrect login ID or password. Please try again.')
+      setError('Incorrect email or password. Please try again.')
       setLoading(false)
       return
     }
@@ -162,8 +154,8 @@ function LoginForm() {
                     </label>
                     <input
                       id="login"
-                      type="text"
-                      autoComplete="username"
+                      type="email"
+                      autoComplete="email"
                       required
                       value={login}
                       onChange={e => setLogin(e.target.value)}
@@ -245,7 +237,7 @@ function LoginForm() {
 
                 <h1 className="text-2xl font-bold text-brand mb-1">Reset password</h1>
                 <p className="text-sm text-ink-dim mb-6">
-                  Enter your email or login ID and we&apos;ll send you a reset link.
+                  Enter your email address and we&apos;ll send you a reset link.
                 </p>
 
                 <form onSubmit={handleResetRequest} noValidate>
@@ -267,8 +259,8 @@ function LoginForm() {
                     </label>
                     <input
                       id="reset-login"
-                      type="text"
-                      autoComplete="username"
+                      type="email"
+                      autoComplete="email"
                       required
                       value={resetInput}
                       onChange={e => setResetInput(e.target.value)}
@@ -279,9 +271,6 @@ function LoginForm() {
                         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
                       "
                     />
-                    <p className="text-sm text-ink-dim mt-1">
-                      Staff: if you don&apos;t have a personal email on your account, ask your manager to reset your password.
-                    </p>
                   </div>
 
                   <button
@@ -319,11 +308,8 @@ function LoginForm() {
                 </div>
                 <h2 className="text-lg font-bold text-brand mb-2">Check your inbox</h2>
                 <p className="text-sm text-ink-dim mb-6">
-                  If an account exists for that email or login ID, you&apos;ll receive a reset link shortly.
+                  If an account exists for that email address, you&apos;ll receive a reset link shortly.
                   The link expires in 1 hour.
-                </p>
-                <p className="text-sm text-ink-muted mb-6">
-                  Staff: check the personal email address on your account, not your work one.
                 </p>
                 <button
                   type="button"

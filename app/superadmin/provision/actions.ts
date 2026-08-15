@@ -82,17 +82,12 @@ export async function provisionOrganisation(
     const authUserId = authData.user.id
 
     // ── 4. Create public.users row ──────────────────────────────────────
-    // Generate a unique username from email prefix
-    const emailPrefix = adminEmail.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
-    const username = `${emailPrefix}_${Math.random().toString(36).slice(2, 6)}`
-
     const { error: userError } = await supabase
       .from('users')
       .insert({
         id: authUserId,
         email: adminEmail,
         full_name: adminName,
-        username,
         role: 'admin',
         organisation_id: org.id,
         onboarding_complete: false,   // triggers welcome screen on first login

@@ -3,8 +3,8 @@
 /**
  * AddVisitorForm — creates a time-limited visitor (viewer) login.
  *
- * The admin enters a name and how many days access to grant.
- * On success, shows the username + temporary password to hand over.
+ * The admin enters a name, real email address, and how many days access to grant.
+ * On success, shows the temporary password to share with the visitor.
  */
 
 import { useActionState } from 'react'
@@ -26,22 +26,8 @@ export default function AddVisitorForm() {
 
         <div className="bg-canvas border border-line rounded-lg p-4 space-y-3">
           <p className="text-xs font-semibold text-brand uppercase tracking-wide">
-            Login credentials — share these now
+            Temporary password — share this now
           </p>
-          <div>
-            <p className="text-xs text-ink-dim mb-0.5">Login ID</p>
-            <p
-              className="font-mono text-sm bg-card border border-line rounded px-3 py-2 select-all cursor-text"
-              onClick={e => {
-                const range = document.createRange()
-                range.selectNodeContents(e.currentTarget)
-                window.getSelection()?.removeAllRanges()
-                window.getSelection()?.addRange(range)
-              }}
-            >
-              {state.credentials.username}
-            </p>
-          </div>
           <div>
             <p className="text-xs text-ink-dim mb-0.5">Temporary password</p>
             <p
@@ -57,7 +43,7 @@ export default function AddVisitorForm() {
             </p>
           </div>
           <p className="text-sm text-ink-dim">
-            Click either field to select all. These credentials will not be shown again.
+            The visitor logs in with their email address and this password. Click the field to select all. This will not be shown again.
           </p>
         </div>
 
@@ -91,6 +77,20 @@ export default function AddVisitorForm() {
             type="text"
             required
             placeholder="e.g. Sarah Thompson"
+            className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-card text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="visitor_email" className="block text-sm font-medium text-ink mb-1">
+            Email address
+          </label>
+          <input
+            id="visitor_email"
+            name="email"
+            type="email"
+            required
+            placeholder="e.g. sarah@example.com"
             className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-card text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
         </div>

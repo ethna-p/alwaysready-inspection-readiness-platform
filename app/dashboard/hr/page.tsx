@@ -256,7 +256,7 @@ export default async function HrOverviewPage() {
   // Get all staff for this org
   const { data: staffUsers } = await supabase
     .from('users')
-    .select('id, full_name, username, role')
+    .select('id, full_name, email, role')
     .eq('organisation_id', orgId)
     .neq('role', 'viewer')
     .order('full_name')
@@ -328,7 +328,7 @@ export default async function HrOverviewPage() {
       if (status === 'due_soon') dueSoonFields.push({ label, status: 'due_soon', dueDate: nextDue })
     }
 
-    const name = user.full_name ?? user.username ?? 'Unknown'
+    const name = user.full_name ?? user.email ?? 'Unknown'
     if (overdueFields.length > 0) {
       overdueList.push({ userId: user.id, name, role: user.role ?? '', fields: overdueFields })
     } else if (dueSoonFields.length > 0) {
@@ -448,7 +448,7 @@ export default async function HrOverviewPage() {
                 return (
                   <tr key={user.id} className="hover:bg-fill transition-colors">
                     <td className="px-5 py-4">
-                      <p className="font-medium text-ink">{user.full_name ?? user.username}</p>
+                      <p className="font-medium text-ink">{user.full_name ?? user.email}</p>
                       <p className="text-xs text-ink-muted capitalize">{user.role}</p>
                     </td>
                     <td className="px-5 py-4 text-ink">

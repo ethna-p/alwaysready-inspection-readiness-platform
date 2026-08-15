@@ -35,7 +35,6 @@ export default function MemberRow({ member, isSelf }: Props) {
   )
 
   const displayName = member.full_name ?? member.email
-  const isStaffAccount = member.email.endsWith('@staff.alwaysready.uk')
 
   return (
     <tr className="hover:bg-canvas transition-colors align-top">
@@ -49,9 +48,7 @@ export default function MemberRow({ member, isSelf }: Props) {
             </span>
           )}
         </p>
-        {!isStaffAccount && (
-          <p className="text-xs text-ink-dim mt-0.5">{member.email}</p>
-        )}
+        <p className="text-xs text-ink-dim mt-0.5">{member.email}</p>
       </td>
 
       {/* Role */}

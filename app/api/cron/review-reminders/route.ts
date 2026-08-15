@@ -328,11 +328,11 @@ export async function GET(request: Request) {
 
     // Fetch staff user details separately
     const staffUserIds = (profiles ?? []).map(p => p.user_id)
-    const staffUsersMap = new Map<string, { full_name: string | null; username: string | null }>()
+    const staffUsersMap = new Map<string, { full_name: string | null; email: string | null }>()
     if (staffUserIds.length > 0) {
       const { data: staffUsers } = await supabase
         .from('users')
-        .select('id, full_name, username')
+        .select('id, full_name, email')
         .in('id', staffUserIds)
       for (const u of staffUsers ?? []) staffUsersMap.set(u.id, u)
     }
@@ -345,7 +345,7 @@ export async function GET(request: Request) {
 
     for (const profile of profiles ?? []) {
       const staffUser = staffUsersMap.get(profile.user_id) ?? null
-      const staffName = staffUser?.full_name ?? staffUser?.username ?? 'Staff member'
+      const staffName = staffUser?.full_name ?? staffUser?.email ?? 'Staff member'
       const entityId  = profile.user_id
 
       const fields: HrField[] = [
@@ -422,11 +422,11 @@ export async function GET(request: Request) {
 
     // Fetch training staff users (may overlap with profile staff)
     const trainingUserIds = [...new Set((trainingRecords ?? []).map(r => r.user_id))]
-    const trainingUsersMap = new Map<string, { full_name: string | null; username: string | null }>()
+    const trainingUsersMap = new Map<string, { full_name: string | null; email: string | null }>()
     if (trainingUserIds.length > 0) {
       const { data: tUsers } = await supabase
         .from('users')
-        .select('id, full_name, username')
+        .select('id, full_name, email')
         .in('id', trainingUserIds)
       for (const u of tUsers ?? []) trainingUsersMap.set(u.id, u)
     }
@@ -435,7 +435,7 @@ export async function GET(request: Request) {
       if (!rec.next_due) continue
 
       const staffUser = trainingUsersMap.get(rec.user_id) ?? null
-      const staffName = staffUser?.full_name ?? staffUser?.username ?? 'Staff member'
+      const staffName = staffUser?.full_name ?? staffUser?.email ?? 'Staff member'
       const label     = trainingTypeMap.get(rec.training_type_id) ?? 'Training'
       const dueDateStr   = rec.next_due.split('T')[0]
       const days         = daysUntil(rec.next_due, today)
