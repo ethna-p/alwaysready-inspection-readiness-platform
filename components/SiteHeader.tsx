@@ -3,7 +3,6 @@
  * Fetches the user's role to conditionally show the Team link (admins only).
  * Sign-out is delegated to SignOutButton (client component).
  */
-import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
@@ -35,13 +34,12 @@ export default async function SiteHeader() {
             rel="noopener noreferrer"
             aria-label="AlwaysReady — visit marketing site"
           >
-            <Image
+            {/* Plain img — Next.js Image mis-sizes SVGs with fixed viewBox */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/alwaysready-logo.svg"
               alt="AlwaysReady"
-              width={400}
-              height={88}
-              style={{ width: '400px', height: 'auto' }}
-              priority
+              style={{ width: '260px', height: 'auto', display: 'block' }}
             />
           </a>
         </div>
