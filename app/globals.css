@@ -39,8 +39,8 @@
   --fill-dim:  #f3f4f6;
 
   --ink:       #1a1a1a;
-  --ink-dim:   #374151;   /* gray-700 — was #4b5563, now 8.9:1 on white vs 6.8:1 */
-  --ink-muted: #4b5563;   /* gray-600 — was #6b7280, now 6.8:1 on white vs 4.6:1 */
+  --ink-dim:   #1a1a1a;   /* body text — same as --ink so all readable text is full dark */
+  --ink-muted: #374151;   /* secondary/metadata text — gray-700, 8.9:1 on white */
 
   --line:      #e5e7eb;
 
