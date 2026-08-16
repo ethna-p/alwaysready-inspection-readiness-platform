@@ -200,7 +200,7 @@ export default function GettingStartedWizard() {
           {!allDone && status && (
             <span
               className="text-xs font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: 'rgba(255,215,0,0.25)', color: '#ffd700' }}
+              style={{ background: 'rgba(255,215,0,0.85)', color: '#1a3a3b' }}
             >
               {completedCount}/{STEPS.length}
             </span>

@@ -48,6 +48,8 @@ export default async function SiteHeader() {
             <img
               src={orgLogoUrl ?? '/alwaysready-logo.svg'}
               alt={orgLogoUrl ? 'Organisation logo' : 'AlwaysReady'}
+              width={280}
+              height={48}
               style={{ height: '48px', maxWidth: '280px', width: 'auto', display: 'block', objectFit: 'contain' }}
             />
           </a>
