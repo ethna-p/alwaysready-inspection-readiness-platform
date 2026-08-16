@@ -61,9 +61,6 @@ export default function MobileNav({ isAdmin, hasUnread }: Props) {
             <Link href="/dashboard/daily-report" className={NAV_LINK} onClick={() => setOpen(false)}>
               Daily Report
             </Link>
-            <Link href="/dashboard/analytics" className={NAV_LINK} onClick={() => setOpen(false)}>
-              Analytics
-            </Link>
             <Link href="/dashboard/inspection-pack" className={NAV_LINK} onClick={() => setOpen(false)}>
               Inspection Pack
             </Link>
