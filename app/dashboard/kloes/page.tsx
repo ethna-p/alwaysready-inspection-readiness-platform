@@ -189,13 +189,13 @@ export default async function KloesPage({
                     pixel-aligned regardless of KLOE title length */}
                 <table className="w-full text-sm table-fixed">
                   <colgroup>
-                    <col />                              {/* KLOE — fills remaining space */}
-                    <col className="hidden sm:table-column w-28" />  {/* Status  112px */}
-                    <col className="hidden md:table-column w-32" />  {/* RAG     128px */}
-                    <col className="hidden lg:table-column w-20" />  {/* Priority 80px */}
-                    <col className="hidden lg:table-column w-32" />  {/* Next due 128px */}
-                    <col className="hidden lg:table-column w-36" />  {/* Assigned 144px */}
-                    <col className="w-20" />                         {/* Actions   80px */}
+                    <col className="w-72" />                                    {/* KLOE     288px */}
+                    <col className="hidden sm:table-column w-32" />             {/* Status   128px */}
+                    <col className="hidden md:table-column w-36" />             {/* RAG      144px */}
+                    <col className="hidden lg:table-column w-24" />             {/* Priority  96px */}
+                    <col className="hidden lg:table-column w-36" />             {/* Next due 144px */}
+                    <col className="hidden lg:table-column w-44" />             {/* Assigned 176px */}
+                    <col className="w-20" />                                    {/* Actions   80px */}
                   </colgroup>
                   <thead>
                     <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
