@@ -254,7 +254,16 @@ function ReportTable({
 }) {
   return (
     <div className="bg-card rounded-xl border border-line overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm table-fixed">
+        <colgroup>
+          <col className="w-72" />                                   {/* KLOE     288px */}
+          <col className="hidden sm:table-column w-32" />            {/* Key Q    128px */}
+          <col className="hidden md:table-column w-32" />            {/* Status   128px */}
+          <col className="hidden md:table-column w-36" />            {/* RAG      144px */}
+          <col className="hidden lg:table-column w-24" />            {/* Priority  96px */}
+          <col className="hidden lg:table-column w-36" />            {/* Due date 144px */}
+          <col className="w-20" />                                   {/* Actions   80px */}
+        </colgroup>
         <thead>
           <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
             <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>

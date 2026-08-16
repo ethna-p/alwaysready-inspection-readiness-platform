@@ -219,7 +219,7 @@ export default async function InspectionPackPage() {
             {/* Big % */}
             <div className="text-center">
               <div
-                className="text-6xl font-bold leading-none"
+                className="text-3xl font-bold leading-none"
                 style={{ color: pctColour(overallPct) }}
                 aria-label={`Overall readiness ${overallPct} percent`}
               >
@@ -348,33 +348,42 @@ export default async function InspectionPackPage() {
 
               {/* KLOE table */}
               <div className="overflow-x-auto print:overflow-visible">
-              <table className="w-full text-xs border border-line print:border-line">
+              <table className="w-full text-sm table-fixed border border-line print:border-line">
+                <colgroup>
+                  <col className="w-14" />                                   {/* Code      56px */}
+                  <col className="w-72" />                                   {/* KLOE     288px */}
+                  <col className="w-32" />                                   {/* Status   128px */}
+                  <col className="w-36" />                                   {/* RAG      144px */}
+                  <col className="w-20" />                                   {/* Priority  80px */}
+                  <col className="hidden sm:table-column w-32 print:table-column" />  {/* Last Review 128px */}
+                  <col className="hidden sm:table-column w-32 print:table-column" />  {/* Next Due    128px */}
+                </colgroup>
                 <thead>
-                  <tr className="bg-fill print:bg-fill-dim border-b border-line">
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-12">
+                  <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
+                    <th scope="col" className="text-left px-4 py-3 font-medium">
                       Code
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim">
+                    <th scope="col" className="text-left px-4 py-3 font-medium">
                       KLOE
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24">
+                    <th scope="col" className="text-left px-4 py-3 font-medium">
                       Status
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24">
+                    <th scope="col" className="text-left px-4 py-3 font-medium">
                       RAG
                     </th>
-                    <th scope="col" className="text-center px-3 py-2 font-semibold text-ink-dim w-16">
+                    <th scope="col" className="text-left px-4 py-3 font-medium">
                       Priority
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24 hidden sm:table-cell print:table-cell">
+                    <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell print:table-cell">
                       Last Review
                     </th>
-                    <th scope="col" className="text-left px-3 py-2 font-semibold text-ink-dim w-24 hidden sm:table-cell print:table-cell">
+                    <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell print:table-cell">
                       Next Due
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-50">
                   {kq.klos.map(klo => {
                     const record = recordByKloId.get(klo.id)
                     const rag = calculateRAG(record, now)
@@ -383,29 +392,30 @@ export default async function InspectionPackPage() {
 
                     return (
                       <Fragment key={klo.id}>
-                        <tr
-                          className={compliant ? 'bg-green-50 print:bg-transparent' : ''}
-                        >
-                          <td className="px-3 py-2.5 font-bold text-brand align-top">
+                        <tr className={`hover:bg-canvas transition-colors ${compliant ? 'print:bg-transparent' : ''}`}>
+                          <td className="px-4 py-3 font-bold text-brand align-top">
                             {code}
                           </td>
-                          <td className="px-3 py-2.5 font-medium text-ink align-top">
+                          <td className="px-4 py-3 font-medium text-ink align-top">
                             {klo.title}
                           </td>
-                          <td className="px-3 py-2.5 text-ink align-top">
+                          <td className="px-4 py-3 text-ink align-top">
                             {statusLabel(record?.status ?? null)}
                           </td>
-                          <td className="px-3 py-2.5 align-top">
+                          <td className="px-4 py-3 align-top">
                             <RagCell status={rag} />
                           </td>
-                          <td className="px-3 py-2.5 text-center align-top font-semibold text-brand">
-                            {record?.priority ?? '—'}
+                          <td className="px-4 py-3 align-top">
+                            {record?.priority
+                              ? <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#014D4E] text-white text-xs font-bold">{record.priority}</span>
+                              : <span className="text-ink-dim">—</span>
+                            }
                           </td>
-                          <td className="px-3 py-2.5 text-ink-dim align-top hidden sm:table-cell print:table-cell">
+                          <td className="px-4 py-3 text-ink-dim align-top hidden sm:table-cell print:table-cell">
                             {formatDateShort(record?.date_reviewed)}
                           </td>
                           <td
-                            className={`px-3 py-2.5 align-top hidden sm:table-cell print:table-cell font-medium ${
+                            className={`px-4 py-3 align-top hidden sm:table-cell print:table-cell font-medium ${
                               rag === 'red' ? 'text-red-700' : 'text-ink-dim'
                             }`}
                           >
@@ -414,14 +424,9 @@ export default async function InspectionPackPage() {
                         </tr>
                         {/* Evidence location sub-row — only if present */}
                         {record?.evidence_location && (
-                          <tr
-                            className={`border-t-0 ${compliant ? 'bg-green-50 print:bg-transparent' : ''}`}
-                          >
+                          <tr className="border-t-0">
                             <td />
-                            <td
-                              colSpan={6}
-                              className="px-3 pb-2.5 text-ink-dim text-sm"
-                            >
+                            <td colSpan={6} className="px-4 pb-3 text-ink-dim text-xs">
                               Evidence: {record.evidence_location}
                             </td>
                           </tr>
