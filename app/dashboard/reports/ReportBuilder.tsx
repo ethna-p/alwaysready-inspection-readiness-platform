@@ -246,9 +246,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
   const [narrativeLoading, setNarrativeLoading] = useState(false)
   const [narrativeError, setNarrativeError]     = useState<string | null>(null)
 
-  // ── PDF download ─────────────────────────────────────────────────────────
-  const [pdfLoading, setPdfLoading] = useState(false)
-  const [pdfError, setPdfError]     = useState<string | null>(null)
+  // ── Print ─────────────────────────────────────────────────────────────────
 
   // ── Progress vs last run ──────────────────────────────────────────────────
   interface SnapshotData {
@@ -445,67 +443,25 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
     }
   }, [activeView, orgName, generatedAt, filteredKloes, filteredActions])
 
-  const downloadPdf = useCallback(async () => {
-    setPdfLoading(true)
-    setPdfError(null)
-    try {
-      const activeViewEntry = activeView ? SYSTEM_VIEWS.find(v => v.key === activeView) : null
-      const viewLabel = activeViewEntry?.label ?? 'Custom Report'
-      const res = await fetch('/api/report-pdf', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orgName,
-          viewLabel,
-          generatedAt,
-          ragCounts,
-          actionCounts,
-          kloes: filteredKloes.map(k => ({
-            klo_item_id:       k.klo_item_id,
-            title:             k.title,
-            key_question_name: k.key_question_name,
-            status:            k.status,
-            rag:               k.rag,
-            next_review_due:   k.next_review_due,
-            priority:          k.priority,
-            assigned_to_name:  k.assigned_to_name,
-          })),
-          actions: showActions ? filteredActions.map(a => ({
-            title:            a.title,
-            klo_title:        a.klo_title,
-            status:           a.status,
-            priority:         a.priority,
-            due_date:         a.due_date,
-            assigned_to_name: a.assigned_to_name,
-          })) : [],
-          hrStaff: showHr ? filteredHr.map(h => ({
-            full_name:                   h.full_name,
-            job_title:                   h.job_title,
-            dbs_next_review_due:         h.dbs_next_review_due,
-            supervision_next_due:        h.supervision_next_due,
-            appraisal_next_due:          h.appraisal_next_due,
-            mandatory_training_complete: h.mandatory_training_complete,
-          })) : [],
-          showHr,
-          evidenceCounts,
-          showEvidenceCol: activeView === 'pre-inspection',
-        }),
-      })
-      if (!res.ok) { setPdfError('Failed to generate PDF. Please try again.'); return }
-      const blob = await res.blob()
-      const url  = URL.createObjectURL(blob)
-      const a    = document.createElement('a')
-      a.href     = url
-      const slug = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      a.download = `report-${slug}-${new Date().toISOString().slice(0, 10)}.pdf`
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch {
-      setPdfError('Network error — please try again.')
-    } finally {
-      setPdfLoading(false)
+  const handlePrint = useCallback(() => {
+    // Wait for all images in the report to load before triggering print,
+    // so the org logo reliably appears in the printed output.
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('img'))
+    const unloaded = images.filter(img => !img.complete)
+    if (unloaded.length === 0) {
+      window.print()
+      return
     }
-  }, [activeView, orgName, generatedAt, ragCounts, actionCounts, filteredKloes, filteredActions, filteredHr, showActions, showHr, evidenceCounts])
+    Promise.all(
+      unloaded.map(
+        img =>
+          new Promise<void>(resolve => {
+            img.addEventListener('load', () => resolve(), { once: true })
+            img.addEventListener('error', () => resolve(), { once: true })
+          }),
+      ),
+    ).then(() => window.print())
+  }, [])
 
   const inputClass = `
     border border-line rounded-lg px-3 py-2 text-sm text-ink bg-card w-full
@@ -665,7 +621,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
           )}
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={handlePrint}
             className="
               inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
               bg-[#014D4E] text-white text-sm font-semibold
@@ -675,24 +631,8 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
           >
             <span aria-hidden="true">🖨</span> Print / Save as PDF
           </button>
-          {activeView !== null && (
-            <button
-              type="button"
-              onClick={downloadPdf}
-              disabled={pdfLoading}
-              className="
-                inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
-                bg-[#D4AA3C] text-white text-sm font-semibold
-                hover:bg-[#b8932e] focus:outline-none focus:ring-2 focus:ring-[#D4AA3C] focus:ring-offset-2
-                transition-colors disabled:opacity-60 disabled:cursor-not-allowed
-              "
-            >
-              <span aria-hidden="true">⬇</span> {pdfLoading ? 'Generating PDF…' : 'Download PDF'}
-            </button>
-          )}
         </div>
         {narrativeError && <p className="text-sm text-red-600 mt-2">{narrativeError}</p>}
-        {pdfError && <p className="text-sm text-red-600 mt-2">{pdfError}</p>}
       </div>
 
       {/* ── Report output ─────────────────────────────────────────────────── */}
