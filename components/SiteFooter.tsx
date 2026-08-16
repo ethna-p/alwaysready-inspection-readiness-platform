@@ -69,9 +69,9 @@ export default function SiteFooter() {
             alignItems: 'center',
             gap: '0.4rem',
             fontSize: '0.72rem',
-            color: 'rgba(255,255,255,0.9)',
+            color: '#ffffff',
           }}>
-            <span style={{ color: '#D4AA3C', opacity: 0.9, flexShrink: 0 }}>{b.icon}</span>
+            <span style={{ color: '#D4AA3C', flexShrink: 0 }}>{b.icon}</span>
             {b.label}
           </span>
         ))}
@@ -82,10 +82,10 @@ export default function SiteFooter() {
         padding: '1rem 1.5rem',
         textAlign: 'center',
       }}>
-        <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+        <p style={{ fontSize: '0.72rem', color: '#ffffff', lineHeight: 1.7, margin: 0 }}>
           © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services. | 82A James Carter Road, Mildenhall, IP28 7DE
         </p>
-        <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '2px 0 0' }}>
+        <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.92)', lineHeight: 1.7, margin: '2px 0 0' }}>
           Our tools are designed to support providers in preparing for CQC inspection. They do not constitute official CQC guidance and do not guarantee any particular inspection outcome.
         </p>
       </div>
