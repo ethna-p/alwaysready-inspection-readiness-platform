@@ -185,7 +185,18 @@ export default async function KloesPage({
               </div>
 
               <div className="bg-card rounded-xl border border-line overflow-x-auto">
-                <table className="w-full text-sm">
+                {/* table-fixed + explicit col widths keeps every group's columns
+                    pixel-aligned regardless of KLOE title length */}
+                <table className="w-full text-sm table-fixed">
+                  <colgroup>
+                    <col />                              {/* KLOE — fills remaining space */}
+                    <col className="hidden sm:table-column w-28" />  {/* Status  112px */}
+                    <col className="hidden md:table-column w-32" />  {/* RAG     128px */}
+                    <col className="hidden lg:table-column w-20" />  {/* Priority 80px */}
+                    <col className="hidden lg:table-column w-32" />  {/* Next due 128px */}
+                    <col className="hidden lg:table-column w-36" />  {/* Assigned 144px */}
+                    <col className="w-20" />                         {/* Actions   80px */}
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                       <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
