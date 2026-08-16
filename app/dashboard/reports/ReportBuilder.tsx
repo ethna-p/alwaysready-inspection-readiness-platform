@@ -117,11 +117,11 @@ const HR_STATUS_LABELS: Record<string, string> = {
   not_set:  'Not set',
 }
 
-const HR_STATUS_COLOURS: Record<string, string> = {
-  overdue:  '#b91c1c',
-  due_soon: '#b45309',
-  ok:       '#15803d',
-  not_set:  '#6b7280',
+const HR_STATUS_PILL: Record<string, { bg: string; color: string }> = {
+  overdue:  { bg: '#fee2e2', color: '#b91c1c' },
+  due_soon: { bg: '#fef3c7', color: '#b45309' },
+  ok:       { bg: '#dcfce7', color: '#15803d' },
+  not_set:  { bg: '#f3f4f6', color: '#6b7280' },
 }
 
 const MOCK_RATING_LABELS: Record<string, string> = {
@@ -944,15 +944,22 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
                         <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#1a1a1a' }}>{h.job_title ?? '—'}</td>
                         {[dbsStatus, supStatus, appStatus].map((s, idx) => (
                           <td key={idx} style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
-                            <span style={{ color: HR_STATUS_COLOURS[s], fontWeight: 600 }}>
+                            <span style={{ display: 'inline-block', borderRadius: '9999px', padding: '2px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: HR_STATUS_PILL[s].bg, color: HR_STATUS_PILL[s].color }}>
                               {HR_STATUS_LABELS[s]}
                             </span>
                           </td>
                         ))}
                         <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
-                          <span style={{ color: h.mandatory_training_complete ? '#15803d' : '#b91c1c', fontWeight: 600 }}>
-                            {h.mandatory_training_complete ? 'Complete' : 'Incomplete'}
-                          </span>
+                          {(() => {
+                            const pill = h.mandatory_training_complete
+                              ? { bg: '#dcfce7', color: '#15803d', label: 'Complete' }
+                              : { bg: '#f3f4f6', color: '#6b7280', label: 'Incomplete' }
+                            return (
+                              <span style={{ display: 'inline-block', borderRadius: '9999px', padding: '2px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: pill.bg, color: pill.color }}>
+                                {pill.label}
+                              </span>
+                            )
+                          })()}
                         </td>
                       </tr>
                     )
