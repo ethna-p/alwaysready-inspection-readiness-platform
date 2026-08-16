@@ -174,8 +174,8 @@ export default async function InspectionPackPage() {
           <div>
             <h1 className="text-2xl font-bold text-brand">Inspection Pack</h1>
             <p className="text-sm text-ink-dim mt-1">
-              A printable snapshot of your current readiness — ready to share
-              with an inspector or board member.
+              A printable snapshot of your current readiness to share with an
+              inspector or board member.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
