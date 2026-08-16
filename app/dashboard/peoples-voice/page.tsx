@@ -17,6 +17,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import PeoplesVoiceClient, { type StatementWithEvidence, type EvidenceHistoryEntry } from './PeoplesVoiceClient'
+import type { IStatementEvidenceFileItem } from './IStatementEvidencePanel'
 import HelpWidget from '@/components/HelpWidget'
 import type { TeamMember } from './IStatementActionPanel'
 
@@ -101,6 +102,38 @@ export default async function PeoplesVoicePage() {
     actionsByStatement.get(a.i_statement_id)!.push(a)
   }
 
+  // ── Fetch evidence files ──────────────────────────────────────────────────
+  const { data: evidenceFileRows } = await supabase
+    .from('i_statement_evidence_files')
+    .select('id, i_statement_id, file_name, storage_path, file_size, mime_type, scan_status, uploaded_at, uploaded_by')
+    .order('uploaded_at', { ascending: false })
+
+  // Resolve uploader names
+  const uploaderIds = [...new Set(
+    (evidenceFileRows ?? []).map(f => f.uploaded_by).filter(Boolean) as string[]
+  )]
+  const { data: uploaderUsers } = uploaderIds.length > 0
+    ? await supabase.from('users').select('id, full_name, email').in('id', uploaderIds)
+    : { data: [] }
+  const uploaderNameById = new Map((uploaderUsers ?? []).map(u => [u.id, u.full_name ?? u.email ?? 'Unknown']))
+
+  const filesByStatement = new Map<string, IStatementEvidenceFileItem[]>()
+  for (const f of evidenceFileRows ?? []) {
+    if (!filesByStatement.has(f.i_statement_id)) {
+      filesByStatement.set(f.i_statement_id, [])
+    }
+    filesByStatement.get(f.i_statement_id)!.push({
+      id:               f.id,
+      file_name:        f.file_name,
+      storage_path:     f.storage_path,
+      file_size:        f.file_size,
+      mime_type:        f.mime_type,
+      uploaded_at:      f.uploaded_at,
+      uploaded_by_name: f.uploaded_by ? (uploaderNameById.get(f.uploaded_by) ?? null) : null,
+      scan_status:      f.scan_status,
+    })
+  }
+
   // ── Fetch team members for action plan assignment ─────────────────────────
   const { data: teamRows } = await supabase
     .from('users')
@@ -121,9 +154,10 @@ export default async function PeoplesVoicePage() {
     if (!grouped[stmt.key_question]) grouped[stmt.key_question] = []
     grouped[stmt.key_question].push({
       ...stmt,
-      evidence: evidenceMap.get(stmt.id) ?? null,
-      history:  historyByStatement.get(stmt.id) ?? [],
-      actions:  actionsByStatement.get(stmt.id) ?? [],
+      evidence:      evidenceMap.get(stmt.id) ?? null,
+      history:       historyByStatement.get(stmt.id) ?? [],
+      actions:       actionsByStatement.get(stmt.id) ?? [],
+      evidenceFiles: filesByStatement.get(stmt.id) ?? [],
     })
   }
 

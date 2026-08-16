@@ -941,6 +941,46 @@ export type Database = {
         ]
       }
 
+      i_statement_evidence_files: {
+        Row: {
+          id:              string
+          organisation_id: string
+          i_statement_id:  string
+          uploaded_by:     string | null
+          file_name:       string
+          storage_path:    string
+          file_size:       number | null
+          mime_type:       string | null
+          scan_status:     string
+          uploaded_at:     string
+        }
+        Insert: {
+          id?:             string
+          organisation_id: string
+          i_statement_id:  string
+          uploaded_by?:    string | null
+          file_name:       string
+          storage_path:    string
+          file_size?:      number | null
+          mime_type?:      string | null
+          scan_status?:    string
+          uploaded_at?:    string
+        }
+        Update: {
+          id?:             string
+          organisation_id?: string
+          i_statement_id?: string
+          uploaded_by?:    string | null
+          file_name?:      string
+          storage_path?:   string
+          file_size?:      number | null
+          mime_type?:      string | null
+          scan_status?:    string
+          uploaded_at?:    string
+        }
+        Relationships: []
+      }
+
       // ── HR Module ─────────────────────────────────────────────────────
 
       hr_staff_profiles: {
@@ -1955,6 +1995,7 @@ export type FeedbackRecord          = Database['public']['Tables']['feedback_rec
 export type PostInspectionReview    = Database['public']['Tables']['post_inspection_reviews']['Row']
 export type FacItem                 = Database['public']['Tables']['fac_items']['Row']
 export type IStatementEvidenceHistory = Database['public']['Tables']['i_statement_evidence_history']['Row']
+export type IStatementEvidenceFile    = Database['public']['Tables']['i_statement_evidence_files']['Row']
 export type IStatementAction          = Database['public']['Tables']['i_statement_actions']['Row']
 export type ReportSnapshot            = Database['public']['Tables']['report_snapshots']['Row']
 export type IStatementActionPriority  = IStatementAction['priority']

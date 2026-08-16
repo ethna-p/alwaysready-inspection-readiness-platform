@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { upsertIStatementEvidence } from './actions'
 import IStatementActionPanel, { type TeamMember } from './IStatementActionPanel'
+import IStatementEvidencePanel, { type IStatementEvidenceFileItem } from './IStatementEvidencePanel'
 import RagBadge from '@/components/RagBadge'
 import { calculateRAG } from '@/lib/rag'
 import type { IStatement, IStatementEvidence, IStatementConfidence, IStatementAction } from '@/lib/types'
@@ -18,9 +19,10 @@ export type EvidenceHistoryEntry = {
 }
 
 export type StatementWithEvidence = IStatement & {
-  evidence: IStatementEvidence | null
-  history:  EvidenceHistoryEntry[]
-  actions:  IStatementAction[]
+  evidence:      IStatementEvidence | null
+  history:       EvidenceHistoryEntry[]
+  actions:       IStatementAction[]
+  evidenceFiles: IStatementEvidenceFileItem[]
 }
 
 interface Props {
@@ -78,11 +80,11 @@ function StatementRow({
   currentUserId,
   teamMembers,
 }: {
-  item: StatementWithEvidence
-  isViewer: boolean
-  isAdmin: boolean
+  item:          StatementWithEvidence
+  isViewer:      boolean
+  isAdmin:       boolean
   currentUserId: string
-  teamMembers: TeamMember[]
+  teamMembers:   TeamMember[]
 }) {
   const existing = item.evidence
 
@@ -311,6 +313,14 @@ function StatementRow({
               {savedMsg && <span className="text-xs text-green-600 font-medium">{savedMsg}</span>}
               {errorMsg && <span className="text-xs text-red-600">{errorMsg}</span>}
             </div>
+
+            {/* Evidence file uploads */}
+            <IStatementEvidencePanel
+              iStatementId={item.id}
+              initialFiles={item.evidenceFiles}
+              isAdmin={isAdmin}
+              canUpload={true}
+            />
 
           </div>
         </div>
