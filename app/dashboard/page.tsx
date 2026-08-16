@@ -643,7 +643,7 @@ export default async function DashboardPage() {
                 <span>{compliantKlos} of {totalKlos} KLOEs up to date</span>
                 <span>{overallPct}%</span>
               </div>
-              <div className="w-full h-3 bg-fill-dim rounded-full overflow-hidden" role="progressbar" aria-valuenow={overallPct} aria-valuemin={0} aria-valuemax={100}>
+              <div className="w-full h-3 bg-fill-dim rounded-full overflow-hidden" role="progressbar" aria-label="Overall readiness" aria-valuenow={overallPct} aria-valuemin={0} aria-valuemax={100}>
                 <div className={`h-full rounded-full transition-all ${progressColour(overallPct)}`} style={{ width: `${overallPct}%` }} />
               </div>
               <p className="text-xs text-ink-dim mt-2 leading-relaxed">
@@ -702,7 +702,7 @@ export default async function DashboardPage() {
                   <h3 className="font-semibold text-brand text-sm leading-tight">{kq.name}</h3>
                   <span className="text-2xl font-bold text-brand tabular-nums shrink-0">{kqPct}<span className="text-base">%</span></span>
                 </div>
-                <div className="w-full h-2 bg-fill-dim rounded-full overflow-hidden mb-3" role="progressbar" aria-valuenow={kqPct} aria-valuemin={0} aria-valuemax={100}>
+                <div className="w-full h-2 bg-fill-dim rounded-full overflow-hidden mb-3" role="progressbar" aria-label={`${kq.name} readiness`} aria-valuenow={kqPct} aria-valuemin={0} aria-valuemax={100}>
                   <div className={`h-full rounded-full transition-all ${progressColour(kqPct)}`} style={{ width: `${kqPct}%` }} />
                 </div>
                 <p className="text-xs text-ink-dim mb-3">{kq.compliant} of {kq.total} KLOEs up to date</p>
