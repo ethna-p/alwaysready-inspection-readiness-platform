@@ -1,12 +1,14 @@
 /**
  * /dashboard/analytics
  *
- * Five compact charts giving a quick read on inspection readiness:
+ * Seven compact charts giving a quick read on inspection readiness:
  *   1. Overall readiness trend — 8-week line chart (from compliance_record_history)
  *   2. RAG status by key question — horizontal stacked bars
- *   3. Action plan health — status + priority breakdown
- *   4. HR compliance — DBS / supervision / appraisal % in-date
- *   5. Mock inspection rating trend — dot timeline
+ *   3. KLOE completion — donut showing completed vs in-progress vs not started
+ *   4. People's Voice coverage — I statement evidence quality
+ *   5. Action plan health — status + priority breakdown
+ *   6. HR compliance — DBS / supervision / appraisal % in-date
+ *   7. Mock inspection rating trend — dot timeline
  */
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -53,8 +55,8 @@ function computeAtDate(
 
 /** Chart 1: compact 8-week readiness line */
 function ReadinessTrendChart({ points }: { points: { label: string; pct: number }[] }) {
-  const W = 560; const H = 200
-  const PAD = { top: 28, right: 16, bottom: 40, left: 38 }
+  const W = 560; const H = 150
+  const PAD = { top: 24, right: 16, bottom: 34, left: 36 }
   const cW = W - PAD.left - PAD.right
   const cH = H - PAD.top - PAD.bottom
   const n = points.length
@@ -200,7 +202,127 @@ function HrComplianceChart({ checks }: { checks: { label: string; inDate: number
   )
 }
 
-/** Chart 5: Mock inspection rating dots on a timeline */
+/** Chart 3: KLOE completion — segmented bar */
+function KloeCompletionChart({ completed, inProgress, notStarted }: { completed: number; inProgress: number; notStarted: number }) {
+  const total = completed + inProgress + notStarted
+  if (total === 0) return <p className="text-xs text-ink-muted">No KLOEs found.</p>
+  const pct = (n: number) => Math.round((n / total) * 100)
+  return (
+    <div>
+      <div className="flex items-end gap-3 mb-3">
+        <span className="text-4xl font-bold text-brand tabular-nums">{pct(completed)}%</span>
+        <span className="text-sm text-ink-dim pb-1">of {total} KLOEs completed</span>
+      </div>
+      <div className="h-5 rounded-full overflow-hidden flex bg-gray-100 mb-3">
+        {completed  > 0 && <div style={{ width: `${pct(completed)}%`   }} className="bg-green-500 h-full" title={`Completed: ${completed}`} />}
+        {inProgress > 0 && <div style={{ width: `${pct(inProgress)}%` }} className="bg-amber-400 h-full" title={`In progress: ${inProgress}`} />}
+        {notStarted > 0 && <div style={{ width: `${pct(notStarted)}%` }} className="bg-gray-200 h-full"  title={`Not started: ${notStarted}`} />}
+      </div>
+      <div className="flex gap-4 flex-wrap">
+        {[
+          { colour: 'bg-green-500', label: 'Completed',    count: completed  },
+          { colour: 'bg-amber-400', label: 'In progress',  count: inProgress },
+          { colour: 'bg-gray-200',  label: 'Not started',  count: notStarted },
+        ].map(l => (
+          <span key={l.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+            <span className={`inline-block w-2.5 h-2.5 rounded-sm ${l.colour}`} />
+            {l.label} <span className="font-semibold text-ink tabular-nums">{l.count}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** Chart 4: People's Voice coverage */
+function PeoplesVoiceChart({ strong, needsWork, notAssessed, total }: { strong: number; needsWork: number; notAssessed: number; total: number }) {
+  const pct = (n: number) => total > 0 ? Math.round((n / total) * 100) : 0
+  return (
+    <div>
+      <div className="flex items-end gap-3 mb-3">
+        <span className="text-4xl font-bold text-brand tabular-nums">{pct(strong)}%</span>
+        <span className="text-sm text-ink-dim pb-1">of {total} statements with strong evidence</span>
+      </div>
+      <div className="h-5 rounded-full overflow-hidden flex bg-gray-100 mb-3">
+        {strong      > 0 && <div style={{ width: `${pct(strong)}%`      }} className="bg-green-500 h-full" title={`Strong: ${strong}`} />}
+        {needsWork   > 0 && <div style={{ width: `${pct(needsWork)}%`   }} className="bg-amber-400 h-full" title={`Needs work: ${needsWork}`} />}
+        {notAssessed > 0 && <div style={{ width: `${pct(notAssessed)}%` }} className="bg-gray-200 h-full"  title={`Not assessed: ${notAssessed}`} />}
+      </div>
+      <div className="flex gap-4 flex-wrap">
+        {[
+          { colour: 'bg-green-500', label: 'Strong evidence',  count: strong      },
+          { colour: 'bg-amber-400', label: 'Needs work',       count: needsWork   },
+          { colour: 'bg-gray-200',  label: 'Not assessed',     count: notAssessed },
+        ].map(l => (
+          <span key={l.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+            <span className={`inline-block w-2.5 h-2.5 rounded-sm ${l.colour}`} />
+            {l.label} <span className="font-semibold text-ink tabular-nums">{l.count}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** Chart 5: Evidence coverage */
+function EvidenceCoverageChart({ withEvidence, total }: { withEvidence: number; total: number }) {
+  const pct = total > 0 ? Math.round((withEvidence / total) * 100) : 0
+  const none = total - withEvidence
+  return (
+    <div>
+      <div className="flex items-end gap-3 mb-3">
+        <span className="text-4xl font-bold text-brand tabular-nums">{pct}%</span>
+        <span className="text-sm text-ink-dim pb-1">of KLOEs have evidence attached</span>
+      </div>
+      <div className="h-5 rounded-full overflow-hidden flex bg-gray-100 mb-3">
+        <div style={{ width: `${pct}%` }} className="bg-[#014D4E] h-full" />
+        <div style={{ width: `${100 - pct}%` }} className="bg-gray-200 h-full" />
+      </div>
+      <div className="flex gap-4 flex-wrap">
+        <span className="flex items-center gap-1.5 text-xs text-ink-dim">
+          <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#014D4E]" />
+          With evidence <span className="font-semibold text-ink tabular-nums ml-1">{withEvidence}</span>
+        </span>
+        <span className="flex items-center gap-1.5 text-xs text-ink-dim">
+          <span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-200" />
+          No evidence <span className="font-semibold text-ink tabular-nums ml-1">{none}</span>
+        </span>
+      </div>
+      <p className="text-xs text-ink-muted mt-2">
+        CQC inspectors expect evidence to support every KLOE — not just a completed status.
+      </p>
+    </div>
+  )
+}
+
+/** Chart 6: Review calendar — KLOEs due in the next 30/60/90 days */
+function ReviewCalendarChart({ due30, due60, due90, overdue }: { due30: number; due60: number; due90: number; overdue: number }) {
+  const bars = [
+    { label: 'Overdue',     count: overdue, colour: 'bg-red-400' },
+    { label: 'Next 30 days', count: due30,  colour: 'bg-amber-400' },
+    { label: '31–60 days',   count: due60,  colour: 'bg-yellow-300' },
+    { label: '61–90 days',   count: due90,  colour: 'bg-green-300' },
+  ]
+  const max = Math.max(...bars.map(b => b.count), 1)
+  return (
+    <div className="space-y-2.5">
+      {bars.map(b => (
+        <div key={b.label} className="flex items-center gap-2">
+          <span className="text-xs text-ink-dim w-28 shrink-0">{b.label}</span>
+          <div className="flex-1 h-5 bg-gray-100 rounded-full overflow-hidden">
+            <div className={`h-full rounded-full ${b.colour}`} style={{ width: `${(b.count / max) * 100}%` }} />
+          </div>
+          <span className="text-xs font-semibold text-ink tabular-nums w-6 text-right">{b.count}</span>
+        </div>
+      ))}
+      <p className="text-xs text-ink-muted pt-1">
+        Reviews due soon help you plan workload before inspection.
+      </p>
+    </div>
+  )
+}
+
+/** Chart 9: Mock inspection rating dots on a timeline */
 const RATING_COLOUR: Record<string, { fill: string; text: string; label: string }> = {
   outstanding:          { fill: '#9333ea', text: '#ffffff', label: 'Outstanding' },
   good:                 { fill: '#16a34a', text: '#ffffff', label: 'Good' },
@@ -268,6 +390,9 @@ export default async function AnalyticsPage() {
     { data: actionRows },
     { data: hrProfiles },
     { data: mockRows },
+    { data: evidenceRows },
+    { data: pvEvidenceRows },
+    { data: pvStatements },
   ] = await Promise.all([
     supabase.from('key_questions').select('id, name').order('display_order'),
     supabase.from('klo_items').select('id, key_question_id'),
@@ -289,6 +414,15 @@ export default async function AnalyticsPage() {
       .eq('organisation_id', orgId)
       .eq('status', 'completed')
       .order('started_at', { ascending: true }),
+    // Evidence coverage: distinct klo_item_ids that have evidence
+    supabase.from('kloe_evidence')
+      .select('klo_item_id')
+      .eq('organisation_id', orgId),
+    // People's Voice: evidence quality
+    supabase.from('i_statement_evidence')
+      .select('confidence'),
+    // Total I statement count
+    supabase.from('i_statements').select('id'),
   ])
 
   // ── Chart 1: 8-week readiness trend ──────────────────────────────────────
@@ -380,7 +514,42 @@ export default async function AnalyticsPage() {
     { label: 'Appraisals',       inDate: countInDate('appraisal_next_due'),     total },
   ]
 
-  // ── Chart 5: Mock inspection rating trend ─────────────────────────────────
+  // ── Chart 3: KLOE completion ──────────────────────────────────────────────
+  const kloeStatusCounts = { completed: 0, in_progress: 0, not_started: 0 }
+  for (const r of complianceRows ?? []) {
+    const s = r.status as string
+    if (s === 'completed') kloeStatusCounts.completed++
+    else if (s === 'in_progress') kloeStatusCounts.in_progress++
+    else kloeStatusCounts.not_started++
+  }
+
+  // ── Chart 4: People's Voice coverage ──────────────────────────────────────
+  const pvTotal = (pvStatements ?? []).length
+  const pvEvRows = pvEvidenceRows ?? []
+  const pvStrong      = pvEvRows.filter(e => e.confidence === 'green').length
+  const pvNeedsWork   = pvEvRows.filter(e => e.confidence === 'amber' || e.confidence === 'red').length
+  const pvNotAssessed = pvTotal - pvEvRows.filter(e => e.confidence !== 'not_assessed').length
+
+  // ── Chart 5: Evidence coverage ────────────────────────────────────────────
+  const kloesWithEvidence = new Set((evidenceRows ?? []).map(e => e.klo_item_id)).size
+  const kloeTotal = (complianceRows ?? []).length
+
+  // ── Chart 6: Review calendar ──────────────────────────────────────────────
+  const todayMs = new Date().setHours(0, 0, 0, 0)
+  const d30 = todayMs + 30 * 86400000
+  const d60 = todayMs + 60 * 86400000
+  const d90 = todayMs + 90 * 86400000
+  let reviewOverdue = 0, reviewDue30 = 0, reviewDue60 = 0, reviewDue90 = 0
+  for (const r of complianceRows ?? []) {
+    if (!r.next_review_due) continue
+    const dueMs = new Date(r.next_review_due).getTime()
+    if (dueMs < todayMs)   reviewOverdue++
+    else if (dueMs <= d30) reviewDue30++
+    else if (dueMs <= d60) reviewDue60++
+    else if (dueMs <= d90) reviewDue90++
+  }
+
+  // ── Chart 9: Mock inspection rating trend ─────────────────────────────────
   const mockSessions = await Promise.all(
     (mockRows ?? []).map(async insp => {
       const { data: findings } = await supabase
@@ -440,24 +609,45 @@ export default async function AnalyticsPage() {
 
           {/* Chart 1: 8-week readiness trend — full width */}
           <div className="bg-card rounded-2xl border border-line p-5">
-            <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
+            <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">
               Overall readiness — 8-week view
             </h2>
             <ReadinessTrendChart points={trendData} />
           </div>
 
-          {/* Charts 2 + 3: side by side */}
+          {/* Row 2: KLOE completion + People's Voice */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
+                KLOE completion
+              </h2>
+              <KloeCompletionChart
+                completed={kloeStatusCounts.completed}
+                inProgress={kloeStatusCounts.in_progress}
+                notStarted={kloeStatusCounts.not_started}
+              />
+            </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
+                People&apos;s Voice coverage
+              </h2>
+              <PeoplesVoiceChart
+                strong={pvStrong}
+                needsWork={pvNeedsWork}
+                notAssessed={pvNotAssessed}
+                total={pvTotal}
+              />
+            </div>
+          </div>
 
-            {/* Chart 2: RAG by key question */}
+          {/* Row 3: RAG by KQ + Action plan health */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-card rounded-2xl border border-line p-5">
               <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
                 RAG status by key question
               </h2>
               <RagByKqChart rows={ragByKq} />
             </div>
-
-            {/* Chart 3: Action plan health */}
             <div className="bg-card rounded-2xl border border-line p-5">
               <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
                 Action plan health
@@ -468,13 +658,31 @@ export default async function AnalyticsPage() {
                 <ActionHealthChart byStatus={actionByStatus} byPriority={actionByPriority} />
               )}
             </div>
-
           </div>
 
-          {/* Charts 4 + 5: side by side */}
+          {/* Row 4: Evidence coverage + Review calendar */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
+                Evidence coverage
+              </h2>
+              <EvidenceCoverageChart withEvidence={kloesWithEvidence} total={kloeTotal} />
+            </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
+                Review calendar
+              </h2>
+              <ReviewCalendarChart
+                overdue={reviewOverdue}
+                due30={reviewDue30}
+                due60={reviewDue60}
+                due90={reviewDue90}
+              />
+            </div>
+          </div>
 
-            {/* Chart 4: HR compliance */}
+          {/* Row 5: HR compliance + Mock inspection ratings */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-card rounded-2xl border border-line p-5">
               <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
                 HR compliance
@@ -485,8 +693,6 @@ export default async function AnalyticsPage() {
                 <HrComplianceChart checks={hrChecks} />
               )}
             </div>
-
-            {/* Chart 5: Mock inspection rating trend */}
             <div className="bg-card rounded-2xl border border-line p-5">
               <h2 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">
                 Mock inspection ratings
@@ -503,8 +709,8 @@ export default async function AnalyticsPage() {
                 </div>
               )}
             </div>
-
           </div>
+
         </div>
       )}
     </div>
