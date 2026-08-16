@@ -54,16 +54,16 @@ const badges = [
 export default function SiteFooter() {
   return (
     <footer className="border-t border-line bg-canvas px-6 py-6 text-center mt-auto print:hidden">
-      <p className="text-xs text-ink">
+      <p className="text-sm text-ink">
         © 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services. |
         82A James Carter Road, Mildenhall, IP28 7DE
       </p>
-      <p className="text-xs text-ink mt-1">
+      <p className="text-sm text-ink mt-1">
         Our tools are designed to support providers in preparing for CQC inspection. They do not constitute official CQC guidance and do not guarantee any particular inspection outcome.
       </p>
       <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2">
         {badges.map(b => (
-          <span key={b.label} className="inline-flex items-center gap-1.5 text-xs text-ink-muted">
+          <span key={b.label} className="inline-flex items-center gap-1.5 text-sm text-ink">
             {b.icon}
             {b.label}
           </span>

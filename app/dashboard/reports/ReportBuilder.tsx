@@ -1043,7 +1043,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
         )}
 
         {/* Footer */}
-        <div style={{ marginTop: '32px', paddingTop: '12px', borderTop: '1px solid #e5e7eb', fontSize: '10px', color: '#9ca3af', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ marginTop: '32px', paddingTop: '12px', borderTop: '1px solid #e5e7eb', fontSize: '12px', color: '#4b5563', display: 'flex', justifyContent: 'space-between' }}>
           <span>AlwaysReady — {orgName}</span>
           <span>Generated {generatedAt} · For internal governance use only</span>
         </div>
