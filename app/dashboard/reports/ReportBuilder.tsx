@@ -15,6 +15,10 @@
  */
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
+import StatusBadge from '@/components/StatusBadge'
+import RagBadge from '@/components/RagBadge'
+import type { ComplianceStatus } from '@/lib/types'
+import type { RAGStatus } from '@/lib/rag'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -835,35 +839,39 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
             {filteredKloes.length === 0 ? (
               <p style={{ color: '#1a1a1a', fontSize: '12px' }}>No KLOEs match the selected filters.</p>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }} className="text-sm">
                 <thead>
-                  <tr style={{ backgroundColor: '#f3f4f6' }}>
+                  <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
                     {[
                       'Key Question', 'KLOE', 'Status', 'RAG', 'Next Review', 'Priority', 'Assigned To',
                       ...(activeView === 'pre-inspection' ? ['Evidence'] : []),
                     ].map(h => (
-                      <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#1a1a1a', borderBottom: '1px solid #d1d5db' }}>
+                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 500, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '1px solid #e5e7eb' }}>
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody>
-                  {filteredKloes.map((k, i) => (
-                    <tr key={k.id} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#1a1a1a', fontSize: '13px' }}>{k.key_question_name}</td>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', fontWeight: 500 }}>{k.title}</td>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textTransform: 'capitalize' }}>{k.status.replace('_', ' ')}</td>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>
-                        <span style={{ color: RAG_COLOURS[k.rag] ?? '#6b7280', fontWeight: 600 }}>
-                          ● {RAG_LABELS[k.rag] ?? k.rag}
+                <tbody style={{ borderTop: 'none' }}>
+                  {filteredKloes.map((k) => (
+                    <tr key={k.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                      <td style={{ padding: '10px 12px', color: '#6b7280', fontSize: '13px' }}>{k.key_question_name}</td>
+                      <td style={{ padding: '10px 12px', fontWeight: 500, color: '#111827' }}>{k.title}</td>
+                      <td style={{ padding: '10px 12px' }}>
+                        <StatusBadge status={k.status as ComplianceStatus} />
+                      </td>
+                      <td style={{ padding: '10px 12px' }}>
+                        <RagBadge status={k.rag as RAGStatus} compact />
+                      </td>
+                      <td style={{ padding: '10px 12px', color: '#374151', fontSize: '13px' }}>{formatDate(k.next_review_due)}</td>
+                      <td style={{ padding: '10px 12px' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#014D4E', color: '#fff', fontSize: '11px', fontWeight: 700 }}>
+                          {k.priority}
                         </span>
                       </td>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb' }}>{formatDate(k.next_review_due)}</td>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textAlign: 'center' }}>{k.priority}</td>
-                      <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', color: '#1a1a1a' }}>{k.assigned_to_name ?? '—'}</td>
+                      <td style={{ padding: '10px 12px', color: '#374151', fontSize: '13px' }}>{k.assigned_to_name ?? '—'}</td>
                       {activeView === 'pre-inspection' && (
-                        <td style={{ padding: '7px 10px', borderBottom: '1px solid #e5e7eb', textAlign: 'center', color: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? '#ef4444' : '#374151', fontWeight: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? 600 : 400 }}>
+                        <td style={{ padding: '10px 12px', textAlign: 'center', color: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? '#ef4444' : '#374151', fontWeight: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? 600 : 400, fontSize: '13px' }}>
                           {evidenceCounts[k.klo_item_id] ?? 0}
                         </td>
                       )}
