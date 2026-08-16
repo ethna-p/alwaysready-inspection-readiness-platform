@@ -1786,6 +1786,83 @@ export type Database = {
         Relationships: []
       }
 
+      saved_report_views: {
+        Row: {
+          id:         string
+          org_id:     string | null
+          name:       string
+          config:     Record<string, unknown>
+          is_system:  boolean
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?:        string
+          org_id?:    string | null
+          name:       string
+          config?:    Record<string, unknown>
+          is_system?: boolean
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?:        string
+          org_id?:    string | null
+          name?:      string
+          config?:    Record<string, unknown>
+          is_system?: boolean
+          created_by?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+
+      report_snapshots: {
+        Row: {
+          id:              string
+          organisation_id: string
+          view_key:        string
+          green:           number
+          amber:           number
+          red:             number
+          grey:            number
+          total:           number
+          open_actions:    number
+          overdue_actions: number
+          captured_date:   string
+          captured_at:     string
+        }
+        Insert: {
+          id?:              string
+          organisation_id:  string
+          view_key:         string
+          green?:           number
+          amber?:           number
+          red?:             number
+          grey?:            number
+          total?:           number
+          open_actions?:    number
+          overdue_actions?: number
+          captured_date?:   string
+          captured_at?:     string
+        }
+        Update: {
+          id?:              string
+          organisation_id?: string
+          view_key?:        string
+          green?:           number
+          amber?:           number
+          red?:             number
+          grey?:            number
+          total?:           number
+          open_actions?:    number
+          overdue_actions?: number
+          captured_date?:   string
+          captured_at?:     string
+        }
+        Relationships: []
+      }
+
     }
     Views: Record<string, never>
     Functions: {
@@ -1876,6 +1953,7 @@ export type PostInspectionReview    = Database['public']['Tables']['post_inspect
 export type FacItem                 = Database['public']['Tables']['fac_items']['Row']
 export type IStatementEvidenceHistory = Database['public']['Tables']['i_statement_evidence_history']['Row']
 export type IStatementAction          = Database['public']['Tables']['i_statement_actions']['Row']
+export type ReportSnapshot            = Database['public']['Tables']['report_snapshots']['Row']
 export type IStatementActionPriority  = IStatementAction['priority']
 export type IStatementActionStatus    = IStatementAction['status']
 

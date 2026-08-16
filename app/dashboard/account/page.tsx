@@ -16,6 +16,7 @@ import MemberRow from './member-row'
 import AddVisitorForm from './add-visitor-form'
 import VisitorRow from './visitor-row'
 import AccountTabNav from './AccountTabNav'
+import Link from 'next/link'
 
 export const metadata = { title: 'Account Settings — AlwaysReady' }
 
@@ -354,9 +355,9 @@ export default async function AccountPage({
             </div>
             <p className="text-sm text-ink-dim mt-6">
               Missing something you need?{' '}
-              <a href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
+              <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
                 Share a suggestion →
-              </a>
+              </Link>
             </p>
           </div>
 
