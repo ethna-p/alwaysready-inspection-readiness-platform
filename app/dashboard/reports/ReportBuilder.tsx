@@ -19,6 +19,24 @@ import StatusBadge from '@/components/StatusBadge'
 import RagBadge from '@/components/RagBadge'
 import type { ComplianceStatus } from '@/lib/types'
 import type { RAGStatus } from '@/lib/rag'
+import KloeTableHeader, { type KloeDir, type SortColumnDef } from '../kloes/KloeTableHeader'
+
+// ── Column definitions for the KLOE Summary sort header ──────────────────────
+
+const REPORT_KLOE_COLUMNS: SortColumnDef[] = [
+  { key: 'kq',       label: 'Key Question', classes: '' },
+  { key: 'title',    label: 'KLOE',         classes: '' },
+  { key: 'status',   label: 'Status',       classes: '' },
+  { key: 'rag',      label: 'RAG',          classes: '' },
+  { key: 'date',     label: 'Next Review',  classes: '' },
+  { key: 'priority', label: 'Priority',     classes: '' },
+  { key: 'assigned', label: 'Assigned To',  classes: '' },
+]
+
+const REPORT_KLOE_COLUMNS_PRE: SortColumnDef[] = [
+  ...REPORT_KLOE_COLUMNS,
+  { key: 'evidence', label: 'Evidence', classes: '' },
+]
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -252,6 +270,15 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
 
   // ── Print ─────────────────────────────────────────────────────────────────
 
+  // ── KLOE table sort ───────────────────────────────────────────────────────
+  const [kloeSort,    setKloeSort]    = useState<string>('default')
+  const [kloeSortDir, setKloeSortDir] = useState<KloeDir>('asc')
+
+  function handleKloeSort(col: string, newDir: KloeDir) {
+    setKloeSort(col)
+    setKloeSortDir(newDir)
+  }
+
   // ── Progress vs last run ──────────────────────────────────────────────────
   interface SnapshotData {
     green: number; amber: number; red: number; grey: number; total: number
@@ -339,6 +366,38 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
 
     return list
   }, [kloes, selectedKQs, activeView, evidenceCounts])
+
+  // Apply user-chosen column sort on top of the view's default ordering
+  const sortedKloes = useMemo(() => {
+    if (kloeSort === 'default') return filteredKloes
+    const RAG_ORDER: Record<string, number> = { red: 0, amber: 1, green: 2, grey: 3 }
+    const STATUS_ORDER: Record<string, number> = { not_started: 0, in_progress: 1, completed: 2 }
+    const m = kloeSortDir === 'desc' ? -1 : 1
+    return [...filteredKloes].sort((a, b) => {
+      switch (kloeSort) {
+        case 'kq':       return m * a.key_question_name.localeCompare(b.key_question_name)
+        case 'title':    return m * a.title.localeCompare(b.title)
+        case 'status':   return m * ((STATUS_ORDER[a.status] ?? 0) - (STATUS_ORDER[b.status] ?? 0))
+        case 'rag':      return m * ((RAG_ORDER[a.rag] ?? 99) - (RAG_ORDER[b.rag] ?? 99))
+        case 'date': {
+          const dA = a.next_review_due ?? null
+          const dB = b.next_review_due ?? null
+          if (!dA && !dB) return 0
+          if (!dA) return m
+          if (!dB) return -m
+          return m * dA.localeCompare(dB)
+        }
+        case 'priority': return m * ((a.priority ?? 99) - (b.priority ?? 99))
+        case 'assigned':  return m * (a.assigned_to_name ?? '').localeCompare(b.assigned_to_name ?? '')
+        case 'evidence': {
+          const eA = evidenceCounts[a.klo_item_id] ?? 0
+          const eB = evidenceCounts[b.klo_item_id] ?? 0
+          return m * (eA - eB)
+        }
+        default: return 0
+      }
+    })
+  }, [filteredKloes, kloeSort, kloeSortDir, evidenceCounts])
 
   const filteredActions = useMemo(() =>
     actions.filter(a => {
@@ -840,18 +899,15 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
               <p style={{ color: '#1a1a1a', fontSize: '12px' }}>No KLOEs match the selected filters.</p>
             ) : (
               <table className="w-full text-sm table-fixed" style={{ borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-                    {[
-                      'Key Question', 'KLOE', 'Status', 'RAG', 'Next Review', 'Priority', 'Assigned To',
-                      ...(activeView === 'pre-inspection' ? ['Evidence'] : []),
-                    ].map(h => (
-                      <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
+                <KloeTableHeader
+                  sort={kloeSort}
+                  dir={kloeSortDir}
+                  columns={activeView === 'pre-inspection' ? REPORT_KLOE_COLUMNS_PRE : REPORT_KLOE_COLUMNS}
+                  hasTrailingTh={false}
+                  onSort={handleKloeSort}
+                />
                 <tbody className="divide-y divide-gray-50">
-                  {filteredKloes.map((k) => (
+                  {sortedKloes.map((k) => (
                     <tr key={k.id} className="hover:bg-canvas transition-colors">
                       <td className="px-4 py-3 text-ink-dim">{k.key_question_name}</td>
                       <td className="px-4 py-3 text-ink">{k.title}</td>

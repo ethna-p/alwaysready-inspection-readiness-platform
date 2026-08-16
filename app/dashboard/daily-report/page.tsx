@@ -8,14 +8,20 @@
  * Green and Grey items are omitted — this screen is for triage, not the
  * full KLOE list (that's /dashboard/kloes).
  *
- * Server component — no client-side state needed.
+ * Sort order within each section is controlled by URL search params:
+ *   ?sort=title|kq|status|rag|priority|date
+ *   ?dir=asc|desc  (default asc; clicking the active column header toggles)
+ *
+ * Server component — sort state is read from URL params.
  */
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { calculateRAG } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
 import type { ComplianceRecord, KloItem } from '@/lib/types'
+import KloeTableHeader, { type KloeDir, type SortColumnDef } from '../kloes/KloeTableHeader'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -44,9 +50,73 @@ function kloCode(kqName: string, displayOrder: number): string {
   return `${initial}${displayOrder}`
 }
 
+// ── Column definitions for the sortable header ────────────────────────────────
+
+const DAILY_REPORT_COLUMNS: SortColumnDef[] = [
+  { key: 'title',    label: 'KLOE',         classes: '' },
+  { key: 'kq',       label: 'Key question', classes: 'hidden sm:table-cell' },
+  { key: 'status',   label: 'Status',       classes: 'hidden md:table-cell' },
+  { key: 'rag',      label: 'RAG',          classes: 'hidden md:table-cell' },
+  { key: 'priority', label: 'Priority',     classes: 'hidden lg:table-cell' },
+  { key: 'date',     label: 'Due date',     classes: 'hidden lg:table-cell' },
+]
+
+// ── Sort logic ────────────────────────────────────────────────────────────────
+
+type AttentionItem = {
+  klo: { id: string; title: string; key_question_id: string; display_order: number }
+  record: ComplianceRecord | undefined
+  rag: 'red' | 'amber' | 'grey'
+  priority: number
+  kqName: string
+}
+
+const STATUS_SORT: Record<string, number> = { not_started: 0, in_progress: 1, completed: 2 }
+const RAG_SORT:   Record<string, number> = { red: 0, amber: 1, grey: 2 }
+
+function sortItems(items: AttentionItem[], sort: string, dir: KloeDir): AttentionItem[] {
+  // 'default' keeps the original priority-then-date order
+  if (sort === 'default') return items
+  const m = dir === 'desc' ? -1 : 1
+  return [...items].sort((a, b) => {
+    switch (sort) {
+      case 'title':    return m * a.klo.title.localeCompare(b.klo.title)
+      case 'kq':       return m * a.kqName.localeCompare(b.kqName)
+      case 'status': {
+        const sA = STATUS_SORT[a.record?.status ?? 'not_started'] ?? 0
+        const sB = STATUS_SORT[b.record?.status ?? 'not_started'] ?? 0
+        return m * (sA - sB)
+      }
+      case 'rag': {
+        return m * ((RAG_SORT[a.rag] ?? 99) - (RAG_SORT[b.rag] ?? 99))
+      }
+      case 'priority': return m * (a.priority - b.priority)
+      case 'date': {
+        const dA = a.record?.next_review_due ?? null
+        const dB = b.record?.next_review_due ?? null
+        if (!dA && !dB) return 0
+        if (!dA) return m
+        if (!dB) return -m
+        return m * dA.localeCompare(dB)
+      }
+      default: return 0
+    }
+  })
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function DailyReportPage() {
+export default async function DailyReportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string; dir?: string }>
+}) {
+  const { sort: sortParam, dir: dirParam } = await searchParams
+
+  const VALID_SORTS = ['title', 'kq', 'status', 'rag', 'priority', 'date']
+  const sort = VALID_SORTS.includes(sortParam ?? '') ? (sortParam as string) : 'default'
+  const dir: KloeDir = dirParam === 'desc' ? 'desc' : 'asc'
+
   const supabase = await createClient()
 
   // ── Data fetch ────────────────────────────────────────────────────────────
@@ -66,22 +136,7 @@ export default async function DailyReportPage() {
   const now = new Date()
 
   // ── Build attention list ──────────────────────────────────────────────────
-  // The Daily Report is date-driven only:
-  //   Red   — next_review_due has passed (overdue)
-  //   Amber — next_review_due is within DUE_SOON_DAYS days
-  //
-  // "In progress" status alone does NOT put a KLOE in this report —
-  // a KLOE due in 90 days that happens to be in_progress is not urgent today.
-  // Status is still shown in each row for context.
   const DUE_SOON_DAYS = 30
-
-  type AttentionItem = {
-    klo: { id: string; title: string; key_question_id: string; display_order: number }
-    record: ComplianceRecord | undefined
-    rag: 'red' | 'amber' | 'grey'
-    priority: number
-    kqName: string
-  }
 
   const redItems:        AttentionItem[] = []
   const amberItems:      AttentionItem[] = []
@@ -101,9 +156,6 @@ export default async function DailyReportPage() {
     }
 
     if (!due) {
-      // Never reviewed — no review date set.
-      // Exclude KLOEs that are actively in progress or completed:
-      // these have been deliberately actioned and shouldn't clutter the unassessed list.
       if (record?.status === 'in_progress' || record?.status === 'completed') continue
       unassessedItems.push({ ...item, rag: 'grey' })
       continue
@@ -117,7 +169,7 @@ export default async function DailyReportPage() {
     }
   }
 
-  // Sort each group by priority (1 = most critical first), then by due date
+  // Default sort: priority then due date (most urgent first)
   const byPriorityThenDue = (a: AttentionItem, b: AttentionItem) => {
     if (a.priority !== b.priority) return a.priority - b.priority
     const aDate = a.record?.next_review_due ?? ''
@@ -126,6 +178,11 @@ export default async function DailyReportPage() {
   }
   redItems.sort(byPriorityThenDue)
   amberItems.sort(byPriorityThenDue)
+
+  // Apply user-chosen column sort (overrides the default ordering above)
+  const sortedRed        = sortItems(redItems, sort, dir)
+  const sortedAmber      = sortItems(amberItems, sort, dir)
+  const sortedUnassessed = sortItems(unassessedItems, sort, dir)
 
   const totalAttention = redItems.length + amberItems.length + unassessedItems.length
   const todayLabel = new Date().toLocaleDateString('en-GB', {
@@ -180,7 +237,7 @@ export default async function DailyReportPage() {
       )}
 
       {/* ── Unassessed ──────────────────────────────────────────────────── */}
-      {unassessedItems.length > 0 && (
+      {sortedUnassessed.length > 0 && (
         <section aria-labelledby="unassessed-heading" className="mb-8">
           <h2
             id="unassessed-heading"
@@ -189,15 +246,15 @@ export default async function DailyReportPage() {
             <span className="w-3 h-3 rounded-full bg-gray-400" aria-hidden="true" />
             Never assessed
             <span className="text-sm font-normal text-ink-dim">
-              ({unassessedItems.length} {unassessedItems.length === 1 ? 'KLOE' : 'KLOEs'} — no review date set)
+              ({sortedUnassessed.length} {sortedUnassessed.length === 1 ? 'KLOE' : 'KLOEs'} — no review date set)
             </span>
           </h2>
-          <ReportTable items={unassessedItems} kloById={kloById} />
+          <ReportTable items={sortedUnassessed} kloById={kloById} sort={sort} dir={dir} />
         </section>
       )}
 
       {/* ── Overdue (Red) ───────────────────────────────────────────────── */}
-      {redItems.length > 0 && (
+      {sortedRed.length > 0 && (
         <section aria-labelledby="overdue-heading" className="mb-8">
           <h2
             id="overdue-heading"
@@ -206,16 +263,15 @@ export default async function DailyReportPage() {
             <span className="w-3 h-3 rounded-full bg-red-500" aria-hidden="true" />
             Overdue
             <span className="text-sm font-normal text-red-600">
-              ({redItems.length} {redItems.length === 1 ? 'KLOE' : 'KLOEs'})
+              ({sortedRed.length} {sortedRed.length === 1 ? 'KLOE' : 'KLOEs'})
             </span>
           </h2>
-
-          <ReportTable items={redItems} kloById={kloById} />
+          <ReportTable items={sortedRed} kloById={kloById} sort={sort} dir={dir} />
         </section>
       )}
 
       {/* ── Due soon / In progress (Amber) ──────────────────────────────── */}
-      {amberItems.length > 0 && (
+      {sortedAmber.length > 0 && (
         <section aria-labelledby="due-soon-heading">
           <h2
             id="due-soon-heading"
@@ -224,57 +280,54 @@ export default async function DailyReportPage() {
             <span className="w-3 h-3 rounded-full bg-amber-400" aria-hidden="true" />
             Due within 30 days
             <span className="text-sm font-normal text-amber-600">
-              ({amberItems.length} {amberItems.length === 1 ? 'KLOE' : 'KLOEs'})
+              ({sortedAmber.length} {sortedAmber.length === 1 ? 'KLOE' : 'KLOEs'})
             </span>
           </h2>
-
-          <ReportTable items={amberItems} kloById={kloById} />
+          <ReportTable items={sortedAmber} kloById={kloById} sort={sort} dir={dir} />
         </section>
       )}
     </div>
   )
 }
 
-// ── Sub-component: shared table for both groups ───────────────────────────────
-
-type AttentionItem = {
-  klo: { id: string; title: string; key_question_id: string; display_order: number }
-  record: ComplianceRecord | undefined
-  rag: 'red' | 'amber' | 'grey'
-  priority: number
-  kqName: string
-}
+// ── Sub-component: shared table for all sections ──────────────────────────────
 
 function ReportTable({
   items,
   kloById,
+  sort,
+  dir,
 }: {
   items: AttentionItem[]
   kloById: Map<string, KloItem>
+  sort: string
+  dir: KloeDir
 }) {
   return (
     <div className="bg-card rounded-xl border border-line overflow-x-auto">
       <table className="w-full text-sm table-fixed">
         <colgroup>
-          <col className="w-72" />                                   {/* KLOE     288px */}
-          <col className="hidden sm:table-column w-32" />            {/* Key Q    128px */}
-          <col className="hidden md:table-column w-32" />            {/* Status   128px */}
-          <col className="hidden md:table-column w-36" />            {/* RAG      144px */}
-          <col className="hidden lg:table-column w-24" />            {/* Priority  96px */}
-          <col className="hidden lg:table-column w-36" />            {/* Due date 144px */}
-          <col className="w-20" />                                   {/* Actions   80px */}
+          <col className="w-72" />
+          <col className="hidden sm:table-column w-32" />
+          <col className="hidden md:table-column w-32" />
+          <col className="hidden md:table-column w-36" />
+          <col className="hidden lg:table-column w-24" />
+          <col className="hidden lg:table-column w-36" />
+          <col className="w-20" />
         </colgroup>
-        <thead>
-          <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-            <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
-            <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">Key question</th>
-            <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">Status</th>
-            <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">RAG</th>
-            <th scope="col" className="text-center px-4 py-3 font-medium hidden lg:table-cell">Priority</th>
-            <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Due date</th>
-            <th scope="col" className="px-4 py-3"><span className="sr-only">Update</span></th>
-          </tr>
-        </thead>
+        {/* Suspense needed: useSearchParams() inside KloeTableHeader requires a client boundary */}
+        <Suspense fallback={
+          <thead>
+            <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
+              {['KLOE', 'Key question', 'Status', 'RAG', 'Priority', 'Due date'].map(h => (
+                <th key={h} scope="col" className="text-left px-4 py-3 font-medium">{h}</th>
+              ))}
+              <th scope="col" className="px-4 py-3"><span className="sr-only">Update</span></th>
+            </tr>
+          </thead>
+        }>
+          <KloeTableHeader sort={sort} dir={dir} columns={DAILY_REPORT_COLUMNS} />
+        </Suspense>
         <tbody className="divide-y divide-gray-50">
           {items.map(({ klo, record, rag, priority, kqName }) => {
             const code = kloCode(kqName, klo.display_order)

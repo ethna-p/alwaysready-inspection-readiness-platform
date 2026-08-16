@@ -7,15 +7,20 @@
  * On screen:  breadcrumb + Print button + report preview
  * When printed: just the report (nav, header, footer, button hidden via CSS)
  *
+ * Sort order within each KLOE detail table is controlled by URL search params:
+ *   ?sort=title|status|rag|priority|last_review|date
+ *   ?dir=asc|desc  (default asc; clicking the active column header toggles)
+ *
  * Data sources: same tables as the Readiness Dashboard + Daily Report.
  * No new tables.
  */
-import { Fragment } from 'react'
+import { Fragment, Suspense } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { calculateRAG, RAG_LABELS, type RAGStatus } from '@/lib/rag'
 import type { ComplianceRecord } from '@/lib/types'
 import PrintButton from './print-button'
+import KloeTableHeader, { type KloeDir, type SortColumnDef } from '../kloes/KloeTableHeader'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -48,6 +53,76 @@ function pctColour(pct: number): string {
   return '#b91c1c'                // red-700
 }
 
+// ── Column definitions for the sortable KLOE detail header ───────────────────
+
+const INSPECTION_PACK_COLUMNS: SortColumnDef[] = [
+  { key: 'code',        label: 'Code',        classes: '' },
+  { key: 'title',       label: 'KLOE',        classes: '' },
+  { key: 'status',      label: 'Status',      classes: '' },
+  { key: 'rag',         label: 'RAG',         classes: '' },
+  { key: 'priority',    label: 'Priority',    classes: '' },
+  { key: 'last_review', label: 'Last Review', classes: 'hidden sm:table-cell print:table-cell' },
+  { key: 'date',        label: 'Next Due',    classes: 'hidden sm:table-cell print:table-cell' },
+]
+
+// ── Sort logic for KLOs within a key question group ───────────────────────────
+
+const STATUS_SORT: Record<string, number> = { not_started: 0, in_progress: 1, completed: 2 }
+const RAG_SORT:   Record<string, number>  = { red: 0, amber: 1, green: 2, grey: 3 }
+
+type KloRow = { id: string; title: string; displayOrder: number }
+
+function sortPackKlos(
+  klos: KloRow[],
+  sort: string,
+  dir: KloeDir,
+  recordByKloId: Map<string, ComplianceRecord>,
+  now: Date,
+): KloRow[] {
+  if (sort === 'default') return klos
+  const m = dir === 'desc' ? -1 : 1
+  return [...klos].sort((a, b) => {
+    const recA = recordByKloId.get(a.id)
+    const recB = recordByKloId.get(b.id)
+    switch (sort) {
+      case 'code':    return m * (a.displayOrder - b.displayOrder)
+      case 'title':   return m * a.title.localeCompare(b.title)
+      case 'status': {
+        const sA = STATUS_SORT[recA?.status ?? 'not_started'] ?? 0
+        const sB = STATUS_SORT[recB?.status ?? 'not_started'] ?? 0
+        return m * (sA - sB)
+      }
+      case 'rag': {
+        const rA = RAG_SORT[calculateRAG(recA, now)] ?? 99
+        const rB = RAG_SORT[calculateRAG(recB, now)] ?? 99
+        return m * (rA - rB)
+      }
+      case 'priority': {
+        const pA = recA?.priority ?? 99
+        const pB = recB?.priority ?? 99
+        return m * (pA - pB)
+      }
+      case 'last_review': {
+        const dA = recA?.date_reviewed ?? null
+        const dB = recB?.date_reviewed ?? null
+        if (!dA && !dB) return 0
+        if (!dA) return m
+        if (!dB) return -m
+        return m * dA.localeCompare(dB)
+      }
+      case 'date': {
+        const dA = recA?.next_review_due ?? null
+        const dB = recB?.next_review_due ?? null
+        if (!dA && !dB) return 0
+        if (!dA) return m
+        if (!dB) return -m
+        return m * dA.localeCompare(dB)
+      }
+      default: return 0
+    }
+  })
+}
+
 function kloCode(kqName: string, displayOrder: number): string {
   return `${kqName.charAt(0).toUpperCase()}${displayOrder}`
 }
@@ -76,7 +151,16 @@ function RagCell({ status }: { status: RAGStatus }) {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function InspectionPackPage() {
+export default async function InspectionPackPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string; dir?: string }>
+}) {
+  const { sort: sortParam, dir: dirParam } = await searchParams
+
+  const VALID_SORTS = ['code', 'title', 'status', 'rag', 'priority', 'last_review', 'date']
+  const sort = VALID_SORTS.includes(sortParam ?? '') ? (sortParam as string) : 'default'
+  const dir: KloeDir = dirParam === 'desc' ? 'desc' : 'asc'
   const supabase = await createClient()
 
   // Auth
@@ -324,7 +408,9 @@ export default async function InspectionPackPage() {
             Full KLOE Detail
           </h2>
 
-          {kqSummaries.map((kq, kqIndex) => (
+          {kqSummaries.map((kq, kqIndex) => {
+            const sortedKlos = sortPackKlos(kq.klos, sort, dir, recordByKloId, now)
+            return (
             <section
               key={kq.id}
               aria-labelledby={`kq-${kq.id}-heading`}
@@ -358,33 +444,20 @@ export default async function InspectionPackPage() {
                   <col className="hidden sm:table-column w-32 print:table-column" />  {/* Last Review 128px */}
                   <col className="hidden sm:table-column w-32 print:table-column" />  {/* Next Due    128px */}
                 </colgroup>
-                <thead>
-                  <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-                    <th scope="col" className="text-left px-4 py-3 font-medium">
-                      Code
-                    </th>
-                    <th scope="col" className="text-left px-4 py-3 font-medium">
-                      KLOE
-                    </th>
-                    <th scope="col" className="text-left px-4 py-3 font-medium">
-                      Status
-                    </th>
-                    <th scope="col" className="text-left px-4 py-3 font-medium">
-                      RAG
-                    </th>
-                    <th scope="col" className="text-left px-4 py-3 font-medium">
-                      Priority
-                    </th>
-                    <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell print:table-cell">
-                      Last Review
-                    </th>
-                    <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell print:table-cell">
-                      Next Due
-                    </th>
-                  </tr>
-                </thead>
+                {/* Suspense needed: useSearchParams() inside KloeTableHeader requires a client boundary */}
+                <Suspense fallback={
+                  <thead>
+                    <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
+                      {['Code','KLOE','Status','RAG','Priority','Last Review','Next Due'].map(h => (
+                        <th key={h} scope="col" className="text-left px-4 py-3 font-medium">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                }>
+                  <KloeTableHeader sort={sort} dir={dir} columns={INSPECTION_PACK_COLUMNS} hasTrailingTh={false} />
+                </Suspense>
                 <tbody className="divide-y divide-gray-50">
-                  {kq.klos.map(klo => {
+                  {sortedKlos.map(klo => {
                     const record = recordByKloId.get(klo.id)
                     const rag = calculateRAG(record, now)
                     const compliant = isCompliant(record, now)
@@ -438,7 +511,8 @@ export default async function InspectionPackPage() {
               </table>
               </div>
             </section>
-          ))}
+          )
+          })}
         </div>
 
         {/* ── Print footer — disclaimer (hidden on screen; SiteFooter covers it) */}
