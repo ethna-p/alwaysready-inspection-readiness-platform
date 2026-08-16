@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   // Keep @react-pdf/renderer as a native Node module — it uses Node APIs
   // that can't be bundled by the Next.js webpack config.
   serverExternalPackages: ['@react-pdf/renderer'],
+  experimental: {
+    // Inline critical CSS and lazy-load the rest, eliminating render-blocking
+    // stylesheet requests. Requires `critters` devDependency.
+    optimizeCss: true,
+  },
   async headers() {
     return [
       {

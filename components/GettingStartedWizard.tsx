@@ -16,7 +16,6 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
-import confetti from 'canvas-confetti'
 
 interface WizardStatus {
   hasKloeRating:  boolean
@@ -69,8 +68,8 @@ function lsSet(key: string, value: string) {
 
 // ── Confetti helpers ──────────────────────────────────────────────────────────
 
-function fireOpeningConfetti() {
-  // Small burst from bottom-right — celebratory but subtle
+async function fireOpeningConfetti() {
+  const { default: confetti } = await import('canvas-confetti')
   confetti({
     particleCount: 60,
     spread:        70,
@@ -82,8 +81,8 @@ function fireOpeningConfetti() {
   })
 }
 
-function fireCompletionConfetti() {
-  // Bigger party: two cannons from the sides
+async function fireCompletionConfetti() {
+  const { default: confetti } = await import('canvas-confetti')
   const count = 120
   confetti({ particleCount: count / 2, angle: 60,  spread: 55, origin: { x: 0, y: 0.65 }, colors: ['#ffd700', '#014D4E', '#00b8a6'] })
   confetti({ particleCount: count / 2, angle: 120, spread: 55, origin: { x: 1, y: 0.65 }, colors: ['#ffd700', '#014D4E', '#00b8a6'] })
