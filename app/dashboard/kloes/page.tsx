@@ -3,20 +3,22 @@
  *
  * Server component: fetches KLOEs + this org's compliance records,
  * calculates RAG for each, then renders grouped rows.
+ *
+ * Sort order is controlled by the `?sort=` search param:
+ *   (none)    — display_order (fixed CQC canonical order)
+ *   urgency   — RAG priority (grey → red → amber → green)
+ *   date      — next_review_due ascending, nulls last
  */
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { calculateRAG } from '@/lib/rag'
 import type { RAGStatus } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
 import type { ComplianceRecord, KloItem } from '@/lib/types'
+import KloeSortToggle, { type KloeSort } from './KloeSortToggle'
 
-// Sort order within each key question group:
-// Grey (unassessed) first — needs attention, never been done
-// Red (overdue) next — urgent
-// Amber (due soon / in progress) — coming up
-// Green (up to date) last
 const RAG_SORT: Record<RAGStatus, number> = { grey: 0, red: 1, amber: 2, green: 3 }
 
 type KeyQuestionRow = { id: string; name: string; display_order: number; description: string | null }
@@ -28,7 +30,44 @@ function formatDate(iso: string | null): string {
   })
 }
 
-export default async function KloesPage() {
+function sortKlos(
+  klos: KloItem[],
+  sort: KloeSort,
+  recordByKloId: Map<string, ComplianceRecord>,
+): KloItem[] {
+  if (sort === 'urgency') {
+    return [...klos].sort((a, b) => {
+      const ragA = calculateRAG(recordByKloId.get(a.id))
+      const ragB = calculateRAG(recordByKloId.get(b.id))
+      return RAG_SORT[ragA] - RAG_SORT[ragB]
+    })
+  }
+  if (sort === 'date') {
+    return [...klos].sort((a, b) => {
+      const dA = recordByKloId.get(a.id)?.next_review_due ?? null
+      const dB = recordByKloId.get(b.id)?.next_review_due ?? null
+      // nulls last
+      if (!dA && !dB) return 0
+      if (!dA) return 1
+      if (!dB) return -1
+      return dA < dB ? -1 : dA > dB ? 1 : 0
+    })
+  }
+  // 'default' — already ordered by display_order from the DB query
+  return klos
+}
+
+export default async function KloesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string }>
+}) {
+  const { sort: sortParam } = await searchParams
+  const sort: KloeSort =
+    sortParam === 'urgency' ? 'urgency' :
+    sortParam === 'date'    ? 'date'    :
+    'default'
+
   const supabase = await createClient()
 
   // ── Fetch reference data ─────────────────────────────────────────────
@@ -88,10 +127,19 @@ export default async function KloesPage() {
             <li className="text-ink" aria-current="page">KLOEs</li>
           </ol>
         </nav>
-        <h1 className="text-2xl font-bold text-brand">KLOE Compliance Tracker</h1>
-        <p className="text-sm text-ink-dim mt-1">
-          Select any KLOE to update its status or view its audit trail.
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-brand">KLOE Compliance Tracker</h1>
+            <p className="text-sm text-ink-dim mt-1">
+              Select any KLOE to update its status or view its audit trail.
+            </p>
+          </div>
+          {/* Suspense needed because useSearchParams() inside the toggle
+              requires a client boundary; wrapping avoids the full-page suspend */}
+          <Suspense>
+            <KloeSortToggle current={sort} />
+          </Suspense>
+        </div>
       </div>
 
       {/* Summary strip */}
@@ -113,13 +161,8 @@ export default async function KloesPage() {
       {/* KLOE list grouped by key question */}
       <div className="space-y-8">
         {(keyQuestions ?? []).map(kq => {
-          const groupKlos: KloItem[] = allKlos
-            .filter(k => k.key_question_id === kq.id)
-            .sort((a, b) => {
-              const ragA = calculateRAG(recordByKloId.get(a.id))
-              const ragB = calculateRAG(recordByKloId.get(b.id))
-              return RAG_SORT[ragA] - RAG_SORT[ragB]
-            })
+          const baseKlos: KloItem[] = allKlos.filter(k => k.key_question_id === kq.id)
+          const groupKlos = sortKlos(baseKlos, sort, recordByKloId)
           if (groupKlos.length === 0) return null
 
           return (
@@ -136,7 +179,7 @@ export default async function KloesPage() {
                 </h2>
                 {kq.description && (
                   <p className="text-sm text-ink-dim mt-0.5">
-                    "{kq.description}"
+                    &ldquo;{kq.description}&rdquo;
                   </p>
                 )}
               </div>
