@@ -555,37 +555,39 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
           </div>
         </div>
 
-        {/* Action plan filters */}
-        {showActions && (
-          <div className="bg-card border border-line rounded-xl p-5">
-            <p className="text-sm font-semibold text-ink mb-3">Action plan filters</p>
-            <div className="max-w-xs">
-              <label className="block text-xs font-medium text-ink-dim mb-1">Action status</label>
-              <select value={actionStatus} onChange={e => { setActionStatus(e.target.value as typeof actionStatus); clearView() }} className={inputClass}>
-                <option value="all">All statuses</option>
-                <option value="open">Open</option>
-                <option value="in_progress">In progress</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* HR filters */}
-        {showHr && hrStaff.length > 0 && (
-          <div className="bg-card border border-line rounded-xl p-5">
-            <p className="text-sm font-semibold text-ink mb-3">HR filters</p>
-            <div className="max-w-xs">
-              <label className="block text-xs font-medium text-ink-dim mb-1">Staff member</label>
-              <select value={selectedStaff} onChange={e => setSelectedStaff(e.target.value)} className={inputClass}>
-                <option value="all">All staff</option>
-                {hrStaff.map(h => (
-                  <option key={h.user_id} value={h.user_id}>
-                    {h.full_name ?? h.user_id}
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* Action plan filters + HR filters — side by side when both visible */}
+        {(showActions || (showHr && hrStaff.length > 0)) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {showActions && (
+              <div className="bg-card border border-line rounded-xl p-5">
+                <p className="text-sm font-semibold text-ink mb-3">Action plan filters</p>
+                <div className="max-w-xs">
+                  <label className="block text-xs font-medium text-ink-dim mb-1">Action status</label>
+                  <select value={actionStatus} onChange={e => { setActionStatus(e.target.value as typeof actionStatus); clearView() }} className={inputClass}>
+                    <option value="all">All statuses</option>
+                    <option value="open">Open</option>
+                    <option value="in_progress">In progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+            )}
+            {showHr && hrStaff.length > 0 && (
+              <div className="bg-card border border-line rounded-xl p-5">
+                <p className="text-sm font-semibold text-ink mb-3">HR filters</p>
+                <div className="max-w-xs">
+                  <label className="block text-xs font-medium text-ink-dim mb-1">Staff member</label>
+                  <select value={selectedStaff} onChange={e => setSelectedStaff(e.target.value)} className={inputClass}>
+                    <option value="all">All staff</option>
+                    {hrStaff.map(h => (
+                      <option key={h.user_id} value={h.user_id}>
+                        {h.full_name ?? h.user_id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
