@@ -330,8 +330,8 @@ export default async function DashboardPage() {
         <div className="bg-card rounded-2xl border border-line p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="text-center sm:text-left shrink-0">
-              <p className="text-6xl font-bold text-brand tabular-nums" aria-label={`${overallPct} percent overall readiness`}>
-                {overallPct}<span className="text-3xl">%</span>
+              <p className="text-4xl font-bold text-brand tabular-nums" aria-label={`${overallPct} percent overall readiness`}>
+                {overallPct}<span className="text-2xl">%</span>
               </p>
               <p className="text-sm text-ink-dim mt-1">Overall readiness</p>
             </div>

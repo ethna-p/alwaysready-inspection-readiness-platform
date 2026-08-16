@@ -128,6 +128,7 @@ export type Database = {
         Row: {
           id: string
           name: string
+          logo_url: string | null
           cqc_location_id: string | null
           cqc_location_name: string | null
           cqc_rating: string | null
@@ -151,6 +152,7 @@ export type Database = {
         Insert: {
           id?: string
           name: string
+          logo_url?: string | null
           cqc_location_id?: string | null
           cqc_location_name?: string | null
           cqc_rating?: string | null
@@ -174,6 +176,7 @@ export type Database = {
         Update: {
           id?: string
           name?: string
+          logo_url?: string | null
           cqc_location_id?: string | null
           cqc_location_name?: string | null
           cqc_rating?: string | null

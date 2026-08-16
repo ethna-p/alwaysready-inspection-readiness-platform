@@ -91,11 +91,12 @@ export default async function InspectionPackPage() {
 
   const { data: orgRow } = await supabase
     .from('organisations')
-    .select('name')
+    .select('name, logo_url')
     .eq('id', userRow?.organisation_id ?? '')
     .single()
 
-  const orgName = orgRow?.name ?? 'Your Organisation'
+  const orgName   = orgRow?.name     ?? 'Your Organisation'
+  const orgLogoUrl = orgRow?.logo_url ?? null
 
   // Core data
   const [{ data: keyQuestions }, { data: kloItems }, { data: records }] =
@@ -148,7 +149,7 @@ export default async function InspectionPackPage() {
       {/* Print-specific CSS — hoisted to <head> by React */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
-          @page { size: A4 portrait; margin: 15mm 15mm 20mm 15mm; }
+          @page { margin: 15mm 15mm 20mm 15mm; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       `}} />
@@ -182,11 +183,6 @@ export default async function InspectionPackPage() {
           </div>
         </div>
 
-        <p className="text-sm text-ink-dim mb-4 bg-fill border border-line rounded-lg px-4 py-3">
-          Click <strong className="text-ink-dim">Print / Save as PDF</strong> above, then choose{' '}
-          <strong className="text-ink-dim">Save as PDF</strong> in your browser's print dialog.
-          The navigation and this message will not appear in the output.
-        </p>
         <p className="text-xs text-ink-dim mb-6 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 leading-relaxed">
           <strong className="text-amber-900">Please note:</strong> This pack is a self-compiled summary of the records your team has entered into AlwaysReady. It is not a certification of compliance, an audit report, or an assessment of your readiness for inspection. Your organisation is solely responsible for the accuracy and completeness of the information it contains.
         </p>
@@ -195,32 +191,26 @@ export default async function InspectionPackPage() {
       {/* ── Report (visible on screen and in print) ──────────────────────── */}
       <div className="bg-card rounded-2xl border border-line p-8 print:border-0 print:rounded-none print:p-0 print:shadow-none">
 
-        {/* Print-only header — hidden on screen */}
-        <div className="hidden print:flex print:items-start print:justify-between print:mb-8 print:pb-6 print:border-b-2 print:border-[#014D4E]">
-          <div>
-            <p className="text-xs font-bold text-brand uppercase tracking-widest mb-1">
-              AlwaysReady
-            </p>
-            <h1 className="text-2xl font-bold text-ink">
-              CQC Inspection Readiness Pack
-            </h1>
-            <p className="text-base font-semibold text-brand mt-1">{orgName}</p>
+        {/* Report header — visible on screen and in print */}
+        <div className="flex items-start justify-between mb-8 pb-6 border-b-2 border-[#014D4E]">
+          <div className="flex items-center gap-4">
+            {orgLogoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={orgLogoUrl}
+                alt={`${orgName} logo`}
+                style={{ height: '48px', maxWidth: '160px', width: 'auto', objectFit: 'contain' }}
+              />
+            )}
+            <div>
+              <h2 className="text-xl font-bold text-brand">CQC Inspection Readiness Pack</h2>
+              <p className="text-sm font-semibold text-ink mt-0.5">{orgName}</p>
+            </div>
           </div>
-          <div className="text-right text-xs text-ink-dim">
+          <div className="text-right text-xs text-ink-dim shrink-0">
             <p>Prepared: {generatedDate}</p>
-            <p className="mt-1">alwaysready.co.uk</p>
+            <p className="mt-1">alwaysready.uk</p>
           </div>
-        </div>
-
-        {/* Screen header (hidden when printing) */}
-        <div className="print:hidden mb-8 pb-6 border-b border-line">
-          <p className="text-xs font-semibold text-brand uppercase tracking-widest mb-1">
-            {orgName}
-          </p>
-          <h2 className="text-xl font-bold text-brand">
-            CQC Inspection Readiness Pack
-          </h2>
-          <p className="text-sm text-ink-dim mt-1">Prepared: {generatedDate}</p>
         </div>
 
         {/* ── Overall readiness ─────────────────────────────────────────── */}

@@ -2,13 +2,34 @@
 
 /**
  * PrintButton — triggers window.print() so the user can save as PDF
- * via their browser's built-in print dialog. Client component only
- * because window is not available on the server.
+ * via their browser's built-in print dialog (portrait or landscape).
+ *
+ * Waits for any org logo image to finish loading before triggering print,
+ * matching the behaviour of the Reports page print button.
  */
 export default function PrintButton() {
+  function handlePrint() {
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('img'))
+    const unloaded = images.filter(img => !img.complete)
+    if (unloaded.length === 0) {
+      window.print()
+      return
+    }
+    Promise.all(
+      unloaded.map(
+        img =>
+          new Promise<void>(resolve => {
+            img.addEventListener('load',  () => resolve(), { once: true })
+            img.addEventListener('error', () => resolve(), { once: true })
+          }),
+      ),
+    ).then(() => window.print())
+  }
+
   return (
     <button
-      onClick={() => window.print()}
+      type="button"
+      onClick={handlePrint}
       className="
         inline-flex items-center gap-2
         bg-[#014D4E] text-white text-sm font-medium
@@ -17,23 +38,10 @@ export default function PrintButton() {
         focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
         transition-colors
       "
-      aria-label="Print or save this report as a PDF"
+      aria-label="Print or save this pack as a PDF"
     >
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"
-        />
-      </svg>
-      Inspection Readiness Status
+      <span aria-hidden="true">🖨</span>
+      Print / Save as PDF
     </button>
   )
 }
