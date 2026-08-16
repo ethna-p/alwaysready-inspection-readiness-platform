@@ -45,7 +45,8 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob:",
+              // Allow Supabase storage for org logos
+              "img-src 'self' data: blob: https://*.supabase.co",
               "font-src 'self'",
               // Supabase (auth, database), Anthropic (newsletter AI)
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com",
