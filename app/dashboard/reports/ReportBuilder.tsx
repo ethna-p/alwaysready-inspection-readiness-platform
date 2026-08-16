@@ -839,39 +839,37 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
             {filteredKloes.length === 0 ? (
               <p style={{ color: '#1a1a1a', fontSize: '12px' }}>No KLOEs match the selected filters.</p>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse' }} className="text-sm">
+              <table className="w-full text-sm table-fixed" style={{ borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                  <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                     {[
                       'Key Question', 'KLOE', 'Status', 'RAG', 'Next Review', 'Priority', 'Assigned To',
                       ...(activeView === 'pre-inspection' ? ['Evidence'] : []),
                     ].map(h => (
-                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 500, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '1px solid #e5e7eb' }}>
-                        {h}
-                      </th>
+                      <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody style={{ borderTop: 'none' }}>
+                <tbody className="divide-y divide-gray-50">
                   {filteredKloes.map((k) => (
-                    <tr key={k.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                      <td style={{ padding: '10px 12px', color: '#6b7280', fontSize: '13px' }}>{k.key_question_name}</td>
-                      <td style={{ padding: '10px 12px', fontWeight: 500, color: '#111827' }}>{k.title}</td>
-                      <td style={{ padding: '10px 12px' }}>
+                    <tr key={k.id} className="hover:bg-canvas transition-colors">
+                      <td className="px-4 py-3 text-ink-dim">{k.key_question_name}</td>
+                      <td className="px-4 py-3 font-medium text-ink">{k.title}</td>
+                      <td className="px-4 py-3">
                         <StatusBadge status={k.status as ComplianceStatus} />
                       </td>
-                      <td style={{ padding: '10px 12px' }}>
+                      <td className="px-4 py-3">
                         <RagBadge status={k.rag as RAGStatus} compact />
                       </td>
-                      <td style={{ padding: '10px 12px', color: '#374151', fontSize: '13px' }}>{formatDate(k.next_review_due)}</td>
-                      <td style={{ padding: '10px 12px' }}>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#014D4E', color: '#fff', fontSize: '11px', fontWeight: 700 }}>
+                      <td className="px-4 py-3 text-ink-dim">{formatDate(k.next_review_due)}</td>
+                      <td className="px-4 py-3">
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#014D4E] text-white text-xs font-bold">
                           {k.priority}
                         </span>
                       </td>
-                      <td style={{ padding: '10px 12px', color: '#374151', fontSize: '13px' }}>{k.assigned_to_name ?? '—'}</td>
+                      <td className="px-4 py-3 text-ink-dim">{k.assigned_to_name ?? '—'}</td>
                       {activeView === 'pre-inspection' && (
-                        <td style={{ padding: '10px 12px', textAlign: 'center', color: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? '#ef4444' : '#374151', fontWeight: (evidenceCounts[k.klo_item_id] ?? 0) === 0 ? 600 : 400, fontSize: '13px' }}>
+                        <td className={`px-4 py-3 text-center font-medium ${(evidenceCounts[k.klo_item_id] ?? 0) === 0 ? 'text-red-600' : 'text-ink-dim'}`}>
                           {evidenceCounts[k.klo_item_id] ?? 0}
                         </td>
                       )}
