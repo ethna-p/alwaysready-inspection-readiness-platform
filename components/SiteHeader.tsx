@@ -74,10 +74,10 @@ export default async function SiteHeader() {
             Daily Report
           </Link>
           <Link
-            href="/dashboard/trend"
+            href="/dashboard/analytics"
             className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
           >
-            Trend
+            Analytics
           </Link>
           <Link
             href="/dashboard/inspection-pack"
