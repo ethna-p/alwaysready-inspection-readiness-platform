@@ -475,7 +475,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
 
         {/* ── Report views ────────────────────────────────────────────────── */}
         <div className="bg-card border border-line rounded-xl p-5">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-1">
             <p className="text-sm font-semibold text-ink">Report type</p>
             {activeView && (
               <button
@@ -487,6 +487,10 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
               </button>
             )}
           </div>
+          <p className="text-sm text-ink-muted mb-3">
+            Choose a pre-built report for a common use case — the sections and filters below will configure automatically.
+            {!activeView && <> Or skip this and set the options manually below.</>}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {SYSTEM_VIEWS.filter(v => !v.adminOnly || isAdmin).map(v => (
               <button
@@ -512,7 +516,8 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
         {/* Sections — shown when no view selected, or to override */}
         {!activeView && (
           <div className="bg-card border border-line rounded-xl p-5">
-            <p className="text-sm font-semibold text-ink mb-3">Sections to include</p>
+            <p className="text-sm font-semibold text-ink mb-1">Sections to include</p>
+            <p className="text-sm text-ink-muted mb-3">Tick the sections you want to appear in your report.</p>
             <div className="flex flex-wrap gap-4">
               <Toggle label="KLOE Summary"       checked={showKloes}         onChange={v => setShowKloes(v)} />
               <Toggle label="Action Plan Items"  checked={showActions}       onChange={v => setShowActions(v)} />
@@ -524,7 +529,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
 
         {/* Key questions */}
         <div className="bg-card border border-line rounded-xl p-5">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-1">
             <p className="text-sm font-semibold text-ink">Key question areas</p>
             <button
               type="button"
@@ -534,6 +539,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
               {allKQsSelected ? 'Deselect all' : 'Select all'}
             </button>
           </div>
+          <p className="text-sm text-ink-muted mb-3">Filter the report to one or more CQC key questions, or leave all selected for a full picture.</p>
           <div className="flex flex-wrap gap-4">
             {keyQuestions.map(kq => (
               <Toggle
