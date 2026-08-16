@@ -1,13 +1,11 @@
 /**
  * /dashboard/kloes — KLOE list grouped by key question.
  *
- * Server component: fetches KLOEs + this org's compliance records,
- * calculates RAG for each, then renders grouped rows.
+ * Sort order is controlled by URL search params:
+ *   ?sort=title|status|rag|priority|date|assigned
+ *   ?dir=asc|desc  (default asc; clicking the active column header toggles)
  *
- * Sort order is controlled by the `?sort=` search param:
- *   (none)    — display_order (fixed CQC canonical order)
- *   urgency   — RAG priority (grey → red → amber → green)
- *   date      — next_review_due ascending, nulls last
+ * Column headers in each section table are clickable sort controls.
  */
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -17,9 +15,10 @@ import type { RAGStatus } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
 import type { ComplianceRecord, KloItem } from '@/lib/types'
-import KloeSortToggle, { type KloeSort } from './KloeSortToggle'
+import KloeTableHeader, { type KloeSort, type KloeDir } from './KloeTableHeader'
 
-const RAG_SORT: Record<RAGStatus, number> = { grey: 0, red: 1, amber: 2, green: 3 }
+const RAG_SORT:    Record<RAGStatus, number>         = { red: 0, amber: 1, green: 2, grey: 3 }
+const STATUS_SORT: Record<string, number>            = { not_started: 0, in_progress: 1, completed: 2 }
 
 type KeyQuestionRow = { id: string; name: string; display_order: number; description: string | null }
 
@@ -33,24 +32,51 @@ function formatDate(iso: string | null): string {
 function sortKlos(
   klos: KloItem[],
   sort: KloeSort,
+  dir: KloeDir,
   recordByKloId: Map<string, ComplianceRecord>,
+  nameByUserId: Map<string, string>,
 ): KloItem[] {
-  if (sort === 'urgency') {
+  const m = dir === 'desc' ? -1 : 1
+
+  if (sort === 'title') {
+    return [...klos].sort((a, b) => m * a.title.localeCompare(b.title))
+  }
+  if (sort === 'status') {
     return [...klos].sort((a, b) => {
-      const ragA = calculateRAG(recordByKloId.get(a.id))
-      const ragB = calculateRAG(recordByKloId.get(b.id))
-      return RAG_SORT[ragA] - RAG_SORT[ragB]
+      const sA = STATUS_SORT[recordByKloId.get(a.id)?.status ?? 'not_started'] ?? 0
+      const sB = STATUS_SORT[recordByKloId.get(b.id)?.status ?? 'not_started'] ?? 0
+      return m * (sA - sB)
+    })
+  }
+  if (sort === 'rag') {
+    return [...klos].sort((a, b) => {
+      const rA = RAG_SORT[calculateRAG(recordByKloId.get(a.id))]
+      const rB = RAG_SORT[calculateRAG(recordByKloId.get(b.id))]
+      return m * (rA - rB)
+    })
+  }
+  if (sort === 'priority') {
+    return [...klos].sort((a, b) => {
+      const pA = recordByKloId.get(a.id)?.priority ?? 99
+      const pB = recordByKloId.get(b.id)?.priority ?? 99
+      return m * (pA - pB)
     })
   }
   if (sort === 'date') {
     return [...klos].sort((a, b) => {
       const dA = recordByKloId.get(a.id)?.next_review_due ?? null
       const dB = recordByKloId.get(b.id)?.next_review_due ?? null
-      // nulls last
       if (!dA && !dB) return 0
-      if (!dA) return 1
-      if (!dB) return -1
-      return dA < dB ? -1 : dA > dB ? 1 : 0
+      if (!dA) return m      // nulls last in asc, first in desc
+      if (!dB) return -m
+      return m * (dA < dB ? -1 : dA > dB ? 1 : 0)
+    })
+  }
+  if (sort === 'assigned') {
+    return [...klos].sort((a, b) => {
+      const nA = nameByUserId.get(recordByKloId.get(a.id)?.assigned_to ?? '') ?? ''
+      const nB = nameByUserId.get(recordByKloId.get(b.id)?.assigned_to ?? '') ?? ''
+      return m * nA.localeCompare(nB)
     })
   }
   // 'default' — already ordered by display_order from the DB query
@@ -60,13 +86,15 @@ function sortKlos(
 export default async function KloesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string }>
+  searchParams: Promise<{ sort?: string; dir?: string }>
 }) {
-  const { sort: sortParam } = await searchParams
-  const sort: KloeSort =
-    sortParam === 'urgency' ? 'urgency' :
-    sortParam === 'date'    ? 'date'    :
-    'default'
+  const { sort: sortParam, dir: dirParam } = await searchParams
+
+  const VALID_SORTS: KloeSort[] = ['title', 'status', 'rag', 'priority', 'date', 'assigned']
+  const sort: KloeSort = VALID_SORTS.includes(sortParam as KloeSort)
+    ? (sortParam as KloeSort)
+    : 'default'
+  const dir: KloeDir = dirParam === 'desc' ? 'desc' : 'asc'
 
   const supabase = await createClient()
 
@@ -127,19 +155,10 @@ export default async function KloesPage({
             <li className="text-ink" aria-current="page">KLOEs</li>
           </ol>
         </nav>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-brand">KLOE Compliance Tracker</h1>
-            <p className="text-sm text-ink-dim mt-1">
-              Select any KLOE to update its status or view its audit trail.
-            </p>
-          </div>
-          {/* Suspense needed because useSearchParams() inside the toggle
-              requires a client boundary; wrapping avoids the full-page suspend */}
-          <Suspense>
-            <KloeSortToggle current={sort} />
-          </Suspense>
-        </div>
+        <h1 className="text-2xl font-bold text-brand">KLOE Compliance Tracker</h1>
+        <p className="text-sm text-ink-dim mt-1">
+          Click any column header to sort. Click again to reverse. Click a KLOE to update its status or view its audit trail.
+        </p>
       </div>
 
       {/* Summary strip */}
@@ -162,7 +181,7 @@ export default async function KloesPage({
       <div className="space-y-8">
         {(keyQuestions ?? []).map(kq => {
           const baseKlos: KloItem[] = allKlos.filter(k => k.key_question_id === kq.id)
-          const groupKlos = sortKlos(baseKlos, sort, recordByKloId)
+          const groupKlos = sortKlos(baseKlos, sort, dir, recordByKloId, nameByUserId)
           if (groupKlos.length === 0) return null
 
           return (
@@ -185,31 +204,29 @@ export default async function KloesPage({
               </div>
 
               <div className="bg-card rounded-xl border border-line overflow-x-auto">
-                {/* table-fixed + explicit col widths keeps every group's columns
-                    pixel-aligned regardless of KLOE title length */}
                 <table className="w-full text-sm table-fixed">
                   <colgroup>
-                    <col className="w-72" />                                    {/* KLOE     288px */}
-                    <col className="hidden sm:table-column w-32" />             {/* Status   128px */}
-                    <col className="hidden md:table-column w-36" />             {/* RAG      144px */}
-                    <col className="hidden lg:table-column w-24" />             {/* Priority  96px */}
-                    <col className="hidden lg:table-column w-36" />             {/* Next due 144px */}
-                    <col className="hidden lg:table-column w-44" />             {/* Assigned 176px */}
-                    <col className="w-20" />                                    {/* Actions   80px */}
+                    <col className="w-72" />
+                    <col className="hidden sm:table-column w-32" />
+                    <col className="hidden md:table-column w-36" />
+                    <col className="hidden lg:table-column w-24" />
+                    <col className="hidden lg:table-column w-36" />
+                    <col className="hidden lg:table-column w-44" />
+                    <col className="w-20" />
                   </colgroup>
-                  <thead>
-                    <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-                      <th scope="col" className="text-left px-4 py-3 font-medium">KLOE</th>
-                      <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">Status</th>
-                      <th scope="col" className="text-left px-4 py-3 font-medium hidden md:table-cell">RAG</th>
-                      <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Priority</th>
-                      <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Next due</th>
-                      <th scope="col" className="text-left px-4 py-3 font-medium hidden lg:table-cell">Assigned to</th>
-                      <th scope="col" className="px-4 py-3">
-                        <span className="sr-only">Actions</span>
-                      </th>
-                    </tr>
-                  </thead>
+                  {/* Suspense needed: useSearchParams() inside KloeTableHeader requires a client boundary */}
+                  <Suspense fallback={
+                    <thead>
+                      <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
+                        {['KLOE','Status','RAG','Priority','Next due','Assigned to'].map(h => (
+                          <th key={h} scope="col" className="text-left px-4 py-3 font-medium">{h}</th>
+                        ))}
+                        <th scope="col" className="px-4 py-3"><span className="sr-only">Actions</span></th>
+                      </tr>
+                    </thead>
+                  }>
+                    <KloeTableHeader sort={sort} dir={dir} />
+                  </Suspense>
                   <tbody className="divide-y divide-gray-50">
                     {groupKlos.map(klo => {
                       const record = recordByKloId.get(klo.id)
