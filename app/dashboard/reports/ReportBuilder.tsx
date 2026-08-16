@@ -854,7 +854,7 @@ export default function ReportBuilder({ orgName, orgLogoUrl, keyQuestions, kloes
                   {filteredKloes.map((k) => (
                     <tr key={k.id} className="hover:bg-canvas transition-colors">
                       <td className="px-4 py-3 text-ink-dim">{k.key_question_name}</td>
-                      <td className="px-4 py-3 font-medium text-ink">{k.title}</td>
+                      <td className="px-4 py-3 text-ink">{k.title}</td>
                       <td className="px-4 py-3">
                         <StatusBadge status={k.status as ComplianceStatus} />
                       </td>
