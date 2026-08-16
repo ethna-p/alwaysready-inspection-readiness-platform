@@ -9,6 +9,7 @@ import {
   completeMockInspection,
 } from '../actions'
 import type { MockInspectionRating, MockChecklistResponse } from '@/lib/types'
+import HelpWidget from '@/components/HelpWidget'
 
 type Klo = {
   id: string
@@ -145,9 +146,18 @@ export default function MockInspectionSession({
           ← Mock Inspections
         </Link>
         <div className="mt-2">
-          <h1 className="text-xl font-bold text-brand">
-            {inspectionType === 'partial' ? `Mock Inspection — ${keyQuestionName}` : 'Full Mock Inspection'}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-brand">
+              {inspectionType === 'partial' ? `Mock Inspection — ${keyQuestionName}` : 'Full Mock Inspection'}
+            </h1>
+            <HelpWidget title="Mock Inspections" items={[
+              { heading: 'What is a mock inspection?', body: 'A mock inspection steps through each KLOE in the same way a CQC inspector would, asking you to rate your service and record observations. It gives you a realistic picture of how you would perform on the day.' },
+              { heading: 'Full vs partial inspection', body: 'A full mock inspection covers all five CQC key questions. A partial inspection focuses on a single key question — useful for a targeted review or when preparing for a focused inspection.' },
+              { heading: 'What do the ratings mean?', body: 'Outstanding, Good, Requires Improvement, and Inadequate are the same four ratings CQC uses. Rate honestly — the value is in identifying gaps, not in recording good scores.' },
+              { heading: 'What happens to my responses?', body: 'Once you complete the session, a report is generated showing your ratings across all KLOEs. Results are saved to the KLOE ratings history so you can track progress over time.' },
+              { heading: 'What are the checklist items?', body: 'Each KLOE has a checklist of specific things inspectors typically look for. Tick what is in place — this helps you identify gaps even within a KLOE you have rated as Good.' },
+            ]} />
+          </div>
           <p className="text-sm text-ink-muted mt-0.5">
             KLOE {currentKloeIndex + 1} of {klos.length}
           </p>

@@ -22,6 +22,7 @@ import EvidencePanel from './EvidencePanel'
 import type { EvidenceFile } from './EvidencePanel'
 import ActionPlanPanel from './ActionPlanPanel'
 import type { ActionItem } from './ActionPlanPanel'
+import HelpWidget from '@/components/HelpWidget'
 
 type Props = { params: Promise<{ kloId: string }> }
 
@@ -254,7 +255,16 @@ export default async function KloeDetailPage({ params }: Props) {
         {kqDescription && (
           <p className="text-sm text-ink-dim mb-2">"{kqDescription}"</p>
         )}
-        <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
+          <HelpWidget title="Understanding KLOEs" items={[
+            { heading: 'What is a KLOE?', body: 'A Key Line of Enquiry (KLOE) is one of the specific areas CQC inspectors assess during an inspection. Each KLOE sits under one of the five key questions: Safe, Effective, Caring, Responsive, and Well-Led.' },
+            { heading: 'What does RAG status mean?', body: 'Red means the review date has passed and action is needed. Amber means it is due within 30 days. Green means it is up to date. Grey means it has not yet been reviewed.' },
+            { heading: 'What counts as evidence?', body: 'Evidence is any document, record, or file that demonstrates compliance — policies, training records, audits, meeting minutes, care plans, or inspection reports. Upload whatever you would show an inspector.' },
+            { heading: 'Status vs RAG — what is the difference?', body: 'Status reflects how far through the review process you are (Not Started, In Progress, Completed). RAG is calculated automatically from your next review date and tells you how urgently you need to act.' },
+            { heading: 'What is the review frequency?', body: 'How often you commit to revisiting this KLOE. CQC expects ongoing monitoring, not a one-off review. Setting a frequency ensures you get reminded before the deadline passes.' },
+          ]} />
+        </div>
         {klo.wording && (
           <p className="mt-3 text-base text-ink leading-relaxed">
             {klo.wording}

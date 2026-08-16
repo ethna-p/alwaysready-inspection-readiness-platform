@@ -7,6 +7,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import HelpWidget from '@/components/HelpWidget'
 
 type Props = { params: Promise<{ kloId: string }> }
 
@@ -54,7 +55,15 @@ export default async function RatingsPage({ params }: Props) {
         <p className="text-xs font-semibold text-brand uppercase tracking-widest mb-1">
           {kqName}
         </p>
-        <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>
+          <HelpWidget title="Mock Inspection Ratings" items={[
+            { heading: 'What are these ratings?', body: 'These are your self-assessed CQC ratings for this KLOE from each mock inspection you have run. They use the same scale CQC uses: Outstanding, Good, Requires Improvement, and Inadequate.' },
+            { heading: 'Are these ratings official?', body: 'No. These are internal self-assessments only. They are not shared with CQC and do not affect your official rating. They help you track your own progress and identify areas to improve before a real inspection.' },
+            { heading: 'What is the trend arrow?', body: 'The arrow shows whether your rating has improved (↑), stayed the same (→), or declined (↓) compared to your previous mock inspection for this KLOE.' },
+            { heading: 'How do I add a rating?', body: 'Run a mock inspection from the Mock Inspections section. Ratings are recorded during the session against each KLOE and appear here automatically once the inspection is completed.' },
+          ]} />
+        </div>
         {klo.wording && (
           <p className="mt-3 text-sm text-ink leading-relaxed">{klo.wording}</p>
         )}

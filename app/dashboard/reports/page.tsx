@@ -10,6 +10,7 @@ import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import ReportBuilder from './ReportBuilder'
 import type { KloeRow, ActionRow, HrRow, MockInspectionYear } from './ReportBuilder'
+import HelpWidget from '@/components/HelpWidget'
 
 export const metadata = { title: 'Custom Reports — AlwaysReady' }
 
@@ -230,7 +231,16 @@ export default async function ReportsPage() {
     <div>
       {/* Page header — hidden when printing */}
       <div className="print:hidden mb-8">
-        <h1 className="text-2xl font-bold text-brand mb-1">Custom Reports</h1>
+        <div className="flex items-center gap-2 mb-1">
+          <h1 className="text-2xl font-bold text-brand">Custom Reports</h1>
+          <HelpWidget title="Using Reports" items={[
+            { heading: 'Where should I start?', body: 'Select a pre-built report type at the top. Governance Summary gives the full picture for board meetings. Inspection Readiness orders KLOEs by urgency and is the one to print before a CQC visit.' },
+            { heading: 'What is a pre-built report type?', body: 'Pre-built types pre-configure the sections and filters for a common use case. Selecting one saves time — but you can always clear it and configure manually using the sections and filters below.' },
+            { heading: 'Can I filter by key question?', body: 'Yes. Use the Key question areas section to limit the report to Safe, Effective, Caring, Responsive, or Well-Led. Useful when preparing for a focused or partial inspection.' },
+            { heading: 'How do I save the report?', body: 'Use Print / Save as PDF. Your browser will open a print dialog where you can choose Save as PDF, select portrait or landscape, and choose where to save the file.' },
+            { heading: 'What is the AI summary?', body: 'The Generate AI summary button produces a short board-ready paragraph describing your current compliance position, written in plain English. It is based on the data in the current report view.' },
+          ]} />
+        </div>
         <p className="text-sm text-ink-dim">
           Choose which sections and filters to include, then print or save as PDF.
         </p>

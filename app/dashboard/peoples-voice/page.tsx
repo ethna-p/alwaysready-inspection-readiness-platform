@@ -17,6 +17,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import PeoplesVoiceClient, { type StatementWithEvidence, type EvidenceHistoryEntry } from './PeoplesVoiceClient'
+import HelpWidget from '@/components/HelpWidget'
 import type { TeamMember } from './IStatementActionPanel'
 
 export const metadata = { title: "People's Voice | AlwaysReady" }
@@ -146,7 +147,16 @@ export default async function PeoplesVoicePage() {
 
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-ink mb-2">People's Voice</h1>
+        <div className="flex items-center gap-2 mb-2">
+          <h1 className="text-2xl font-bold text-ink">People&apos;s Voice</h1>
+          <HelpWidget title="People's Voice" items={[
+            { heading: 'What are I statements?', body: 'I statements are the 19 experience-based outcomes published by CQC as part of the 2026 assessment framework, drawn from the Think Local Act Personal standards. They describe what good care looks like from the perspective of the person receiving it — for example, "I am treated with dignity and respect."' },
+            { heading: 'How does CQC use these?', body: 'During inspections, CQC gathers evidence directly from residents, families, and carers to assess whether each statement is met. Having your own evidence already organised against each statement puts you in a much stronger position.' },
+            { heading: 'What should I record as evidence?', body: 'Anything that demonstrates the statement is met — resident feedback, survey results, care plan entries, observations, complaints and compliments records, or meeting notes. The stronger and more recent the evidence, the better.' },
+            { heading: 'What is evidence quality?', body: 'The quality rating (Strong, Adequate, Weak, None) is your own honest assessment of how well your evidence supports the statement. Use it to prioritise where to focus improvement efforts.' },
+            { heading: 'What are action items?', body: 'If evidence is weak or missing for a statement, you can create an action item directly from that statement to track what needs to be done, assign it to a team member, and set a due date.' },
+          ]} />
+        </div>
         <p className="text-sm text-ink-dim leading-relaxed">
           These are the <strong>"I" statements</strong> published by CQC as part of the draft 2026 assessment
           framework, drawn from the Think Local Act Personal (TLAP) standards. During inspections, CQC gathers

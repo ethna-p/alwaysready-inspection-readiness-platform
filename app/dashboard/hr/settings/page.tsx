@@ -9,6 +9,7 @@ import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { saveHolidayUnit, addTrainingType } from '../actions'
+import HelpWidget from '@/components/HelpWidget'
 
 type TrainingType = {
   id: string
@@ -101,7 +102,15 @@ export default function HrSettingsPage() {
         >
           ← Back to HR Records
         </button>
-        <h1 className="text-2xl font-bold text-brand">HR Settings</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-brand">HR Settings</h1>
+          <HelpWidget title="HR Settings" items={[
+            { heading: 'What are review cycles?', body: 'Review cycles set how often each compliance check must be renewed — for example, every 12 months for DBS checks or every 3 months for supervisions. Once set, the platform calculates due dates automatically for every staff member.' },
+            { heading: 'Why do DBS, supervision, and appraisal dates matter to CQC?', body: 'CQC inspectors check that staff are safe to work (DBS), supported in their role (supervision), and competent (appraisal). Missing or overdue dates are a common reason for Requires Improvement ratings under Safe and Well-Led.' },
+            { heading: 'What are training types?', body: 'Training types are the mandatory or recommended training categories your organisation tracks — for example, Moving and Handling, Safeguarding, Fire Safety, or First Aid. Add the types relevant to your service here so they can be tracked per staff member.' },
+            { heading: 'What is the holiday unit?', body: 'This sets whether your organisation records holiday in days or hours. It affects how holiday entitlement and balances are displayed on staff records.' },
+          ]} />
+        </div>
       </div>
 
       {message && (
