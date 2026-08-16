@@ -296,6 +296,8 @@ Never use `supabase db push` against the production database. Always use the SQL
 
 **`lib/types.ts` is hand-maintained — not auto-generated.** Every migration that adds, removes, or renames a column must be accompanied by a matching update to the `Row`, `Insert`, and `Update` blocks for that table in `lib/types.ts`. Do this in the same commit as the migration file. Skipping this causes TypeScript errors (`RejectExcessProperties`) on any code that references the new columns, and requires `as any` casts as a workaround. Run `npx tsc --noEmit` after updating the types file to confirm the build is clean.
 
+**Terminal usage — one window is enough.** AJ uses a single terminal window for all git operations across both repos. Every push command starts with `cd ~/Sites/repo-name` to navigate to the correct repo first, so there is no need to keep two named terminal windows open. When pushing both repos in sequence, chain them: `cd ~/Sites/alwaysready-inspection-readiness-platform && git push origin main && cd ~/Sites/alwaysready-site && git push origin main`.
+
 ---
 
 ## To Do / Backlog
