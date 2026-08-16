@@ -179,7 +179,7 @@ export default async function KloesPage({
 
       {/* KLOE list grouped by key question */}
       <div className="space-y-8">
-        {(keyQuestions ?? []).map(kq => {
+        {(keyQuestions ?? []).map((kq, kqIndex) => {
           const baseKlos: KloItem[] = allKlos.filter(k => k.key_question_id === kq.id)
           const groupKlos = sortKlos(baseKlos, sort, dir, recordByKloId, nameByUserId)
           if (groupKlos.length === 0) return null
@@ -203,6 +203,12 @@ export default async function KloesPage({
                 )}
               </div>
 
+              {kqIndex === 0 && (
+                <p className="text-xs text-ink-dim mb-2 flex items-center gap-1">
+                  <span aria-hidden="true">↕</span>
+                  Click any column header to sort. Click again to reverse the order.
+                </p>
+              )}
               <div className="bg-card rounded-xl border border-line overflow-x-auto">
                 <table className="w-full text-sm table-fixed">
                   <colgroup>
