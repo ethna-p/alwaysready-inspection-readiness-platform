@@ -58,8 +58,8 @@ function computeAtDate(
 // ── Chart components ──────────────────────────────────────────────────────────
 
 function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
-  const W = 560; const H = 150
-  const PAD = { top: 24, right: 16, bottom: 34, left: 36 }
+  const W = 800; const H = 90
+  const PAD = { top: 18, right: 16, bottom: 26, left: 32 }
   const cW = W - PAD.left - PAD.right
   const cH = H - PAD.top - PAD.bottom
   const n = points.length
@@ -80,17 +80,17 @@ function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
         return (
           <g key={p}>
             <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke={p === 0 ? '#d1d5db' : '#f3f4f6'} strokeWidth="1" />
-            <text x={PAD.left - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#9ca3af">{p}%</text>
+            <text x={PAD.left - 5} y={y + 3} textAnchor="end" fontSize="9" fill="#9ca3af">{p}%</text>
           </g>
         )
       })}
       {areaPath && <path d={areaPath} fill="#014D4E" fillOpacity="0.08" />}
-      {n > 1 && <path d={linePath} fill="none" stroke="#014D4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />}
+      {n > 1 && <path d={linePath} fill="none" stroke="#014D4E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />}
       {mapped.map((p, i) => (
         <g key={i}>
-          <text x={p.x} y={p.y - 9} textAnchor="middle" fontSize="10" fontWeight="600" fill="#014D4E">{p.pct}%</text>
-          <circle cx={p.x} cy={p.y} r="3.5" fill="white" stroke="#014D4E" strokeWidth="2" />
-          <text x={p.x} y={H - PAD.bottom + 14} textAnchor="middle" fontSize="9" fill="#9ca3af">{p.label}</text>
+          <text x={p.x} y={p.y - 6} textAnchor="middle" fontSize="9" fontWeight="600" fill="#014D4E">{p.pct}%</text>
+          <circle cx={p.x} cy={p.y} r="3" fill="white" stroke="#014D4E" strokeWidth="1.5" />
+          <text x={p.x} y={H - PAD.bottom + 11} textAnchor="middle" fontSize="8" fill="#9ca3af">{p.label}</text>
         </g>
       ))}
     </svg>
