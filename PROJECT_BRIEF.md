@@ -175,6 +175,22 @@ Sub-services with additional checklist items: **Dementia**, **Autism**
 
 **RAG status stays independent of this palette.** Red/Amber/Green keep their standard meaning — do not substitute Gold for Amber.
 
+---
+
+## CQC Rating Colours
+
+Official CQC rating colour palette. Use these exact hex values in all charts, graphs, badges, and any visual representation of CQC ratings across the platform.
+
+| Rating               | Colour  | Hex       | Source                                              |
+|----------------------|---------|-----------|-----------------------------------------------------|
+| Outstanding          | Purple  | `#6D276A` | CQC official PANTONE 519C spec                      |
+| Good                 | Green   | `#458F00` | CQC official RGB spec (R:69 G:143 B:0)              |
+| Requires Improvement | Amber   | `#F47738` | Best-match approximation — no official graphic published |
+| Inadequate           | Red     | `#DA291C` | Best-match approximation — no official graphic published |
+| Not yet rated        | Grey    | `#9ca3af` | Platform convention                                 |
+
+Outstanding and Good confirmed from CQC's official promotional graphics page. Requires Improvement and Inadequate are best-match approximations — CQC only publishes promotional graphics for its top two ratings. Update if exact values are sourced from CQC directly.
+
 **Footer content — required on every page:**
 
 ```

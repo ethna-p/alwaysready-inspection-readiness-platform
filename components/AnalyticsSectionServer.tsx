@@ -58,14 +58,15 @@ function computeAtDate(
 // ── Chart components ──────────────────────────────────────────────────────────
 
 function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
-  const W = 560; const H = 90
+  const W = 560; const H = 110
   const PAD = { top: 18, right: 16, bottom: 26, left: 32 }
   const cW = W - PAD.left - PAD.right
   const cH = H - PAD.top - PAD.bottom
   const n = points.length
+  const yAt = (pct: number) => PAD.top + cH - (pct / 100) * cH
   const mapped = points.map((p, i) => ({
     x: PAD.left + (n > 1 ? (i / (n - 1)) * cW : cW / 2),
-    y: PAD.top + cH - (p.pct / 100) * cH,
+    y: yAt(p.pct),
     pct: p.pct,
     label: p.label,
   }))
@@ -73,17 +74,23 @@ function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
   const areaPath = n > 0
     ? `${linePath} L ${mapped[n-1].x.toFixed(1)} ${(PAD.top+cH).toFixed(1)} L ${mapped[0].x.toFixed(1)} ${(PAD.top+cH).toFixed(1)} Z`
     : ''
+  const y75 = yAt(75); const y25 = yAt(25); const y0 = yAt(0); const y100 = yAt(100)
+  const xL = PAD.left; const xR = W - PAD.right
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-label="6-month readiness trend" role="img">
-      {[0, 50, 100].map(p => {
-        const y = PAD.top + cH - (p / 100) * cH
-        return (
-          <g key={p}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke={p === 0 ? '#d1d5db' : '#f3f4f6'} strokeWidth="1" />
-            <text x={PAD.left - 5} y={y + 3} textAnchor="end" fontSize="9" fill="#9ca3af">{p}%</text>
-          </g>
-        )
-      })}
+      {/* Colour zones: red <25%, amber 25–75%, green >75% */}
+      <rect x={xL} y={y75} width={xR - xL} height={y25 - y75} fill="#458F00" fillOpacity="0.07" />
+      <rect x={xL} y={y25} width={xR - xL} height={y0 - y25} fill="#F47738" fillOpacity="0.07" />
+      <rect x={xL} y={y100} width={xR - xL} height={y75 - y100} fill="#DA291C" fillOpacity="0.05" />
+      {/* Threshold lines at 25% and 75% */}
+      <line x1={xL} x2={xR} y1={y75} y2={y75} stroke="#458F00" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.5" />
+      <line x1={xL} x2={xR} y1={y25} y2={y25} stroke="#F47738" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.5" />
+      {/* Baseline */}
+      <line x1={xL} x2={xR} y1={y0} y2={y0} stroke="#d1d5db" strokeWidth="1" />
+      {/* Y-axis labels */}
+      {[0, 25, 75, 100].map(p => (
+        <text key={p} x={xL - 5} y={yAt(p) + 3} textAnchor="end" fontSize="9" fill="#9ca3af">{p}%</text>
+      ))}
       {areaPath && <path d={areaPath} fill="#014D4E" fillOpacity="0.08" />}
       {n > 1 && <path d={linePath} fill="none" stroke="#014D4E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />}
       {mapped.map((p, i) => (
@@ -169,12 +176,12 @@ function HrComplianceChart({ checks }: { checks: { label: string; inDate: number
   )
 }
 
-// Colours match RATING_STRIP in app/dashboard/post-inspection/rating-utils.ts
+// Colours match CQC's official rating system — see PROJECT_BRIEF.md § CQC Rating Colours
 const RATING_COLOUR: Record<string, { fill: string; text: string; label: string }> = {
-  outstanding:          { fill: '#a855f7', text: '#ffffff', label: 'Outstanding' },
-  good:                 { fill: '#22c55e', text: '#ffffff', label: 'Good' },
-  requires_improvement: { fill: '#f59e0b', text: '#ffffff', label: 'Req. Improvement' },
-  inadequate:           { fill: '#ef4444', text: '#ffffff', label: 'Inadequate' },
+  outstanding:          { fill: '#6D276A', text: '#ffffff', label: 'Outstanding' },
+  good:                 { fill: '#458F00', text: '#ffffff', label: 'Good' },
+  requires_improvement: { fill: '#F47738', text: '#ffffff', label: 'Req. Improvement' },
+  inadequate:           { fill: '#DA291C', text: '#ffffff', label: 'Inadequate' },
 }
 const RATING_ORDER: Record<string, number> = { inadequate: 0, requires_improvement: 1, good: 2, outstanding: 3 }
 
@@ -394,114 +401,106 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div style={{ columns: '2', columnGap: '1rem' }} className="max-md:!columns-1">
 
-          {/* Overall readiness + Mock inspections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
-              <TrendChart points={trendPoints} />
-            </div>
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
-              <MockTrendChart sessions={mockSessions} />
-              {mockSessions.length > 0 && (
-                <div className="flex gap-3 mt-3 flex-wrap">
-                  {Object.entries(RATING_COLOUR).map(([, cfg]) => (
-                    <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
-                      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
-                      {cfg.label}
-                    </span>
-                  ))}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
+            <TrendChart points={trendPoints} />
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE completion</h3>
+            <CompletionBar
+              label={`of ${totalKlos} KLOEs completed`}
+              pct={kloeCompletionPct}
+              colourA="bg-green-500" countA={kloeStatusCounts.completed}   labelA="Completed"
+              colourB="bg-amber-400" countB={kloeStatusCounts.in_progress}  labelB="In progress"
+              colourC="bg-gray-200"  countC={kloeStatusCounts.not_started}  labelC="Not started"
+            />
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
+            <CompletionBar
+              label={`of ${pvTotal} statements with strong evidence`}
+              pct={pvPct}
+              colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
+              colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
+              colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
+            />
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Evidence coverage</h3>
+            <CompletionBar
+              label="of KLOEs have evidence attached"
+              pct={evidencePct}
+              colourA="bg-[#014D4E]" countA={kloesWithEvidence}             labelA="With evidence"
+              colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
+              colourC="bg-transparent" countC={0} labelC=""
+            />
+            <p className="text-xs text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
+            <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
+            {hrTotal === 0 ? (
+              <p className="text-xs text-ink-muted">No HR staff profiles set up yet.</p>
+            ) : (
+              <HrComplianceChart checks={hrChecks} />
+            )}
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
+            {actions.length === 0 ? (
+              <p className="text-xs text-ink-muted">No action items recorded yet.</p>
+            ) : (
+              <div className="space-y-5">
+                <div>
+                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
+                  <MiniBarChart
+                    rows={[
+                      { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
+                      { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
+                      { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
+                    ]}
+                    total={actions.length}
+                  />
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* KLOE completion + People's Voice */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE completion</h3>
-              <CompletionBar
-                label={`of ${totalKlos} KLOEs completed`}
-                pct={kloeCompletionPct}
-                colourA="bg-green-500" countA={kloeStatusCounts.completed}   labelA="Completed"
-                colourB="bg-amber-400" countB={kloeStatusCounts.in_progress}  labelB="In progress"
-                colourC="bg-gray-200"  countC={kloeStatusCounts.not_started}  labelC="Not started"
-              />
-            </div>
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
-              <CompletionBar
-                label={`of ${pvTotal} statements with strong evidence`}
-                pct={pvPct}
-                colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
-                colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
-                colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
-              />
-            </div>
-          </div>
-
-          {/* Action plan health + Evidence coverage */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
-              {actions.length === 0 ? (
-                <p className="text-xs text-ink-muted">No action items recorded yet.</p>
-              ) : (
-                <div className="space-y-5">
-                  <div>
-                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
-                    <MiniBarChart
-                      rows={[
-                        { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
-                        { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
-                        { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
-                      ]}
-                      total={actions.length}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
-                    <MiniBarChart
-                      rows={[
-                        { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
-                        { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
-                        { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
-                      ]}
-                      total={actions.length}
-                    />
-                  </div>
+                <div>
+                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
+                  <MiniBarChart
+                    rows={[
+                      { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
+                      { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
+                      { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
+                    ]}
+                    total={actions.length}
+                  />
                 </div>
-              )}
-            </div>
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Evidence coverage</h3>
-              <CompletionBar
-                label="of KLOEs have evidence attached"
-                pct={evidencePct}
-                colourA="bg-[#014D4E]" countA={kloesWithEvidence}             labelA="With evidence"
-                colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
-                colourC="bg-transparent" countC={0} labelC=""
-              />
-              <p className="text-xs text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
-            </div>
+              </div>
+            )}
           </div>
 
-          {/* Review calendar + HR compliance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
-              <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
-            </div>
-            <div className="bg-card rounded-2xl border border-line p-5 min-h-[180px] flex flex-col justify-center">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
-              {hrTotal === 0 ? (
-                <p className="text-xs text-ink-muted">No HR staff profiles set up yet.</p>
-              ) : (
-                <HrComplianceChart checks={hrChecks} />
-              )}
-            </div>
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
+            <MockTrendChart sessions={mockSessions} />
+            {mockSessions.length > 0 && (
+              <div className="flex gap-3 mt-3 flex-wrap">
+                {Object.entries(RATING_COLOUR).map(([, cfg]) => (
+                  <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
+                    {cfg.label}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
         </div>

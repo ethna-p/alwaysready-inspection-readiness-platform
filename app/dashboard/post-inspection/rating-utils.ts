@@ -16,10 +16,11 @@ export const RATING_COLOURS: Record<CqcRating, string> = {
   not_rated:            'bg-gray-100 text-gray-600 border-gray-300',
 }
 
+// Hex values match CQC's official colour system — see PROJECT_BRIEF.md § CQC Rating Colours
 export const RATING_STRIP: Record<CqcRating, string> = {
-  outstanding:          'bg-purple-500',
-  good:                 'bg-green-500',
-  requires_improvement: 'bg-amber-500',
-  inadequate:           'bg-red-500',
+  outstanding:          'bg-[#6D276A]',
+  good:                 'bg-[#458F00]',
+  requires_improvement: 'bg-[#F47738]',
+  inadequate:           'bg-[#DA291C]',
   not_rated:            'bg-gray-300',
 }
