@@ -372,14 +372,14 @@ export default async function KloeDetailPage({ params }: Props) {
           )}
         </section>
 
-        {/* Pre-inspection checklist */}
+        {/* Self-assessment checklist */}
         {checklistItems.length > 0 && (
           <section
             className="bg-card rounded-xl border border-line p-5"
             aria-labelledby="checklist-heading"
           >
             <h2 id="checklist-heading" className="text-sm font-semibold text-brand uppercase tracking-wide mb-1">
-              Pre-inspection checklist
+              Self-assessment checklist
             </h2>
             <p className="text-sm text-ink-dim mb-1">
               Tick each item as your team gathers the required evidence. This does not affect the RAG status — that reflects
