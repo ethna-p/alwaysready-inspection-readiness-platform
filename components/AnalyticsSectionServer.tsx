@@ -394,113 +394,143 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ gridAutoRows: '1fr' }}>
 
-          {/* Overall readiness + Mock inspections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
+          {/* Overall readiness */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
+            <div className="flex-1 flex items-center">
               <TrendChart points={trendPoints} />
             </div>
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
-              <MockTrendChart sessions={mockSessions} />
-              {mockSessions.length > 0 && (
-                <div className="flex gap-3 mt-3 flex-wrap">
-                  {Object.entries(RATING_COLOUR).map(([, cfg]) => (
-                    <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
-                      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
-                      {cfg.label}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* KLOE completion + People's Voice */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE completion</h3>
-              <CompletionBar
-                label={`of ${totalKlos} KLOEs completed`}
-                pct={kloeCompletionPct}
-                colourA="bg-green-500" countA={kloeStatusCounts.completed}   labelA="Completed"
-                colourB="bg-amber-400" countB={kloeStatusCounts.in_progress}  labelB="In progress"
-                colourC="bg-gray-200"  countC={kloeStatusCounts.not_started}  labelC="Not started"
-              />
-            </div>
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
-              <CompletionBar
-                label={`of ${pvTotal} statements with strong evidence`}
-                pct={pvPct}
-                colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
-                colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
-                colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
-              />
-            </div>
-          </div>
-
-          {/* Action plan health + Evidence coverage */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
-              {actions.length === 0 ? (
-                <p className="text-xs text-ink-muted">No action items recorded yet.</p>
-              ) : (
-                <div className="space-y-5">
-                  <div>
-                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
-                    <MiniBarChart
-                      rows={[
-                        { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
-                        { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
-                        { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
-                      ]}
-                      total={actions.length}
-                    />
+          {/* Mock inspection ratings */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                <MockTrendChart sessions={mockSessions} />
+                {mockSessions.length > 0 && (
+                  <div className="flex gap-3 mt-3 flex-wrap">
+                    {Object.entries(RATING_COLOUR).map(([, cfg]) => (
+                      <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+                        <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
+                        {cfg.label}
+                      </span>
+                    ))}
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
-                    <MiniBarChart
-                      rows={[
-                        { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
-                        { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
-                        { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
-                      ]}
-                      total={actions.length}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Evidence coverage</h3>
-              <CompletionBar
-                label="of KLOEs have evidence attached"
-                pct={evidencePct}
-                colourA="bg-[#014D4E]" countA={kloesWithEvidence}             labelA="With evidence"
-                colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
-                colourC="bg-transparent" countC={0} labelC=""
-              />
-              <p className="text-xs text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Review calendar + HR compliance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
-              <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
+          {/* KLOE completion */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE completion</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                <CompletionBar
+                  label={`of ${totalKlos} KLOEs completed`}
+                  pct={kloeCompletionPct}
+                  colourA="bg-green-500" countA={kloeStatusCounts.completed}   labelA="Completed"
+                  colourB="bg-amber-400" countB={kloeStatusCounts.in_progress}  labelB="In progress"
+                  colourC="bg-gray-200"  countC={kloeStatusCounts.not_started}  labelC="Not started"
+                />
+              </div>
             </div>
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
-              {hrTotal === 0 ? (
-                <p className="text-xs text-ink-muted">No HR staff profiles set up yet.</p>
-              ) : (
-                <HrComplianceChart checks={hrChecks} />
-              )}
+          </div>
+
+          {/* People's Voice coverage */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                <CompletionBar
+                  label={`of ${pvTotal} statements with strong evidence`}
+                  pct={pvPct}
+                  colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
+                  colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
+                  colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Action plan health */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                {actions.length === 0 ? (
+                  <p className="text-xs text-ink-muted">No action items recorded yet.</p>
+                ) : (
+                  <div className="space-y-5">
+                    <div>
+                      <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
+                      <MiniBarChart
+                        rows={[
+                          { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
+                          { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
+                          { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
+                        ]}
+                        total={actions.length}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
+                      <MiniBarChart
+                        rows={[
+                          { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
+                          { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
+                          { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
+                        ]}
+                        total={actions.length}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Evidence coverage */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Evidence coverage</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                <CompletionBar
+                  label="of KLOEs have evidence attached"
+                  pct={evidencePct}
+                  colourA="bg-[#014D4E]" countA={kloesWithEvidence}             labelA="With evidence"
+                  colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
+                  colourC="bg-transparent" countC={0} labelC=""
+                />
+                <p className="text-xs text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Review calendar */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
+              </div>
+            </div>
+          </div>
+
+          {/* HR compliance */}
+          <div className="bg-card rounded-2xl border border-line p-5 flex flex-col">
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                {hrTotal === 0 ? (
+                  <p className="text-xs text-ink-muted">No HR staff profiles set up yet.</p>
+                ) : (
+                  <HrComplianceChart checks={hrChecks} />
+                )}
+              </div>
             </div>
           </div>
 
