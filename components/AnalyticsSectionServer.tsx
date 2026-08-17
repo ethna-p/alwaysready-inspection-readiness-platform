@@ -169,11 +169,12 @@ function HrComplianceChart({ checks }: { checks: { label: string; inDate: number
   )
 }
 
+// Colours match RATING_STRIP in app/dashboard/post-inspection/rating-utils.ts
 const RATING_COLOUR: Record<string, { fill: string; text: string; label: string }> = {
-  outstanding:          { fill: '#9333ea', text: '#ffffff', label: 'Outstanding' },
-  good:                 { fill: '#16a34a', text: '#ffffff', label: 'Good' },
-  requires_improvement: { fill: '#d97706', text: '#ffffff', label: 'Req. Improvement' },
-  inadequate:           { fill: '#dc2626', text: '#ffffff', label: 'Inadequate' },
+  outstanding:          { fill: '#a855f7', text: '#ffffff', label: 'Outstanding' },
+  good:                 { fill: '#22c55e', text: '#ffffff', label: 'Good' },
+  requires_improvement: { fill: '#f59e0b', text: '#ffffff', label: 'Req. Improvement' },
+  inadequate:           { fill: '#ef4444', text: '#ffffff', label: 'Inadequate' },
 }
 const RATING_ORDER: Record<string, number> = { inadequate: 0, requires_improvement: 1, good: 2, outstanding: 3 }
 
