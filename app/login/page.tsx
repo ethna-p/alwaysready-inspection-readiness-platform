@@ -116,7 +116,7 @@ function LoginForm() {
       </header>
 
       {/* Card — centred */}
-      <main className="flex-1 flex items-center justify-center px-4">
+      <main className="flex-1 flex items-center justify-center px-4 pb-16">
         <div className="w-full max-w-sm">
           <div className="bg-card rounded-2xl shadow-sm border border-line p-8">
 
