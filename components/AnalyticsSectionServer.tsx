@@ -58,7 +58,7 @@ function computeAtDate(
 // ── Chart components ──────────────────────────────────────────────────────────
 
 function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
-  const W = 800; const H = 90
+  const W = 560; const H = 90
   const PAD = { top: 18, right: 16, bottom: 26, left: 32 }
   const cW = W - PAD.left - PAD.right
   const cH = H - PAD.top - PAD.bottom
@@ -74,7 +74,7 @@ function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
     ? `${linePath} L ${mapped[n-1].x.toFixed(1)} ${(PAD.top+cH).toFixed(1)} L ${mapped[0].x.toFixed(1)} ${(PAD.top+cH).toFixed(1)} Z`
     : ''
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-label="8-week readiness trend" role="img">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-label="6-month readiness trend" role="img">
       {[0, 50, 100].map(p => {
         const y = PAD.top + cH - (p / 100) * cH
         return (
@@ -304,12 +304,18 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     historyByKlo.set(entry.klo_item_id, arr)
   }
   const baseNow = new Date(); baseNow.setHours(23, 59, 59, 999)
-  const trendPoints = Array.from({ length: 8 }, (_, i) => {
+  const trendPoints = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(baseNow)
-    d.setDate(d.getDate() - (7 - i) * 7)
+    d.setMonth(d.getMonth() - (5 - i))
+    // Use end of that month
+    d.setDate(1)
+    d.setMonth(d.getMonth() + 1)
+    d.setDate(0)
     d.setHours(23, 59, 59, 999)
+    // Don't exceed now
+    if (d > baseNow) { d.setTime(baseNow.getTime()) }
     return {
-      label: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+      label: d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' }),
       pct: computeAtDate(kloItemIds, historyByKlo, d),
     }
   })
@@ -389,10 +395,26 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
       ) : (
         <div className="space-y-4">
 
-          {/* 8-week trend — full width */}
-          <div className="bg-card rounded-2xl border border-line p-5">
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 8-week view</h3>
-            <TrendChart points={trendPoints} />
+          {/* Overall readiness + Mock inspections */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
+              <TrendChart points={trendPoints} />
+            </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
+              <MockTrendChart sessions={mockSessions} />
+              {mockSessions.length > 0 && (
+                <div className="flex gap-3 mt-3 flex-wrap">
+                  {Object.entries(RATING_COLOUR).map(([, cfg]) => (
+                    <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+                      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
+                      {cfg.label}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* KLOE completion + People's Voice */}
@@ -479,22 +501,6 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                 <HrComplianceChart checks={hrChecks} />
               )}
             </div>
-          </div>
-
-          {/* Mock inspection ratings — full width */}
-          <div className="bg-card rounded-2xl border border-line p-5">
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
-            <MockTrendChart sessions={mockSessions} />
-            {mockSessions.length > 0 && (
-              <div className="flex gap-3 mt-3 flex-wrap">
-                {Object.entries(RATING_COLOUR).map(([, cfg]) => (
-                  <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
-                    <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
-                    {cfg.label}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
 
         </div>
