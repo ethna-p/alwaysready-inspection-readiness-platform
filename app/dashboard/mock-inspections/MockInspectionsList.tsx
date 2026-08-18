@@ -24,6 +24,7 @@ export type InspectionListItem = {
 
 interface Props {
   inspections: InspectionListItem[]
+  keyQuestions: { id: string; name: string }[]
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -88,27 +89,19 @@ function FilterSelect({
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function MockInspectionsList({ inspections }: Props) {
+export default function MockInspectionsList({ inspections, keyQuestions }: Props) {
   const [dateRange, setDateRange] = useState('all')
   const [typeFilter, setTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
 
-  // Build unique key question options for the type filter
-  const keyQuestionOptions = useMemo(() => {
-    const names = inspections
-      .filter(i => i.type === 'partial' && i.key_questions?.name)
-      .map(i => i.key_questions!.name)
-    return [...new Set(names)].sort()
-  }, [inspections])
-
-  const typeOptions = [
+  const typeOptions = useMemo(() => [
     { value: 'all',  label: 'All types' },
     { value: 'full', label: 'Full inspection' },
-    ...keyQuestionOptions.map(name => ({
-      value: `partial:${name}`,
-      label: `Partial — ${name}`,
+    ...keyQuestions.map(kq => ({
+      value: `partial:${kq.name}`,
+      label: `Partial — ${kq.name}`,
     })),
-  ]
+  ], [keyQuestions])
 
   const dateRangeOptions = [
     { value: 'all',     label: 'All time' },

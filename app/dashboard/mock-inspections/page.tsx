@@ -91,7 +91,7 @@ export default async function MockInspectionsPage() {
       </div>
 
       {/* Past inspections — always render so the empty state shows */}
-      <MockInspectionsList inspections={inspections} />
+      <MockInspectionsList inspections={inspections} keyQuestions={keyQuestions ?? []} />
     </div>
   )
 }
