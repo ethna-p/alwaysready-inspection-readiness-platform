@@ -76,11 +76,15 @@ export default async function OrganisationsPage({
 
   // ── 2. Apply filter ────────────────────────────────────────────────────
   const isDemo = (o: OrgListItem) => o.name.startsWith('Demo —')
-  const filtered = (orgs ?? []).filter(o =>
-    filter === 'demo' ? isDemo(o) :
-    filter === 'real' ? !isDemo(o) :
-    true
-  )
+  const filtered = (orgs ?? [])
+    .filter(o =>
+      filter === 'demo' ? isDemo(o) :
+      filter === 'real' ? !isDemo(o) :
+      true
+    )
+    .sort((a, b) =>
+      filter === 'demo' ? a.name.localeCompare(b.name) : 0
+    )
 
   // ── 3. Fetch admin users for those orgs ────────────────────────────────
   const orgIds = filtered.map(o => o.id)
