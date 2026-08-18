@@ -78,15 +78,15 @@ function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
   const xL = PAD.left; const xR = W - PAD.right
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-label="6-month readiness trend" role="img">
-      {/* Colour zones: equal 25-point bands */}
-      <rect x={xL} y={y100} width={xR - xL} height={y75 - y100} fill="#DA291C" fillOpacity="0.05" />
-      <rect x={xL} y={y75} width={xR - xL} height={y50 - y75} fill="#F47738" fillOpacity="0.06" />
-      <rect x={xL} y={y50} width={xR - xL} height={y25 - y50} fill="#458F00" fillOpacity="0.06" />
-      <rect x={xL} y={y25} width={xR - xL} height={y0 - y25} fill="#458F00" fillOpacity="0.10" />
+      {/* Colour zones: equal 25-point bands — higher = better */}
+      <rect x={xL} y={y100} width={xR - xL} height={y75 - y100} fill="#458F00" fillOpacity="0.10" />
+      <rect x={xL} y={y75} width={xR - xL} height={y50 - y75} fill="#458F00" fillOpacity="0.06" />
+      <rect x={xL} y={y50} width={xR - xL} height={y25 - y50} fill="#F47738" fillOpacity="0.06" />
+      <rect x={xL} y={y25} width={xR - xL} height={y0 - y25} fill="#DA291C" fillOpacity="0.05" />
       {/* Gridlines at each 25% threshold */}
-      <line x1={xL} x2={xR} y1={y75} y2={y75} stroke="#DA291C" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.35" />
+      <line x1={xL} x2={xR} y1={y75} y2={y75} stroke="#458F00" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.4" />
       <line x1={xL} x2={xR} y1={y50} y2={y50} stroke="#9ca3af" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.4" />
-      <line x1={xL} x2={xR} y1={y25} y2={y25} stroke="#458F00" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.4" />
+      <line x1={xL} x2={xR} y1={y25} y2={y25} stroke="#DA291C" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.35" />
       {/* Baseline */}
       <line x1={xL} x2={xR} y1={y0} y2={y0} stroke="#d1d5db" strokeWidth="1" />
       {/* Y-axis labels at every 25% */}
