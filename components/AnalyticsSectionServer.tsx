@@ -173,7 +173,7 @@ function HrComplianceChart({ checks }: { checks: { label: string; inDate: number
           </div>
         )
       })}
-      <p className="text-xs text-ink-muted pt-1">In-date = next review date has not yet passed.</p>
+      <p className="text-sm text-ink-muted pt-1">In-date = next review date has not yet passed.</p>
     </div>
   )
 }
@@ -225,7 +225,7 @@ function MockTrendChartSkeleton() {
           ))}
         </div>
       </div>
-      <p className="text-xs text-ink-muted mt-2">Complete a mock inspection to see your ratings trend here.</p>
+      <p className="text-sm text-ink-muted mt-2">Complete a mock inspection to see your ratings trend here.</p>
     </div>
   )
 }
@@ -276,7 +276,7 @@ function ReviewCalendarChart({ overdue, due30, due60, due90 }: { overdue: number
           <span className="text-xs font-semibold text-ink tabular-nums w-6 text-right">{b.count}</span>
         </div>
       ))}
-      <p className="text-xs text-ink-muted pt-1">Reviews due soon — plan workload before inspection.</p>
+      <p className="text-sm text-ink-muted pt-1">Reviews due soon — plan workload before inspection.</p>
     </div>
   )
 }
@@ -465,11 +465,11 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
               colourB="bg-gray-200"  countB={unassigned} labelB="Unassigned"
               colourC="bg-gray-200"  countC={0}          labelC=""
             />
-            {unassigned > 0 && (
-              <p className="text-xs text-ink-muted mt-3">
-                {unassigned} KLOE{unassigned !== 1 ? 's have' : ' has'} no owner — assign from each KLOE&apos;s detail page.
-              </p>
-            )}
+            <p className="text-sm text-ink-muted mt-3">
+              {unassigned > 0
+                ? `${unassigned} KLOE${unassigned !== 1 ? 's have' : ' has'} no owner — assign from each KLOE's detail page.`
+                : 'All KLOEs have an owner.'}
+            </p>
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
@@ -481,7 +481,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
               colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
               colourC="bg-transparent" countC={0} labelC=""
             />
-            <p className="text-xs text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
+            <p className="text-sm text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
@@ -511,7 +511,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                     { label: 'Appraisals',   inDate: 0, total: 10 },
                   ]} />
                 </div>
-                <p className="text-xs text-ink-muted mt-2">Add staff profiles in HR to see compliance rates here.</p>
+                <p className="text-sm text-ink-muted mt-2">Add staff profiles in HR to see compliance rates here.</p>
               </div>
             ) : (
               <HrComplianceChart checks={hrChecks} />
@@ -546,7 +546,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                     />
                   </div>
                 </div>
-                <p className="text-xs text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
+                <p className="text-sm text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
               </div>
             ) : (
               <div className="space-y-5">
