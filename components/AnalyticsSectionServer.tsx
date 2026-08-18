@@ -58,7 +58,7 @@ function computeAtDate(
 // ── Chart components ──────────────────────────────────────────────────────────
 
 function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
-  const W = 560; const H = 110
+  const W = 560; const H = 130
   const PAD = { top: 18, right: 16, bottom: 26, left: 32 }
   const cW = W - PAD.left - PAD.right
   const cH = H - PAD.top - PAD.bottom
@@ -74,21 +74,23 @@ function TrendChart({ points }: { points: { label: string; pct: number }[] }) {
   const areaPath = n > 0
     ? `${linePath} L ${mapped[n-1].x.toFixed(1)} ${(PAD.top+cH).toFixed(1)} L ${mapped[0].x.toFixed(1)} ${(PAD.top+cH).toFixed(1)} Z`
     : ''
-  const y75 = yAt(75); const y25 = yAt(25); const y0 = yAt(0); const y100 = yAt(100)
+  const y100 = yAt(100); const y75 = yAt(75); const y50 = yAt(50); const y25 = yAt(25); const y0 = yAt(0)
   const xL = PAD.left; const xR = W - PAD.right
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-label="6-month readiness trend" role="img">
-      {/* Colour zones: red <25%, amber 25–75%, green >75% */}
-      <rect x={xL} y={y75} width={xR - xL} height={y25 - y75} fill="#458F00" fillOpacity="0.07" />
-      <rect x={xL} y={y25} width={xR - xL} height={y0 - y25} fill="#F47738" fillOpacity="0.07" />
+      {/* Colour zones: equal 25-point bands */}
       <rect x={xL} y={y100} width={xR - xL} height={y75 - y100} fill="#DA291C" fillOpacity="0.05" />
-      {/* Threshold lines at 25% and 75% */}
-      <line x1={xL} x2={xR} y1={y75} y2={y75} stroke="#458F00" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.5" />
-      <line x1={xL} x2={xR} y1={y25} y2={y25} stroke="#F47738" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.5" />
+      <rect x={xL} y={y75} width={xR - xL} height={y50 - y75} fill="#F47738" fillOpacity="0.06" />
+      <rect x={xL} y={y50} width={xR - xL} height={y25 - y50} fill="#458F00" fillOpacity="0.06" />
+      <rect x={xL} y={y25} width={xR - xL} height={y0 - y25} fill="#458F00" fillOpacity="0.10" />
+      {/* Gridlines at each 25% threshold */}
+      <line x1={xL} x2={xR} y1={y75} y2={y75} stroke="#DA291C" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.35" />
+      <line x1={xL} x2={xR} y1={y50} y2={y50} stroke="#9ca3af" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.4" />
+      <line x1={xL} x2={xR} y1={y25} y2={y25} stroke="#458F00" strokeWidth="1" strokeDasharray="4 3" strokeOpacity="0.4" />
       {/* Baseline */}
       <line x1={xL} x2={xR} y1={y0} y2={y0} stroke="#d1d5db" strokeWidth="1" />
-      {/* Y-axis labels */}
-      {[0, 25, 75, 100].map(p => (
+      {/* Y-axis labels at every 25% */}
+      {[0, 25, 50, 75, 100].map(p => (
         <text key={p} x={xL - 5} y={yAt(p) + 3} textAnchor="end" fontSize="9" fill="#9ca3af">{p}%</text>
       ))}
       {areaPath && <path d={areaPath} fill="#014D4E" fillOpacity="0.08" />}
