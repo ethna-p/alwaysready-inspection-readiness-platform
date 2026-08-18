@@ -338,6 +338,9 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     { data: kloItemRows },
     { data: keyQuestionRows },
     { data: iStatementActionRows },
+    { data: incidentRows },
+    { data: feedbackRows },
+    { data: govMeetingRows },
   ] = await Promise.all([
     supabase.from('compliance_record_history')
       .select('klo_item_id, status, next_review_due, system_recorded_at')
@@ -364,6 +367,16 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     supabase.from('key_questions').select('id, name').order('name'),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (supabase as any).from('i_statement_actions').select('i_statement_id').eq('organisation_id', orgId),
+    supabase.from('incidents')
+      .select('incident_type, status, date_of_incident')
+      .eq('organisation_id', orgId),
+    supabase.from('feedback_records')
+      .select('feedback_type, status, received_date')
+      .eq('organisation_id', orgId),
+    supabase.from('governance_meetings')
+      .select('meeting_date, status')
+      .eq('organisation_id', orgId)
+      .order('meeting_date', { ascending: false }),
   ])
 
   // Mock findings — single IN query instead of N+1
@@ -552,6 +565,44 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     .map(([label, count]) => ({ label, count }))
 
   const hasHistory = (allHistory ?? []).length > 0
+
+  // ── Incidents analytics ───────────────────────────────────────────────────
+  const incidents = incidentRows ?? []
+  const incidentOpen        = incidents.filter(r => r.status !== 'closed').length
+  const incidentTypeLabels: Record<string, string> = {
+    safety:       'Safety',
+    safeguarding: 'Safeguarding',
+    near_miss:    'Near miss',
+    complaint:    'Complaint',
+    other:        'Other',
+  }
+  const incidentTypeCounts = new Map<string, number>()
+  for (const r of incidents.filter(i => i.status !== 'closed')) {
+    const label = incidentTypeLabels[r.incident_type] ?? r.incident_type
+    incidentTypeCounts.set(label, (incidentTypeCounts.get(label) ?? 0) + 1)
+  }
+  const incidentTypeRows = [...incidentTypeCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => ({ label, count }))
+  const ninety = new Date(); ninety.setDate(ninety.getDate() - 90)
+  const incidents90 = incidents.filter(r => new Date(r.date_of_incident) >= ninety).length
+
+  // ── Feedback analytics ────────────────────────────────────────────────────
+  const feedback         = feedbackRows ?? []
+  const feedbackOpen     = feedback.filter(r => r.status === 'open').length
+  const complaints       = feedback.filter(r => r.feedback_type === 'complaint').length
+  const compliments      = feedback.filter(r => r.feedback_type === 'compliment').length
+  const suggestions      = feedback.filter(r => r.feedback_type === 'suggestion').length
+  const concerns         = feedback.filter(r => r.feedback_type === 'concern').length
+  const openComplaints   = feedback.filter(r => r.feedback_type === 'complaint' && r.status === 'open').length
+
+  // ── Governance meetings analytics ─────────────────────────────────────────
+  const govMeetings      = govMeetingRows ?? []
+  const twelveMonthsAgo  = new Date(); twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
+  const govLast12        = govMeetings.filter(r => new Date(r.meeting_date) >= twelveMonthsAgo)
+  const govSignedOff     = govLast12.filter(r => r.status === 'signed_off').length
+  const govTotal12       = govLast12.length
+  const govLastDate      = govMeetings[0]?.meeting_date ?? null
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
@@ -889,6 +940,142 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                 </div>
               ) : (
                 <HrComplianceChart checks={hrChecks} />
+              )}
+            </div>
+
+            {/* ── Incidents ─────────────────────────────────────────────────── */}
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-bold text-brand uppercase tracking-wide mb-3 antialiased">Incidents</h3>
+              {incidents.length === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <MiniBarChart
+                      rows={[
+                        { label: 'Safety',       count: 2, colour: 'bg-red-400'    },
+                        { label: 'Near miss',    count: 3, colour: 'bg-amber-400'  },
+                        { label: 'Safeguarding', count: 1, colour: 'bg-purple-400' },
+                        { label: 'Complaint',    count: 1, colour: 'bg-[#014D4E]'  },
+                      ]}
+                      total={7}
+                    />
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Log incidents to track open items by type here.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-3 mb-4">
+                    {[
+                      { label: 'Open', val: incidentOpen },
+                      { label: 'Last 90 days', val: incidents90 },
+                      { label: 'Total', val: incidents.length },
+                    ].map(s => (
+                      <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold text-ink">{s.val}</p>
+                        <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {incidentTypeRows.length > 0 && (
+                    <>
+                      <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">Open by type</p>
+                      <MiniBarChart
+                        rows={incidentTypeRows.map(r => ({ label: r.label, count: r.count, colour: 'bg-red-400' }))}
+                        total={incidentOpen}
+                      />
+                    </>
+                  )}
+                  {incidentOpen === 0 && (
+                    <p className="text-sm text-ink-muted mt-2">No open incidents — all logged incidents are closed.</p>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* ── Feedback ──────────────────────────────────────────────────── */}
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-bold text-brand uppercase tracking-wide mb-3 antialiased">Complaints &amp; feedback</h3>
+              {feedback.length === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <MiniBarChart
+                      rows={[
+                        { label: 'Compliments', count: 5, colour: 'bg-green-500' },
+                        { label: 'Complaints',  count: 2, colour: 'bg-red-400'   },
+                        { label: 'Suggestions', count: 2, colour: 'bg-amber-400' },
+                        { label: 'Concerns',    count: 1, colour: 'bg-gray-400'  },
+                      ]}
+                      total={10}
+                    />
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Log feedback and complaints to track trends here.</p>
+                </div>
+              ) : (
+                <>
+                  <MiniBarChart
+                    rows={[
+                      { label: 'Compliments', count: compliments, colour: 'bg-green-500' },
+                      { label: 'Complaints',  count: complaints,  colour: 'bg-red-400'   },
+                      { label: 'Suggestions', count: suggestions, colour: 'bg-amber-400' },
+                      { label: 'Concerns',    count: concerns,    colour: 'bg-gray-400'  },
+                    ].filter(r => r.count > 0)}
+                    total={feedback.length}
+                  />
+                  <p className="text-sm text-ink-muted mt-3">
+                    {openComplaints > 0
+                      ? `${openComplaints} open complaint${openComplaints !== 1 ? 's' : ''} awaiting resolution.`
+                      : feedbackOpen > 0
+                        ? `${feedbackOpen} open feedback item${feedbackOpen !== 1 ? 's' : ''}.`
+                        : 'All feedback items are closed or actioned.'}
+                  </p>
+                </>
+              )}
+            </div>
+
+            {/* ── Governance meetings ───────────────────────────────────────── */}
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-bold text-brand uppercase tracking-wide mb-3 antialiased">Governance meetings</h3>
+              {govMeetings.length === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <div className="flex gap-3">
+                      {[{ label: 'Meetings (12 mo)', val: '8' }, { label: 'Signed off', val: '7' }].map(s => (
+                        <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
+                          <p className="text-xl font-bold text-ink">{s.val}</p>
+                          <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Log governance meetings to demonstrate active Well-Led oversight to CQC.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-3 mb-4">
+                    {[
+                      { label: 'Meetings (12 mo)', val: govTotal12 },
+                      { label: 'Signed off',       val: govSignedOff },
+                    ].map(s => (
+                      <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold text-ink">{s.val}</p>
+                        <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {govTotal12 > 0 && (
+                    <CompletionBar
+                      label="of meetings in the last 12 months signed off"
+                      pct={pct(govSignedOff, govTotal12)}
+                      colourA="bg-[#014D4E]" countA={govSignedOff}              labelA="Signed off"
+                      colourB="bg-gray-200"  countB={govTotal12 - govSignedOff} labelB="Draft"
+                      colourC="bg-transparent" countC={0} labelC=""
+                    />
+                  )}
+                  {govLastDate && (
+                    <p className="text-sm text-ink-muted mt-3">
+                      Most recent meeting: {new Date(govLastDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.
+                    </p>
+                  )}
+                </>
               )}
             </div>
 
