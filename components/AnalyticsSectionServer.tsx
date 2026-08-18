@@ -568,326 +568,330 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </Link>
         </div>
       ) : (
-        <div style={{ columns: '2', columnGap: '1rem' }} className="max-md:!columns-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
-            <TrendChart points={trendPoints} />
-          </div>
+          {/* ── LEFT COLUMN: Overall readiness · KLOE group · People's Voice ── */}
+          <div className="flex flex-col gap-4">
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE ownership</h3>
-            <CompletionBar
-              label={`of ${totalKlos} KLOEs assigned to a team member`}
-              pct={ownershipPct}
-              colourA="bg-[#014D4E]" countA={assigned}   labelA="Assigned"
-              colourB="bg-gray-200"  countB={unassigned} labelB="Unassigned"
-              colourC="bg-gray-200"  countC={0}          labelC=""
-            />
-            <p className="text-sm text-ink-muted mt-3">
-              {unassigned > 0
-                ? `${unassigned} KLOE${unassigned !== 1 ? 's have' : ' has'} no owner — assign from each KLOE's detail page.`
-                : 'All KLOEs have an owner.'}
-            </p>
-          </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
+              <TrendChart points={trendPoints} />
+            </div>
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE evidence coverage</h3>
-            <CompletionBar
-              label="of KLOEs have evidence attached"
-              pct={evidencePct}
-              colourA="bg-[#014D4E]" countA={kloesWithEvidence}             labelA="With evidence"
-              colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
-              colourC="bg-transparent" countC={0} labelC=""
-            />
-            <p className="text-sm text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
-          </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE ownership</h3>
+              <CompletionBar
+                label={`of ${totalKlos} KLOEs assigned to a team member`}
+                pct={ownershipPct}
+                colourA="bg-[#014D4E]" countA={assigned}   labelA="Assigned"
+                colourB="bg-gray-200"  countB={unassigned} labelB="Unassigned"
+                colourC="bg-gray-200"  countC={0}          labelC=""
+              />
+              <p className="text-sm text-ink-muted mt-3">
+                {unassigned > 0
+                  ? `${unassigned} KLOE${unassigned !== 1 ? 's have' : ' has'} no owner — assign from each KLOE's detail page.`
+                  : 'All KLOEs have an owner.'}
+              </p>
+            </div>
 
-          {/* ── KLOE action plan coverage ─────────────────────────────────── */}
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan coverage</h3>
-            <CompletionBar
-              label={`of ${totalKlos} KLOEs have an action plan`}
-              pct={kloeActionPct}
-              colourA="bg-[#014D4E]" countA={kloesWithActions}            labelA="With actions"
-              colourB="bg-gray-200"  countB={totalKlos - kloesWithActions} labelB="No actions"
-              colourC="bg-transparent" countC={0} labelC=""
-            />
-            <p className="text-sm text-ink-muted mt-3">
-              {totalKlos - kloesWithActions > 0
-                ? `${totalKlos - kloesWithActions} KLOE${totalKlos - kloesWithActions !== 1 ? 's have' : ' has'} no action plan. Add from each KLOE's detail page.`
-                : 'All KLOEs have at least one action item.'}
-            </p>
-          </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE evidence coverage</h3>
+              <CompletionBar
+                label="of KLOEs have evidence attached"
+                pct={evidencePct}
+                colourA="bg-[#014D4E]" countA={kloesWithEvidence}             labelA="With evidence"
+                colourB="bg-gray-200"  countB={totalKlos - kloesWithEvidence}  labelB="No evidence"
+                colourC="bg-transparent" countC={0} labelC=""
+              />
+              <p className="text-sm text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
+            </div>
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan health</h3>
-            {actions.length === 0 ? (
-              <div>
-                <div className="opacity-30 select-none space-y-5" aria-hidden="true">
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan coverage</h3>
+              <CompletionBar
+                label={`of ${totalKlos} KLOEs have an action plan`}
+                pct={kloeActionPct}
+                colourA="bg-[#014D4E]" countA={kloesWithActions}            labelA="With actions"
+                colourB="bg-gray-200"  countB={totalKlos - kloesWithActions} labelB="No actions"
+                colourC="bg-transparent" countC={0} labelC=""
+              />
+              <p className="text-sm text-ink-muted mt-3">
+                {totalKlos - kloesWithActions > 0
+                  ? `${totalKlos - kloesWithActions} KLOE${totalKlos - kloesWithActions !== 1 ? 's have' : ' has'} no action plan. Add from each KLOE's detail page.`
+                  : 'All KLOEs have at least one action item.'}
+              </p>
+            </div>
+
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan health</h3>
+              {actions.length === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none space-y-5" aria-hidden="true">
+                    <div>
+                      <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
+                      <MiniBarChart
+                        rows={[
+                          { label: 'To do',       count: 6, colour: 'bg-gray-400' },
+                          { label: 'In progress', count: 2, colour: 'bg-amber-400' },
+                          { label: 'Completed',   count: 1, colour: 'bg-green-500' },
+                        ]}
+                        total={9}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
+                      <MiniBarChart
+                        rows={[
+                          { label: 'High',   count: 3, colour: 'bg-red-400'   },
+                          { label: 'Medium', count: 4, colour: 'bg-amber-400' },
+                          { label: 'Low',    count: 2, colour: 'bg-green-400' },
+                        ]}
+                        total={9}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-sm text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
+                </div>
+              ) : (
+                <div className="space-y-5">
                   <div>
                     <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
                     <MiniBarChart
                       rows={[
-                        { label: 'To do',       count: 6, colour: 'bg-gray-400' },
-                        { label: 'In progress', count: 2, colour: 'bg-amber-400' },
-                        { label: 'Completed',   count: 1, colour: 'bg-green-500' },
+                        { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
+                        { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
+                        { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
                       ]}
-                      total={9}
+                      total={actions.length}
                     />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
                     <MiniBarChart
                       rows={[
-                        { label: 'High',   count: 3, colour: 'bg-red-400'   },
-                        { label: 'Medium', count: 4, colour: 'bg-amber-400' },
-                        { label: 'Low',    count: 2, colour: 'bg-green-400' },
+                        { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
+                        { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
+                        { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
                       ]}
-                      total={9}
+                      total={actions.length}
                     />
                   </div>
                 </div>
-                <p className="text-sm text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
-              </div>
-            ) : (
-              <div className="space-y-5">
-                <div>
-                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
-                  <MiniBarChart
-                    rows={[
-                      { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
-                      { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
-                      { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
-                    ]}
-                    total={actions.length}
-                  />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
-                  <MiniBarChart
-                    rows={[
-                      { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
-                      { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
-                      { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
-                    ]}
-                    total={actions.length}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
-            <CompletionBar
-              label={`of ${pvTotal} statements with strong evidence`}
-              pct={pvPct}
-              colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
-              colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
-              colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
-            />
-          </div>
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
+              <CompletionBar
+                label={`of ${pvTotal} statements with strong evidence`}
+                pct={pvPct}
+                colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
+                colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
+                colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
+              />
+            </div>
 
-          {/* ── People's Voice action plan coverage ───────────────────────── */}
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice action plan coverage</h3>
-            {pvTotal === 0 ? (
-              <p className="text-sm text-ink-muted">No &ldquo;I&rdquo; statements found. Add statements in the People&apos;s Voice section.</p>
-            ) : (
-              <>
-                <CompletionBar
-                  label={`of ${pvTotal} "I" statements have an action plan`}
-                  pct={pvActionPct}
-                  colourA="bg-[#014D4E]" countA={statementsWithActions}          labelA="With actions"
-                  colourB="bg-gray-200"  countB={pvTotal - statementsWithActions} labelB="No actions"
-                  colourC="bg-transparent" countC={0} labelC=""
-                />
-                <p className="text-sm text-ink-muted mt-3">
-                  {pvTotal - statementsWithActions > 0
-                    ? `${pvTotal - statementsWithActions} statement${pvTotal - statementsWithActions !== 1 ? 's have' : ' has'} no action plan. Add from the People's Voice section.`
-                    : 'All "I" statements have at least one action item.'}
-                </p>
-              </>
-            )}
-          </div>
-
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
-            <MockTrendChart sessions={mockSessions} />
-            {mockSessions.length > 0 && (
-              <div className="flex gap-3 mt-3 flex-wrap">
-                {Object.entries(RATING_COLOUR).map(([, cfg]) => (
-                  <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
-                    <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
-                    {cfg.label}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* ── Mock inspection action plan coverage ──────────────────────── */}
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection — action plan coverage</h3>
-            {!mostRecentInspection ? (
-              <MockActionPlanSkeleton />
-            ) : mockCoverage.length === 0 ? (
-              <p className="text-sm text-ink-muted">No amber or red findings in your most recent mock inspection — nothing to action.</p>
-            ) : (
-              <>
-                <p className="text-xs text-ink-muted mb-3">
-                  Most recent inspection: {new Date(mostRecentInspection.completed_at ?? mostRecentInspection.started_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.
-                  Amber and red findings only.
-                </p>
-                <div className="space-y-2">
-                  {mockCoverage.map(({ area, total, actioned }) => {
-                    const areaPct = pct(actioned, total)
-                    const colour  = actioned === total ? '#458F00' : actioned === 0 ? '#DA291C' : '#F47738'
-                    return (
-                      <div key={area} className="flex items-center gap-3">
-                        <span className="text-sm text-ink w-28 shrink-0">{area}</span>
-                        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full" style={{ width: `${areaPct}%`, backgroundColor: colour }} />
-                        </div>
-                        <span className="text-xs font-semibold tabular-nums w-12 text-right" style={{ color: colour }}>
-                          {actioned} / {total}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-                <p className="text-sm text-ink-muted mt-3">
-                  Create action items from the mock inspection report to link them to specific findings.
-                </p>
-              </>
-            )}
-          </div>
-
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
-            <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
-          </div>
-
-          {/* ── RTW compliance ────────────────────────────────────────────── */}
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Return-to-work interviews</h3>
-            {rtwTotal === 0 ? (
-              <div>
-                <div className="opacity-30 select-none" aria-hidden="true">
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice action plan coverage</h3>
+              {pvTotal === 0 ? (
+                <p className="text-sm text-ink-muted">No &ldquo;I&rdquo; statements found. Add statements in the People&apos;s Voice section.</p>
+              ) : (
+                <>
                   <CompletionBar
-                    label="of closed sick-leave episodes have an RTW interview recorded"
-                    pct={66}
-                    colourA="bg-[#014D4E]" countA={2} labelA="RTW recorded"
-                    colourB="bg-gray-200"   countB={1} labelB="Not recorded"
+                    label={`of ${pvTotal} "I" statements have an action plan`}
+                    pct={pvActionPct}
+                    colourA="bg-[#014D4E]" countA={statementsWithActions}          labelA="With actions"
+                    colourB="bg-gray-200"  countB={pvTotal - statementsWithActions} labelB="No actions"
                     colourC="bg-transparent" countC={0} labelC=""
                   />
-                </div>
-                <p className="text-sm text-ink-muted mt-2">Log absence episodes to track RTW interview compliance here.</p>
-              </div>
-            ) : (
-              <>
-                <CompletionBar
-                  label={`of ${rtwTotal} closed sick-leave episode${rtwTotal !== 1 ? 's have' : ' has'} an RTW interview recorded`}
-                  pct={rtwPct}
-                  colourA="bg-[#014D4E]"  countA={rtwCompleted}          labelA="RTW recorded"
-                  colourB="bg-gray-200"   countB={rtwTotal - rtwCompleted} labelB="Not recorded"
-                  colourC="bg-transparent" countC={0} labelC=""
-                />
-                <p className="text-sm text-ink-muted mt-3">
-                  {rtwTotal - rtwCompleted > 0
-                    ? `${rtwTotal - rtwCompleted} episode${rtwTotal - rtwCompleted !== 1 ? 's' : ''} missing an RTW interview — record from each staff member's HR page.`
-                    : 'All closed sick-leave episodes have an RTW interview recorded.'}
-                </p>
-              </>
-            )}
+                  <p className="text-sm text-ink-muted mt-3">
+                    {pvTotal - statementsWithActions > 0
+                      ? `${pvTotal - statementsWithActions} statement${pvTotal - statementsWithActions !== 1 ? 's have' : ' has'} no action plan. Add from the People's Voice section.`
+                      : 'All "I" statements have at least one action item.'}
+                  </p>
+                </>
+              )}
+            </div>
+
           </div>
 
-          {/* ── Absence reason breakdown ───────────────────────────────────── */}
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Absence reasons</h3>
-            {absenceRows.length === 0 ? (
-              <div>
-                <div className="opacity-30 select-none" aria-hidden="true">
-                  <MiniBarChart
-                    rows={[
-                      { label: 'Musculoskeletal',  count: 4, colour: 'bg-[#014D4E]' },
-                      { label: 'Mental health',     count: 3, colour: 'bg-[#014D4E]' },
-                      { label: 'Respiratory',       count: 2, colour: 'bg-[#014D4E]' },
-                      { label: 'Injury',            count: 1, colour: 'bg-[#014D4E]' },
-                    ]}
-                    total={10}
+          {/* ── RIGHT COLUMN: Mock inspection · Review · HR ───────────────── */}
+          <div className="flex flex-col gap-4">
+
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
+              <MockTrendChart sessions={mockSessions} />
+              {mockSessions.length > 0 && (
+                <div className="flex gap-3 mt-3 flex-wrap">
+                  {Object.entries(RATING_COLOUR).map(([, cfg]) => (
+                    <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+                      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
+                      {cfg.label}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection — action plan coverage</h3>
+              {!mostRecentInspection ? (
+                <MockActionPlanSkeleton />
+              ) : mockCoverage.length === 0 ? (
+                <p className="text-sm text-ink-muted">No amber or red findings in your most recent mock inspection — nothing to action.</p>
+              ) : (
+                <>
+                  <p className="text-xs text-ink-muted mb-3">
+                    Most recent inspection: {new Date(mostRecentInspection.completed_at ?? mostRecentInspection.started_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.
+                    Amber and red findings only.
+                  </p>
+                  <div className="space-y-2">
+                    {mockCoverage.map(({ area, total, actioned }) => {
+                      const areaPct = pct(actioned, total)
+                      const colour  = actioned === total ? '#458F00' : actioned === 0 ? '#DA291C' : '#F47738'
+                      return (
+                        <div key={area} className="flex items-center gap-3">
+                          <span className="text-sm text-ink w-28 shrink-0">{area}</span>
+                          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-full rounded-full" style={{ width: `${areaPct}%`, backgroundColor: colour }} />
+                          </div>
+                          <span className="text-xs font-semibold tabular-nums w-12 text-right" style={{ color: colour }}>
+                            {actioned} / {total}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <p className="text-sm text-ink-muted mt-3">
+                    Create action items from the mock inspection report to link them to specific findings.
+                  </p>
+                </>
+              )}
+            </div>
+
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
+              <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
+            </div>
+
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Return-to-work interviews</h3>
+              {rtwTotal === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <CompletionBar
+                      label="of closed sick-leave episodes have an RTW interview recorded"
+                      pct={66}
+                      colourA="bg-[#014D4E]" countA={2} labelA="RTW recorded"
+                      colourB="bg-gray-200"   countB={1} labelB="Not recorded"
+                      colourC="bg-transparent" countC={0} labelC=""
+                    />
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Log absence episodes to track RTW interview compliance here.</p>
+                </div>
+              ) : (
+                <>
+                  <CompletionBar
+                    label={`of ${rtwTotal} closed sick-leave episode${rtwTotal !== 1 ? 's have' : ' has'} an RTW interview recorded`}
+                    pct={rtwPct}
+                    colourA="bg-[#014D4E]"  countA={rtwCompleted}          labelA="RTW recorded"
+                    colourB="bg-gray-200"   countB={rtwTotal - rtwCompleted} labelB="Not recorded"
+                    colourC="bg-transparent" countC={0} labelC=""
                   />
-                </div>
-                <p className="text-sm text-ink-muted mt-2">Log absence episodes to see the breakdown of reasons here.</p>
-              </div>
-            ) : (
-              <>
-                <MiniBarChart
-                  rows={reasonRows.map(r => ({ label: r.label, count: r.count, colour: 'bg-[#014D4E]' }))}
-                  total={absenceRows.length}
-                />
-                <p className="text-sm text-ink-muted mt-3">
-                  {absenceRows.length} absence episode{absenceRows.length !== 1 ? 's' : ''} recorded across all staff.
-                </p>
-              </>
-            )}
-          </div>
+                  <p className="text-sm text-ink-muted mt-3">
+                    {rtwTotal - rtwCompleted > 0
+                      ? `${rtwTotal - rtwCompleted} episode${rtwTotal - rtwCompleted !== 1 ? 's' : ''} missing an RTW interview — record from each staff member's HR page.`
+                      : 'All closed sick-leave episodes have an RTW interview recorded.'}
+                  </p>
+                </>
+              )}
+            </div>
 
-          {/* ── Bradford Factor overview ───────────────────────────────────── */}
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Bradford Factor — team overview</h3>
-            {rollingSick.length === 0 ? (
-              <div>
-                <div className="opacity-30 select-none" aria-hidden="true">
-                  <div className="flex gap-3">
-                    {[{ label: 'Episodes', val: '6' }, { label: 'Days lost', val: '14' }, { label: 'Org score', val: '504' }].map(s => (
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Absence reasons</h3>
+              {absenceRows.length === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <MiniBarChart
+                      rows={[
+                        { label: 'Musculoskeletal',  count: 4, colour: 'bg-[#014D4E]' },
+                        { label: 'Mental health',     count: 3, colour: 'bg-[#014D4E]' },
+                        { label: 'Respiratory',       count: 2, colour: 'bg-[#014D4E]' },
+                        { label: 'Injury',            count: 1, colour: 'bg-[#014D4E]' },
+                      ]}
+                      total={10}
+                    />
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Log absence episodes to see the breakdown of reasons here.</p>
+                </div>
+              ) : (
+                <>
+                  <MiniBarChart
+                    rows={reasonRows.map(r => ({ label: r.label, count: r.count, colour: 'bg-[#014D4E]' }))}
+                    total={absenceRows.length}
+                  />
+                  <p className="text-sm text-ink-muted mt-3">
+                    {absenceRows.length} absence episode{absenceRows.length !== 1 ? 's' : ''} recorded across all staff.
+                  </p>
+                </>
+              )}
+            </div>
+
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Bradford Factor — team overview</h3>
+              {rollingSick.length === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <div className="flex gap-3">
+                      {[{ label: 'Episodes', val: '6' }, { label: 'Days lost', val: '14' }, { label: 'Org score', val: '504' }].map(s => (
+                        <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
+                          <p className="text-xl font-bold text-ink">{s.val}</p>
+                          <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Log sick-leave episodes to see Bradford Factor data here.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-3 mb-3">
+                    {[
+                      { label: 'Episodes (52 wks)', val: bfEpisodes },
+                      { label: 'Days lost (52 wks)', val: bfDays % 1 === 0 ? bfDays : bfDays.toFixed(1) },
+                      { label: 'Org score (S²×D)', val: bfOrgScore },
+                    ].map(s => (
                       <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
                         <p className="text-xl font-bold text-ink">{s.val}</p>
                         <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
                       </div>
                     ))}
                   </div>
-                </div>
-                <p className="text-sm text-ink-muted mt-2">Log sick-leave episodes to see Bradford Factor data here.</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex gap-3 mb-3">
-                  {[
-                    { label: 'Episodes (52 wks)', val: bfEpisodes },
-                    { label: 'Days lost (52 wks)', val: bfDays % 1 === 0 ? bfDays : bfDays.toFixed(1) },
-                    { label: 'Org score (S²×D)', val: bfOrgScore },
-                  ].map(s => (
-                    <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
-                      <p className="text-xl font-bold text-ink">{s.val}</p>
-                      <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm text-ink-muted">
-                  Individual scores are on each staff member&apos;s HR page. Score ≤ 50 = low · 51–450 = medium · 451+ = high.
-                </p>
-              </>
-            )}
-          </div>
+                  <p className="text-sm text-ink-muted">
+                    Individual scores are on each staff member&apos;s HR page. Score ≤ 50 = low · 51–450 = medium · 451+ = high.
+                  </p>
+                </>
+              )}
+            </div>
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
-            {hrTotal === 0 ? (
-              <div>
-                <div className="opacity-30 select-none" aria-hidden="true">
-                  <HrComplianceChart checks={[
-                    { label: 'DBS checks',   inDate: 0, total: 10 },
-                    { label: 'Supervisions', inDate: 0, total: 10 },
-                    { label: 'Appraisals',   inDate: 0, total: 10 },
-                  ]} />
+            <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
+              {hrTotal === 0 ? (
+                <div>
+                  <div className="opacity-30 select-none" aria-hidden="true">
+                    <HrComplianceChart checks={[
+                      { label: 'DBS checks',   inDate: 0, total: 10 },
+                      { label: 'Supervisions', inDate: 0, total: 10 },
+                      { label: 'Appraisals',   inDate: 0, total: 10 },
+                    ]} />
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">Add staff profiles in HR to see compliance rates here.</p>
                 </div>
-                <p className="text-sm text-ink-muted mt-2">Add staff profiles in HR to see compliance rates here.</p>
-              </div>
-            ) : (
-              <HrComplianceChart checks={hrChecks} />
-            )}
+              ) : (
+                <HrComplianceChart checks={hrChecks} />
+              )}
+            </div>
+
           </div>
 
         </div>
