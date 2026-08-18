@@ -203,8 +203,14 @@ export default async function AccountPage({
           {/* What's included */}
           <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
             <h2 className="text-base font-semibold text-brand mb-1">What&apos;s included in your plan</h2>
-            <p className="text-sm text-ink-dim mb-6">
+            <p className="text-sm text-ink-dim mb-4">
               Every feature below is included in your AlwaysReady subscription at no extra cost.
+            </p>
+            <p className="text-sm text-ink-dim mb-6">
+              Missing something you need?{' '}
+              <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
+                Share a suggestion →
+              </Link>
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {([
@@ -260,7 +266,7 @@ export default async function AccountPage({
                 },
                 {
                   name: "People's Voice",
-                  desc: "The 19 TLAP \"I\" statements from the CQC assessment framework are pre-loaded. Record your evidence, rate your confidence as Green, Amber, or Red, and see a summary dashboard across all five key questions.",
+                  desc: "The 19 TLAP \"I\" statements from the CQC assessment framework are pre-loaded. Record your evidence, upload supporting files against individual statements, create structured action plans, and see a summary dashboard across all five key questions.",
                   href: '/dashboard/peoples-voice',
                 },
                 {
