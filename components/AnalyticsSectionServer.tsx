@@ -631,6 +631,64 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </p>
           </div>
 
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
+            {actions.length === 0 ? (
+              <div>
+                <div className="opacity-30 select-none space-y-5" aria-hidden="true">
+                  <div>
+                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
+                    <MiniBarChart
+                      rows={[
+                        { label: 'To do',       count: 6, colour: 'bg-gray-400' },
+                        { label: 'In progress', count: 2, colour: 'bg-amber-400' },
+                        { label: 'Completed',   count: 1, colour: 'bg-green-500' },
+                      ]}
+                      total={9}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
+                    <MiniBarChart
+                      rows={[
+                        { label: 'High',   count: 3, colour: 'bg-red-400'   },
+                        { label: 'Medium', count: 4, colour: 'bg-amber-400' },
+                        { label: 'Low',    count: 2, colour: 'bg-green-400' },
+                      ]}
+                      total={9}
+                    />
+                  </div>
+                </div>
+                <p className="text-sm text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                <div>
+                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
+                  <MiniBarChart
+                    rows={[
+                      { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
+                      { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
+                      { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
+                    ]}
+                    total={actions.length}
+                  />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
+                  <MiniBarChart
+                    rows={[
+                      { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
+                      { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
+                      { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
+                    ]}
+                    total={actions.length}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* ── People's Voice action plan coverage ───────────────────────── */}
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice action plan coverage</h3>
@@ -829,64 +887,6 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
               </div>
             ) : (
               <HrComplianceChart checks={hrChecks} />
-            )}
-          </div>
-
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
-            {actions.length === 0 ? (
-              <div>
-                <div className="opacity-30 select-none space-y-5" aria-hidden="true">
-                  <div>
-                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
-                    <MiniBarChart
-                      rows={[
-                        { label: 'To do',       count: 6, colour: 'bg-gray-400' },
-                        { label: 'In progress', count: 2, colour: 'bg-amber-400' },
-                        { label: 'Completed',   count: 1, colour: 'bg-green-500' },
-                      ]}
-                      total={9}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
-                    <MiniBarChart
-                      rows={[
-                        { label: 'High',   count: 3, colour: 'bg-red-400'   },
-                        { label: 'Medium', count: 4, colour: 'bg-amber-400' },
-                        { label: 'Low',    count: 2, colour: 'bg-green-400' },
-                      ]}
-                      total={9}
-                    />
-                  </div>
-                </div>
-                <p className="text-sm text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
-              </div>
-            ) : (
-              <div className="space-y-5">
-                <div>
-                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
-                  <MiniBarChart
-                    rows={[
-                      { label: 'To do',       count: statusCounts.to_do,       colour: 'bg-gray-400' },
-                      { label: 'In progress', count: statusCounts.in_progress, colour: 'bg-amber-400' },
-                      { label: 'Completed',   count: statusCounts.completed,   colour: 'bg-green-500' },
-                    ]}
-                    total={actions.length}
-                  />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
-                  <MiniBarChart
-                    rows={[
-                      { label: 'High',   count: priorityCounts['high']   ?? 0, colour: 'bg-red-400'   },
-                      { label: 'Medium', count: priorityCounts['medium'] ?? 0, colour: 'bg-amber-400' },
-                      { label: 'Low',    count: priorityCounts['low']    ?? 0, colour: 'bg-green-400' },
-                    ]}
-                    total={actions.length}
-                  />
-                </div>
-              </div>
             )}
           </div>
 
