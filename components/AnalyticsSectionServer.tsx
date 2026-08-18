@@ -574,12 +574,12 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           <div className="flex flex-col gap-4">
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2">Overall readiness — 6-month view</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-2 antialiased">Overall readiness — 6-month view</h3>
               <TrendChart points={trendPoints} />
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE ownership</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">KLOE ownership</h3>
               <CompletionBar
                 label={`of ${totalKlos} KLOEs assigned to a team member`}
                 pct={ownershipPct}
@@ -595,7 +595,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE evidence coverage</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">KLOE evidence coverage</h3>
               <CompletionBar
                 label="of KLOEs have evidence attached"
                 pct={evidencePct}
@@ -607,7 +607,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan coverage</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">KLOE action plan coverage</h3>
               <CompletionBar
                 label={`of ${totalKlos} KLOEs have an action plan`}
                 pct={kloeActionPct}
@@ -623,7 +623,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan health</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">KLOE action plan health</h3>
               {actions.length === 0 ? (
                 <div>
                   <div className="opacity-30 select-none space-y-5" aria-hidden="true">
@@ -681,12 +681,12 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE review calendar</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">KLOE review calendar</h3>
               <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">People&apos;s Voice coverage</h3>
               <CompletionBar
                 label={`of ${pvTotal} statements with strong evidence`}
                 pct={pvPct}
@@ -697,7 +697,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice action plan coverage</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">People&apos;s Voice action plan coverage</h3>
               {pvTotal === 0 ? (
                 <p className="text-sm text-ink-muted">No &ldquo;I&rdquo; statements found. Add statements in the People&apos;s Voice section.</p>
               ) : (
@@ -724,7 +724,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           <div className="flex flex-col gap-4">
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">Mock inspection ratings</h3>
               <MockTrendChart sessions={mockSessions} />
               {mockSessions.length > 0 && (
                 <div className="flex gap-3 mt-3 flex-wrap">
@@ -739,7 +739,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection — action plan coverage</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">Mock inspection — action plan coverage</h3>
               {!mostRecentInspection ? (
                 <MockActionPlanSkeleton />
               ) : mockCoverage.length === 0 ? (
@@ -775,7 +775,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Return-to-work interviews</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">Return-to-work interviews</h3>
               {rtwTotal === 0 ? (
                 <div>
                   <div className="opacity-30 select-none" aria-hidden="true">
@@ -808,7 +808,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Absence reasons</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">Absence reasons</h3>
               {absenceRows.length === 0 ? (
                 <div>
                   <div className="opacity-30 select-none" aria-hidden="true">
@@ -838,7 +838,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Bradford Factor — team overview</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">Bradford Factor — team overview</h3>
               {rollingSick.length === 0 ? (
                 <div>
                   <div className="opacity-30 select-none" aria-hidden="true">
@@ -875,7 +875,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3 antialiased">HR compliance</h3>
               {hrTotal === 0 ? (
                 <div>
                   <div className="opacity-30 select-none" aria-hidden="true">
