@@ -355,9 +355,46 @@ function HomeView({
     <div className="px-8 py-10">
       {/* Hero search */}
       <div className="mb-10">
-        <h1 className="text-[clamp(1.75rem,3vw,2.25rem)] font-extrabold tracking-tight text-ink mb-5 leading-tight">
-          How can we <em className="not-italic text-[#014D4E]">help you?</em>
-        </h1>
+        {/* Particles animation keyframes */}
+        <style>{`
+          @keyframes ar-float-up {
+            0%   { opacity: 0; transform: translateY(0) scale(1); }
+            15%  { opacity: 0.65; }
+            80%  { opacity: 0; transform: translateY(-42px) scale(0.6); }
+            100% { opacity: 0; transform: translateY(-42px) scale(0.6); }
+          }
+        `}</style>
+        <div className="relative mb-5" style={{ overflow: 'visible' }}>
+          <h1 className="text-[clamp(1.75rem,3vw,2.25rem)] font-extrabold tracking-tight text-ink leading-tight">
+            How can we <em className="not-italic text-[#014D4E]">help you?</em>
+          </h1>
+          {/* Floating particles */}
+          {([
+            { left: '29%', bottom: '2px',  size: 5, color: '#014D4E', delay: '0s',    dur: '2.4s' },
+            { left: '36%', bottom: '6px',  size: 7, color: '#00b8a6', delay: '0.7s',  dur: '2.9s' },
+            { left: '44%', bottom: '0px',  size: 5, color: '#d4aa3c', delay: '1.3s',  dur: '2.3s' },
+            { left: '52%', bottom: '8px',  size: 6, color: '#014D4E', delay: '0.4s',  dur: '2.7s' },
+            { left: '40%', bottom: '3px',  size: 5, color: '#e8c547', delay: '1.9s',  dur: '2.5s' },
+            { left: '60%', bottom: '5px',  size: 7, color: '#00b8a6', delay: '1.0s',  dur: '3.1s' },
+            { left: '33%', bottom: '1px',  size: 5, color: '#d4aa3c', delay: '1.6s',  dur: '2.2s' },
+          ] as const).map((dot, i) => (
+            <span
+              key={i}
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                left: dot.left,
+                bottom: dot.bottom,
+                width: dot.size,
+                height: dot.size,
+                borderRadius: '50%',
+                background: dot.color,
+                animation: `ar-float-up ${dot.dur} ease-in-out ${dot.delay} infinite`,
+                pointerEvents: 'none',
+              }}
+            />
+          ))}
+        </div>
         <div className="relative flex items-center max-w-[560px]">
           <span className="absolute left-4 text-ink-muted pointer-events-none">
             <IconSearch />
@@ -552,7 +589,7 @@ export function HelpCentre() {
       </aside>
 
       {/* ── Content ── */}
-      <div ref={contentRef} className="flex-1 min-w-0 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
+      <div ref={contentRef} className="flex-1 min-w-0 overflow-y-auto bg-card" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
         {/* Mobile topic strip */}
         <div className="md:hidden border-b border-line bg-canvas overflow-x-auto">
           <div className="flex items-center gap-1 px-4 py-3 whitespace-nowrap">
