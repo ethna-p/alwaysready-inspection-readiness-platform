@@ -66,14 +66,14 @@ export default function KloeTableHeader({
 
   return (
     <thead>
-      <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
+      <tr className="border-b border-line text-sm text-ink uppercase tracking-wide">
         {columns.map(col => {
           const active = sort === col.key
           return (
             <th
               key={col.key}
               scope="col"
-              className={`text-left px-4 py-3 font-medium ${col.classes ?? ''}`}
+              className={`text-left px-4 py-3 font-semibold ${col.classes ?? ''}`}
               aria-sort={active ? (dir === 'asc' ? 'ascending' : 'descending') : undefined}
             >
               <button
