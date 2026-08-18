@@ -375,39 +375,13 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     }
   })
 
-  // ── KLOE completion by key question ──────────────────────────────────────
-  // Build klo_item_id → key_question_id map
-  const kloToKq = new Map<string, string>()
-  for (const k of kloItemRows ?? []) kloToKq.set(k.id, k.key_question_id)
+  // ── KLOE ownership ────────────────────────────────────────────────────────
+  // kloItemRows and keyQuestionRows fetched but not needed here — suppress lint
+  void kloItemRows; void keyQuestionRows
 
-  // Build key_question_id → name map
-  const kqNameMap = new Map<string, string>()
-  for (const kq of keyQuestionRows ?? []) kqNameMap.set(kq.id, kq.name)
-
-  // Build record map
-  const recordByKloId = new Map<string, ComplianceRecord>()
-  for (const r of records) recordByKloId.set(r.klo_item_id, r)
-
-  // Group klo_items by key question and compute completion per KQ
-  const kqGroups = new Map<string, { completed: number; total: number }>()
-  for (const k of kloItemRows ?? []) {
-    const kqId = k.key_question_id
-    if (!kqGroups.has(kqId)) kqGroups.set(kqId, { completed: 0, total: 0 })
-    const g = kqGroups.get(kqId)!
-    g.total++
-    const rec = recordByKloId.get(k.id)
-    if (rec?.status === 'completed') g.completed++
-  }
-
-  // Order: Safe, Effective, Caring, Responsive, Well-led (alphabetical fallback)
-  const KQ_ORDER = ['Safe', 'Effective', 'Caring', 'Responsive', 'Well-led', 'Well-Led']
-  const kqStats = [...kqGroups.entries()]
-    .map(([kqId, counts]) => ({ name: kqNameMap.get(kqId) ?? kqId, ...counts }))
-    .sort((a, b) => {
-      const ai = KQ_ORDER.findIndex(n => a.name.toLowerCase().startsWith(n.toLowerCase()))
-      const bi = KQ_ORDER.findIndex(n => b.name.toLowerCase().startsWith(n.toLowerCase()))
-      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi)
-    })
+  const assigned   = records.filter(r => r.assigned_to != null).length
+  const unassigned = totalKlos - assigned
+  const ownershipPct = pct(assigned, totalKlos)
 
   // ── People's Voice ────────────────────────────────────────────────────────
   const pvTotal       = (pvStatements ?? []).length
@@ -481,35 +455,18 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE completion by key question</h3>
-            {kqStats.length === 0 ? (
-              <p className="text-xs text-ink-muted">No KLOE data available.</p>
-            ) : (
-              <div className="space-y-3">
-                {kqStats.map(kq => {
-                  const p = pct(kq.completed, kq.total)
-                  const barColour = p === 100 ? 'bg-green-500' : p >= 50 ? 'bg-amber-400' : 'bg-red-400'
-                  return (
-                    <div key={kq.name}>
-                      <div className="flex justify-between items-baseline mb-1">
-                        <span className="text-xs font-medium text-ink">{kq.name}</span>
-                        <span className="text-xs text-ink-dim tabular-nums">{kq.completed}/{kq.total}</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full transition-all ${barColour}`}
-                          style={{ width: `${p}%` }}
-                          role="progressbar"
-                          aria-valuenow={p}
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          aria-label={`${kq.name}: ${kq.completed} of ${kq.total} KLOEs completed`}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE ownership</h3>
+            <CompletionBar
+              label={`of ${totalKlos} KLOEs assigned to a team member`}
+              pct={ownershipPct}
+              colourA="bg-[#014D4E]" countA={assigned}   labelA="Assigned"
+              colourB="bg-gray-200"  countB={unassigned} labelB="Unassigned"
+              colourC="bg-gray-200"  countC={0}          labelC=""
+            />
+            {unassigned > 0 && (
+              <p className="text-xs text-ink-muted mt-3">
+                {unassigned} KLOE{unassigned !== 1 ? 's have' : ' has'} no owner — assign from each KLOE&apos;s detail page.
+              </p>
             )}
           </div>
 
