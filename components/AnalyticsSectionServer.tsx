@@ -473,17 +473,6 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
-            <CompletionBar
-              label={`of ${pvTotal} statements with strong evidence`}
-              pct={pvPct}
-              colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
-              colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
-              colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
-            />
-          </div>
-
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Evidence coverage</h3>
             <CompletionBar
               label="of KLOEs have evidence attached"
@@ -493,6 +482,17 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
               colourC="bg-transparent" countC={0} labelC=""
             />
             <p className="text-xs text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
+            <CompletionBar
+              label={`of ${pvTotal} statements with strong evidence`}
+              pct={pvPct}
+              colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
+              colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
+              colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
+            />
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
