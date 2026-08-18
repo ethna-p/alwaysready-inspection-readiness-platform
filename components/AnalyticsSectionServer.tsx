@@ -681,6 +681,11 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE review calendar</h3>
+              <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
+            </div>
+
+            <div className="bg-card rounded-2xl border border-line p-5">
               <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
               <CompletionBar
                 label={`of ${pvTotal} statements with strong evidence`}
@@ -767,11 +772,6 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                   </p>
                 </>
               )}
-            </div>
-
-            <div className="bg-card rounded-2xl border border-line p-5">
-              <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
-              <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
             </div>
 
             <div className="bg-card rounded-2xl border border-line p-5">
