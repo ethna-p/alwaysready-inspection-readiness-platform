@@ -480,6 +480,12 @@ export function HelpCentre() {
 
   const activeTopic = TOPICS.find(t => t.id === activeTopicId) ?? null
 
+  // Prevent page scroll — sidebar and content panel scroll independently
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
   // Scroll content panel to top whenever the active topic changes
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0 })
