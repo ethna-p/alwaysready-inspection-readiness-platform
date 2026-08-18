@@ -14,19 +14,17 @@
  */
 
 import { useState, useTransition } from 'react'
-import { saveAbsenceRecord, updateAbsenceRecord, deleteAbsenceRecord } from '../actions'
+import { saveAbsenceRecord, updateAbsenceRecord, deleteAbsenceRecord, saveAbsenceCategory } from '../actions'
 import type { HrAbsenceRecord } from '@/lib/types'
 
-const REASON_CATEGORIES = [
+const DEFAULT_CATEGORIES = [
   'Musculoskeletal',
   'Respiratory / Cold / Flu',
   'Mental health / Stress / Anxiety',
   'Gastrointestinal',
   'Injury',
   'Other',
-] as const
-
-type ReasonCategory = typeof REASON_CATEGORIES[number]
+]
 
 // ── Bradford Factor helpers ───────────────────────────────────────────────────
 
@@ -70,6 +68,7 @@ type Props = {
   userId: string
   records: HrAbsenceRecord[]
   leaveYearStart: string | null   // e.g. '2026-04-01' from hr_holiday_allowances, or null
+  customCategories?: string[]
   isViewer?: boolean
 }
 
@@ -110,7 +109,7 @@ function calcDays(start: string, end: string): string {
   return String(Math.round((e.getTime() - s.getTime()) / 86400000) + 1)
 }
 
-export default function HrAbsenceSection({ userId, records, leaveYearStart, isViewer = false }: Props) {
+export default function HrAbsenceSection({ userId, records, leaveYearStart, customCategories = [], isViewer = false }: Props) {
   const [isPending, startTransition] = useTransition()
   const [showForm, setShowForm]       = useState(false)
   const [form, setForm]               = useState<FormState>(emptyForm())
@@ -122,6 +121,31 @@ export default function HrAbsenceSection({ userId, records, leaveYearStart, isVi
   const [editForm, setEditForm]       = useState<Partial<FormState>>({})
   const [editError, setEditError]     = useState<string | null>(null)
   const [editMessage, setEditMessage] = useState<string | null>(null)
+
+  // Custom category creation
+  const [localCustom, setLocalCustom]         = useState<string[]>(customCategories)
+  const [showNewCat, setShowNewCat]           = useState(false)
+  const [newCatValue, setNewCatValue]         = useState('')
+  const [newCatError, setNewCatError]         = useState<string | null>(null)
+  const [newCatPending, startCatTransition]   = useTransition()
+
+  const allCategories = [...DEFAULT_CATEGORIES, ...localCustom]
+
+  function handleAddCategory() {
+    const trimmed = newCatValue.trim()
+    if (!trimmed) return
+    setNewCatError(null)
+    startCatTransition(async () => {
+      const result = await saveAbsenceCategory(trimmed)
+      if (result.success) {
+        setLocalCustom(prev => [...prev, trimmed])
+        setNewCatValue('')
+        setShowNewCat(false)
+      } else {
+        setNewCatError(result.error)
+      }
+    })
+  }
 
   // Stats
   const lys = leaveYearStart ? new Date(leaveYearStart) : new Date(new Date().getFullYear(), 3, 1) // default Apr 1
@@ -380,7 +404,7 @@ export default function HrAbsenceSection({ userId, records, leaveYearStart, isVi
                         className={inputCls}
                       >
                         <option value="">— select —</option>
-                        {REASON_CATEGORIES.map(cat => (
+                        {allCategories.map(cat => (
                           <option key={cat} value={cat}>{cat}</option>
                         ))}
                       </select>
@@ -532,14 +556,59 @@ export default function HrAbsenceSection({ userId, records, leaveYearStart, isVi
               <select
                 id="absence-reason"
                 value={form.reasonCategory}
-                onChange={e => handleFormChange('reasonCategory', e.target.value)}
+                onChange={e => {
+                  if (e.target.value === '__add_new__') {
+                    setShowNewCat(true)
+                  } else {
+                    handleFormChange('reasonCategory', e.target.value)
+                  }
+                }}
                 className={inputCls}
               >
                 <option value="">— select —</option>
-                {REASON_CATEGORIES.map(cat => (
+                {allCategories.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
+                {!isViewer && (
+                  <option value="__add_new__">＋ Add new category…</option>
+                )}
               </select>
+
+              {/* Inline new category form */}
+              {showNewCat && (
+                <div className="mt-2 flex gap-2 items-start">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={newCatValue}
+                      onChange={e => setNewCatValue(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCategory() } }}
+                      placeholder="New category name"
+                      maxLength={80}
+                      className={inputCls}
+                      autoFocus
+                    />
+                    {newCatError && (
+                      <p className="text-xs text-red-600 mt-1">{newCatError}</p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddCategory}
+                    disabled={newCatPending || !newCatValue.trim()}
+                    className="shrink-0 px-3 py-2 text-sm font-medium bg-[#014D4E] text-white rounded-lg hover:bg-[#013a3b] disabled:opacity-50"
+                  >
+                    {newCatPending ? '…' : 'Save'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowNewCat(false); setNewCatValue(''); setNewCatError(null) }}
+                    className="shrink-0 px-3 py-2 text-sm text-ink-muted border border-line rounded-lg hover:bg-fill-dim"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Notes */}

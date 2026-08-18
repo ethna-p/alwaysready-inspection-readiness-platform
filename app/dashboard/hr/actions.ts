@@ -426,3 +426,29 @@ export async function deleteTrainingCertificate(
   revalidatePath(`/dashboard/hr/${userId}`)
   return { success: true, message: 'Certificate deleted.' }
 }
+
+// ── Absence categories ────────────────────────────────────────────────────────
+
+export async function saveAbsenceCategory(name: string): Promise<HrActionResult> {
+  const profile = await requireAdmin()
+  if (!profile) return { success: false, error: 'Admin access required.' }
+
+  const trimmed = name.trim()
+  if (!trimmed) return { success: false, error: 'Category name is required.' }
+  if (trimmed.length > 80) return { success: false, error: 'Category name must be 80 characters or fewer.' }
+
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('hr_absence_categories')
+    .insert({ organisation_id: profile.organisation_id, name: trimmed })
+
+  if (error) {
+    if (error.code === '23505') return { success: false, error: 'That category already exists.' }
+    console.error('[saveAbsenceCategory]', error)
+    return { success: false, error: 'Could not save category. Please try again.' }
+  }
+
+  revalidatePath('/dashboard/hr')
+  return { success: true, message: `"${trimmed}" added.` }
+}

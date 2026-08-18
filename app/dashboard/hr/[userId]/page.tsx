@@ -73,8 +73,8 @@ export default async function HrStaffDetailPage({
         .eq('organisation_id', orgId),
     ])
 
-  // Load holiday allowances, org unit setting, and absence records
-  const [{ data: holidayAllowances }, { data: org }, { data: absenceRecords }] = await Promise.all([
+  // Load holiday allowances, org unit setting, absence records, and custom categories
+  const [{ data: holidayAllowances }, { data: org }, { data: absenceRecords }, { data: absenceCategories }] = await Promise.all([
     supabase
       .from('hr_holiday_allowances')
       .select('*')
@@ -92,6 +92,11 @@ export default async function HrStaffDetailPage({
       .eq('organisation_id', orgId)
       .eq('user_id', userId)
       .order('start_date', { ascending: false }),
+    supabase
+      .from('hr_absence_categories')
+      .select('name')
+      .eq('organisation_id', orgId)
+      .order('created_at', { ascending: true }),
   ])
 
   // Generate signed URLs for certificates (15-minute expiry)
@@ -151,6 +156,7 @@ export default async function HrStaffDetailPage({
         userId={userId}
         records={absenceRecords ?? []}
         leaveYearStart={holidayAllowances?.[0]?.leave_year_start ?? null}
+        customCategories={(absenceCategories ?? []).map(c => c.name)}
         isViewer={isViewer}
       />
     </div>

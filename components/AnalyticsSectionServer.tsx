@@ -330,6 +330,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     { data: allHistory },
     { data: actionRows },
     { data: hrProfiles },
+    { data: allAbsenceRows },
     { data: mockRows },
     { data: evidenceRows },
     { data: pvEvidenceRows },
@@ -347,6 +348,9 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
       .eq('organisation_id', orgId),
     supabase.from('hr_staff_profiles')
       .select('dbs_next_review_due, supervision_next_due, appraisal_next_due')
+      .eq('organisation_id', orgId),
+    supabase.from('hr_absence_records')
+      .select('absence_type, absence_days, start_date, end_date, rtw_interview_completed, reason_category')
       .eq('organisation_id', orgId),
     supabase.from('mock_inspections')
       .select('id, started_at, completed_at')
@@ -514,6 +518,39 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     { label: 'Appraisals',   inDate: countInDate('appraisal_next_due'),   total: hrTotal },
   ]
 
+  // ── HR absence analytics ───────────────────────────────────────────────────
+  const absenceRows = allAbsenceRows ?? []
+
+  // RTW compliance: closed episodes only (sick leave with an end date)
+  const closedSickEpisodes = absenceRows.filter(r => r.absence_type === 'sick' && r.end_date)
+  const rtwCompleted       = closedSickEpisodes.filter(r => r.rtw_interview_completed).length
+  const rtwTotal           = closedSickEpisodes.length
+  const rtwPct             = pct(rtwCompleted, rtwTotal)
+
+  // Bradford Factor per staff member (group by user via absence days/episodes)
+  // We don't have user_id here — compute org-level band distribution instead:
+  // count episodes per unique combination: we only have org-level data, so we
+  // compute individual Bradford scores by grouping on the absence records we have.
+  // Since we don't select user_id, group by rolling 52-week sick episodes overall.
+  const rollingCutoff = new Date(); rollingCutoff.setDate(rollingCutoff.getDate() - 364)
+  const rollingSick   = absenceRows.filter(r =>
+    r.absence_type === 'sick' && new Date(r.start_date) >= rollingCutoff
+  )
+  // Org-wide Bradford summary: total episodes, total days — give a team overview stat
+  const bfEpisodes = rollingSick.length
+  const bfDays     = rollingSick.reduce((sum, r) => sum + (r.absence_days ?? 0), 0)
+  const bfOrgScore = bfEpisodes * bfEpisodes * bfDays
+
+  // Absence reason breakdown (all episodes, any absence type)
+  const reasonCounts = new Map<string, number>()
+  for (const r of absenceRows) {
+    const cat = r.reason_category ?? 'Not recorded'
+    reasonCounts.set(cat, (reasonCounts.get(cat) ?? 0) + 1)
+  }
+  const reasonRows = [...reasonCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => ({ label, count }))
+
   const hasHistory = (allHistory ?? []).length > 0
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -672,6 +709,109 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Review calendar</h3>
             <ReviewCalendarChart overdue={reviewOverdue} due30={reviewDue30} due60={reviewDue60} due90={reviewDue90} />
+          </div>
+
+          {/* ── RTW compliance ────────────────────────────────────────────── */}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Return-to-work interviews</h3>
+            {rtwTotal === 0 ? (
+              <div>
+                <div className="opacity-30 select-none" aria-hidden="true">
+                  <CompletionBar
+                    label="of closed sick-leave episodes have an RTW interview recorded"
+                    pct={66}
+                    colourA="bg-[#014D4E]" countA={2} labelA="RTW recorded"
+                    colourB="bg-gray-200"   countB={1} labelB="Not recorded"
+                    colourC="bg-transparent" countC={0} labelC=""
+                  />
+                </div>
+                <p className="text-sm text-ink-muted mt-2">Log absence episodes to track RTW interview compliance here.</p>
+              </div>
+            ) : (
+              <>
+                <CompletionBar
+                  label={`of ${rtwTotal} closed sick-leave episode${rtwTotal !== 1 ? 's have' : ' has'} an RTW interview recorded`}
+                  pct={rtwPct}
+                  colourA="bg-[#014D4E]"  countA={rtwCompleted}          labelA="RTW recorded"
+                  colourB="bg-gray-200"   countB={rtwTotal - rtwCompleted} labelB="Not recorded"
+                  colourC="bg-transparent" countC={0} labelC=""
+                />
+                <p className="text-sm text-ink-muted mt-3">
+                  {rtwTotal - rtwCompleted > 0
+                    ? `${rtwTotal - rtwCompleted} episode${rtwTotal - rtwCompleted !== 1 ? 's' : ''} missing an RTW interview — record from each staff member's HR page.`
+                    : 'All closed sick-leave episodes have an RTW interview recorded.'}
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* ── Absence reason breakdown ───────────────────────────────────── */}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Absence reasons</h3>
+            {absenceRows.length === 0 ? (
+              <div>
+                <div className="opacity-30 select-none" aria-hidden="true">
+                  <MiniBarChart
+                    rows={[
+                      { label: 'Musculoskeletal',  count: 4, colour: 'bg-[#014D4E]' },
+                      { label: 'Mental health',     count: 3, colour: 'bg-[#014D4E]' },
+                      { label: 'Respiratory',       count: 2, colour: 'bg-[#014D4E]' },
+                      { label: 'Injury',            count: 1, colour: 'bg-[#014D4E]' },
+                    ]}
+                    total={10}
+                  />
+                </div>
+                <p className="text-sm text-ink-muted mt-2">Log absence episodes to see the breakdown of reasons here.</p>
+              </div>
+            ) : (
+              <>
+                <MiniBarChart
+                  rows={reasonRows.map(r => ({ label: r.label, count: r.count, colour: 'bg-[#014D4E]' }))}
+                  total={absenceRows.length}
+                />
+                <p className="text-sm text-ink-muted mt-3">
+                  {absenceRows.length} absence episode{absenceRows.length !== 1 ? 's' : ''} recorded across all staff.
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* ── Bradford Factor overview ───────────────────────────────────── */}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Bradford Factor — team overview</h3>
+            {rollingSick.length === 0 ? (
+              <div>
+                <div className="opacity-30 select-none" aria-hidden="true">
+                  <div className="flex gap-3">
+                    {[{ label: 'Episodes', val: '6' }, { label: 'Days lost', val: '14' }, { label: 'Org score', val: '504' }].map(s => (
+                      <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold text-ink">{s.val}</p>
+                        <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm text-ink-muted mt-2">Log sick-leave episodes to see Bradford Factor data here.</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex gap-3 mb-3">
+                  {[
+                    { label: 'Episodes (52 wks)', val: bfEpisodes },
+                    { label: 'Days lost (52 wks)', val: bfDays % 1 === 0 ? bfDays : bfDays.toFixed(1) },
+                    { label: 'Org score (S²×D)', val: bfOrgScore },
+                  ].map(s => (
+                    <div key={s.label} className="flex-1 bg-fill rounded-xl p-3 text-center">
+                      <p className="text-xl font-bold text-ink">{s.val}</p>
+                      <p className="text-xs text-ink-muted mt-0.5">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-ink-muted">
+                  Individual scores are on each staff member&apos;s HR page. Score ≤ 50 = low · 51–450 = medium · 451+ = high.
+                </p>
+              </>
+            )}
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>

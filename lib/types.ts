@@ -1201,7 +1201,7 @@ export type Database = {
           start_date: string
           end_date: string | null
           absence_days: number | null
-          reason_category: 'Musculoskeletal' | 'Respiratory / Cold / Flu' | 'Mental health / Stress / Anxiety' | 'Gastrointestinal' | 'Injury' | 'Other' | null
+          reason_category: string | null
           notes: string | null
           rtw_interview_completed: boolean
           rtw_interview_date: string | null
@@ -1218,7 +1218,7 @@ export type Database = {
           start_date: string
           end_date?: string | null
           absence_days?: number | null
-          reason_category?: 'Musculoskeletal' | 'Respiratory / Cold / Flu' | 'Mental health / Stress / Anxiety' | 'Gastrointestinal' | 'Injury' | 'Other' | null
+          reason_category?: string | null
           notes?: string | null
           rtw_interview_completed?: boolean
           rtw_interview_date?: string | null
@@ -1232,13 +1232,32 @@ export type Database = {
           start_date?: string
           end_date?: string | null
           absence_days?: number | null
-          reason_category?: 'Musculoskeletal' | 'Respiratory / Cold / Flu' | 'Mental health / Stress / Anxiety' | 'Gastrointestinal' | 'Injury' | 'Other' | null
+          reason_category?: string | null
           notes?: string | null
           rtw_interview_completed?: boolean
           rtw_interview_date?: string | null
           rtw_notes?: string | null
           recorded_by?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+
+      hr_absence_categories: {
+        Row: {
+          id: string
+          organisation_id: string
+          name: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          organisation_id: string
+          name: string
+          created_at?: string
+        }
+        Update: {
+          name?: string
         }
         Relationships: []
       }
@@ -1957,6 +1976,7 @@ export type HrTrainingRecord       = Database['public']['Tables']['hr_training_r
 export type HrTrainingCertificate  = Database['public']['Tables']['hr_training_certificates']['Row']
 export type HrHolidayAllowance     = Database['public']['Tables']['hr_holiday_allowances']['Row']
 export type HrAbsenceRecord        = Database['public']['Tables']['hr_absence_records']['Row']
+export type HrAbsenceCategory     = Database['public']['Tables']['hr_absence_categories']['Row']
 export type HolidayUnit            = Organisation['holiday_unit']
 export type IStatement             = Database['public']['Tables']['i_statements']['Row']
 export type IStatementEvidence     = Database['public']['Tables']['i_statement_evidence']['Row']
