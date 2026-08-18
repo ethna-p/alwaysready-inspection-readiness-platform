@@ -41,6 +41,7 @@ export default async function AccountPage({
     // To restore: uncomment the line below and uncomment the tab panel further down.
     // { id: 'notifications', label: 'Notifications' },
     ...(isAdmin ? [{ id: 'team',         label: 'Team' }] : []),
+    { id: 'features',      label: 'Platform Features' },
   ]
   const defaultTab = tabs[0].id
   const activeTab  = tab ?? defaultTab
@@ -200,7 +201,13 @@ export default async function AccountPage({
             </div>
           </div>
 
-          {/* What's included */}
+
+        </div>
+      )}
+
+      {/* ══ PLATFORM FEATURES tab ═════════════════════════════════════════ */}
+      {activeTab === 'features' && (
+        <div className="space-y-8">
           <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
             <h2 className="text-base font-semibold text-brand mb-1">What&apos;s included in your plan</h2>
             <p className="text-sm text-ink-dim mb-4">
@@ -411,7 +418,6 @@ export default async function AccountPage({
               </Link>
             </p>
           </div>
-
         </div>
       )}
 
