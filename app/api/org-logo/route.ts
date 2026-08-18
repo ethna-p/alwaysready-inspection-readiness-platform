@@ -8,7 +8,7 @@
  * at `{org_id}/logo.{ext}` and the public URL is saved to organisations.logo_url.
  */
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
 
 const BUCKET = 'org-logos'
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
   }
 
   const orgId = profile.organisation_id
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   let formData: FormData
   try {
@@ -97,7 +97,7 @@ export async function DELETE() {
   }
 
   const orgId   = profile.organisation_id
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Remove all logo files for this org (handles any extension)
   const { data: files } = await supabase.storage.from(BUCKET).list(orgId)
