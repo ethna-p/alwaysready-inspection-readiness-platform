@@ -75,6 +75,21 @@ In-platform support tickets are submitted via Support in the navigation bar. Ema
 Newsletter Drafting Tool
 An AI-assisted drafting tool available to Admin users only. Accessed from the navigation bar. The admin selects an audience (staff, families, or both), a topic or occasion, a tone, and adds optional key points — the platform generates a ready-to-copy draft. AlwaysReady never sends newsletters on your behalf; the draft is for copying into email, print, or messaging. Do not include personal details of residents, patients, families, or individual staff in prompts. Each organisation can generate up to 10 drafts per calendar month.
 
+Analytics Dashboard
+The dashboard includes a rich analytics section with cards covering: KLOE evidence coverage (percentage of KLOEs with evidence documented), action plan coverage (percentage of KLOEs with at least one action item), action plan health (proportion of open, in-progress, and completed actions), and KLOE review calendar. People's Voice analytics show evidence coverage and action plan progress across the 19 'I' statements. Mock inspection analytics show self-assessed ratings by key question area and action plan coverage from findings. HR analytics show return-to-work interview rates, absence reason breakdown, Bradford Factor distribution, and overall HR compliance. Operational analytics cover: incidents (open count, last 90 days, breakdown by type), complaints and feedback (by category and open complaints count), and governance meetings (last 12 months, signed-off count, most recent meeting date). All analytics load from live data automatically.
+
+Report Builder
+Accessed from Reports in the navigation bar. Shows the full KLOE compliance dataset in a filterable, sortable table with columns for status, RAG, priority, review dates, evidence notes, and evidence file count. Features: saved views (store filter/sort settings as a named view; system views included; custom views can be saved and persist between sessions); progress snapshots (take a point-in-time record of overall readiness and compare to previous snapshot to show improvement); AI narrative summary (a short written description of the current compliance position generated from live KLOE data — for internal use only); Pre-Inspection view (surfaces KLOEs with Red/Amber RAG, lower evidence coverage, or open actions); readiness trend graph (overall readiness percentage over time, broken down by key question area).
+
+Organisation logo
+Admins can upload a logo (PNG or JPG) in Account → Organisation. It replaces the AlwaysReady wordmark in the platform header and appears in Inspection Pack and Report Builder PDF outputs. Useful when sharing inspection-related documents with boards or commissioners.
+
+People's Voice evidence files
+Evidence files (PDF, .docx, .xlsx, images up to 10 MB) can be uploaded directly against individual 'I' statements in the People's Voice module, in addition to the evidence summary text field.
+
+Mock inspection action plan
+Action items can be created directly from mock inspection findings. Each action links back to the finding that prompted it and appears in action plan analytics and data exports.
+
 Data export
 Users can download all their account data and evidence files as a self-serve download from the Account page. The evidence download is a ZIP archive of all uploaded files organised by KLOE.
 
@@ -543,6 +558,49 @@ A: Admins can create and manage post-inspection reviews and FAC items. Users and
 
 Q141: Can I record ratings for individual key questions?
 A: Yes. Each post-inspection review captures CQC ratings for all five key questions: Safe, Effective, Caring, Responsive, and Well-led, as well as the overall rating. Rating options are: Outstanding, Good, Requires Improvement, Inadequate, or Not Rated.
+
+ANALYTICS DASHBOARD
+
+Q145: What does the analytics section on the dashboard show?
+A: The analytics section provides an at-a-glance view of governance data organised into cards. It covers KLOE readiness (evidence coverage, action plan coverage and health, review calendar), People's Voice evidence and action plan progress, mock inspection self-assessed ratings, HR compliance (return-to-work interviews, absence breakdown, Bradford Factor), and operational records including incidents over the last 90 days, complaints and feedback by category, and governance meeting activity over the last 12 months.
+
+Q146: What does KLOE evidence coverage mean?
+A: Evidence coverage shows what percentage of the 24 KLOEs have evidence documented — either an evidence location note or an uploaded file. It gives a quick view of how much of the evidence base is recorded in the platform.
+
+Q147: What does action plan health show?
+A: Action plan health shows the proportion of action items across all KLOEs that are open, in progress, or completed. It shows whether action plans are being actively worked through.
+
+REPORT BUILDER
+
+Q149: What is the Report Builder?
+A: The Report Builder is in the Reports section of the navigation bar. It shows the full KLOE compliance dataset in a filterable, sortable table with columns for status, RAG, priority, review dates, and evidence notes. Features include: saved views (store filter/sort settings as a named view); progress snapshots (compare current position to a previous snapshot to show improvement); AI narrative summary (a short written description of the compliance position generated from live data); Pre-Inspection view (surfaces KLOEs most likely to need attention before inspection); and a readiness trend graph.
+
+Q150: What are saved report views?
+A: Saved views store preferred filter and sort settings as a named view, so the user can switch between them without reconfiguring each time. AlwaysReady includes built-in system views (All KLOEs, Pre-Inspection, by key question area) and users can save their own. Views persist between sessions.
+
+Q151: What is a progress snapshot?
+A: A progress snapshot records the compliance position at a specific point in time — how many KLOEs are complete, in progress, or not started, and the overall readiness percentage. When a new snapshot is taken, the Report Builder compares it to the previous one and shows the change.
+
+Q152: What is the AI summary in the Report Builder?
+A: The AI summary generates a short narrative description of the current compliance position based on live KLOE data. It is for internal use only and is regenerated fresh each time it is requested.
+
+Q153: What is the Pre-Inspection view?
+A: The Pre-Inspection view surfaces KLOEs most likely to need attention before an inspection — those with Red or Amber RAG status, lower evidence coverage, or open action items.
+
+ORGANISATION LOGO
+
+Q154: Can we add our organisation's logo to the platform?
+A: Yes. Go to Account → Organisation and scroll to the Logo section. Upload a PNG or JPG and it will appear in the platform header in place of the AlwaysReady wordmark, and in Inspection Pack and Report Builder PDF outputs — useful when sharing reports with boards or commissioners.
+
+PEOPLE'S VOICE EVIDENCE FILES
+
+Q155: Can I attach evidence files to People's Voice statements?
+A: Yes. Open any "I" statement in the People's Voice module, click Add evidence to expand the record, then scroll to the Evidence files section. PDF, Word, Excel, and image files up to 10 MB each can be uploaded.
+
+MOCK INSPECTION ACTION PLAN
+
+Q156: Can I create an action item from a mock inspection finding?
+A: Yes. During or after a mock inspection, open a finding and click Add action. This creates a structured action item linked to that finding, with a title, description, due date, priority, and assignee. These actions appear in action plan analytics on the dashboard and are included in data exports.
 
 ABOUT THE BLOG
 

@@ -179,6 +179,18 @@ export default function HelpPage() {
             <p>• Breakdown by each of the five CQC key question areas.</p>
             <p>• RAG status indicators across all KLOEs — Red (overdue), Amber (due soon), Green (current), Grey (not yet assessed).</p>
             <p>• Team workload overview showing assigned KLOEs and overdue items per staff member.</p>
+            <p>• Live CQC rating card showing your registered service name, current rating, last inspection date, and a link to your CQC profile.</p>
+          </div>
+
+          <H3>Analytics</H3>
+          <div className="space-y-1">
+            <p>• KLOE analytics: evidence coverage percentage, action plan coverage, action plan health (open vs in-progress vs completed), and KLOE review calendar.</p>
+            <p>• People&apos;s Voice analytics: evidence coverage across the 19 &apos;I&apos; statements, and action plan coverage and progress.</p>
+            <p>• Mock inspection analytics: self-assessed ratings by key question area, and action plan coverage from mock inspection findings.</p>
+            <p>• HR analytics: return-to-work interview rate, absence reasons breakdown, Bradford Factor distribution across the team, and overall HR compliance status.</p>
+            <p>• Incidents: open incident count, incidents logged in the last 90 days, breakdown by incident type.</p>
+            <p>• Complaints &amp; feedback: total by category (complaint, compliment, suggestion, concern) and open complaints count.</p>
+            <p>• Governance meetings: meetings held in the last 12 months, number signed off, and date of the most recent meeting.</p>
           </div>
 
           <H3>CQC Register</H3>
@@ -198,10 +210,14 @@ export default function HelpPage() {
             <p>• Designed to be scanned in under five minutes each morning.</p>
           </div>
 
-          <H3>Readiness Trend</H3>
+          <H3>Report Builder</H3>
           <div className="space-y-1">
-            <p>• A graph showing how your overall readiness percentage has changed over recent weeks and months.</p>
-            <p>• Breakdown by key question area so you can see which areas are improving and which need attention.</p>
+            <p>• View and filter your full KLOE compliance data in one place, with columns for status, RAG, priority, review dates, and evidence notes.</p>
+            <p>• Saved views — store your preferred filters as a named view and switch between them instantly. AlwaysReady includes system views (All KLOEs, Pre-Inspection, by key question) and you can save your own.</p>
+            <p>• Progress snapshots — take a point-in-time record of your compliance position. When you take a new snapshot, the Report Builder shows how your readiness has changed since the last one.</p>
+            <p>• AI-generated narrative summary — a short written overview of your current compliance position, generated from your live KLOE data.</p>
+            <p>• Pre-Inspection view — surfaces KLOEs most likely to need attention before an inspection, based on status and evidence coverage.</p>
+            <p>• Readiness trend — a graph showing how your overall readiness percentage has changed over recent weeks and months, with a breakdown by key question area.</p>
           </div>
 
           <H3>Mock Inspections</H3>
@@ -210,6 +226,7 @@ export default function HelpPage() {
             <p>• Rate your evidence for each KLOE as Outstanding, Good, Requires Improvement, or Inadequate.</p>
             <p>• Produces a mock inspection report showing a self-assessed rating per key question area.</p>
             <p>• Save and revisit previous mock inspections to track your self-assessment over time.</p>
+            <p>• Create action items directly from mock inspection findings — each action links back to the finding that prompted it.</p>
           </div>
 
           <H3>Inspection Pack</H3>
@@ -247,6 +264,7 @@ export default function HelpPage() {
             <p>• Two-factor authentication (2FA) required for all Admin and Staff accounts.</p>
             <p>• Password change available at any time from the Account page.</p>
             <p>• Each organisation&apos;s data is fully isolated — no other organisation can access your records.</p>
+            <p>• Organisation logo upload — upload your logo in Account → Organisation. It replaces the AlwaysReady wordmark in your platform header and appears in your Inspection Pack and Report Builder output.</p>
           </div>
 
           <H3>Support</H3>
@@ -597,6 +615,34 @@ export default function HelpPage() {
               question="Why am I signed out when I close my browser tab?"
               answer="AlwaysReady automatically signs you out when you close your browser tab. This is a security feature designed to protect resident and staff data on shared devices — it ensures that nobody can access your account simply by opening the browser after you have finished. When you are ready to use AlwaysReady again, simply sign back in. If you are using a personal device and find this inconvenient, contact your admin — they may be able to advise on alternative ways to keep your session active."
             />
+            <FAQ
+              question="What does the analytics section on the dashboard show?"
+              answer="The analytics section provides an at-a-glance view of your service's governance data across several areas: KLOE evidence and action plan coverage, People's Voice evidence progress, mock inspection self-assessment ratings, HR compliance (return-to-work interviews, absence patterns, Bradford Factor), and operational records including incidents, complaints and feedback, and governance meeting activity. Each area is shown as a card you can scan in seconds."
+            />
+            <FAQ
+              question="What is the Report Builder?"
+              answer="The Report Builder is in the Reports section of the navigation bar. It shows your full KLOE compliance data in a filterable table, with columns for status, RAG, priority, review dates, and evidence notes. You can save custom views, take progress snapshots to track improvement over time, and generate an AI-written narrative summary of your compliance position. A Pre-Inspection view highlights KLOEs most likely to need attention before an inspection."
+            />
+            <FAQ
+              question="What are saved views in the Report Builder?"
+              answer="Saved views store your preferred filter and sort settings as a named view so you can switch between them without reconfiguring each time. AlwaysReady includes built-in system views (All KLOEs, Pre-Inspection, by key question area) and you can save your own. Views persist between sessions."
+            />
+            <FAQ
+              question="What is a progress snapshot?"
+              answer="A progress snapshot records your compliance position at a point in time — how many KLOEs are complete, in progress, or not started, and your overall readiness percentage. When you take a new snapshot, the Report Builder shows the change since the previous one, so you can demonstrate improvement over time. Take a snapshot before a significant piece of improvement work and again after, to show the change clearly."
+            />
+            <FAQ
+              question="Can I add my organisation's logo?"
+              answer="Yes. Go to Account → Organisation and scroll to the Logo section. Upload a PNG or JPG and it will appear in your platform header in place of the AlwaysReady wordmark, and in your Inspection Pack and Report Builder PDF outputs — useful when sharing reports with board members or commissioners."
+            />
+            <FAQ
+              question="Can I attach evidence files to People's Voice statements?"
+              answer="Yes. Open any 'I' statement in the People's Voice module, click Add evidence to expand the record, then scroll to the Evidence files section. You can upload PDFs, Word documents, Excel files, and images up to 10 MB each, in the same way as evidence files on KLOE records."
+            />
+            <FAQ
+              question="Can I create an action plan from a mock inspection finding?"
+              answer="Yes. During or after a mock inspection, open a finding and click the Add action button. This creates a structured action item linked to that finding, with a title, description, due date, priority, and assignee. The action appears in your action plan analytics and is included in data exports."
+            />
           </div>
         </Section>
 
@@ -776,6 +822,23 @@ export default function HelpPage() {
             <FAQ question="How does the review schedule work in People's Voice?" answer="Each statement has a review date and a next review due date. These dates drive an automatic RAG status — the same date-driven system used across the rest of the platform. A statement not reviewed within the expected timeframe will move to Amber or Red, prompting your team to revisit it before an inspection. Every update is time-stamped and attributed to the team member who made it, and a full history of all entries is retained." />
             <FAQ question="Can I track actions within People's Voice statements?" answer="Yes. Each statement has an evidence quality indicator — either Evidence Strong or Evidence Needs Work — alongside a free-text field to describe the supporting evidence you hold. If a gap is identified, you can create a structured action item directly against the statement, including a title, description, due date, priority level, and an assigned team member. Actions are tracked through to sign-off, with completion notes permanently recorded in the audit trail." />
             <FAQ question="Who can update People's Voice records?" answer="Admins and Users can record evidence against the 'I' statements. Viewers can read the records but cannot add to or amend them." />
+          </div>
+
+          <H3>Analytics Dashboard</H3>
+          <div className="space-y-4">
+            <FAQ question="What does the analytics section on the dashboard show?" answer="The analytics section provides an at-a-glance view of your governance data, organised into cards. It covers KLOE readiness (evidence coverage, action plan coverage and health, review calendar), People's Voice evidence and action plan progress, mock inspection self-assessed ratings, HR compliance (return-to-work interviews, absence breakdown, Bradford Factor), and operational records including incidents over the last 90 days, complaints and feedback by category, and governance meeting activity over the last 12 months." />
+            <FAQ question="What does KLOE evidence coverage mean?" answer="Evidence coverage shows what percentage of your 24 KLOEs have evidence documented against them — either an evidence location note or an uploaded file. It gives a quick view of how much of your evidence base is recorded in the platform." />
+            <FAQ question="What does action plan health show?" answer="Action plan health shows the proportion of action items across all KLOEs that are open, in progress, or completed. It tells you at a glance whether your action plans are being worked through or are sitting unactioned." />
+          </div>
+
+          <H3>Report Builder</H3>
+          <div className="space-y-4">
+            <FAQ question="What is the Report Builder?" answer="The Report Builder is in the Reports section of the navigation bar. It shows your full KLOE compliance data in a filterable table with columns for status, RAG, priority, review dates, and evidence notes. You can save custom views, take progress snapshots to track improvement over time, generate an AI narrative summary, and use a Pre-Inspection view to surface KLOEs most likely to need attention before an inspection." />
+            <FAQ question="What are saved report views?" answer="Saved views store your preferred filter and sort settings as a named view, so you can switch between them without reconfiguring each time. AlwaysReady includes built-in system views — All KLOEs, Pre-Inspection, and views by key question area — and you can save your own. Views persist between sessions." />
+            <FAQ question="What is a progress snapshot?" answer="A progress snapshot records your compliance position at a specific point in time — how many KLOEs are complete, in progress, or not started, and your overall readiness percentage. When you take a new snapshot, the Report Builder compares it to your previous one and shows the change. Take a snapshot before a period of improvement work and again after, to demonstrate progress clearly." />
+            <FAQ question="What is the AI summary in the Report Builder?" answer="The AI summary generates a short narrative description of your current compliance position based on your live KLOE data — which key question areas are strongest, which need attention, and an overall assessment of readiness. It is for internal use only and is generated fresh from your data each time you request it." />
+            <FAQ question="What is the Pre-Inspection view?" answer="The Pre-Inspection view in the Report Builder surfaces KLOEs most likely to need attention before an inspection — those with Red or Amber RAG status, lower evidence coverage, or open action items. It is designed to help you prioritise improvement work in the weeks before an inspection visit." />
+            <FAQ question="Can I add my organisation's logo to the platform?" answer="Yes. Go to Account → Organisation and scroll to the Logo section. Upload a PNG or JPG and it will appear in your platform header in place of the AlwaysReady wordmark, and in your Inspection Pack and Report Builder outputs — useful when sharing reports with boards or commissioners." />
           </div>
 
           <H3>Post-Inspection Reviews and FAC</H3>
