@@ -445,7 +445,7 @@ function HomeView({
                 cursor-pointer
               "
             >
-              <span className="text-[#014D4E]">{topic.icon}</span>
+              <span className="text-[#d4aa3c]">{topic.icon}</span>
               <strong className="text-base font-bold text-ink leading-snug">{topic.label}</strong>
               <span className="text-[0.8125rem] text-ink-dim leading-relaxed">{topic.desc}</span>
             </button>
