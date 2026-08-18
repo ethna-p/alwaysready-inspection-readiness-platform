@@ -3,6 +3,7 @@
  * Uses the admin client to bypass RLS.
  * Filter by status via ?status=open|in_progress|resolved (default: active = open + in_progress)
  */
+export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 

@@ -7,6 +7,8 @@
  * "View as admin →" generates a one-time magic link for the org's admin user
  * and opens it in a new tab, leaving your superadmin session intact.
  */
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import ImpersonateButton from './ImpersonateButton'
