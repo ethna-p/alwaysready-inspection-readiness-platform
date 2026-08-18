@@ -6,6 +6,7 @@
 export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
+import DeleteResolvedButton from './DeleteResolvedButton'
 
 const STATUS_LABELS: Record<string, { label: string; colour: string }> = {
   open:        { label: 'Open',        colour: 'bg-blue-100 text-blue-700' },
@@ -30,6 +31,12 @@ export default async function SuperadminTicketsPage({
   const filter = statusParam ?? 'active'
 
   const supabase = createAdminClient()
+
+  // Count resolved tickets for the delete button
+  const { count: resolvedCount } = await supabase
+    .from('support_tickets')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'resolved')
 
   let query = supabase
     .from('support_tickets')
@@ -57,12 +64,17 @@ export default async function SuperadminTicketsPage({
             All tickets across all organisations.
           </p>
         </div>
-        <Link
-          href="/superadmin/tickets/new"
-          className="shrink-0 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-brand text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-        >
-          + New ticket
-        </Link>
+        <div className="flex items-center gap-3">
+          {(filter === 'resolved' || filter === 'all') && (
+            <DeleteResolvedButton count={resolvedCount ?? 0} />
+          )}
+          <Link
+            href="/superadmin/tickets/new"
+            className="shrink-0 bg-[#014D4E] hover:bg-[#00b8a6] hover:text-brand text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+          >
+            + New ticket
+          </Link>
+        </div>
       </div>
 
       {/* Filter tabs */}
