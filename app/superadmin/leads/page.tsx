@@ -22,6 +22,11 @@ export default async function SuperadminLeadsPage() {
     .select('id, service_type, cqc_rating, demo_type, created_at')
     .order('created_at', { ascending: false })
 
+  const { data: zeegBookings } = await supabase
+    .from('zeeg_bookings')
+    .select('id, invitee_email, invitee_name, demo_type, booked_at, cancelled, created_at')
+    .order('created_at', { ascending: false })
+
   const nurtureCount = leads?.filter(l => l.nurture_opt_in).length ?? 0
 
   return (
@@ -123,6 +128,78 @@ export default async function SuperadminLeadsPage() {
           </table>
         </div>
       )}
+
+      {/* ── Zeeg bookings ───────────────────────────────────────────────────── */}
+      <div className="mt-12">
+        <div className="flex items-center gap-3 mb-2">
+          <h2 className="text-xl font-bold text-ink">Zeeg Bookings</h2>
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">
+            {zeegBookings?.length ?? 0} total
+          </span>
+        </div>
+        <p className="text-sm text-ink-muted mb-6">
+          Confirmed bookings received from Zeeg — includes booker email and name.
+        </p>
+
+        {!zeegBookings || zeegBookings.length === 0 ? (
+          <p className="text-ink-muted text-sm">No Zeeg bookings yet.</p>
+        ) : (
+          <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-line bg-fill">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Name</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked for</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {zeegBookings.map(booking => {
+                  const bookedDate = new Date(booking.booked_at).toLocaleDateString('en-GB', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                  })
+                  return (
+                    <tr key={booking.id} className="hover:bg-fill transition-colors">
+                      <td className="px-5 py-3.5">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                          booking.demo_type === '15min'
+                            ? 'bg-amber-100 text-amber-700'
+                            : 'bg-teal-100 text-teal-700'
+                        }`}>
+                          {booking.demo_type === '15min' ? '15 min' : '30 min'}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 font-medium text-ink">{booking.invitee_name ?? '—'}</td>
+                      <td className="px-5 py-3.5 text-ink-muted">
+                        <a
+                          href={`mailto:${booking.invitee_email}`}
+                          className="hover:text-brand transition-colors"
+                        >
+                          {booking.invitee_email}
+                        </a>
+                      </td>
+                      <td className="px-5 py-3.5 text-ink-muted text-xs">{bookedDate}</td>
+                      <td className="px-5 py-3.5">
+                        {booking.cancelled ? (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+                            Cancelled
+                          </span>
+                        ) : (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                            Confirmed
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* ── Demo leads ──────────────────────────────────────────────────────── */}
       <div className="mt-12">

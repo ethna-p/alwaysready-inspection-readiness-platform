@@ -856,6 +856,48 @@ export type Database = {
         Relationships: []
       }
 
+      // ── Zeeg bookings ─────────────────────────────────────────────────
+
+      zeeg_bookings: {
+        Row: {
+          id: string
+          event_uuid: string
+          invitee_uuid: string
+          invitee_email: string
+          invitee_name: string | null
+          demo_type: string
+          booked_at: string
+          cancelled: boolean
+          raw_payload: Record<string, unknown> | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          event_uuid: string
+          invitee_uuid: string
+          invitee_email: string
+          invitee_name?: string | null
+          demo_type: string
+          booked_at: string
+          cancelled?: boolean
+          raw_payload?: Record<string, unknown> | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          event_uuid?: string
+          invitee_uuid?: string
+          invitee_email?: string
+          invitee_name?: string | null
+          demo_type?: string
+          booked_at?: string
+          cancelled?: boolean
+          raw_payload?: Record<string, unknown> | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       // ── Blog subscribers ───────────────────────────────────────────────
 
       blog_subscribers: {
