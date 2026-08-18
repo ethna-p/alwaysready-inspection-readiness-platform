@@ -12,6 +12,28 @@ export async function deleteLead(id: string) {
   revalidatePath('/superadmin/leads')
 }
 
+export async function addZeegBooking(formData: FormData) {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+
+  const name     = (formData.get('invitee_name')  as string | null)?.trim() || null
+  const email    = ((formData.get('invitee_email') as string | null) ?? '').trim()
+  const demoType = ((formData.get('demo_type')     as string | null) ?? '').trim()
+
+  if (!email || !demoType) throw new Error('Email and demo type are required')
+
+  await supabase.from('zeeg_bookings').insert({
+    event_uuid:    crypto.randomUUID(),
+    invitee_uuid:  crypto.randomUUID(),
+    invitee_email: email,
+    invitee_name:  name,
+    demo_type:     demoType,
+    booked_at:     new Date().toISOString(),
+  })
+
+  revalidatePath('/superadmin/leads')
+}
+
 /**
  * Bulk-send Email 9 (CQC framework date) or Email 10 (launch) to all
  * nurture_opt_in waitlist subscribers. Triggered manually by AJ once CQC

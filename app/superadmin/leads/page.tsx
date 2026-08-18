@@ -6,6 +6,7 @@
 import { createAdminClient }          from '@/lib/supabase/admin'
 import DeleteLeadButton               from './DeleteLeadButton'
 import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
+import AddZeegBookingForm             from './AddZeegBookingForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -137,9 +138,11 @@ export default async function SuperadminLeadsPage() {
             {zeegBookings?.length ?? 0} total
           </span>
         </div>
-        <p className="text-sm text-ink-muted mb-6">
+        <p className="text-sm text-ink-muted mb-4">
           Confirmed bookings received from Zeeg — includes booker email and name.
         </p>
+
+        <AddZeegBookingForm />
 
         {!zeegBookings || zeegBookings.length === 0 ? (
           <p className="text-ink-muted text-sm">No Zeeg bookings yet.</p>
