@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import HelpWidget from '@/components/HelpWidget'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -636,7 +635,6 @@ export function HelpCentre() {
           />
         )}
       </div>
-      <HelpWidget />
     </div>
   )
 }
