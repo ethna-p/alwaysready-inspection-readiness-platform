@@ -206,160 +206,202 @@ export default async function AccountPage({
             <p className="text-sm text-ink-dim mb-4">
               Every feature below is included in your AlwaysReady subscription at no extra cost.
             </p>
-            <p className="text-sm text-ink-dim mb-6">
+            <p className="text-sm text-ink-dim mb-8">
               Missing something you need?{' '}
               <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
                 Share a suggestion →
               </Link>
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-10">
               {([
                 {
-                  name: 'KLOE Tracker',
-                  desc: 'All 24 CQC Key Lines of Enquiry pre-loaded across Safe, Effective, Caring, Responsive, and Well-led. Set status, review dates, frequency, priority, and notes per KLOE.',
-                  href: '/dashboard/kloes',
+                  category: 'Inspection Readiness',
+                  features: [
+                    {
+                      name: 'KLOE Tracker',
+                      desc: 'All 24 CQC Key Lines of Enquiry pre-loaded across Safe, Effective, Caring, Responsive, and Well-led. Set status, review dates, frequency, priority, and notes per KLOE.',
+                      href: '/dashboard/kloes',
+                    },
+                    {
+                      name: 'Compliance Checklists',
+                      desc: 'Every KLOE has a pre-built checklist of the specific evidence CQC inspectors look for. Tick items off as you gather them and see a live progress bar per KLOE.',
+                      href: '/dashboard/kloes',
+                    },
+                    {
+                      name: 'Evidence Uploads',
+                      desc: 'Upload policies, audits, certificates, and images directly to any KLOE — PDF, Word, Excel, and JPG/PNG, up to 10 MB each. Every file is automatically scanned for viruses.',
+                      href: '/dashboard/kloes',
+                    },
+                    {
+                      name: 'Audit Trail',
+                      desc: 'Every change to every KLOE is permanently recorded — status updates, review dates, notes, and file uploads. A chronological, tamper-proof compliance history.',
+                      href: '/dashboard/kloes',
+                    },
+                    {
+                      name: 'CQC Rating Characteristics',
+                      desc: 'See exactly what Outstanding, Good, Requires Improvement, and Inadequate look like for each individual KLOE — taken directly from CQC guidance.',
+                      href: '/dashboard/kloes',
+                    },
+                    {
+                      name: 'CQC Register',
+                      desc: 'Your live CQC rating pulled directly from the public register, displayed in CQC\'s official colours and refreshed every 24 hours. Includes your last inspection date and a link to your public CQC profile.',
+                      href: '/dashboard',
+                    },
+                  ],
                 },
                 {
-                  name: 'Compliance Checklists',
-                  desc: 'Every KLOE has a pre-built checklist of the specific evidence CQC inspectors look for. Tick items off as you gather them and see a live progress bar per KLOE.',
-                  href: '/dashboard/kloes',
+                  category: 'Reporting & Analytics',
+                  features: [
+                    {
+                      name: 'Readiness Dashboard',
+                      desc: 'Overall readiness percentage and RAG breakdown across all 24 KLOEs, broken down by each CQC key question, with a team workload overview showing assigned and overdue items.',
+                      href: '/dashboard',
+                    },
+                    {
+                      name: 'Analytics',
+                      desc: 'Charts showing KLOE evidence coverage, People\'s Voice confidence, action plan health, HR compliance, and mock inspection trends — all in one view. Useful for board reporting and continuous improvement.',
+                      href: '/dashboard',
+                    },
+                    {
+                      name: 'Daily Review Report',
+                      desc: 'A single screen showing everything that needs attention today — overdue KLOEs first, then due soon, sorted by priority. Designed to be scanned in under five minutes.',
+                      href: '/dashboard/daily-report',
+                    },
+                    {
+                      name: 'Report Builder',
+                      desc: 'Build a filtered view of your KLOE compliance position, save it as a named view, and take progress snapshots over time. Includes an AI-generated narrative summary and a Pre-Inspection view ready to hand to a CQC inspector.',
+                      href: '/dashboard/reports',
+                    },
+                    {
+                      name: 'Inspection Pack',
+                      desc: 'One click generates a printable PDF of your full compliance position — RAG status, review dates, priority, and evidence location for every KLOE. Ready to hand to an inspector.',
+                      href: '/dashboard/inspection-pack',
+                    },
+                  ],
                 },
                 {
-                  name: 'Evidence Uploads',
-                  desc: 'Upload policies, audits, certificates, and images directly to any KLOE — PDF, Word, Excel, and JPG/PNG, up to 10 MB each. Every file is automatically scanned for viruses.',
-                  href: '/dashboard/kloes',
+                  category: 'Preparation & Assessment',
+                  features: [
+                    {
+                      name: 'Mock Inspections',
+                      desc: 'Run a full or focused self-assessment across your KLOEs. Produces a prioritised action plan — Must Address, Strengthen Before Inspection, and Maintain — that you can work through and track to completion.',
+                      href: '/dashboard/mock-inspections',
+                    },
+                    {
+                      name: "People's Voice",
+                      desc: "The 19 TLAP \"I\" statements from the CQC assessment framework are pre-loaded. Record your evidence, upload supporting files against individual statements, create structured action plans, and see a summary dashboard across all five key questions.",
+                      href: '/dashboard/peoples-voice',
+                    },
+                  ],
                 },
                 {
-                  name: 'Audit Trail',
-                  desc: 'Every change to every KLOE is permanently recorded — status updates, review dates, notes, and file uploads. A chronological, tamper-proof compliance history.',
-                  href: '/dashboard/kloes',
+                  category: 'HR & Workforce',
+                  features: [
+                    {
+                      name: 'HR Records',
+                      desc: 'Staff profiles with employment details, DBS renewals, right to work, supervision and appraisals, references, and special category equality data — all held securely in one place.',
+                      href: '/dashboard/hr',
+                    },
+                    {
+                      name: 'Training Records',
+                      desc: 'Track mandatory training for every staff member — completion dates, renewal frequency, next due date calculated automatically, and certificate uploads. Traffic light status at a glance.',
+                      href: '/dashboard/hr',
+                    },
+                    {
+                      name: 'Holiday & Leave',
+                      desc: 'Annual leave entitlement, carry-over, and days taken tracked per staff member, per leave year. Configurable in days or hours. Full leave history retained.',
+                      href: '/dashboard/hr',
+                    },
+                    {
+                      name: 'HR Overview Dashboard',
+                      desc: 'Team-wide compliance at a glance — colour-coded DBS, supervision, appraisal, and training status for every staff member. A "Needs attention" section highlights who is overdue or due soon.',
+                      href: '/dashboard/hr',
+                    },
+                  ],
                 },
                 {
-                  name: 'CQC Rating Characteristics',
-                  desc: 'See exactly what Outstanding, Good, Requires Improvement, and Inadequate look like for each individual KLOE — taken directly from CQC guidance.',
-                  href: '/dashboard/kloes',
+                  category: 'Team',
+                  features: [
+                    {
+                      name: 'Team Management',
+                      desc: 'Invite colleagues by email. Assign roles — Admin (full access), Staff (edit assigned KLOEs), Viewer (read-only). We recommend that only the Registered Manager holds Admin access.',
+                      href: '/dashboard/account?tab=team',
+                    },
+                    {
+                      name: 'KLOE Assignment',
+                      desc: 'Assign individual KLOEs to specific team members. Staff see their personal "My KLOEs" list on login and receive email notification when a new KLOE is assigned to them.',
+                      href: '/dashboard/account?tab=team',
+                    },
+                    {
+                      name: 'Visitor Access',
+                      desc: 'Create time-limited read-only logins for inspectors, trustees, or external reviewers. Access expires automatically and can be revoked early at any time.',
+                      href: '/dashboard/account?tab=team',
+                    },
+                    {
+                      name: 'Automatic Reminders',
+                      desc: 'The platform emails the relevant team member when a KLOE review or HR check is due soon or overdue. Set a review frequency once and the reminders run automatically.',
+                      href: '/dashboard/kloes',
+                    },
+                  ],
                 },
                 {
-                  name: 'Readiness Dashboard',
-                  desc: 'Overall readiness percentage and RAG breakdown across all 24 KLOEs, broken down by each CQC key question, with a team workload overview showing assigned and overdue items.',
-                  href: '/dashboard',
+                  category: 'Platform',
+                  features: [
+                    {
+                      name: 'Newsletter Drafting',
+                      desc: 'AI-powered newsletter drafts for your staff team, families, or residents. Choose a topic, tone, and key points — AlwaysReady generates a ready-to-copy draft in seconds. Admin access only.',
+                      href: '/dashboard/newsletter',
+                    },
+                    {
+                      name: 'Specialist Care Configuration',
+                      desc: 'Enable additional checklist items for the specialist care areas your service provides — Learning Disabilities, Mental Health, End of Life, Acquired Brain Injury, Physical Disabilities, Bariatric Care, Sensory Impairment, and Epilepsy.',
+                      href: '/dashboard/account?tab=organisation',
+                    },
+                    {
+                      name: 'Security & Two-Factor Authentication',
+                      desc: 'MFA required for all Admin and Staff accounts. Row-level data isolation ensures no organisation can access another\'s records. All data encrypted at rest and in transit.',
+                      href: '/dashboard/account?tab=security',
+                    },
+                    {
+                      name: 'Dark Mode',
+                      desc: 'Full dark mode available across the entire platform. Respects your system preference by default and can be toggled manually from the navigation bar.',
+                      href: '/dashboard',
+                    },
+                    {
+                      name: 'In-platform Support',
+                      desc: 'Raise a query or report an issue directly from the Support link. Replies are delivered in-platform and by email — and you can reply by email to thread your response back automatically.',
+                      href: '/dashboard/support/new',
+                    },
+                    {
+                      name: 'Data Export',
+                      desc: 'Download all your compliance records as CSV files and all uploaded evidence as a single ZIP, at any time. Your data is always yours — no need to contact support.',
+                      href: '/dashboard/account?tab=billing',
+                    },
+                  ],
                 },
-                {
-                  name: 'Daily Review Report',
-                  desc: 'A single screen showing everything that needs attention today — overdue KLOEs first, then due soon, sorted by priority. Designed to be scanned in under five minutes.',
-                  href: '/dashboard/daily-report',
-                },
-                {
-                  name: 'Readiness Trend',
-                  desc: 'A graph showing how your inspection readiness has changed week by week, broken down by key question area. Useful for board reporting and demonstrating continuous improvement.',
-                  href: '/dashboard/trend',
-                },
-                {
-                  name: 'CQC Register',
-                  desc: 'Your live CQC rating pulled directly from the public register, displayed in CQC\'s official colours and refreshed every 24 hours. Includes your last inspection date and a link to your public CQC profile.',
-                  href: '/dashboard',
-                },
-                {
-                  name: 'Mock Inspections',
-                  desc: 'Run a full or focused self-assessment across your KLOEs. Produces a prioritised action plan — Must Address, Strengthen Before Inspection, and Maintain — that you can print or save as a PDF.',
-                  href: '/dashboard/mock-inspections',
-                },
-                {
-                  name: "People's Voice",
-                  desc: "The 19 TLAP \"I\" statements from the CQC assessment framework are pre-loaded. Record your evidence, upload supporting files against individual statements, create structured action plans, and see a summary dashboard across all five key questions.",
-                  href: '/dashboard/peoples-voice',
-                },
-                {
-                  name: 'Inspection Pack',
-                  desc: 'One click generates a printable PDF of your full compliance position — RAG status, review dates, priority, and evidence location for every KLOE. Ready to hand to an inspector.',
-                  href: '/dashboard/inspection-pack',
-                },
-                {
-                  name: 'HR Records',
-                  desc: 'Staff profiles with employment details, DBS renewals, right to work, supervision and appraisals, references, and special category equality data — all held securely in one place.',
-                  href: '/dashboard/hr',
-                },
-                {
-                  name: 'Training Records',
-                  desc: 'Track mandatory training for every staff member — completion dates, renewal frequency, next due date calculated automatically, and certificate uploads. Traffic light status at a glance.',
-                  href: '/dashboard/hr',
-                },
-                {
-                  name: 'Holiday & Leave',
-                  desc: 'Annual leave entitlement, carry-over, and days taken tracked per staff member, per leave year. Configurable in days or hours. Full leave history retained.',
-                  href: '/dashboard/hr',
-                },
-                {
-                  name: 'HR Overview Dashboard',
-                  desc: 'Team-wide compliance at a glance — colour-coded DBS, supervision, appraisal, and training status for every staff member. A "Needs attention" section highlights who is overdue or due soon.',
-                  href: '/dashboard/hr',
-                },
-                {
-                  name: 'Automatic Reminders',
-                  desc: 'The platform emails the relevant team member when a KLOE review or HR check is due soon or overdue. Set a review frequency once and the reminders run automatically.',
-                  href: '/dashboard/kloes',
-                },
-                {
-                  name: 'Team Management',
-                  desc: 'Invite colleagues by email. Assign roles — Admin (full access), Staff (edit assigned KLOEs), Viewer (read-only). We recommend that only the Registered Manager holds Admin access.',
-                  href: '/dashboard/account?tab=team',
-                },
-                {
-                  name: 'KLOE Assignment',
-                  desc: 'Assign individual KLOEs to specific team members. Staff see their personal "My KLOEs" list on login and receive email notification when a new KLOE is assigned to them.',
-                  href: '/dashboard/account?tab=team',
-                },
-                {
-                  name: 'Visitor Access',
-                  desc: 'Create time-limited read-only logins for inspectors, trustees, or external reviewers. Access expires automatically and can be revoked early at any time.',
-                  href: '/dashboard/account?tab=team',
-                },
-                {
-                  name: 'Newsletter Drafting',
-                  desc: 'AI-powered newsletter drafts for your staff team, families, or residents. Choose a topic, tone, and key points — AlwaysReady generates a ready-to-copy draft in seconds. Admin access only.',
-                  href: '/dashboard/newsletter',
-                },
-                {
-                  name: 'Specialist Care Configuration',
-                  desc: 'Enable additional checklist items for the specialist care areas your service provides — Learning Disabilities, Mental Health, End of Life, Acquired Brain Injury, Physical Disabilities, Bariatric Care, Sensory Impairment, and Epilepsy.',
-                  href: '/dashboard/account?tab=organisation',
-                },
-                {
-                  name: 'Security & Two-Factor Authentication',
-                  desc: 'MFA required for all Admin and Staff accounts. Row-level data isolation ensures no organisation can access another\'s records. All data encrypted at rest and in transit.',
-                  href: '/dashboard/account?tab=security',
-                },
-                {
-                  name: 'Dark Mode',
-                  desc: 'Full dark mode available across the entire platform. Respects your system preference by default and can be toggled manually from the navigation bar.',
-                  href: '/dashboard',
-                },
-                {
-                  name: 'In-platform Support',
-                  desc: 'Raise a query or report an issue directly from the Support link. Replies are delivered in-platform and by email — and you can reply by email to thread your response back automatically.',
-                  href: '/dashboard/support/new',
-                },
-                {
-                  name: 'Data Export',
-                  desc: 'Download all your compliance records as CSV files and all uploaded evidence as a single ZIP, at any time. Your data is always yours — no need to contact support.',
-                  href: '/dashboard/account?tab=billing',
-                },
-              ] as { name: string; desc: string; href: string }[]).map(feature => (
-                <a
-                  key={feature.name}
-                  href={feature.href}
-                  className="group block border border-line rounded-lg p-4 hover:border-brand hover:shadow-sm transition-all"
-                >
-                  <p className="text-sm font-semibold text-brand mb-1 group-hover:text-[#00b8a6] transition-colors">
-                    {feature.name}
-                  </p>
-                  <p className="text-sm text-ink-muted leading-relaxed">
-                    {feature.desc}
-                  </p>
-                </a>
+              ] as { category: string; features: { name: string; desc: string; href: string }[] }[]).map(({ category, features }) => (
+                <div key={category}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-ink-dim mb-3">{category}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {features.map(feature => (
+                      <a
+                        key={feature.name}
+                        href={feature.href}
+                        className="group block border border-line rounded-lg p-4 hover:border-brand hover:shadow-sm transition-all"
+                      >
+                        <p className="text-sm font-semibold text-brand mb-1 group-hover:text-[#00b8a6] transition-colors">
+                          {feature.name}
+                        </p>
+                        <p className="text-sm text-ink-muted leading-relaxed">
+                          {feature.desc}
+                        </p>
+                      </a>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
-            <p className="text-sm text-ink-dim mt-6">
+            <p className="text-sm text-ink-dim mt-8">
               Missing something you need?{' '}
               <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
                 Share a suggestion →
