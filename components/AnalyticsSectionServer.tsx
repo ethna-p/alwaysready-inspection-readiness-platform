@@ -585,6 +585,21 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             )}
           </div>
 
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
+            <MockTrendChart sessions={mockSessions} />
+            {mockSessions.length > 0 && (
+              <div className="flex gap-3 mt-3 flex-wrap">
+                {Object.entries(RATING_COLOUR).map(([, cfg]) => (
+                  <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
+                    {cfg.label}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* ── Mock inspection action plan coverage ──────────────────────── */}
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection — action plan coverage</h3>
@@ -699,21 +714,6 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                     total={actions.length}
                   />
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection ratings</h3>
-            <MockTrendChart sessions={mockSessions} />
-            {mockSessions.length > 0 && (
-              <div className="flex gap-3 mt-3 flex-wrap">
-                {Object.entries(RATING_COLOUR).map(([, cfg]) => (
-                  <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
-                    <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
-                    {cfg.label}
-                  </span>
-                ))}
               </div>
             )}
           </div>

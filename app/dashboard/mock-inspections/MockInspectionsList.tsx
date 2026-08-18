@@ -19,6 +19,7 @@ export type InspectionListItem = {
   started_at: string
   completed_at: string | null
   key_questions: { name: string } | null
+  overall_rating: string | null
 }
 
 interface Props {
@@ -36,6 +37,20 @@ function formatDate(iso: string) {
 const STATUS_STYLE: Record<string, string> = {
   in_progress: 'bg-yellow-100 text-yellow-700',
   completed:   'bg-green-100 text-green-700',
+}
+
+const RATING_LABEL: Record<string, string> = {
+  outstanding:          'Outstanding',
+  good:                 'Good',
+  requires_improvement: 'Requires Improvement',
+  inadequate:           'Inadequate',
+}
+
+const RATING_STYLE: Record<string, string> = {
+  outstanding:          'bg-purple-100 text-purple-700 border-purple-200',
+  good:                 'bg-green-100 text-green-700 border-green-200',
+  requires_improvement: 'bg-amber-100 text-amber-700 border-amber-200',
+  inadequate:           'bg-red-100 text-red-700 border-red-200',
 }
 
 // ─── Filter bar ───────────────────────────────────────────────────────────────
@@ -154,7 +169,16 @@ export default function MockInspectionsList({ inspections }: Props) {
     setStatusFilter('all')
   }
 
-  if (inspections.length === 0) return null
+  if (inspections.length === 0) {
+    return (
+      <div className="space-y-4">
+        <h2 className="text-base font-semibold text-brand">Previous inspections</h2>
+        <div className="bg-card border border-line rounded-xl px-5 py-8 text-center">
+          <p className="text-sm text-ink-dim">No mock inspections yet. Start your first one above.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -224,6 +248,10 @@ export default function MockInspectionsList({ inspections }: Props) {
               ? `/dashboard/mock-inspections/${insp.id}/report`
               : `/dashboard/mock-inspections/${insp.id}`
 
+            const dateLabel = insp.status === 'completed' && insp.completed_at
+              ? `Completed ${formatDate(insp.completed_at)}`
+              : `Started ${formatDate(insp.started_at)}`
+
             return (
               <Link
                 key={insp.id}
@@ -232,9 +260,14 @@ export default function MockInspectionsList({ inspections }: Props) {
               >
                 <div>
                   <p className="text-sm font-semibold text-ink group-hover:text-brand">{label}</p>
-                  <p className="text-xs text-ink-muted mt-0.5">Started {formatDate(insp.started_at)}</p>
+                  <p className="text-xs text-ink-muted mt-0.5">{dateLabel}</p>
                 </div>
                 <div className="flex items-center gap-3">
+                  {insp.overall_rating && RATING_LABEL[insp.overall_rating] && (
+                    <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${RATING_STYLE[insp.overall_rating]}`}>
+                      {RATING_LABEL[insp.overall_rating]}
+                    </span>
+                  )}
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyle}`}>
                     {statusLabel}
                   </span>

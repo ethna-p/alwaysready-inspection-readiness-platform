@@ -11,6 +11,17 @@ import type { InspectionListItem } from './MockInspectionsList'
 
 export const metadata = { title: 'Mock Inspections — AlwaysReady' }
 
+const RATING_ORDER: Record<string, number> = {
+  inadequate: 0, requires_improvement: 1, good: 2, outstanding: 3,
+}
+
+function worstRating(ratings: string[]): string | null {
+  if (!ratings.length) return null
+  return ratings.reduce((worst, r) =>
+    (RATING_ORDER[r] ?? 99) < (RATING_ORDER[worst] ?? 99) ? r : worst
+  )
+}
+
 export default async function MockInspectionsPage() {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') redirect('/dashboard')
@@ -31,7 +42,33 @@ export default async function MockInspectionsPage() {
       key_questions ( name )
     `)
     .order('started_at', { ascending: false })
-  const inspections = inspectionsRaw as InspectionListItem[] | null
+
+  const inspectionList = (inspectionsRaw ?? []) as unknown as Omit<InspectionListItem, 'overall_rating'>[]
+
+  // Fetch all findings for completed inspections in one query
+  const completedIds = inspectionList
+    .filter(i => i.status === 'completed')
+    .map(i => i.id)
+
+  const { data: findingsRaw } = completedIds.length > 0
+    ? await supabase
+        .from('mock_inspection_findings')
+        .select('mock_inspection_id, rating')
+        .in('mock_inspection_id', completedIds)
+    : { data: [] }
+
+  // Map inspection id → worst rating
+  const ratingsByInspection = new Map<string, string[]>()
+  for (const f of findingsRaw ?? []) {
+    const arr = ratingsByInspection.get(f.mock_inspection_id) ?? []
+    arr.push(f.rating)
+    ratingsByInspection.set(f.mock_inspection_id, arr)
+  }
+
+  const inspections: InspectionListItem[] = inspectionList.map(i => ({
+    ...i,
+    overall_rating: worstRating(ratingsByInspection.get(i.id) ?? []),
+  }))
 
   return (
     <div className="space-y-8">
@@ -53,10 +90,8 @@ export default async function MockInspectionsPage() {
         <StartMockInspectionForm keyQuestions={keyQuestions ?? []} />
       </div>
 
-      {/* Past inspections */}
-      {inspections && inspections.length > 0 && (
-        <MockInspectionsList inspections={inspections} />
-      )}
+      {/* Past inspections — always render so the empty state shows */}
+      <MockInspectionsList inspections={inspections} />
     </div>
   )
 }
