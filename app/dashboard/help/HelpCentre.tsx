@@ -480,15 +480,9 @@ export function HelpCentre() {
 
   const activeTopic = TOPICS.find(t => t.id === activeTopicId) ?? null
 
-  // Prevent page scroll — sidebar and content panel scroll independently
+  // Scroll to top whenever the active topic changes
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
-
-  // Scroll content panel to top whenever the active topic changes
-  useEffect(() => {
-    contentRef.current?.scrollTo({ top: 0 })
+    window.scrollTo({ top: 0 })
   }, [activeTopicId, search])
 
   // Flat list of all FAQs for search
@@ -525,14 +519,11 @@ export function HelpCentre() {
   const isSearching = search.trim().length > 0
 
   return (
-    <div
-      className="flex -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 sm:-mt-8 -mb-6 sm:-mb-8 border-t border-line"
-      style={{ height: 'calc(100vh - 4rem)' }}
-    >
+    <div className="flex -mx-4 sm:-mx-6 lg:-mx-8 border-t border-line">
 
       {/* ── Sidebar ── */}
-      <aside className="hidden md:flex md:flex-col w-56 lg:w-64 shrink-0 border-r border-line bg-canvas overflow-y-auto">
-        <div className="pt-6 pb-4 flex-1">
+      <aside className="hidden md:flex md:flex-col w-56 lg:w-64 shrink-0 border-r border-line bg-canvas">
+        <div className="sticky top-0 pt-6 pb-4 overflow-y-auto" style={{ maxHeight: '100vh' }}>
           {/* Home button */}
           <button
             onClick={goHome}
@@ -595,7 +586,7 @@ export function HelpCentre() {
       </aside>
 
       {/* ── Content ── */}
-      <div ref={contentRef} className="flex-1 min-w-0 overflow-y-auto bg-card">
+      <div ref={contentRef} className="flex-1 min-w-0 bg-card">
         {/* Mobile topic strip */}
         <div className="md:hidden border-b border-line bg-canvas overflow-x-auto">
           <div className="flex items-center gap-1 px-4 py-3 whitespace-nowrap">
