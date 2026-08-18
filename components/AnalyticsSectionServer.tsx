@@ -592,7 +592,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Evidence coverage</h3>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE evidence coverage</h3>
             <CompletionBar
               label="of KLOEs have evidence attached"
               pct={evidencePct}
