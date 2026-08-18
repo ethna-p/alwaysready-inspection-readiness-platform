@@ -8,6 +8,7 @@
 
 import { useActionState } from 'react'
 import { provisionOrganisation, type ProvisionResult } from './actions'
+import DemoProvisionButton from './DemoProvisionButton'
 
 const SERVICE_TYPES = [
   'Residential Care Home',
@@ -249,6 +250,8 @@ export default function ProvisionPage() {
           {pending ? 'Provisioning…' : 'Provision organisation →'}
         </button>
       </form>
+
+      <DemoProvisionButton />
     </div>
   )
 }
