@@ -603,17 +603,6 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
             <p className="text-sm text-ink-muted mt-3">CQC inspectors expect evidence to support every KLOE — not just a completed status.</p>
           </div>
 
-          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
-            <CompletionBar
-              label={`of ${pvTotal} statements with strong evidence`}
-              pct={pvPct}
-              colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
-              colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
-              colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
-            />
-          </div>
-
           {/* ── KLOE action plan coverage ─────────────────────────────────── */}
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan coverage</h3>
@@ -687,6 +676,17 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice coverage</h3>
+            <CompletionBar
+              label={`of ${pvTotal} statements with strong evidence`}
+              pct={pvPct}
+              colourA="bg-green-500" countA={pvStrong}      labelA="Strong evidence"
+              colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
+              colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
+            />
           </div>
 
           {/* ── People's Voice action plan coverage ───────────────────────── */}
