@@ -381,7 +381,10 @@ export default async function AccountPage({
                 },
               ] as { category: string; features: { name: string; desc: string; href: string }[] }[]).map(({ category, features }) => (
                 <div key={category}>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-ink-dim mb-3">{category}</p>
+                  <div className="relative inline-block px-2 py-0.5 mb-3">
+                    <span className="absolute inset-0 bg-[#e8c547] opacity-25 -rotate-[0.5deg] -skew-x-1 rounded-sm" aria-hidden="true" />
+                    <span className="relative z-10 text-[11px] font-semibold tracking-widest uppercase text-ink">{category}</span>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {features.map(feature => (
                       <a
