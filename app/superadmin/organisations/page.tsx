@@ -48,7 +48,12 @@ function trialStatus(expiresAt: string | null): { label: string; urgent: boolean
   return { label: `${daysLeft}d left`, urgent: false }
 }
 
-export default async function OrganisationsPage() {
+export default async function OrganisationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string }>
+}) {
+  const { filter = 'all' } = await searchParams
   const supabase = createAdminClient()
 
   // ── 1. Fetch all organisations ─────────────────────────────────────────
@@ -69,8 +74,16 @@ export default async function OrganisationsPage() {
     )
   }
 
-  // ── 2. Fetch admin users for those orgs ────────────────────────────────
-  const orgIds = (orgs ?? []).map(o => o.id)
+  // ── 2. Apply filter ────────────────────────────────────────────────────
+  const isDemo = (o: OrgListItem) => o.name.startsWith('Demo —')
+  const filtered = (orgs ?? []).filter(o =>
+    filter === 'demo' ? isDemo(o) :
+    filter === 'real' ? !isDemo(o) :
+    true
+  )
+
+  // ── 3. Fetch admin users for those orgs ────────────────────────────────
+  const orgIds = filtered.map(o => o.id)
 
   const { data: admins } = orgIds.length > 0
     ? await supabase
@@ -98,7 +111,27 @@ export default async function OrganisationsPage() {
         </p>
       </div>
 
-      {!orgs || orgs.length === 0 ? (
+      {/* Filter tabs */}
+      <div className="flex items-center gap-2 mb-6">
+        {(['all', 'real', 'demo'] as const).map(f => (
+          <Link
+            key={f}
+            href={f === 'all' ? '/superadmin/organisations' : `/superadmin/organisations?filter=${f}`}
+            className={`
+              px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+              ${filter === f || (f === 'all' && filter !== 'real' && filter !== 'demo')
+                ? 'bg-[#014D4E] text-white'
+                : 'bg-card border border-line text-ink-muted hover:text-ink'}
+            `}
+          >
+            {f === 'all' ? `All (${(orgs ?? []).length})` :
+             f === 'real' ? `Real (${(orgs ?? []).filter(o => !o.name.startsWith('Demo —')).length})` :
+             `Demo (${(orgs ?? []).filter(o => o.name.startsWith('Demo —')).length})`}
+          </Link>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="bg-card border border-line rounded-xl p-8 text-center text-sm text-ink-muted">
           No organisations provisioned yet.{' '}
           <Link href="/superadmin/provision" className="text-brand hover:underline font-semibold">
@@ -107,9 +140,9 @@ export default async function OrganisationsPage() {
         </div>
       ) : (
         <>
-          <p className="text-xs text-ink-muted mb-4">{orgs.length} organisation{orgs.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs text-ink-muted mb-4">{filtered.length} organisation{filtered.length !== 1 ? 's' : ''}</p>
           <div className="space-y-3">
-            {orgs.map((org: OrgListItem) => {
+            {filtered.map((org: OrgListItem) => {
               const serviceType = org.service_types?.name ?? '—'
               const tier = org.subscription_tier ?? 'trial'
               const tierStyle = TIER_STYLES[tier] ?? 'bg-fill-dim text-ink-muted'
