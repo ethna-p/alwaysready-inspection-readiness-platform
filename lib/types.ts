@@ -1412,6 +1412,7 @@ export type Database = {
           created_by: string
           created_at: string
           updated_at: string
+          mock_inspection_finding_id: string | null
         }
         Insert: {
           id?: string
@@ -1429,6 +1430,7 @@ export type Database = {
           created_by: string
           created_at?: string
           updated_at?: string
+          mock_inspection_finding_id?: string | null
         }
         Update: {
           id?: string
@@ -1446,6 +1448,7 @@ export type Database = {
           created_by?: string
           created_at?: string
           updated_at?: string
+          mock_inspection_finding_id?: string | null
         }
         Relationships: []
       }

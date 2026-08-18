@@ -304,13 +304,14 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     { data: pvStatements },
     { data: kloItemRows },
     { data: keyQuestionRows },
+    { data: iStatementActionRows },
   ] = await Promise.all([
     supabase.from('compliance_record_history')
       .select('klo_item_id, status, next_review_due, system_recorded_at')
       .order('system_recorded_at', { ascending: true }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (supabase as any).from('action_items')
-      .select('status, priority, due_date')
+      .select('klo_item_id, status, priority, due_date, mock_inspection_finding_id')
       .eq('organisation_id', orgId),
     supabase.from('hr_staff_profiles')
       .select('dbs_next_review_due, supervision_next_due, appraisal_next_due')
@@ -325,6 +326,8 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     supabase.from('i_statements').select('id'),
     supabase.from('klo_items').select('id, key_question_id').in('id', kloItemIds),
     supabase.from('key_questions').select('id, name').order('name'),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (supabase as any).from('i_statement_actions').select('i_statement_id').eq('organisation_id', orgId),
   ])
 
   // Mock findings — single IN query instead of N+1
@@ -378,7 +381,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
   })
 
   // ── KLOE ownership ────────────────────────────────────────────────────────
-  // kloItemRows and keyQuestionRows fetched but not needed here — suppress lint
+  // kloItemRows and keyQuestionRows used below for mock inspection card
   void kloItemRows; void keyQuestionRows
 
   const assigned   = records.filter(r => r.assigned_to != null).length
@@ -395,7 +398,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
 
   // ── Action plan health ────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const actions: { status: string; priority: string; due_date: string | null }[] = (actionRows as any) ?? []
+  const actions: { klo_item_id: string; status: string; priority: string; due_date: string | null; mock_inspection_finding_id: string | null }[] = (actionRows as any) ?? []
   const statusCounts   = { to_do: 0, in_progress: 0, completed: 0 }
   const priorityCounts: Record<string, number> = {}
   for (const a of actions) {
@@ -406,6 +409,53 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
   // ── Evidence coverage (from passed records, supplemented by kloe_evidence) ──
   const kloesWithEvidence = new Set((evidenceRows ?? []).map(e => e.klo_item_id)).size
   const evidencePct = pct(kloesWithEvidence, totalKlos)
+
+  // ── KLOE action plan coverage ─────────────────────────────────────────────
+  const kloesWithActions = new Set(actions.map(a => a.klo_item_id)).size
+  const kloeActionPct    = pct(kloesWithActions, totalKlos)
+
+  // ── People's Voice action plan coverage ───────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const iStatActions: { i_statement_id: string }[] = (iStatementActionRows as any) ?? []
+  const statementsWithActions = new Set(iStatActions.map(a => a.i_statement_id)).size
+  const pvActionPct           = pct(statementsWithActions, pvTotal)
+
+  // ── Mock inspection action plan coverage (most recent inspection) ─────────
+  type MifRow = { id: string; mock_inspection_id: string; rating: string; klo_items: { key_question_id: string; key_questions: { name: string } | null } | null }
+  const mostRecentInspection = (mockRows ?? []).at(-1)
+  let mockCoverage: { area: string; total: number; actioned: number }[] = []
+
+  if (mostRecentInspection) {
+    const { data: detailedFindings } = await supabase
+      .from('mock_inspection_findings')
+      .select('id, mock_inspection_id, rating, klo_items ( key_question_id, key_questions ( name ) )')
+      .eq('mock_inspection_id', mostRecentInspection.id)
+    const mifRows = (detailedFindings ?? []) as unknown as MifRow[]
+
+    // Only amber/red findings count — those are the ones needing action
+    const weakFindings = mifRows.filter(f => f.rating === 'requires_improvement' || f.rating === 'inadequate')
+
+    // Set of finding IDs that have an action item linked
+    const actionedFindingIds = new Set(
+      actions.filter(a => a.mock_inspection_finding_id != null).map(a => a.mock_inspection_finding_id!)
+    )
+
+    // Group by CQC area
+    const byArea = new Map<string, { total: number; actioned: number }>()
+    const CQC_AREA_ORDER = ['Safe', 'Effective', 'Caring', 'Responsive', 'Well-Led']
+    for (const area of CQC_AREA_ORDER) byArea.set(area, { total: 0, actioned: 0 })
+
+    for (const f of weakFindings) {
+      const area = f.klo_items?.key_questions?.name ?? 'Other'
+      if (!byArea.has(area)) byArea.set(area, { total: 0, actioned: 0 })
+      const entry = byArea.get(area)!
+      entry.total++
+      if (actionedFindingIds.has(f.id)) entry.actioned++
+    }
+    mockCoverage = CQC_AREA_ORDER
+      .filter(area => (byArea.get(area)?.total ?? 0) > 0)
+      .map(area => ({ area, ...byArea.get(area)! }))
+  }
 
   // ── Review calendar (from passed records) ────────────────────────────────
   const todayMs = new Date().setHours(0, 0, 0, 0)
@@ -493,6 +543,83 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
               colourB="bg-amber-400" countB={pvNeedsWork}   labelB="Needs work"
               colourC="bg-gray-200"  countC={pvNotAssessed} labelC="Not assessed"
             />
+          </div>
+
+          {/* ── KLOE action plan coverage ─────────────────────────────────── */}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan coverage</h3>
+            <CompletionBar
+              label={`of ${totalKlos} KLOEs have an action plan`}
+              pct={kloeActionPct}
+              colourA="bg-[#014D4E]" countA={kloesWithActions}            labelA="With actions"
+              colourB="bg-gray-200"  countB={totalKlos - kloesWithActions} labelB="No actions"
+              colourC="bg-transparent" countC={0} labelC=""
+            />
+            <p className="text-sm text-ink-muted mt-3">
+              {totalKlos - kloesWithActions > 0
+                ? `${totalKlos - kloesWithActions} KLOE${totalKlos - kloesWithActions !== 1 ? 's have' : ' has'} no action plan. Add from each KLOE's detail page.`
+                : 'All KLOEs have at least one action item.'}
+            </p>
+          </div>
+
+          {/* ── People's Voice action plan coverage ───────────────────────── */}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">People&apos;s Voice action plan coverage</h3>
+            {pvTotal === 0 ? (
+              <p className="text-sm text-ink-muted">No &ldquo;I&rdquo; statements found. Add statements in the People&apos;s Voice section.</p>
+            ) : (
+              <>
+                <CompletionBar
+                  label={`of ${pvTotal} "I" statements have an action plan`}
+                  pct={pvActionPct}
+                  colourA="bg-[#014D4E]" countA={statementsWithActions}          labelA="With actions"
+                  colourB="bg-gray-200"  countB={pvTotal - statementsWithActions} labelB="No actions"
+                  colourC="bg-transparent" countC={0} labelC=""
+                />
+                <p className="text-sm text-ink-muted mt-3">
+                  {pvTotal - statementsWithActions > 0
+                    ? `${pvTotal - statementsWithActions} statement${pvTotal - statementsWithActions !== 1 ? 's have' : ' has'} no action plan. Add from the People's Voice section.`
+                    : 'All "I" statements have at least one action item.'}
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* ── Mock inspection action plan coverage ──────────────────────── */}
+          <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection — action plan coverage</h3>
+            {!mostRecentInspection ? (
+              <p className="text-sm text-ink-muted">Complete a mock inspection to see action plan coverage here.</p>
+            ) : mockCoverage.length === 0 ? (
+              <p className="text-sm text-ink-muted">No amber or red findings in your most recent mock inspection — nothing to action.</p>
+            ) : (
+              <>
+                <p className="text-xs text-ink-muted mb-3">
+                  Most recent inspection: {new Date(mostRecentInspection.completed_at ?? mostRecentInspection.started_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.
+                  Amber and red findings only.
+                </p>
+                <div className="space-y-2">
+                  {mockCoverage.map(({ area, total, actioned }) => {
+                    const areaPct = pct(actioned, total)
+                    const colour  = actioned === total ? '#458F00' : actioned === 0 ? '#DA291C' : '#F47738'
+                    return (
+                      <div key={area} className="flex items-center gap-3">
+                        <span className="text-sm text-ink w-28 shrink-0">{area}</span>
+                        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${areaPct}%`, backgroundColor: colour }} />
+                        </div>
+                        <span className="text-xs font-semibold tabular-nums w-12 text-right" style={{ color: colour }}>
+                          {actioned} / {total}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <p className="text-sm text-ink-muted mt-3">
+                  Create action items from the mock inspection report to link them to specific findings.
+                </p>
+              </>
+            )}
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>

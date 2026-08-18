@@ -27,12 +27,13 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
   if (!profile) return { success: false, error: 'Not authenticated.' }
   if (profile.role === 'viewer') return { success: false, error: 'Viewers cannot create action items.' }
 
-  const kloItemId   = (formData.get('klo_item_id') as string | null)?.trim()
-  const title       = (formData.get('title') as string | null)?.trim()
-  const description = (formData.get('description') as string | null)?.trim() || null
-  const dueDate     = (formData.get('due_date') as string | null)?.trim() || null
-  const priority    = (formData.get('priority') as string | null)?.trim() || 'medium'
-  const assignedTo  = (formData.get('assigned_to') as string | null)?.trim() || null
+  const kloItemId      = (formData.get('klo_item_id') as string | null)?.trim()
+  const title          = (formData.get('title') as string | null)?.trim()
+  const description    = (formData.get('description') as string | null)?.trim() || null
+  const dueDate        = (formData.get('due_date') as string | null)?.trim() || null
+  const priority       = (formData.get('priority') as string | null)?.trim() || 'medium'
+  const assignedTo     = (formData.get('assigned_to') as string | null)?.trim() || null
+  const findingId      = (formData.get('mock_inspection_finding_id') as string | null)?.trim() || null
 
   if (!kloItemId || !title) {
     return { success: false, error: 'Title is required.' }
@@ -45,14 +46,15 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
   const supabase = await createClient()
 
   const { error } = await supabase.from('action_items').insert({
-    organisation_id: profile.organisation_id,
-    klo_item_id:     kloItemId,
+    organisation_id:             profile.organisation_id,
+    klo_item_id:                 kloItemId,
     title,
     description,
-    due_date:        dueDate || null,
-    priority:        priority as 'high' | 'medium' | 'low',
-    assigned_to:     assignedTo || null,
-    created_by:      profile.id,
+    due_date:                    dueDate || null,
+    priority:                    priority as 'high' | 'medium' | 'low',
+    assigned_to:                 assignedTo || null,
+    created_by:                  profile.id,
+    mock_inspection_finding_id:  findingId,
   })
 
   if (error) {

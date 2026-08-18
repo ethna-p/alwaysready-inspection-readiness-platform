@@ -10,6 +10,7 @@ type Props = {
   kloTitle: string
   suggestedAction: string
   teamMembers: TeamMember[]
+  findingId?: string
 }
 
 export default function CreateActionFromFinding({
@@ -17,6 +18,7 @@ export default function CreateActionFromFinding({
   kloTitle,
   suggestedAction,
   teamMembers,
+  findingId,
 }: Props) {
   const [open, setOpen]         = useState(false)
   const [done, setDone]         = useState(false)
@@ -28,6 +30,7 @@ export default function CreateActionFromFinding({
     setError(null)
     const fd = new FormData(e.currentTarget)
     fd.set('klo_item_id', kloItemId)
+    if (findingId) fd.set('mock_inspection_finding_id', findingId)
     startTransition(async () => {
       const result = await createActionItem(fd)
       if (!result.success) { setError(result.error); return }

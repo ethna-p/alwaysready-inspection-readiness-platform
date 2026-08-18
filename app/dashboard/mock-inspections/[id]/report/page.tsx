@@ -18,7 +18,7 @@ type InspectionForReport = {
   key_questions: { name: string } | null
 }
 type FindingWithKlo = {
-  klo_item_id: string; rating: MockInspectionRating; notes: string | null
+  id: string; klo_item_id: string; rating: MockInspectionRating; notes: string | null
   klo_items: { id: string; title: string; wording: string | null; key_question_id: string; key_questions: { name: string } | null } | null
 }
 type ResponseWithItem = {
@@ -82,7 +82,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   const { data: findingsRaw } = await supabase
     .from('mock_inspection_findings')
     .select(`
-      klo_item_id, rating, notes,
+      id, klo_item_id, rating, notes,
       klo_items ( id, title, wording, key_question_id, key_questions ( name ) )
     `)
     .eq('mock_inspection_id', id)
@@ -130,8 +130,8 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
   }))
 
   // Build action plan tiers
-  const mustAddress: { kloItemId: string; title: string; action: string; rating: MockInspectionRating }[] = []
-  const strengthen:  { kloItemId: string; title: string; action: string; rating: MockInspectionRating }[] = []
+  const mustAddress: { kloItemId: string; findingId: string; title: string; action: string; rating: MockInspectionRating }[] = []
+  const strengthen:  { kloItemId: string; findingId: string; title: string; action: string; rating: MockInspectionRating }[] = []
   const maintain:    { title: string }[] = []
 
   for (const f of findings) {
@@ -157,6 +157,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
 
       mustAddress.push({
         kloItemId: kloId,
+        findingId: f.id,
         title,
         action: gapText || f.notes || 'Review and strengthen evidence for this KLOE.',
         rating,
@@ -166,6 +167,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
       if (partialGaps.length > 0 || !gaps.length) {
         strengthen.push({
           kloItemId: kloId,
+          findingId: f.id,
           title,
           action: partialGaps.length > 0
             ? partialGaps.map((g: ResponseWithItem) => {
@@ -281,6 +283,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
                     kloTitle={item.title}
                     suggestedAction={item.action}
                     teamMembers={teamMembers}
+                    findingId={item.findingId}
                   />
                 </div>
               ))}
@@ -307,6 +310,7 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
                     kloTitle={item.title}
                     suggestedAction={item.action}
                     teamMembers={teamMembers}
+                    findingId={item.findingId}
                   />
                 </div>
               ))}
