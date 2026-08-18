@@ -13,7 +13,7 @@ The `/legal` page on `alwaysready.uk` is a single Nunjucks file. The full policy
 
 This is an Eleventy (11ty) site using Nunjucks templates. You do not need to touch any other file for legal page changes — `src/legal.njk` is self-contained.
 
-The site was migrated from Netlify to **Cloudflare Pages** in 2026. This is directly relevant to some of the changes below.
+The site is hosted on **Cloudflare Pages**.
 
 ---
 
@@ -37,54 +37,37 @@ The site was migrated from Netlify to **Cloudflare Pages** in 2026. This is dire
 
 ---
 
-### 2. Sub-processors table — Netlify → Cloudflare
+### 2. Sub-processors table — marketing site host
 
 **Where:** Same sub-processors table.
 
-**Current:**
-```html
-<tr><td>Netlify</td><td>Marketing website hosting and form processing</td><td>US</td></tr>
-```
-
-**Change to:**
+**Ensure the table contains:**
 ```html
 <tr><td>Cloudflare</td><td>Marketing website hosting, CDN, DNS and security</td><td>US (global edge)</td></tr>
 ```
 
-**Why:** The marketing site hosting and DNS has moved from Netlify to Cloudflare Pages. Netlify no longer hosts the site or processes forms — all forms now POST directly to the AlwaysReady platform API. Cloudflare is already listed in the platform's sub-processor table; it should also appear here as it's now the marketing site host.
-
-Note: Cloudflare already appears as `<tr><td>Cloudflare</td><td>DNS, security, and inbound email routing</td><td>US (global edge)</td></tr>` — that entry refers to the platform (`portal.alwaysready.uk`). This Netlify → Cloudflare swap is in the same table and refers to the marketing site. You can either update the existing Cloudflare row to cover both, or replace the Netlify row with a new Cloudflare row scoped to the marketing site. The simplest approach: replace the Netlify row with a combined Cloudflare row that covers both, and remove the existing separate Cloudflare row (or keep them as two rows if you want to be more granular). Either is fine — just ensure Netlify is removed and Cloudflare appears once with accurate scope.
+**Why:** Cloudflare Pages hosts the marketing site and handles DNS, CDN, and security. Check whether Cloudflare already appears in the table (it may be listed for the platform). If so, update its description to cover both the platform and the marketing site, or add a second row scoped to the marketing site — either is acceptable.
 
 ---
 
-### 3. Cookie Policy — remove Netlify Forms session cookie
+### 3. Cookie Policy — remove any legacy form processor session cookie row
 
 **Where:** Section "Cookie Policy" → "Cookies we use" table.
 
-**Current row to remove:**
-```html
-<tr><td>Netlify Forms session</td><td>Enables secure form submission and spam prevention</td><td>Session only</td></tr>
-```
-
-**Why:** Forms no longer use Netlify. They POST directly to `portal.alwaysready.uk`. Netlify Forms session cookies are no longer set.
+**Remove any row referencing a third-party form processor session cookie** if present — forms now POST directly to `portal.alwaysready.uk` and no third-party session cookies are set.
 
 ---
 
-### 4. Cookie Policy — update Netlify third-party entry
+### 4. Cookie Policy — third-party services list
 
 **Where:** Section "Cookie Policy" → "Third-party services" list.
 
-**Current:**
-```html
-<li><strong>Netlify</strong> hosts the website and processes form submissions. May set session cookies for security.</li>
-```
-
-**Change to:**
+**Ensure the list includes:**
 ```html
 <li><strong>Cloudflare</strong> hosts the website and provides CDN, DNS and security services. May set security-related cookies.</li>
 ```
 
-**Why:** Netlify no longer hosts the site. Cloudflare Pages is now the host.
+Remove any entry for a hosting provider other than Cloudflare.
 
 ---
 
@@ -102,16 +85,16 @@ Note: Cloudflare already appears as `<tr><td>Cloudflare</td><td>DNS, security, a
 
 ## Deploy checklist
 
-1. Edit `src/legal.njk` with the four changes above
+1. Edit `src/legal.njk` with the changes above
 2. Push to the `preview` branch
 3. Cloudflare Pages will redeploy automatically — no manual build step needed
 4. Verify at `alwaysready.uk/legal` that the sub-processors table and cookie table look correct
 
 ---
 
-## Notes for AJ to review before Publishing
+## Notes for AJ to review before publishing
 
-- **Contact email:** The legal draft (`docs/legal-policies-draft.md` in the platform repo) uses `hello@alwaysready.uk` in some places. The marketing site uses `support@alwaysready.uk` throughout. Confirm which address should be canonical for legal/privacy contact before solicitor review. Currently the site consistently uses `support@alwaysready.uk` — this is likely correct.
+- **Contact email:** Confirm `support@alwaysready.uk` is the canonical address for legal/privacy contact. Currently used consistently throughout the site.
 
 - **DPA:** The Privacy Policy and T&Cs both say a Data Processing Agreement is "available on request." Once the DPA is drafted and solicitor-reviewed, consider whether to publish it at `/dpa` on `portal.alwaysready.uk` and update these references to a link.
 

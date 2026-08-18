@@ -88,10 +88,9 @@ document.querySelector('#your-form-id').addEventListener('submit', async functio
 ---
 
 
-Step 4 — Remove data-netlify if present
-If the form has data-netlify="true" or netlify as an attribute, remove it.
-Netlify Forms and the direct API call will conflict. The direct API call
-is the correct approach.
+Step 4 — Confirm no conflicting form handlers
+The direct API call is the only submission path. Do not add any third-party
+form attributes or hidden input fields to the form.
 
 
 Step 5 — Deploy
@@ -115,6 +114,5 @@ NOTES
 - The CORS policy on the API allows requests from https://alwaysready.uk
   and https://www.alwaysready.uk only — requests from other origins will
   be blocked, which is intentional.
-- Do not add this form to Netlify Forms (data-netlify="true"). The Netlify
-  Forms webhook for blog-signup can remain configured in Netlify dashboard
-  as a fallback, but the primary submission path is the direct API call.
+- The direct API call is the only submission path. Do not add third-party
+  form attributes or hidden input fields.

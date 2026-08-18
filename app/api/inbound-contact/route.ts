@@ -1,8 +1,8 @@
 /**
  * POST /api/inbound-contact
  *
- * Receives Netlify form webhook submissions from alwaysready.uk/contact.
- * Netlify posts application/json with the form submission payload.
+ * Receives form submissions from alwaysready.uk/contact,
+ * posted as JSON from the Cloudflare Pages-hosted marketing site.
  *
  * Payload shape (simplified):
  * {
@@ -34,7 +34,7 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
-  // ── Parse Netlify JSON payload ────────────────────────────────────────────
+  // ── Parse JSON payload ────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: Record<string, any>
   try {

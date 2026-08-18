@@ -1,8 +1,8 @@
 /**
  * POST /api/inbound-waitlist
  *
- * Receives Netlify form webhook submissions from alwaysready.uk/waitlist.
- * Netlify posts application/json with the form submission payload.
+ * Receives form submissions from alwaysready.uk/waitlist,
+ * posted as JSON from the Cloudflare Pages-hosted marketing site.
  *
  * Payload shape (simplified):
  * {
@@ -36,12 +36,12 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
-  // ── Parse Netlify JSON payload ────────────────────────────────────────────
+  // ── Parse JSON payload ────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: Record<string, any>
   try {
     const text = await req.text()
-    // Netlify sends JSON directly; fall back to URLSearchParams for local testing
+    // Expects JSON; fall back to URLSearchParams for local testing
     try {
       payload = JSON.parse(text)
     } catch {
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: Record<string, any> = payload.data ?? {}
 
-  // Field names — check top-level Netlify JSON fields, data sub-object,
+  // Field names — check top-level JSON fields, data sub-object,
   // and direct URL-encoded keys (all dash/underscore/camel variants)
   const firstName =
     (payload.first_name  as string | undefined)?.trim() ||

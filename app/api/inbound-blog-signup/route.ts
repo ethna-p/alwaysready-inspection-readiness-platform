@@ -1,11 +1,9 @@
 /**
  * POST /api/inbound-blog-signup
  *
- * Receives Netlify form webhook submissions from the alwaysready.uk blog
- * signup form (name="blog-signup", data-netlify="true").
- *
- * Netlify posts application/x-www-form-urlencoded or JSON with the payload
- * wrapped as: { payload: "<json string>" } or a direct JSON object.
+ * Receives form submissions from the alwaysready.uk blog signup form,
+ * posted as JSON or application/x-www-form-urlencoded from the
+ * Cloudflare Pages-hosted marketing site.
  *
  * On receipt:
  *   1. Upserts the subscriber into blog_subscribers
@@ -18,8 +16,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
-  // ── Parse Netlify payload ─────────────────────────────────────────────────
-  // Netlify can send either JSON or form-encoded with a nested `payload` key.
+  // ── Parse payload ────────────────────────────────────────────────────────
+  // Accepts JSON or form-encoded with an optional nested `payload` key.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: Record<string, any>
   try {
@@ -76,7 +74,7 @@ export async function POST(req: NextRequest) {
 
   if (dbError) {
     console.error('[inbound-blog-signup] Supabase error:', dbError.message)
-    // Still return 200 so Netlify doesn't retry indefinitely — log and move on
+    // Still return 200 to prevent retries — log and move on
   }
 
   // ── Send welcome email to subscriber ─────────────────────────────────────
