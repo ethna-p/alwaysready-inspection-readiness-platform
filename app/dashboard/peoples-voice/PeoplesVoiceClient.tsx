@@ -142,13 +142,22 @@ function StatementRow({
         </div>
         <p className="flex-1 text-sm text-ink leading-snug">{item.statement_text}</p>
         {!isViewer && (
-          <button
-            type="button"
-            onClick={() => { setOpen(v => !v); setShowActions(false) }}
-            className="shrink-0 text-xs font-medium text-brand bg-[#e6f7f5] hover:bg-[#ccf0ec] rounded px-2.5 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]"
-          >
-            {open ? 'Close' : existing ? 'Edit' : 'Add evidence'}
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => { setShowActions(v => !v); setOpen(false) }}
+              className="text-xs font-medium text-brand bg-[#e6f7f5] hover:bg-[#ccf0ec] rounded px-2.5 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]"
+            >
+              {showActions ? 'Hide actions' : openActionCount > 0 ? `Actions (${openActionCount})` : '+ Action plan'}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setOpen(v => !v); setShowActions(false) }}
+              className="text-xs font-medium text-brand bg-[#e6f7f5] hover:bg-[#ccf0ec] rounded px-2.5 py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6]"
+            >
+              {open ? 'Close' : existing ? 'Edit' : 'Add evidence'}
+            </button>
+          </div>
         )}
       </div>
 
@@ -161,20 +170,15 @@ function StatementRow({
         </div>
       )}
 
-      {/* Action plan toggle — shown for all roles when actions exist or user can add */}
-      {(actions.length > 0 || (!isViewer && existing)) && (
+      {/* Action plan toggle for viewers (no edit button row) */}
+      {isViewer && actions.length > 0 && (
         <div className="px-4 pb-3">
           <button
             type="button"
-            onClick={() => { setShowActions(v => !v); setOpen(false) }}
+            onClick={() => setShowActions(v => !v)}
             className="text-xs font-medium text-brand hover:underline underline-offset-2 focus:outline-none focus:ring-1 focus:ring-brand rounded"
           >
-            {showActions
-              ? 'Hide actions'
-              : openActionCount > 0
-                ? `Action plan (${openActionCount} open)`
-                : 'Action plan'
-            }
+            {showActions ? 'Hide actions' : `Action plan (${openActionCount} open)`}
           </button>
         </div>
       )}
