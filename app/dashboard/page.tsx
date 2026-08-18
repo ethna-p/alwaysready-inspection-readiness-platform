@@ -18,6 +18,7 @@ import type { RAGStatus } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import type { ComplianceRecord } from '@/lib/types'
 import { fetchCqcLocation, cqcRatingColours, formatCqcDate } from '@/lib/cqc'
+import TeamWorkloadTable from '@/components/TeamWorkloadTable'
 import type { CqcRating } from '@/lib/cqc'
 import AnalyticsSectionServer from '@/components/AnalyticsSectionServer'
 
@@ -436,49 +437,7 @@ export default async function DashboardPage() {
       {isAdmin && teamStats.length > 0 && (
         <section aria-labelledby="team-heading" className="mt-8">
           <h2 id="team-heading" className="text-lg font-bold text-brand mb-4">Team workload</h2>
-          <div className="bg-card rounded-xl border border-line overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
-                  <th scope="col" className="text-left px-4 py-3 font-medium">Team member</th>
-                  <th scope="col" className="text-left px-4 py-3 font-medium">Assigned KLOEs</th>
-                  <th scope="col" className="text-left px-4 py-3 font-medium hidden sm:table-cell">RAG breakdown</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {teamStats.map(member => (
-                  <tr key={member.id} className="hover:bg-canvas transition-colors">
-                    <td className="px-4 py-3 font-medium text-ink">
-                      {member.displayName}
-                      <div className="flex flex-wrap gap-2 mt-1 sm:hidden">
-                        {(['red', 'amber', 'green', 'grey'] as const).filter(r => member.rag[r] > 0).map(r => (
-                          <span key={r} className="inline-flex items-center gap-1 text-xs">
-                            <RagBadge status={r} compact />
-                            <span className="font-medium">{member.rag[r]}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-ink">
-                      <span className="font-semibold">{member.total}</span>
-                      {member.rag.red > 0 && <span className="ml-2 text-xs text-red-600 font-medium">{member.rag.red} overdue</span>}
-                    </td>
-                    <td className="px-4 py-3 hidden sm:table-cell">
-                      <div className="flex flex-wrap gap-3">
-                        {(['red', 'amber', 'green', 'grey'] as const).filter(r => member.rag[r] > 0).map(r => (
-                          <span key={r} className="inline-flex items-center gap-1 text-xs">
-                            <RagBadge status={r} compact />
-                            <span className="font-medium text-ink">{member.rag[r]}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="text-sm text-ink-dim mt-2">Sorted by most at-risk first. Assign KLOEs from each KLOE&apos;s detail page.</p>
+          <TeamWorkloadTable members={teamStats} />
         </section>
       )}
 
