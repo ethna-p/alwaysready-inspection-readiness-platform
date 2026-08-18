@@ -621,7 +621,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           </div>
 
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
-            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
+            <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">KLOE action plan health</h3>
             {actions.length === 0 ? (
               <div>
                 <div className="opacity-30 select-none space-y-5" aria-hidden="true">
