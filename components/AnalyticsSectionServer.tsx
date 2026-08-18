@@ -230,6 +230,38 @@ function MockTrendChartSkeleton() {
   )
 }
 
+function MockActionPlanSkeleton() {
+  const areas = [
+    { label: 'Safe',        pct: 75, colour: '#F47738' },
+    { label: 'Effective',   pct: 100, colour: '#458F00' },
+    { label: 'Caring',      pct: 0,   colour: '#DA291C' },
+    { label: 'Responsive',  pct: 50,  colour: '#F47738' },
+    { label: 'Well-Led',    pct: 100, colour: '#458F00' },
+  ]
+  return (
+    <div>
+      <div className="opacity-30 select-none" aria-hidden="true">
+        <p className="text-xs text-ink-muted mb-3">Most recent inspection: — Aug 2026. Amber and red findings only.</p>
+        <div className="space-y-2">
+          {areas.map(({ label, pct, colour }) => (
+            <div key={label} className="flex items-center gap-3">
+              <span className="text-sm text-ink w-28 shrink-0">{label}</span>
+              <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: colour }} />
+              </div>
+              <span className="text-xs font-semibold tabular-nums w-12 text-right" style={{ color: colour }}>
+                {pct === 100 ? '2 / 2' : pct === 75 ? '3 / 4' : pct === 50 ? '1 / 2' : '0 / 1'}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="text-sm text-ink-muted mt-3">Create action items from the mock inspection report to link them to specific findings.</p>
+      </div>
+      <p className="text-sm text-ink-muted mt-2">Complete a mock inspection to see action plan coverage here.</p>
+    </div>
+  )
+}
+
 function MockTrendChart({ sessions }: { sessions: { date: string; worstRating: string }[] }) {
   if (sessions.length === 0) return <MockTrendChartSkeleton />
   const W = 560; const H = 90
@@ -604,7 +636,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Mock inspection — action plan coverage</h3>
             {!mostRecentInspection ? (
-              <p className="text-sm text-ink-muted">Complete a mock inspection to see action plan coverage here.</p>
+              <MockActionPlanSkeleton />
             ) : mockCoverage.length === 0 ? (
               <p className="text-sm text-ink-muted">No amber or red findings in your most recent mock inspection — nothing to action.</p>
             ) : (
