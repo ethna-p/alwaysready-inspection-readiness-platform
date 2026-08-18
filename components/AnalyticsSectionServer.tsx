@@ -200,28 +200,30 @@ function MockTrendChartSkeleton() {
     { x: PAD.left + cW,          fill: '#458F00' },
   ]
   return (
-    <div className="opacity-30 select-none" aria-hidden="true">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
-        <polyline
-          points={ghost.map(d => `${d.x},${cy}`).join(' ')}
-          fill="none" stroke="#9ca3af" strokeWidth="1.5" strokeDasharray="4 3"
-        />
-        {ghost.map((d, i) => (
-          <g key={i}>
-            <circle cx={d.x} cy={cy} r="10" fill={d.fill} />
-            <text x={d.x} y={cy + 4} textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff">
-              {i === 0 ? 'I' : i === 3 ? 'G' : 'RI'}
-            </text>
-          </g>
-        ))}
-      </svg>
-      <div className="flex gap-3 mt-2 flex-wrap">
-        {Object.entries(RATING_COLOUR).map(([, cfg]) => (
-          <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
-            <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
-            {cfg.label}
-          </span>
-        ))}
+    <div>
+      <div className="opacity-30 select-none" aria-hidden="true">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+          <polyline
+            points={ghost.map(d => `${d.x},${cy}`).join(' ')}
+            fill="none" stroke="#9ca3af" strokeWidth="1.5" strokeDasharray="4 3"
+          />
+          {ghost.map((d, i) => (
+            <g key={i}>
+              <circle cx={d.x} cy={cy} r="10" fill={d.fill} />
+              <text x={d.x} y={cy + 4} textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff">
+                {i === 0 ? 'I' : i === 3 ? 'G' : 'RI'}
+              </text>
+            </g>
+          ))}
+        </svg>
+        <div className="flex gap-3 mt-2 flex-wrap">
+          {Object.entries(RATING_COLOUR).map(([, cfg]) => (
+            <span key={cfg.label} className="flex items-center gap-1.5 text-xs text-ink-dim">
+              <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill }} />
+              {cfg.label}
+            </span>
+          ))}
+        </div>
       </div>
       <p className="text-xs text-ink-muted mt-2">Complete a mock inspection to see your ratings trend here.</p>
     </div>
@@ -501,13 +503,15 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">HR compliance</h3>
             {hrTotal === 0 ? (
-              <div className="opacity-30 select-none" aria-hidden="true">
-                <HrComplianceChart checks={[
-                  { label: 'DBS checks',   inDate: 0, total: 10 },
-                  { label: 'Supervisions', inDate: 0, total: 10 },
-                  { label: 'Appraisals',   inDate: 0, total: 10 },
-                ]} />
-                <p className="text-xs text-ink-muted mt-2 !opacity-100">Add staff profiles in HR to see compliance rates here.</p>
+              <div>
+                <div className="opacity-30 select-none" aria-hidden="true">
+                  <HrComplianceChart checks={[
+                    { label: 'DBS checks',   inDate: 0, total: 10 },
+                    { label: 'Supervisions', inDate: 0, total: 10 },
+                    { label: 'Appraisals',   inDate: 0, total: 10 },
+                  ]} />
+                </div>
+                <p className="text-xs text-ink-muted mt-2">Add staff profiles in HR to see compliance rates here.</p>
               </div>
             ) : (
               <HrComplianceChart checks={hrChecks} />
@@ -517,30 +521,32 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
           <div className="bg-card rounded-2xl border border-line p-5 mb-4" style={{ breakInside: 'avoid' }}>
             <h3 className="text-xs font-semibold text-brand uppercase tracking-wide mb-3">Action plan health</h3>
             {actions.length === 0 ? (
-              <div className="opacity-30 select-none space-y-5" aria-hidden="true">
-                <div>
-                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
-                  <MiniBarChart
-                    rows={[
-                      { label: 'To do',       count: 6, colour: 'bg-gray-400' },
-                      { label: 'In progress', count: 2, colour: 'bg-amber-400' },
-                      { label: 'Completed',   count: 1, colour: 'bg-green-500' },
-                    ]}
-                    total={9}
-                  />
+              <div>
+                <div className="opacity-30 select-none space-y-5" aria-hidden="true">
+                  <div>
+                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By status</p>
+                    <MiniBarChart
+                      rows={[
+                        { label: 'To do',       count: 6, colour: 'bg-gray-400' },
+                        { label: 'In progress', count: 2, colour: 'bg-amber-400' },
+                        { label: 'Completed',   count: 1, colour: 'bg-green-500' },
+                      ]}
+                      total={9}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
+                    <MiniBarChart
+                      rows={[
+                        { label: 'High',   count: 3, colour: 'bg-red-400'   },
+                        { label: 'Medium', count: 4, colour: 'bg-amber-400' },
+                        { label: 'Low',    count: 2, colour: 'bg-green-400' },
+                      ]}
+                      total={9}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-ink-dim uppercase tracking-wide mb-2">By priority</p>
-                  <MiniBarChart
-                    rows={[
-                      { label: 'High',   count: 3, colour: 'bg-red-400'   },
-                      { label: 'Medium', count: 4, colour: 'bg-amber-400' },
-                      { label: 'Low',    count: 2, colour: 'bg-green-400' },
-                    ]}
-                    total={9}
-                  />
-                </div>
-                <p className="text-xs text-ink-muted !opacity-100">Add action items from any KLOE detail page to see your plan health here.</p>
+                <p className="text-xs text-ink-muted mt-3">Add action items from any KLOE detail page to see your plan health here.</p>
               </div>
             ) : (
               <div className="space-y-5">
