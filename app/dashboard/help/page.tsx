@@ -229,6 +229,16 @@ export default function HelpPage() {
             <p>• Create action items directly from mock inspection findings — each action links back to the finding that prompted it.</p>
           </div>
 
+          <H3>People&apos;s Voice</H3>
+          <div className="space-y-1">
+            <p>• The 19 TLAP &ldquo;I&rdquo; statements from the CQC assessment framework are pre-loaded, grouped by the five key questions.</p>
+            <p>• Record your evidence for each statement and rate your confidence as Green, Amber, or Red.</p>
+            <p>• Upload supporting files against individual statements — PDF, Word, Excel, JPG, or PNG up to 10 MB each.</p>
+            <p>• Create structured action plans directly from any statement — with a title, description, due date, priority, and assigned team member.</p>
+            <p>• Set review dates per statement; the platform tracks when each one is next due.</p>
+            <p>• Summary dashboard showing evidence coverage and action plan progress across all five key questions.</p>
+          </div>
+
           <H3>Inspection Pack</H3>
           <div className="space-y-1">
             <p>• A one-click printable summary of your full compliance position.</p>
@@ -484,7 +494,7 @@ export default function HelpPage() {
             <p><strong>Dashboard</strong> — an overview of the service&apos;s overall inspection readiness, broken down by each key question area.</p>
             <p><strong>KLOE tracker</strong> — the full list of Key Lines of Enquiry, showing current status, RAG rating, priority, and who each KLOE is assigned to.</p>
             <p><strong>Audit trail</strong> — a complete, time-stamped record of every update made to each KLOE, including who made the change and what was changed.</p>
-            <p><strong>Trend over time</strong> — a graph showing how the service&apos;s readiness has changed over recent weeks and months.</p>
+            <p><strong>Analytics</strong> — charts on the dashboard showing evidence coverage, action plan health, and compliance trends across KLOEs, People&apos;s Voice, mock inspections, and HR.</p>
             <p><strong>Daily review report</strong> — a summary of current compliance status across all key question areas.</p>
             <p><strong>Inspection pack</strong> — a printable summary of all KLOE data, designed to support an inspection visit.</p>
           </div>
@@ -762,7 +772,7 @@ export default function HelpPage() {
             <FAQ question="Can I download my data before I cancel?" answer="Yes. You can download a full export of your compliance records and a ZIP archive of your evidence files at any time from Account > Organisation. Your data is retained for 30 days after cancellation, during which you can still export everything." />
             <FAQ question="Is there a charity discount?" answer="Yes — registered charities receive a discount on every monthly payment for the duration of their subscription. Provide your charity registration number at sign-up, and the discount is applied automatically once your registration is verified." />
             <FAQ question="Can we use AlwaysReady for more than one service?" answer="Each account is for a single CQC-registered service location. If you operate multiple services, each requires its own account. Contact support@alwaysready.uk to discuss multi-site pricing." />
-            <FAQ question="What is included in the subscription?" answer="Full platform access, evidence file storage, KLOE tracker, readiness dashboard, daily review report, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, team access with role-based permissions, and support. Everything is included." />
+            <FAQ question="What is included in the subscription?" answer="Full platform access, evidence file storage, KLOE tracker, readiness dashboard, analytics, daily review report, report builder, audit trail, inspection pack, People's Voice module, HR module, mock inspection tool, newsletter drafting tool, team access with role-based permissions, and support. Everything is included." />
           </div>
 
           <H3>Support and Contact</H3>
@@ -774,7 +784,7 @@ export default function HelpPage() {
 
           <H3>Free Trial</H3>
           <div className="space-y-4">
-            <FAQ question="What is included in the free trial?" answer="Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, and team access. Data entered during the trial is retained if you subscribe." />
+            <FAQ question="What is included in the free trial?" answer="Everything — KLOE tracker, readiness dashboard, analytics, daily review report, report builder, evidence uploads, audit trail, inspection pack, People's Voice module, HR module, mock inspection tool, newsletter drafting tool, and team access. Data entered during the trial is retained if you subscribe." />
             <FAQ question="Which service types does AlwaysReady currently support?" answer="Eleven service types: ARBD Specialist Care Homes, Community Drug and Alcohol Services, Dual-Registered Care Homes, Extra Care Housing, Homecare Agencies, Nursing Homes, Residential Care Homes, Residential Rehabilitation Services, Shared Lives Schemes, Specialist Colleges, and Supported Living. Each has a tailored checklist aligned with CQC guidance." />
             <FAQ question="Is my data safe, and what happens to it if I do not subscribe?" answer="Your data is stored securely and never shared with third parties. If you do not subscribe, your data is retained for 30 days and can be downloaded at any time from Account > Organisation. After 30 days, it is permanently deleted. You can also request early deletion by contacting us." />
             <FAQ question="What happens when my free trial ends?" answer="You will be invited to subscribe. There is no automatic charge or obligation to do so." />
