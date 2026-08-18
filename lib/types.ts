@@ -829,6 +829,33 @@ export type Database = {
         Relationships: []
       }
 
+      // ── Demo leads ────────────────────────────────────────────────────
+
+      demo_leads: {
+        Row: {
+          id: string
+          service_type: string
+          cqc_rating: string | null
+          demo_type: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          service_type: string
+          cqc_rating?: string | null
+          demo_type: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          service_type?: string
+          cqc_rating?: string | null
+          demo_type?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       // ── Blog subscribers ───────────────────────────────────────────────
 
       blog_subscribers: {
