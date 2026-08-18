@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import Link from 'next/link'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -439,8 +439,14 @@ export function HelpCentre() {
   const [activeTopicId, setActiveTopicId] = useState<string | null>(null)
   const [openFaqs, setOpenFaqs] = useState<Set<string>>(new Set())
   const [search, setSearch] = useState('')
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const activeTopic = TOPICS.find(t => t.id === activeTopicId) ?? null
+
+  // Scroll content panel to top whenever the active topic changes
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0 })
+  }, [activeTopicId, search])
 
   // Flat list of all FAQs for search
   const allFaqs = useMemo(
@@ -546,7 +552,7 @@ export function HelpCentre() {
       </aside>
 
       {/* ── Content ── */}
-      <div className="flex-1 min-w-0">
+      <div ref={contentRef} className="flex-1 min-w-0 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
         {/* Mobile topic strip */}
         <div className="md:hidden border-b border-line bg-canvas overflow-x-auto">
           <div className="flex items-center gap-1 px-4 py-3 whitespace-nowrap">
