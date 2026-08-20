@@ -35,6 +35,7 @@ export type EmailGroup =
   | 'account'
   | 'waitlist'
   | 'waitlist-launch'
+  | 'data-deletion'
   | 'all'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -1086,6 +1087,107 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
   ])
 }
 
+// ── Data deletion emails ──────────────────────────────────────────────────────
+
+async function sendDataDeletion(
+  send: Awaited<ReturnType<typeof makeSender>>,
+): Promise<TestEmailResult[]> {
+  const deletionDate = '23 September 2026'
+  return Promise.all([
+
+    // 1. Request received — identity verification (user-initiated)
+    send(
+      'We have received your data deletion request — AlwaysReady',
+      `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          Thank you for your data deletion request, received on
+          <strong>${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>.
+          We will process it in accordance with the UK GDPR and our
+          <a href="${PLATFORM_URL}/legal#privacy" style="color:#014D4E">Privacy Policy</a>.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          To verify your identity and confirm the request, please reply to this email with the following:
+        </p>
+        <div style="background:#f8f9fa;border-left:4px solid #014D4E;padding:16px 20px;border-radius:0 6px 6px 0;margin:0 0 24px">
+          <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            1. My full name is <strong>___________________________________</strong> and I am the account holder for the AlwaysReady account registered to <strong>${ORG_NAME}</strong>.
+          </p>
+          <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            2. I am making this data subject request on my own behalf.
+          </p>
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+            3. I confirm that I submitted this request.
+          </p>
+        </div>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          Once we have received your confirmation, we will process your request within <strong>30 days</strong>
+          as required under UK GDPR Article 17. You will receive a separate email when your data has been deleted.
+        </p>
+        <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you did not submit this request, please let us know immediately by replying to this email
+          so we can protect your account.
+        </p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          If you have any questions, contact us at
+          <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+        </p>
+      `,
+    ),
+
+    // 2. 3-day warning (automated — scheduled account deletion)
+    send(
+      'Reminder: your AlwaysReady data will be deleted in 3 days',
+      `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          This is a reminder that the data for <strong>${ORG_NAME}</strong> on AlwaysReady
+          will be permanently deleted on <strong>${deletionDate}</strong> — in 3 days.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          You can download your data now by logging in and using the download buttons on the Account page.
+          You can also resubscribe at any time before that date to keep your account and all your data.
+        </p>
+        <p style="margin:0 0 32px">
+          <a href="${PLATFORM_URL}/login"
+             style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+            Log in to download or resubscribe &rarr;
+          </a>
+        </p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          If you have any questions, email us at
+          <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+        </p>
+      `,
+    ),
+
+    // 3. Deletion confirmed
+    send(
+      'Your AlwaysReady data has been deleted',
+      `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          All data associated with <strong>${ORG_NAME}</strong> on AlwaysReady
+          has now been permanently deleted in accordance with our data retention policy and your request.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          This includes your account, team member profiles, compliance records, evidence files, HR data,
+          and all other information held within your workspace. No copies are retained.
+        </p>
+        <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you would like to start a new account in the future, you are very welcome to do so
+          at <a href="https://alwaysready.uk" style="color:#014D4E">alwaysready.uk</a>.
+        </p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          If you have any questions about this deletion, contact us at
+          <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+        </p>
+      `,
+    ),
+
+  ])
+}
+
 // ── Public action ─────────────────────────────────────────────────────────────
 
 export async function sendTestEmailGroup(group: EmailGroup): Promise<TestEmailsSummary> {
@@ -1105,7 +1207,8 @@ export async function sendTestEmailGroup(group: EmailGroup): Promise<TestEmailsS
     case 'hr':         results = await sendHr(send);        break
     case 'account':    results = await sendAccount(send);    break
     case 'waitlist':        results = await sendWaitlist(send);        break
-    case 'waitlist-launch': results = await sendWaitlistLaunch(send); break
+    case 'waitlist-launch':  results = await sendWaitlistLaunch(send);  break
+    case 'data-deletion':    results = await sendDataDeletion(send);    break
     case 'all': {
       const grouped = await Promise.all([
         sendWebsite(send),
@@ -1117,6 +1220,7 @@ export async function sendTestEmailGroup(group: EmailGroup): Promise<TestEmailsS
         sendAccount(send),
         sendWaitlist(send),
         sendWaitlistLaunch(send),
+        sendDataDeletion(send),
       ])
       results = grouped.flat()
       break
