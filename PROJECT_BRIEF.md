@@ -2,6 +2,8 @@
 
 This file is standing context for this project. Read it at the start of every session before writing any code. Do not delete or restructure this file without AJ's explicit approval.
 
+**Writing marketing copy or content about any platform feature? Read `docs/FEATURE_MAP.md` first, then read the relevant code folder. Do not rely on handoff docs, memory, or assumptions. The codebase is the ground truth.**
+
 ---
 
 ## What This Is
