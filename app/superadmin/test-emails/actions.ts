@@ -36,6 +36,7 @@ export type EmailGroup =
   | 'waitlist'
   | 'waitlist-launch'
   | 'data-deletion'
+  | 'subject-access-request'
   | 'all'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -1188,6 +1189,124 @@ async function sendDataDeletion(
   ])
 }
 
+async function sendSubjectAccessRequest(
+  send: Awaited<ReturnType<typeof makeSender>>,
+): Promise<TestEmailResult[]> {
+  const receivedDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  const deadlineDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  return Promise.all([
+
+    // 1. Acknowledgement — identity verification required
+    send(
+      'We have received your subject access request — AlwaysReady',
+      `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          Thank you for your subject access request (SAR), received on <strong>${receivedDate}</strong>.
+          Under UK GDPR Article 15, you have the right to receive a copy of the personal data we hold about you.
+          We will respond no later than <strong>${deadlineDate}</strong>.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          Before we can release your data, we are required to verify your identity. Please reply to this email confirming the following:
+        </p>
+        <div style="background:#f8f9fa;border-left:4px solid #014D4E;padding:16px 20px;border-radius:0 6px 6px 0;margin:0 0 24px">
+          <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            1. My full name is <strong>___________________________________</strong> and I am the account holder for the AlwaysReady account registered to <strong>${ORG_NAME}</strong>.
+          </p>
+          <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            2. I am making this subject access request on my own behalf.
+          </p>
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+            3. I confirm that I submitted this request.
+          </p>
+        </div>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          Once we have verified your identity, we will provide your data within the 30-day window required by law.
+        </p>
+        <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you did not submit this request, please let us know immediately by replying to this email.
+        </p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          If you have any questions, contact us at
+          <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+        </p>
+      `,
+    ),
+
+    // 2. SAR fulfilled — data pack provided
+    send(
+      'Your AlwaysReady data — subject access request fulfilled',
+      `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          We have verified your identity and are writing to fulfil your subject access request, received on <strong>${receivedDate}</strong>.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          The personal data we hold about you is set out below. You can also download a full copy of your data by logging in to your account and using the <strong>Export my data</strong> button on the Account page.
+        </p>
+        <div style="background:#f8f9fa;border-left:4px solid #014D4E;padding:16px 20px;border-radius:0 6px 6px 0;margin:0 0 24px">
+          <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1a1a1a">Data we hold about you:</p>
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#1a1a1a">• Account details: name, email address, organisation name, registered address</p>
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#1a1a1a">• Subscription and billing information (payment data is held by Stripe, not AlwaysReady)</p>
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#1a1a1a">• Compliance records and evidence you have entered into the platform</p>
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#1a1a1a">• HR records associated with your account</p>
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:#1a1a1a">• Files you have uploaded</p>
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">• Email communication history with AlwaysReady support</p>
+        </div>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          <strong>Where your data came from:</strong> directly from you, via the platform and any email correspondence.<br>
+          <strong>Why we process it:</strong> to provide the AlwaysReady service as described in our <a href="${PLATFORM_URL}/legal#privacy" style="color:#014D4E">Privacy Policy</a>.<br>
+          <strong>Who can see it:</strong> AlwaysReady staff only. We do not sell your data or share it with third parties except as set out in our Privacy Policy.
+        </p>
+        <p style="margin:0 0 32px">
+          <a href="${PLATFORM_URL}/dashboard/account"
+             style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+            Download your data &rarr;
+          </a>
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you believe any of your data is inaccurate or incomplete, you have the right to request a correction under UK GDPR Article 16. If you wish to have your data deleted, you may submit a deletion request by replying to this email.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you are not satisfied with our response, you have the right to complain to the Information Commissioner's Office (ICO) at
+          <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a> or by calling 0303 123 1113.
+        </p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          If you have any questions, contact us at
+          <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+        </p>
+      `,
+    ),
+
+    // 3. SAR declined — unable to verify identity
+    send(
+      'Your subject access request — AlwaysReady',
+      `
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          We are writing regarding your subject access request received on <strong>${receivedDate}</strong>.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          Unfortunately, we have been unable to fulfil your request at this time. We are required to verify the identity of anyone making a subject access request before releasing personal data. We did not receive a satisfactory response to our identity verification request.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you still wish to receive a copy of your data, please reply to this email with confirmation of your identity as described in our earlier message. We will be happy to process your request once identity has been confirmed.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          If you believe we have handled your request incorrectly, you have the right to complain to the Information Commissioner's Office (ICO) at
+          <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a> or by calling 0303 123 1113.
+        </p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          If you have any questions, contact us at
+          <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+        </p>
+      `,
+    ),
+
+  ])
+}
+
 // ── Public action ─────────────────────────────────────────────────────────────
 
 export async function sendTestEmailGroup(group: EmailGroup): Promise<TestEmailsSummary> {
@@ -1208,7 +1327,8 @@ export async function sendTestEmailGroup(group: EmailGroup): Promise<TestEmailsS
     case 'account':    results = await sendAccount(send);    break
     case 'waitlist':        results = await sendWaitlist(send);        break
     case 'waitlist-launch':  results = await sendWaitlistLaunch(send);  break
-    case 'data-deletion':    results = await sendDataDeletion(send);    break
+    case 'data-deletion':          results = await sendDataDeletion(send);          break
+    case 'subject-access-request': results = await sendSubjectAccessRequest(send); break
     case 'all': {
       const grouped = await Promise.all([
         sendWebsite(send),
@@ -1221,6 +1341,7 @@ export async function sendTestEmailGroup(group: EmailGroup): Promise<TestEmailsS
         sendWaitlist(send),
         sendWaitlistLaunch(send),
         sendDataDeletion(send),
+        sendSubjectAccessRequest(send),
       ])
       results = grouped.flat()
       break

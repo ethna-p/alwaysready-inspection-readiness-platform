@@ -20,7 +20,8 @@ const GROUPS: Group[] = [
   { id: 'account',    label: 'Account emails',          description: 'Password reset, password changed, new user welcome with credentials', count: 3 },
   { id: 'waitlist',        label: 'Waitlist nurture (1–8)',   description: 'Welcome, founder story, feature spotlights, Beta Partner offer', count: 8 },
   { id: 'waitlist-launch', label: 'Waitlist launch (9–10)',  description: 'Framework published, open for business — send manually from Leads page', count: 2 },
-  { id: 'data-deletion',   label: 'Data deletion',          description: 'Request received (identity verification), 3-day warning, deletion confirmed', count: 3 },
+  { id: 'data-deletion',          label: 'Data deletion',              description: 'Request received (identity verification), 3-day warning, deletion confirmed', count: 3 },
+  { id: 'subject-access-request', label: 'Subject access request',     description: 'Acknowledgement + identity verification, SAR fulfilled (data pack), SAR declined', count: 3 },
 ]
 
 interface GroupState {
