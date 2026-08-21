@@ -41,7 +41,7 @@ const badges = [
     ),
   },
   {
-    label: 'Built for the CQC assessment framework',
+    label: 'Built for the CQC Adult Social Care Assessment Framework',
     icon: (
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <polyline points="9 11 12 14 22 4" />
