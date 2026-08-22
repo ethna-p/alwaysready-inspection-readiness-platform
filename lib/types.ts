@@ -2136,3 +2136,42 @@ export interface SavedReportView {
   created_by: string | null
   created_at: string
 }
+
+// ── Marketing campaigns ───────────────────────────────────────────────────────
+
+export interface MarketingCampaign {
+  id:          string
+  name:        string
+  description: string | null
+  status:      'draft' | 'active' | 'closed'
+  created_at:  string
+}
+
+export interface CampaignContact {
+  id:              string
+  campaign_id:     string
+  location_id:     string | null
+  location_name:   string
+  provider_name:   string | null
+  street_address:  string | null
+  city:            string | null
+  postcode:        string | null
+  region:          string | null
+  service_type:    string | null
+  cqc_profile_url: string | null
+  contact_method:  'letter' | 'email'
+  contacted_at:    string | null
+  notes:           string | null
+  suppressed_at:   string | null
+  created_at:      string
+}
+
+export interface MarketingSuppression {
+  id:                  string
+  location_name:       string
+  postcode:            string | null
+  email:               string | null
+  source:              'optout_form' | 'manual'
+  campaign_contact_id: string | null
+  created_at:          string
+}

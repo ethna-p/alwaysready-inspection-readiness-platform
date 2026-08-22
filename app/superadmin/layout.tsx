@@ -35,6 +35,9 @@ export default function SuperadminLayout({
           <Link href="/superadmin/leads" className="hover:text-brand transition-colors">
             Leads
           </Link>
+          <Link href="/superadmin/campaigns" className="hover:text-brand transition-colors">
+            Campaigns
+          </Link>
           <Link href="/superadmin/tickets" className="hover:text-brand transition-colors">
             Support Tickets
           </Link>
