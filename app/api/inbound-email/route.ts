@@ -29,6 +29,14 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
 // Parse a ticket reference like [AR-0001] from a subject line
 function extractReference(subject: string): string | null {
   const match = subject.match(/\[([A-Z]+-\d+)\]/)
@@ -274,10 +282,10 @@ export async function POST(req: NextRequest) {
       bodyHtml: `
         <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new email has arrived at support@alwaysready.uk and a support ticket has been created.</p>
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
-          <tr><td style="padding:4px 16px 4px 0;color:#555">From</td><td style="padding:4px 0">${displayName} &lt;${from}&gt;</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${cleanSubject}</strong></td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">From</td><td style="padding:4px 0">${escapeHtml(displayName)} &lt;${escapeHtml(from)}&gt;</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${escapeHtml(cleanSubject)}</strong></td></tr>
         </table>
-        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${cleanBody.slice(0, 500)}${cleanBody.length > 500 ? '…' : ''}</p>
+        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${escapeHtml(cleanBody.slice(0, 500))}${cleanBody.length > 500 ? '…' : ''}</p>
       `,
     })
   }

@@ -77,8 +77,6 @@ export async function POST(req: NextRequest) {
   // Add cache-bust so Next.js img doesn't serve a stale version
   const logoUrl = `${publicUrl}?v=${Date.now()}`
 
-  // Save to organisations table (logo_url not yet in generated types — migration pending)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error: dbError } = await supabase
     .from('organisations')
     .update({ logo_url: logoUrl })
@@ -109,7 +107,6 @@ export async function DELETE() {
   }
 
   // Clear URL in DB
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await supabase
     .from('organisations')
     .update({ logo_url: null })

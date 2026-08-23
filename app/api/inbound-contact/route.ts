@@ -22,6 +22,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
+
+// 5 requests per IP per hour — generous for a contact form
+const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 5 })
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -34,6 +46,13 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!limiter.check(getClientIp(req))) {
+    return new NextResponse('Too many requests. Please try again later.', {
+      status: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain', 'Retry-After': '3600' },
+    })
+  }
+
   // ── Parse JSON payload ────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: Record<string, any>
@@ -227,12 +246,12 @@ export async function POST(req: NextRequest) {
       bodyHtml: `
         <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new enquiry has arrived via the website contact form.</p>
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${fullName}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${email}</td></tr>
-          ${company ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Company</td><td style="padding:4px 0">${company}</td></tr>` : ''}
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${subject}</strong></td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${escapeHtml(fullName)}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${escapeHtml(email)}</td></tr>
+          ${company ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Company</td><td style="padding:4px 0">${escapeHtml(company)}</td></tr>` : ''}
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${escapeHtml(subject)}</strong></td></tr>
         </table>
-        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${message}</p>
+        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${escapeHtml(message)}</p>
       `,
     })
   }

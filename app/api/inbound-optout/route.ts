@@ -10,7 +10,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import type { MarketingSuppression, CampaignContact } from '@/lib/types'
+
+// 10 requests per IP per hour
+const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -18,13 +22,18 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-const AJ_EMAIL = 'hello@alwaysready.uk'
-
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
 }
 
 export async function POST(req: NextRequest) {
+  if (!limiter.check(getClientIp(req))) {
+    return new NextResponse('Too many requests. Please try again later.', {
+      status: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain', 'Retry-After': '3600' },
+    })
+  }
+
   let body: Record<string, string>
   try {
     body = await req.json()
@@ -82,8 +91,9 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Notify AJ ─────────────────────────────────────────────────────────────
+  const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
   await sendEmail({
-    to: AJ_EMAIL,
+    to: ajEmail,
     subject: `Marketing opt-out: ${locationName}`,
     type: 'transactional',
     bodyHtml: `

@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
   const todayUtc = new Date().toISOString().slice(0, 10)
 
   // Most recent snapshot strictly before today (compare on the date column)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await supabase
     .from('report_snapshots')
     .select('id, view_key, green, amber, red, grey, total, open_actions, overdue_actions, captured_at')
@@ -96,7 +95,6 @@ export async function POST(req: NextRequest) {
   // Upsert: if a row already exists for (org, view_key, today), update it
   const todayDate = new Date().toISOString().slice(0, 10)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await supabase
     .from('report_snapshots')
     .upsert(

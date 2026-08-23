@@ -18,7 +18,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 
 const ZEEG_WEBHOOK_TOKEN = process.env.ZEEG_WEBHOOK_TOKEN ?? ''
-const AJ_EMAIL = 'hello@alwaysready.uk'
 
 /** Derive demo_type from event duration (minutes). */
 function demoTypeFromDuration(duration: number): string {
@@ -91,8 +90,9 @@ export async function POST(req: NextRequest) {
       timeZone: 'Europe/London',
     })
 
+    const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
     await sendEmail({
-      to: AJ_EMAIL,
+      to: ajEmail,
       subject: `Demo booked — ${name ?? email}`,
       type: 'transactional',
       bodyHtml: `

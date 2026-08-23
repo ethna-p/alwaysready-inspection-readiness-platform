@@ -14,6 +14,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
+
+// 10 requests per IP per hour
+const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -21,13 +33,18 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-const AJ_EMAIL = 'hello@alwaysready.uk'
-
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
 }
 
 export async function POST(req: NextRequest) {
+  if (!limiter.check(getClientIp(req))) {
+    return new NextResponse('Too many requests. Please try again later.', {
+      status: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain', 'Retry-After': '3600' },
+    })
+  }
+
   let body: Record<string, string>
   try {
     body = await req.json()
@@ -70,24 +87,25 @@ export async function POST(req: NextRequest) {
     ? '15-minute Mock Inspection module demo'
     : '30-minute full platform demo'
 
+  const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
   await sendEmail({
-    to: AJ_EMAIL,
-    subject: `New demo booking — ${serviceType}`,
+    to: ajEmail,
+    subject: `New demo booking — ${escapeHtml(serviceType)}`,
     type: 'transactional',
     bodyHtml: `
       <p>Someone just booked a demo via alwaysready.uk/demo.</p>
       <table style="border-collapse:collapse;font-size:14px;margin-top:12px;">
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Demo type</td>
-          <td style="padding:6px 0;">${demoLabel}</td>
+          <td style="padding:6px 0;">${escapeHtml(demoLabel)}</td>
         </tr>
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Service type</td>
-          <td style="padding:6px 0;">${serviceType}</td>
+          <td style="padding:6px 0;">${escapeHtml(serviceType)}</td>
         </tr>
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Last CQC rating</td>
-          <td style="padding:6px 0;">${cqcRating ?? 'Not provided'}</td>
+          <td style="padding:6px 0;">${cqcRating ? escapeHtml(cqcRating) : 'Not provided'}</td>
         </tr>
       </table>
       <p style="margin-top:16px;font-size:13px;color:#888;">
