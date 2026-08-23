@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    ignore:
+      # Major version bumps need manual review — Dependabot will still flag
+      # security vulnerabilities regardless of this setting
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
