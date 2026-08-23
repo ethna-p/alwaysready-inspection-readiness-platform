@@ -11,6 +11,7 @@ import TrialBanner from '@/components/TrialBanner'
 import BetaBanner from '@/components/BetaBanner'
 import IdleTimeout from '@/components/IdleTimeout'
 import GettingStartedWizard from '@/components/GettingStartedWizard'
+import { ensureComplianceRecordsSeeded } from '@/lib/seed-compliance'
 
 export default async function DashboardLayout({
   children,
@@ -52,6 +53,9 @@ export default async function DashboardLayout({
   ) {
     redirect('/upgrade')
   }
+
+  // Self-heal: ensure compliance records exist (handles transient seed failures at signup)
+  await ensureComplianceRecordsSeeded(profile.organisation_id)
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas">

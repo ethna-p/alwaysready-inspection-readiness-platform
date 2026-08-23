@@ -197,7 +197,8 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // ── 7. Seed compliance_records (one per KLO item) ────────────────────────────
   const { data: klos } = await supabase.from('klo_items').select('id')
   if (!klos || klos.length === 0) {
-    // No KLO items found — this is a data integrity problem; roll back and fail.
+    // klo_items is empty — this is an infrastructure problem, not a transient error.
+    // Roll back and fail hard; the dashboard self-heal cannot fix a missing reference table.
     await supabase.auth.admin.deleteUser(authUserId)
     await supabase.from('organisations').delete().eq('id', org.id)
     console.error('[trial-signup] klo_items table is empty — cannot seed compliance records')
@@ -208,11 +209,9 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     klos.map(klo => ({ organisation_id: org.id, klo_item_id: klo.id }))
   )
   if (crError) {
-    // Compliance records are essential — roll back and fail if seeding doesn't work.
-    await supabase.auth.admin.deleteUser(authUserId)
-    await supabase.from('organisations').delete().eq('id', org.id)
-    console.error('[trial-signup] compliance_records seed error:', crError.message)
-    return { success: false, error: 'Could not set up your account. Please try again.' }
+    // Transient insert error — log and continue. The dashboard layout will self-heal
+    // by re-seeding on the user's first login via lib/seed-compliance.ts.
+    console.error('[trial-signup] compliance_records seed error (will self-heal on login):', crError.message)
   }
 
   // ── 8. Generate password-setup link ─────────────────────────────────────────
