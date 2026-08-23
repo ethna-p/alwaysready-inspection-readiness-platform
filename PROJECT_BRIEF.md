@@ -413,3 +413,28 @@ When AJ asks for a "full, system-wide audit" or "full audit", run every check be
 ---
 
 *This brief is the source of truth for this project's decisions and constraints. If something here conflicts with a new instruction from AJ, ask for clarification rather than silently choosing one over the other.*
+
+---
+
+## Coding discipline rules (learned from the August 2026 audit)
+
+These rules exist because violations were found and fixed in the security/code-quality audit. Do not repeat them.
+
+### Never use `(supabase as any)`
+
+If a Supabase query needs a table that isn't in `lib/types.ts`, **stop and add the table to `lib/types.ts` first**. Do not cast the client to `any` as a workaround.
+
+Casting the client to `any` silently disables type-checking for the entire query chain downstream — every `.from()`, `.select()`, `.insert()`, `.update()`, `.eq()`, `.in()` call becomes unvalidated. This means `tsc --noEmit` will pass even when the code contains real bugs (wrong column names, invalid enum values, non-existent API methods, mismatched types). The audit surfaced six real bugs that had been hidden this way.
+
+The only acceptable `as any` or `as unknown` casts are:
+- `event.data.object as any` in the Stripe webhook — the Stripe SDK doesn't expose the invoice object type directly
+- `React.createElement(PdfComponent, props) as any` in react-pdf route handlers — JSX type conflict with the renderer
+- `data as unknown as CustomInterface` when a JSONB column (typed as `Record<string, unknown>`) needs to be treated as a structured interface
+
+### Every migration must be accompanied by a `lib/types.ts` update
+
+When a new table or column is added via a migration file, update `lib/types.ts` in the **same commit**. The type file and the schema must stay in sync. Never leave a gap and rely on `as any` to bridge it.
+
+### `tsc --noEmit` passing is not sufficient validation if `as any` casts exist
+
+A clean TypeScript compile only proves the code is valid *given its type annotations*. It does not prove the code is correct if those annotations have been weakened with `any`. Before marking a TypeScript check task complete, also verify that no new `(supabase as any)` or unwarranted `as any` casts have been introduced.
