@@ -16,9 +16,15 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-06-24.dahlia',
-})
+let _stripe: Stripe | null = null
+function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY
+    if (!key) throw new Error('STRIPE_SECRET_KEY environment variable is not set')
+    _stripe = new Stripe(key, { apiVersion: '2026-06-24.dahlia' })
+  }
+  return _stripe
+}
 
 type OrgForCheckout = { id: string; name: string; stripe_customer_id: string | null; is_charity: boolean }
 
@@ -59,7 +65,7 @@ export async function createCheckoutSession(): Promise<never> {
   // Everyone else gets the standard price, with promotion codes allowed.
   const priceId = isCharity ? CHARITY_PRICE_ID : PRICE_ID
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     mode:               'subscription',
     line_items:         [{ price: priceId, quantity: 1 }],
     ...customerParams,
@@ -97,7 +103,7 @@ export async function createBetaCheckoutSession(): Promise<never> {
     ? { customer: org.stripe_customer_id }
     : {}
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     mode:               'subscription',
     line_items:         [{ price: BETA_PRICE_ID, quantity: 1 }],
     ...customerParams,
@@ -130,7 +136,7 @@ export async function createBillingPortalSession(): Promise<never> {
     redirect('/upgrade')
   }
 
-  const portalSession = await stripe.billingPortal.sessions.create({
+  const portalSession = await getStripe().billingPortal.sessions.create({
     customer:   org.stripe_customer_id,
     return_url: `${PLATFORM_URL}/dashboard/account`,
   })
@@ -160,7 +166,7 @@ export async function createCancellationPortalSession(): Promise<never> {
     redirect('/upgrade')
   }
 
-  const portalSession = await stripe.billingPortal.sessions.create({
+  const portalSession = await getStripe().billingPortal.sessions.create({
     customer:   org.stripe_customer_id,
     return_url: `${PLATFORM_URL}/dashboard/account`,
     flow_data: {
@@ -179,14 +185,14 @@ export async function createCancellationPortalSession(): Promise<never> {
  * Needed for the portal cancellation flow, which requires a subscription ID.
  */
 async function getActiveSubscriptionId(customerId: string): Promise<string> {
-  const subscriptions = await stripe.subscriptions.list({
+  const subscriptions = await getStripe().subscriptions.list({
     customer: customerId,
     status:   'active',
     limit:    1,
   })
   if (!subscriptions.data[0]) {
     // Fall back to any non-cancelled subscription (e.g. past_due, trialing)
-    const any = await stripe.subscriptions.list({
+    const any = await getStripe().subscriptions.list({
       customer: customerId,
       limit:    1,
     })
