@@ -12,8 +12,9 @@
  * MFA:
  *   - If user has a TOTP factor enrolled (nextLevel === aal2) but session is
  *     only aal1, redirect to /login/mfa to complete verification.
- *   - Admin users with no factor enrolled are redirected to
- *     /dashboard/account/mfa/setup to force enrolment.
+ *   - Admin and Staff (user role) users with no factor enrolled are redirected
+ *     to /dashboard/account/mfa/setup to force enrolment.
+ *     Viewer accounts are intentionally exempt (time-limited, read-only).
  *
  * Rate limiting:
  *   - /login POST: max 10 attempts per IP per 10-minute window.

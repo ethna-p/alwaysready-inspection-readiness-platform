@@ -13,15 +13,17 @@ import { getCurrentUserProfile } from '@/lib/session'
 
 const BUCKET = 'org-logos'
 const MAX_BYTES = 2 * 1024 * 1024 // 2 MB
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/svg+xml']
+// SVG excluded — SVG files can contain embedded scripts (XSS risk when served
+// with Content-Type: image/svg+xml). PNG, JPG, and WebP cover all practical
+// logo formats.
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
 
 function extFor(mime: string): string {
   const map: Record<string, string> = {
-    'image/png':     'png',
-    'image/jpeg':    'jpg',
-    'image/webp':    'webp',
-    'image/gif':     'gif',
-    'image/svg+xml': 'svg',
+    'image/png':  'png',
+    'image/jpeg': 'jpg',
+    'image/webp': 'webp',
+    'image/gif':  'gif',
   }
   return map[mime] ?? 'png'
 }
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return NextResponse.json({ error: 'File type not allowed. Use PNG, JPG, WebP, GIF, or SVG.' }, { status: 400 })
+    return NextResponse.json({ error: 'File type not allowed. Use PNG, JPG, WebP, or GIF.' }, { status: 400 })
   }
 
   if (file.size > MAX_BYTES) {

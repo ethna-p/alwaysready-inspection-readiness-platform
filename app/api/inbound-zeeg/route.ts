@@ -28,7 +28,7 @@ function demoTypeFromDuration(duration: number): string {
 export async function POST(req: NextRequest) {
   // ── Token verification ────────────────────────────────────────────────────
   const token = req.headers.get('Token') ?? req.headers.get('token') ?? ''
-  if (ZEEG_WEBHOOK_TOKEN && token !== ZEEG_WEBHOOK_TOKEN) {
+  if (!ZEEG_WEBHOOK_TOKEN || token !== ZEEG_WEBHOOK_TOKEN) {
     console.warn('[inbound-zeeg] invalid token')
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
