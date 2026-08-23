@@ -799,6 +799,10 @@ export type Database = {
           nurture_opt_in: boolean
           nurture_emails_sent: number
           nurture_last_sent_at: string | null
+          service_type: string | null
+          cqc_location_id: string | null
+          cqc_location_name: string | null
+          cqc_rating: string | null
           source: string
           created_at: string
         }
@@ -811,6 +815,10 @@ export type Database = {
           nurture_opt_in?: boolean
           nurture_emails_sent?: number
           nurture_last_sent_at?: string | null
+          service_type?: string | null
+          cqc_location_id?: string | null
+          cqc_location_name?: string | null
+          cqc_rating?: string | null
           source?: string
           created_at?: string
         }
@@ -823,6 +831,10 @@ export type Database = {
           nurture_opt_in?: boolean
           nurture_emails_sent?: number
           nurture_last_sent_at?: string | null
+          service_type?: string | null
+          cqc_location_id?: string | null
+          cqc_location_name?: string | null
+          cqc_rating?: string | null
           source?: string
           created_at?: string
         }
@@ -1993,6 +2005,128 @@ export type Database = {
           overdue_actions?: number
           captured_date?:   string
           captured_at?:     string
+        }
+        Relationships: []
+      }
+
+      marketing_campaigns: {
+        Row: {
+          id:          string
+          name:        string
+          description: string | null
+          status:      'draft' | 'active' | 'closed'
+          created_at:  string
+        }
+        Insert: {
+          id?:         string
+          name:        string
+          description?: string | null
+          status?:     'draft' | 'active' | 'closed'
+          created_at?: string
+        }
+        Update: {
+          id?:         string
+          name?:       string
+          description?: string | null
+          status?:     'draft' | 'active' | 'closed'
+          created_at?: string
+        }
+        Relationships: []
+      }
+
+      campaign_contacts: {
+        Row: {
+          id:              string
+          campaign_id:     string
+          location_id:     string | null
+          location_name:   string
+          provider_name:   string | null
+          street_address:  string | null
+          city:            string | null
+          postcode:        string | null
+          region:          string | null
+          service_type:    string | null
+          cqc_profile_url: string | null
+          contact_method:  'letter' | 'email'
+          contacted_at:    string | null
+          notes:           string | null
+          suppressed_at:   string | null
+          created_at:      string
+        }
+        Insert: {
+          id?:              string
+          campaign_id:      string
+          location_id?:     string | null
+          location_name:    string
+          provider_name?:   string | null
+          street_address?:  string | null
+          city?:            string | null
+          postcode?:        string | null
+          region?:          string | null
+          service_type?:    string | null
+          cqc_profile_url?: string | null
+          contact_method?:  'letter' | 'email'
+          contacted_at?:    string | null
+          notes?:           string | null
+          suppressed_at?:   string | null
+          created_at?:      string
+        }
+        Update: {
+          id?:              string
+          campaign_id?:     string
+          location_id?:     string | null
+          location_name?:   string
+          provider_name?:   string | null
+          street_address?:  string | null
+          city?:            string | null
+          postcode?:        string | null
+          region?:          string | null
+          service_type?:    string | null
+          cqc_profile_url?: string | null
+          contact_method?:  'letter' | 'email'
+          contacted_at?:    string | null
+          notes?:           string | null
+          suppressed_at?:   string | null
+          created_at?:      string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'campaign_contacts_campaign_id_fkey'
+            columns: ['campaign_id']
+            isOneToOne: false
+            referencedRelation: 'marketing_campaigns'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+
+      marketing_suppressions: {
+        Row: {
+          id:                  string
+          location_name:       string
+          postcode:            string | null
+          email:               string | null
+          source:              'optout_form' | 'manual'
+          campaign_contact_id: string | null
+          created_at:          string
+        }
+        Insert: {
+          id?:                  string
+          location_name:        string
+          postcode?:            string | null
+          email?:               string | null
+          source?:              'optout_form' | 'manual'
+          campaign_contact_id?: string | null
+          created_at?:          string
+        }
+        Update: {
+          id?:                  string
+          location_name?:       string
+          postcode?:            string | null
+          email?:               string | null
+          source?:              'optout_form' | 'manual'
+          campaign_contact_id?: string | null
+          created_at?:          string
         }
         Relationships: []
       }

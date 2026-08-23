@@ -29,7 +29,7 @@ export default async function CampaignDetailPage({
 }) {
   const supabase = createAdminClient()
 
-  const { data: campaign } = await (supabase as any)
+  const { data: campaign } = await supabase
     .from('marketing_campaigns')
     .select('id, name, description, status, created_at')
     .eq('id', params.id)
@@ -37,7 +37,7 @@ export default async function CampaignDetailPage({
 
   if (!campaign) notFound()
 
-  const { data: contacts } = await (supabase as any)
+  const { data: contacts } = await supabase
     .from('campaign_contacts')
     .select('id, location_id, location_name, provider_name, street_address, city, postcode, region, service_type, cqc_profile_url, contact_method, contacted_at, notes, suppressed_at, created_at')
     .eq('campaign_id', params.id)

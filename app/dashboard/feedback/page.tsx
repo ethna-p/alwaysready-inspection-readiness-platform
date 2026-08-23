@@ -20,7 +20,7 @@ export default async function FeedbackPage() {
   const orgId    = profile.organisation_id
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rows, error } = await (supabase as any)
+  const { data: rows, error } = await supabase
     .from('feedback_records')
     .select('*')
     .eq('organisation_id', orgId)

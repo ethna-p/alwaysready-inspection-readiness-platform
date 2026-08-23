@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient()
 
   // ── Create suppression record ──────────────────────────────────────────────
-  const { data: suppression, error: suppressionError } = await (supabase as any)
+  const { data: suppression, error: suppressionError } = await supabase
     .from('marketing_suppressions')
     .insert({ location_name: locationName, postcode, email, source: 'optout_form' })
     .select('id')
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   // ── Match and suppress campaign contacts ───────────────────────────────────
   // Match on postcode (normalised) — update all unsuppressed matches
   if (postcode) {
-    const { data: matched } = await (supabase as any)
+    const { data: matched } = await supabase
       .from('campaign_contacts')
       .select('id')
       .eq('postcode', postcode)
@@ -68,13 +68,13 @@ export async function POST(req: NextRequest) {
 
     if (matched && matched.length > 0) {
       const ids = matched.map(r => r.id)
-      await (supabase as any)
+      await supabase
         .from('campaign_contacts')
         .update({ suppressed_at: new Date().toISOString() })
         .in('id', ids)
 
       // Link suppression to first matched contact
-      await (supabase as any)
+      await supabase
         .from('marketing_suppressions')
         .update({ campaign_contact_id: ids[0] })
         .eq('id', suppression!.id)

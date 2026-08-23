@@ -30,7 +30,7 @@ export async function GET() {
   // RLS handles the filter (system views + org views), but we order nicely:
   // system views first, then custom views newest-first
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('saved_report_views')
     .select('id, org_id, name, config, is_system, created_by, created_at')
     .order('is_system', { ascending: false })
@@ -38,7 +38,7 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  return NextResponse.json((data ?? []) as SavedReportView[])
+  return NextResponse.json((data ?? []) as unknown as SavedReportView[])
 }
 
 // ── POST ──────────────────────────────────────────────────────────────────────
@@ -70,13 +70,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Config is required' }, { status: 400 })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('saved_report_views')
     .insert({
       org_id:     profile.organisation_id,
       name:       body.name.trim(),
-      config:     body.config,
+      config:     body.config as unknown as Record<string, unknown>,
       is_system:  false,
       created_by: user.id,
     })
@@ -85,7 +84,7 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  return NextResponse.json(data as SavedReportView, { status: 201 })
+  return NextResponse.json(data as unknown as SavedReportView, { status: 201 })
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────────
@@ -114,7 +113,7 @@ export async function DELETE(req: NextRequest) {
 
   // RLS policy prevents deleting system views or other orgs' views
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('saved_report_views')
     .delete()
     .eq('id', id)

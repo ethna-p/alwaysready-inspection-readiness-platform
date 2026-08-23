@@ -28,7 +28,7 @@ export default async function GovernancePage() {
 
   // Fetch all meetings for this org
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rows, error } = await (supabase as any)
+  const { data: rows, error } = await supabase
     .from('governance_meetings')
     .select('*')
     .eq('organisation_id', orgId)

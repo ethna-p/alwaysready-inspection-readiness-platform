@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
   // Most recent snapshot strictly before today (compare on the date column)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('report_snapshots')
     .select('id, view_key, green, amber, red, grey, total, open_actions, overdue_actions, captured_at')
     .eq('organisation_id', profile.organisation_id)
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
   const todayDate = new Date().toISOString().slice(0, 10)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('report_snapshots')
     .upsert(
       {

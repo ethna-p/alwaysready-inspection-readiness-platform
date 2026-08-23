@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase
       .from('organisations')
       .update({ subscription_tier: tier as 'trial' | 'active' })
-      .eq('stripe_subscription_id' as never, sub.id)
+      .eq('stripe_subscription_id', sub.id)
 
     if (error) console.error('[stripe-webhook] subscription update error:', error.message)
   }
@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
         subscription_tier:    'canceled' as 'trial' | 'active',
         data_deletion_due_at: deletionDue.toISOString(),
       })
-      .eq('stripe_subscription_id' as never, sub.id)
+      .eq('stripe_subscription_id', sub.id)
       .select('id, name')
       .single()
 
@@ -189,7 +189,7 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase
         .from('organisations')
         .update({ subscription_tier: 'active' })
-        .eq('stripe_subscription_id' as never, subId)
+        .eq('stripe_subscription_id', subId)
 
       if (error) console.error('[stripe-webhook] invoice success error:', error.message)
     }
@@ -206,7 +206,7 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase
         .from('organisations')
         .update({ subscription_tier: 'past_due' as 'trial' | 'active' })
-        .eq('stripe_subscription_id' as never, subId)
+        .eq('stripe_subscription_id', subId)
 
       if (error) console.error('[stripe-webhook] invoice failure error:', error.message)
     }

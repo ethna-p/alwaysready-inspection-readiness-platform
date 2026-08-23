@@ -346,7 +346,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
       .select('klo_item_id, status, next_review_due, system_recorded_at')
       .order('system_recorded_at', { ascending: true }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any).from('action_items')
+    supabase.from('action_items')
       .select('klo_item_id, status, priority, due_date, mock_inspection_finding_id')
       .eq('organisation_id', orgId),
     supabase.from('hr_staff_profiles')
@@ -366,7 +366,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     supabase.from('klo_items').select('id, key_question_id').in('id', kloItemIds),
     supabase.from('key_questions').select('id, name').order('name'),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any).from('i_statement_actions').select('i_statement_id').eq('organisation_id', orgId),
+    supabase.from('i_statement_actions').select('i_statement_id').eq('organisation_id', orgId),
     supabase.from('incidents')
       .select('incident_type, status, date_of_incident')
       .eq('organisation_id', orgId),
@@ -446,8 +446,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
   const pvPct         = pct(pvStrong, pvTotal)
 
   // ── Action plan health ────────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const actions: { klo_item_id: string; status: string; priority: string; due_date: string | null; mock_inspection_finding_id: string | null }[] = (actionRows as any) ?? []
+  const actions = actionRows ?? []
   const statusCounts   = { to_do: 0, in_progress: 0, completed: 0 }
   const priorityCounts: Record<string, number> = {}
   for (const a of actions) {
@@ -464,8 +463,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
   const kloeActionPct    = pct(kloesWithActions, totalKlos)
 
   // ── People's Voice action plan coverage ───────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const iStatActions: { i_statement_id: string }[] = (iStatementActionRows as any) ?? []
+  const iStatActions = iStatementActionRows ?? []
   const statementsWithActions = new Set(iStatActions.map(a => a.i_statement_id)).size
   const pvActionPct           = pct(statementsWithActions, pvTotal)
 

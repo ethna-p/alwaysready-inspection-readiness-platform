@@ -14,8 +14,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
+
+// 10 requests per IP per hour — generous for a signup form
+const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
 export async function POST(req: NextRequest) {
+  if (!limiter.check(getClientIp(req))) {
+    return new NextResponse('Too many requests. Please try again later.', {
+      status: 429,
+      headers: { 'Content-Type': 'text/plain', 'Retry-After': '3600' },
+    })
+  }
+
   // ── Parse payload ────────────────────────────────────────────────────────
   // Accepts JSON or form-encoded with an optional nested `payload` key.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

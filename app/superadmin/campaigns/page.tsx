@@ -12,7 +12,6 @@ import CreateCampaignForm   from './CreateCampaignForm'
 import DeleteCampaignButton from './DeleteCampaignButton'
 import AddSuppressionForm   from './AddSuppressionForm'
 import DeleteSuppressionButton from './DeleteSuppressionButton'
-import type { MarketingCampaign, CampaignContact, MarketingSuppression } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,25 +24,25 @@ const STATUS_STYLES: Record<string, string> = {
 export default async function CampaignsPage() {
   const supabase = createAdminClient()
 
-  const { data: campaigns } = await (supabase as any)
+  const { data: campaigns } = await supabase
     .from('marketing_campaigns')
     .select('id, name, description, status, created_at')
-    .order('created_at', { ascending: false }) as { data: MarketingCampaign[] | null }
+    .order('created_at', { ascending: false })
 
   // Contact counts per campaign
-  const { data: contactCounts } = await (supabase as any)
+  const { data: contactCounts } = await supabase
     .from('campaign_contacts')
-    .select('campaign_id') as { data: Pick<CampaignContact, 'campaign_id'>[] | null }
+    .select('campaign_id')
 
   const contactCountMap: Record<string, number> = {}
   for (const row of contactCounts ?? []) {
     contactCountMap[row.campaign_id] = (contactCountMap[row.campaign_id] ?? 0) + 1
   }
 
-  const { data: suppressions } = await (supabase as any)
+  const { data: suppressions } = await supabase
     .from('marketing_suppressions')
     .select('id, location_name, postcode, email, source, created_at')
-    .order('created_at', { ascending: false }) as { data: MarketingSuppression[] | null }
+    .order('created_at', { ascending: false })
 
   return (
     <div>

@@ -14,6 +14,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchCqcLocation } from '@/lib/cqc'
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -21,11 +22,22 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
+// 60 lookups per 10 minutes per IP — allows repeated onBlur validation
+// without being exploitable as a CQC API proxy
+const limiter = createRateLimiter({ windowMs: 10 * 60_000, max: 60 })
+
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
 }
 
 export async function GET(req: NextRequest) {
+  if (!limiter.check(getClientIp(req))) {
+    return new NextResponse('Too many requests. Please try again later.', {
+      status: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain', 'Retry-After': '600' },
+    })
+  }
+
   const locationId = req.nextUrl.searchParams.get('locationId')?.trim()
 
   if (!locationId) {

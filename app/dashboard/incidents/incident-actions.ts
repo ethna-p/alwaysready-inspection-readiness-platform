@@ -65,15 +65,19 @@ export async function updateIncidentStatus(
 
   const supabase = await createClient()
 
-  const updates: Record<string, unknown> = { status }
+  const updates: {
+    status: IncidentStatus
+    learning_outcome?: string | null
+    closed_at?: string
+    closed_by?: string
+  } = { status }
   if (status === 'closed') {
     updates.learning_outcome = learning_outcome?.trim() || null
     updates.closed_at        = new Date().toISOString()
     updates.closed_by        = profile.id
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('incidents')
     .update(updates)
     .eq('id', incidentId)
@@ -112,7 +116,7 @@ export async function updateIncident(
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('incidents')
     .update({
       title,
@@ -142,7 +146,7 @@ export async function deleteIncident(incidentId: string): Promise<{ error?: stri
   const supabase = await createClient()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('incidents')
     .delete()
     .eq('id', incidentId)

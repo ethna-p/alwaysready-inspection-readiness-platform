@@ -4,29 +4,29 @@ import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const supabase = () => createAdminClient() as any
-
 export async function createCampaign(formData: FormData) {
   await assertSuperadmin()
   const name        = (formData.get('name') as string ?? '').trim()
   const description = (formData.get('description') as string ?? '').trim() || null
   if (!name) return
 
-  await supabase().from('marketing_campaigns').insert({ name, description })
+  const supabase = createAdminClient()
+  await supabase.from('marketing_campaigns').insert({ name, description })
   revalidatePath('/superadmin/campaigns')
 }
 
 export async function updateCampaignStatus(id: string, status: 'draft' | 'active' | 'closed') {
   await assertSuperadmin()
-  await supabase().from('marketing_campaigns').update({ status }).eq('id', id)
+  const supabase = createAdminClient()
+  await supabase.from('marketing_campaigns').update({ status }).eq('id', id)
   revalidatePath('/superadmin/campaigns')
   revalidatePath(`/superadmin/campaigns/${id}`)
 }
 
 export async function deleteCampaign(id: string) {
   await assertSuperadmin()
-  await supabase().from('marketing_campaigns').delete().eq('id', id)
+  const supabase = createAdminClient()
+  await supabase.from('marketing_campaigns').delete().eq('id', id)
   revalidatePath('/superadmin/campaigns')
 }
 
@@ -45,7 +45,8 @@ export async function addContact(campaignId: string, formData: FormData) {
 
   if (!locationName) return
 
-  await supabase().from('campaign_contacts').insert({
+  const supabase = createAdminClient()
+  await supabase.from('campaign_contacts').insert({
     campaign_id:     campaignId,
     location_id:     locationId,
     location_name:   locationName,
@@ -64,7 +65,8 @@ export async function addContact(campaignId: string, formData: FormData) {
 
 export async function markContacted(contactId: string, campaignId: string) {
   await assertSuperadmin()
-  await supabase()
+  const supabase = createAdminClient()
+  await supabase
     .from('campaign_contacts')
     .update({ contacted_at: new Date().toISOString() })
     .eq('id', contactId)
@@ -73,7 +75,8 @@ export async function markContacted(contactId: string, campaignId: string) {
 
 export async function deleteContact(contactId: string, campaignId: string) {
   await assertSuperadmin()
-  await supabase().from('campaign_contacts').delete().eq('id', contactId)
+  const supabase = createAdminClient()
+  await supabase.from('campaign_contacts').delete().eq('id', contactId)
   revalidatePath(`/superadmin/campaigns/${campaignId}`)
 }
 
@@ -84,7 +87,8 @@ export async function addSuppression(formData: FormData) {
   const email        = (formData.get('email')          as string ?? '').trim().toLowerCase() || null
   if (!locationName) return
 
-  await supabase().from('marketing_suppressions').insert({
+  const supabase = createAdminClient()
+  await supabase.from('marketing_suppressions').insert({
     location_name: locationName,
     postcode,
     email,
@@ -96,6 +100,7 @@ export async function addSuppression(formData: FormData) {
 
 export async function deleteSuppression(id: string) {
   await assertSuperadmin()
-  await supabase().from('marketing_suppressions').delete().eq('id', id)
+  const supabase = createAdminClient()
+  await supabase.from('marketing_suppressions').delete().eq('id', id)
   revalidatePath('/superadmin/campaigns')
 }

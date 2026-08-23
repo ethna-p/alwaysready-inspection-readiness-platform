@@ -23,7 +23,7 @@ export default async function ReportsPage() {
 
   // ── Org name + logo ──────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: org } = await (supabase as any)
+  const { data: org } = await supabase
     .from('organisations')
     .select('name, logo_url')
     .eq('id', orgId)
@@ -104,7 +104,7 @@ export default async function ReportsPage() {
 
   // ── Action items ──────────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: actionRows } = await (supabase as any)
+  const { data: actionRows } = await supabase
     .from('action_items')
     .select(`
       id,

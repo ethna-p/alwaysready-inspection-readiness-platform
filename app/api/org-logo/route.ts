@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
 
   // Save to organisations table (logo_url not yet in generated types — migration pending)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: dbError } = await (supabase as any)
+  const { error: dbError } = await supabase
     .from('organisations')
     .update({ logo_url: logoUrl })
     .eq('id', orgId)
@@ -110,7 +110,7 @@ export async function DELETE() {
 
   // Clear URL in DB
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (supabase as any)
+  await supabase
     .from('organisations')
     .update({ logo_url: null })
     .eq('id', orgId)

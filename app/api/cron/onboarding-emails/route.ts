@@ -445,19 +445,22 @@ export async function GET(req: NextRequest) {
 
         if (result.sent) {
           // Log it — deduplication anchor is subscribed_at date
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (supabase as any)
+          await supabase
             .from('notification_log')
-            .insert({
-              organisation_id:   org.id,
-              notification_type: 'onboarding_week',
-              entity_type:       'onboarding',
-              entity_id:         email.weekId,
-              due_date:          anchorDate,
-              recipient_email:   admin.email,
-            })
-            .onConflict('organisation_id,notification_type,entity_type,entity_id,due_date,recipient_email')
-            .ignore()
+            .upsert(
+              {
+                organisation_id:   org.id,
+                notification_type: 'onboarding_week',
+                entity_type:       'onboarding',
+                entity_id:         email.weekId,
+                due_date:          anchorDate,
+                recipient_email:   admin.email,
+              },
+              {
+                onConflict:       'organisation_id,notification_type,entity_type,entity_id,due_date,recipient_email',
+                ignoreDuplicates: true,
+              }
+            )
 
           totalSent++
         } else {

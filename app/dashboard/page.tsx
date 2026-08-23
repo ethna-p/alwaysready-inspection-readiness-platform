@@ -166,7 +166,7 @@ export default async function DashboardPage() {
     supabase.from('klo_items').select('id, key_question_id'),
     supabase.from('compliance_records').select('*'),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any).from('incidents')
+    supabase.from('incidents')
       .select('id', { count: 'exact', head: true })
       .eq('organisation_id', orgId)
       .in('status', ['open', 'under_review']),
@@ -199,11 +199,11 @@ export default async function DashboardPage() {
       if (rag === 'red' && !rec?.assigned_to) overdueUnassignedCount++
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: overdueActions } = await (supabase as any)
+    const { data: overdueActions } = await supabase
       .from('action_items')
       .select('id')
       .eq('organisation_id', orgId)
-      .in('status', ['open', 'in_progress', 'to_do'])
+      .in('status', ['open', 'in_progress'])
       .lt('due_date', now.toISOString().split('T')[0])
     overdueActionCount = (overdueActions ?? []).length
   }

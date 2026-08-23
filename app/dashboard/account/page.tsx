@@ -60,12 +60,11 @@ export default async function AccountPage({
         .from('organisation_sub_services')
         .select('sub_service')
         .eq('organisation_id', profile.organisation_id),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (supabase as any)
+      supabase
         .from('organisations')
         .select('subscription_tier, stripe_customer_id, logo_url')
         .eq('id', profile.organisation_id)
-        .single() as Promise<{ data: { subscription_tier: string; stripe_customer_id: string | null; logo_url: string | null } | null; error: unknown }>,
+        .single(),
       supabase
         .from('users')
         .select('id, full_name, email, role, viewer_expires_at, created_at')

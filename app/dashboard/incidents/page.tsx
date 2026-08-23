@@ -27,7 +27,7 @@ export default async function IncidentsPage() {
 
   // Fetch all incidents for this org, most recent first
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rows, error } = await (supabase as any)
+  const { data: rows, error } = await supabase
     .from('incidents')
     .select('*')
     .eq('organisation_id', orgId)

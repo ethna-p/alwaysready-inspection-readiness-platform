@@ -24,6 +24,10 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 import { fetchCqcLocation } from '@/lib/cqc'
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
+
+// 10 requests per IP per hour — generous for a waitlist signup
+const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',
@@ -36,6 +40,13 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!limiter.check(getClientIp(req))) {
+    return new NextResponse('Too many requests. Please try again later.', {
+      status: 429,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain', 'Retry-After': '3600' },
+    })
+  }
+
   // ── Parse JSON payload ────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: Record<string, any>
@@ -175,7 +186,7 @@ export async function POST(req: NextRequest) {
 
   // ── Upsert waitlist lead ──────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: leadError } = await (supabase as any)
+  const { error: leadError } = await supabase
     .from('waitlist_leads')
     .upsert(
       {

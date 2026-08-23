@@ -187,7 +187,7 @@ export async function GET(request: Request) {
   for (const org of orgs) {
     // Check idempotency — one digest per org per week (keyed on Monday's date)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: alreadySent } = await (supabase as any)
+    const { data: alreadySent } = await supabase
       .from('notification_log')
       .select('id')
       .eq('organisation_id',   org.id)
@@ -244,7 +244,7 @@ export async function GET(request: Request) {
 
     // ── Open incidents ────────────────────────────────────────────────────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { count: openIncidents } = await (supabase as any)
+    const { count: openIncidents } = await supabase
       .from('incidents')
       .select('id', { count: 'exact', head: true })
       .eq('organisation_id', org.id)
@@ -252,7 +252,7 @@ export async function GET(request: Request) {
 
     // ── Overdue action items ──────────────────────────────────────────────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { count: overdueActions } = await (supabase as any)
+    const { count: overdueActions } = await supabase
       .from('action_items')
       .select('id', { count: 'exact', head: true })
       .eq('organisation_id', org.id)
