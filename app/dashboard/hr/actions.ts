@@ -25,6 +25,21 @@ async function requireAdmin() {
 
 // ── Staff profile ────────────────────────────────────────────────────────────
 
+// Explicit allowlist of columns this action may write.
+// Prevents a client from overriding server-controlled fields (e.g. organisation_id)
+// via the data spread — defence-in-depth on top of RLS.
+const ALLOWED_STAFF_PROFILE_FIELDS = new Set([
+  'ni_number', 'job_title', 'department', 'employee_type', 'contracted_hours',
+  'employment_start', 'leaving_date', 'employment_status',
+  'date_of_birth', 'gender', 'ethnic_origin', 'disability', 'marital_status',
+  'next_of_kin_name', 'next_of_kin_phone',
+  'dbs_review_date', 'dbs_next_review_due', 'dbs_frequency_days',
+  'right_to_work_verified', 'references_obtained',
+  'supervision_review_date', 'supervision_next_due', 'supervision_frequency_days',
+  'appraisal_review_date', 'appraisal_next_due', 'appraisal_frequency_days',
+  'appraisal_notes', 'mandatory_training_complete',
+])
+
 export async function saveStaffProfile(
   userId: string,
   data: Record<string, string | boolean | number | null>
@@ -34,13 +49,26 @@ export async function saveStaffProfile(
 
   const supabase = await createClient()
 
+  // Verify the target user belongs to this org
+  const { count: userCount } = await supabase
+    .from('users')
+    .select('id', { count: 'exact', head: true })
+    .eq('id', userId)
+    .eq('organisation_id', profile.organisation_id)
+  if (!userCount) return { success: false, error: 'User not found.' }
+
+  // Strip any keys not in the explicit allowlist before upsert
+  const safeData = Object.fromEntries(
+    Object.entries(data).filter(([k]) => ALLOWED_STAFF_PROFILE_FIELDS.has(k))
+  )
+
   const { error } = await supabase
     .from('hr_staff_profiles')
     .upsert({
       organisation_id: profile.organisation_id,
       user_id: userId,
       updated_at: new Date().toISOString(),
-      ...data,
+      ...safeData,
     }, { onConflict: 'organisation_id,user_id' })
 
   if (error) {
@@ -66,6 +94,14 @@ export async function saveTrainingRecord(
   if (!profile) return { success: false, error: 'Admin access required.' }
 
   const supabase = await createClient()
+
+  // Verify the target user belongs to this org
+  const { count: userCount } = await supabase
+    .from('users')
+    .select('id', { count: 'exact', head: true })
+    .eq('id', userId)
+    .eq('organisation_id', profile.organisation_id)
+  if (!userCount) return { success: false, error: 'User not found.' }
 
   // Calculate next due date if a completion date is provided
   let nextDue: string | null = null
@@ -110,6 +146,14 @@ export async function saveHolidayAllowance(
   if (!profile) return { success: false, error: 'Admin access required.' }
 
   const supabase = await createClient()
+
+  // Verify the target user belongs to this org
+  const { count: userCount } = await supabase
+    .from('users')
+    .select('id', { count: 'exact', head: true })
+    .eq('id', userId)
+    .eq('organisation_id', profile.organisation_id)
+  if (!userCount) return { success: false, error: 'User not found.' }
 
   const { error } = await supabase
     .from('hr_holiday_allowances')

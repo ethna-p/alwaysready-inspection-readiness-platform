@@ -53,6 +53,22 @@ export async function saveMockFinding(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const { data: profile } = await supabase
+    .from('users')
+    .select('organisation_id')
+    .eq('id', user.id)
+    .single()
+  if (!profile?.organisation_id) return { error: 'No organisation found' }
+
+  // Verify the inspection belongs to the caller's org
+  const { data: inspection } = await supabase
+    .from('mock_inspections')
+    .select('id')
+    .eq('id', mockInspectionId)
+    .eq('organisation_id', profile.organisation_id)
+    .maybeSingle()
+  if (!inspection) return { error: 'Inspection not found' }
+
   const { error } = await supabase
     .from('mock_inspection_findings')
     .upsert(
@@ -84,6 +100,22 @@ export async function saveMockChecklistResponse(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const { data: profile } = await supabase
+    .from('users')
+    .select('organisation_id')
+    .eq('id', user.id)
+    .single()
+  if (!profile?.organisation_id) return { error: 'No organisation found' }
+
+  // Verify the inspection belongs to the caller's org
+  const { data: inspection } = await supabase
+    .from('mock_inspections')
+    .select('id')
+    .eq('id', mockInspectionId)
+    .eq('organisation_id', profile.organisation_id)
+    .maybeSingle()
+  if (!inspection) return { error: 'Inspection not found' }
+
   const { error } = await supabase
     .from('mock_inspection_checklist_responses')
     .upsert(
@@ -110,6 +142,13 @@ export async function completeMockInspection(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const { data: profile } = await supabase
+    .from('users')
+    .select('organisation_id')
+    .eq('id', user.id)
+    .single()
+  if (!profile?.organisation_id) return { error: 'No organisation found' }
+
   const { error } = await supabase
     .from('mock_inspections')
     .update({
@@ -117,6 +156,7 @@ export async function completeMockInspection(
       completed_at: new Date().toISOString(),
     })
     .eq('id', mockInspectionId)
+    .eq('organisation_id', profile.organisation_id)
 
   if (error) return { error: error.message }
 

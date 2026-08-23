@@ -15,6 +15,15 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 // 10 requests per IP per hour
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
@@ -67,10 +76,8 @@ export async function POST(req: NextRequest) {
 
   // ── Turnstile verification ────────────────────────────────────────────────
   const secretKey = process.env.TURNSTILE_SECRET_KEY
-  console.log('[blog-subscribe] TURNSTILE_SECRET_KEY present:', !!secretKey)
   if (secretKey) {
     const token = typeof body['cf-turnstile-response'] === 'string' ? body['cf-turnstile-response'] : ''
-    console.log('[blog-subscribe] token present:', !!token, token ? `(${token.slice(0, 10)}...)` : '')
     if (!token) {
       // Soft-pass: no token (Turnstile may not have loaded). Honeypot still provides basic bot protection.
       console.warn('[blog-subscribe] No Turnstile token — soft-pass')
@@ -82,7 +89,6 @@ export async function POST(req: NextRequest) {
           body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
         })
         const verifyData = await verifyRes.json() as { success: boolean; 'error-codes'?: string[] }
-        console.log('[blog-subscribe] siteverify response:', JSON.stringify(verifyData))
         if (!verifyData.success) {
           return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers })
         }
@@ -115,7 +121,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Could not save your subscription.' }, { status: 500, headers })
     }
 
-    const displayName = name || 'there'
+    const displayName = escapeHtml(name || 'there')
 
     // ── Welcome email to subscriber ─────────────────────────────────────────
     await sendEmail({
@@ -151,8 +157,8 @@ export async function POST(req: NextRequest) {
             A new subscriber signed up via the website blog signup form.
           </p>
           <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
-            ${name ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${name}</td></tr>` : ''}
-            <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${email}</td></tr>
+            ${name ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${escapeHtml(name)}</td></tr>` : ''}
+            <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${escapeHtml(email)}</td></tr>
           </table>
         `,
       }).catch(err => {

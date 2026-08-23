@@ -98,6 +98,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing file or statement ID.' }, { status: 400 })
   }
 
+  // Validate iStatementId is a proper UUID to prevent path traversal in storage
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!UUID_REGEX.test(iStatementId)) {
+    return NextResponse.json({ error: 'Invalid statement ID.' }, { status: 400 })
+  }
+
   // ── 3. Size check ─────────────────────────────────────────────────────────
   if (file.size > MAX_SIZE_BYTES) {
     return NextResponse.json({ error: 'File is too large. Maximum size is 10 MB.' }, { status: 400 })

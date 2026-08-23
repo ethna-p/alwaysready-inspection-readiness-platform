@@ -4,6 +4,15 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { fetchCqcLocation } from '@/lib/cqc'
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const ACTIVE_SERVICE_TYPES = [
   'Residential Care Home',
   'Nursing Home',
@@ -187,11 +196,23 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
 
   // ── 7. Seed compliance_records (one per KLO item) ────────────────────────────
   const { data: klos } = await supabase.from('klo_items').select('id')
-  if (klos && klos.length > 0) {
-    const { error: crError } = await supabase.from('compliance_records').insert(
-      klos.map(klo => ({ organisation_id: org.id, klo_item_id: klo.id }))
-    )
-    if (crError) console.error('[trial-signup] compliance_records seed error:', crError.message)
+  if (!klos || klos.length === 0) {
+    // No KLO items found — this is a data integrity problem; roll back and fail.
+    await supabase.auth.admin.deleteUser(authUserId)
+    await supabase.from('organisations').delete().eq('id', org.id)
+    console.error('[trial-signup] klo_items table is empty — cannot seed compliance records')
+    return { success: false, error: 'Could not set up your account. Please try again.' }
+  }
+
+  const { error: crError } = await supabase.from('compliance_records').insert(
+    klos.map(klo => ({ organisation_id: org.id, klo_item_id: klo.id }))
+  )
+  if (crError) {
+    // Compliance records are essential — roll back and fail if seeding doesn't work.
+    await supabase.auth.admin.deleteUser(authUserId)
+    await supabase.from('organisations').delete().eq('id', org.id)
+    console.error('[trial-signup] compliance_records seed error:', crError.message)
+    return { success: false, error: 'Could not set up your account. Please try again.' }
   }
 
   // ── 8. Generate password-setup link ─────────────────────────────────────────
@@ -219,12 +240,12 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       bodyHtml: `
         <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new trial has started.</p>
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Service</td><td style="padding:4px 0"><strong>${serviceName.trim()}</strong></td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Manager</td><td style="padding:4px 0">${managerName.trim()}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${managerEmail.trim()}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Service type</td><td style="padding:4px 0">${serviceType}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">CQC Location ID</td><td style="padding:4px 0">${cqcLocationId.trim()}</td></tr>
-          ${charityNumber ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Charity no.</td><td style="padding:4px 0"><strong style="color:#b45309">${charityNumber} — verify document before enabling discount</strong></td></tr>` : ''}
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Service</td><td style="padding:4px 0"><strong>${escapeHtml(serviceName.trim())}</strong></td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Manager</td><td style="padding:4px 0">${escapeHtml(managerName.trim())}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${escapeHtml(managerEmail.trim())}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Service type</td><td style="padding:4px 0">${escapeHtml(serviceType)}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">CQC Location ID</td><td style="padding:4px 0">${escapeHtml(cqcLocationId.trim())}</td></tr>
+          ${charityNumber ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Charity no.</td><td style="padding:4px 0"><strong style="color:#b45309">${escapeHtml(charityNumber)} — verify document before enabling discount</strong></td></tr>` : ''}
           <tr><td style="padding:4px 16px 4px 0;color:#555">Trial expires</td><td style="padding:4px 0">${trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</td></tr>
         </table>
       `,
@@ -237,7 +258,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     subject: 'Your AlwaysReady trial is ready — set your password to get started',
     type:    'transactional',
     bodyHtml: `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${escapeHtml(firstName)},</p>
 
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your 14-day free trial of AlwaysReady is ready. Click the button below to
@@ -245,7 +266,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       </p>
 
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">${serviceName.trim()}</strong> has been configured
+        <strong style="color:#014D4E">${escapeHtml(serviceName.trim())}</strong> has been configured
         to your service type using the CQC Adult Social Care Assessment Framework. You can
         start recording your compliance position, uploading evidence, and building your
         inspection readiness straight away.

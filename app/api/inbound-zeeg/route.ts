@@ -17,6 +17,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const ZEEG_WEBHOOK_TOKEN = process.env.ZEEG_WEBHOOK_TOKEN ?? ''
 
 /** Derive demo_type from event duration (minutes). */
@@ -100,11 +109,11 @@ export async function POST(req: NextRequest) {
         <table style="border-collapse:collapse;font-size:14px;margin-top:12px;">
           <tr>
             <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Name</td>
-            <td style="padding:6px 0;">${name ?? '—'}</td>
+            <td style="padding:6px 0;">${name ? escapeHtml(name) : '—'}</td>
           </tr>
           <tr>
             <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Email</td>
-            <td style="padding:6px 0;"><a href="mailto:${email}" style="color:#014D4E;">${email}</a></td>
+            <td style="padding:6px 0;"><a href="mailto:${escapeHtml(email)}" style="color:#014D4E;">${escapeHtml(email)}</a></td>
           </tr>
           <tr>
             <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Demo type</td>

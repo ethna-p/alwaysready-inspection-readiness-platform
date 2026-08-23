@@ -13,6 +13,15 @@ import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import type { MarketingSuppression, CampaignContact } from '@/lib/types'
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 // 10 requests per IP per hour
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
@@ -101,15 +110,15 @@ export async function POST(req: NextRequest) {
       <table style="border-collapse:collapse;font-size:14px;margin-top:12px;">
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Service name</td>
-          <td style="padding:6px 0;">${locationName}</td>
+          <td style="padding:6px 0;">${escapeHtml(locationName)}</td>
         </tr>
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Postcode</td>
-          <td style="padding:6px 0;">${postcode ?? 'Not provided'}</td>
+          <td style="padding:6px 0;">${postcode ? escapeHtml(postcode) : 'Not provided'}</td>
         </tr>
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Email</td>
-          <td style="padding:6px 0;">${email ?? 'Not provided'}</td>
+          <td style="padding:6px 0;">${email ? escapeHtml(email) : 'Not provided'}</td>
         </tr>
       </table>
       <p style="margin-top:16px;font-size:13px;color:#888;">
