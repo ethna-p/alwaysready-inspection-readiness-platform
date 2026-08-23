@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   // Keep @react-pdf/renderer as a native Node module — it uses Node APIs
@@ -48,8 +49,9 @@ const nextConfig: NextConfig = {
               // Allow Supabase storage for org logos
               "img-src 'self' data: blob: https://*.supabase.co",
               "font-src 'self'",
-              // Supabase (auth, database), Anthropic (newsletter AI)
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com",
+              // Supabase (auth, database), Anthropic (newsletter AI),
+              // Sentry EU ingest (error reporting — data stays in Germany)
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://*.ingest.de.sentry.io",
               // No iframes anywhere — same effect as X-Frame-Options above, but CSP version
               "frame-ancestors 'none'",
             ].join('; '),
@@ -60,4 +62,25 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Sentry organisation and project slugs (set in sentry.io)
+  org: 'alwaysready',
+  project: 'alwaysready-platform',
+
+  // Suppress verbose build output
+  silent: !process.env.CI,
+
+  // Upload a wider set of source maps (helps with minified stack traces)
+  widenClientFileUpload: true,
+
+  // Don't expose source maps in the client bundle — upload to Sentry only
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+
+  // Tree-shake Sentry logger statements out of the production bundle
+  disableLogger: true,
+
+  // Automatically instrument Next.js data fetching methods for performance monitoring
+  autoInstrumentServerFunctions: true,
+});
