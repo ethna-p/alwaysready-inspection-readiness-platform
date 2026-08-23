@@ -31,7 +31,7 @@ export async function OPTIONS() {
 }
 
 export async function GET(req: NextRequest) {
-  if (!limiter.check(getClientIp(req))) {
+  if (!await limiter.check(getClientIp(req))) {
     return new NextResponse('Too many requests. Please try again later.', {
       status: 429,
       headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain', 'Retry-After': '600' },

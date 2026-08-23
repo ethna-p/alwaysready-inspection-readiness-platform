@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   const origin = req.headers.get('origin')
   const headers = corsHeaders(origin)
 
-  if (!limiter.check(getClientIp(req))) {
+  if (!await limiter.check(getClientIp(req))) {
     return new NextResponse('Too many requests. Please try again later.', {
       status: 429,
       headers: { ...headers, 'Content-Type': 'text/plain', 'Retry-After': '3600' },

@@ -20,7 +20,7 @@ import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
 export async function POST(req: NextRequest) {
-  if (!limiter.check(getClientIp(req))) {
+  if (!await limiter.check(getClientIp(req))) {
     return new NextResponse('Too many requests. Please try again later.', {
       status: 429,
       headers: { 'Content-Type': 'text/plain', 'Retry-After': '3600' },
