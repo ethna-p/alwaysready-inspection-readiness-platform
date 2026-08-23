@@ -21,16 +21,17 @@ import { sendEmail } from '@/lib/email'
 
 const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-06-24.dahlia',
-})
-
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
-  if (!webhookSecret) {
-    console.error('[stripe-webhook] STRIPE_WEBHOOK_SECRET not set')
+  const stripeKey = process.env.STRIPE_SECRET_KEY
+  if (!webhookSecret || !stripeKey) {
+    console.error('[stripe-webhook] STRIPE_WEBHOOK_SECRET or STRIPE_SECRET_KEY not set')
     return NextResponse.json({ error: 'Server misconfiguration.' }, { status: 500 })
   }
+
+  const stripe = new Stripe(stripeKey, {
+    apiVersion: '2026-06-24.dahlia',
+  })
 
   const body      = await req.text()
   const signature = req.headers.get('stripe-signature') ?? ''
