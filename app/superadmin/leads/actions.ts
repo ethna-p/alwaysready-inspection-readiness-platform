@@ -7,6 +7,7 @@ import { sendEmail }               from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 
 export async function deleteLead(id: string) {
+  await assertSuperadmin()
   const supabase = createAdminClient()
   await supabase.from('waitlist_leads').delete().eq('id', id)
   revalidatePath('/superadmin/leads')
