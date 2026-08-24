@@ -24,9 +24,10 @@
 .DS_Store
 *.pem
 
-# Word lock files (created when a .docx is open in Word)
+# Word/Excel lock files (created when a file is open in Word or Excel)
 ~$*.docx
 ~$*.dotx
+~$*.xlsx
 
 # debug
 npm-debug.log*

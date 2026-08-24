@@ -8,6 +8,7 @@
  * at `{org_id}/logo.{ext}` and the public URL is saved to organisations.logo_url.
  */
 import { NextRequest, NextResponse } from 'next/server'
+import { fileTypeFromBuffer } from 'file-type'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
 
@@ -16,7 +17,7 @@ const MAX_BYTES = 2 * 1024 * 1024 // 2 MB
 // SVG excluded — SVG files can contain embedded scripts (XSS risk when served
 // with Content-Type: image/svg+xml). PNG, JPG, and WebP cover all practical
 // logo formats.
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/gif'])
 
 function extFor(mime: string): string {
   const map: Record<string, string> = {
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No logo file provided' }, { status: 400 })
   }
 
-  if (!ALLOWED_TYPES.includes(file.type)) {
+  if (!ALLOWED_TYPES.has(file.type)) {
     return NextResponse.json({ error: 'File type not allowed. Use PNG, JPG, WebP, or GIF.' }, { status: 400 })
   }
 
@@ -57,14 +58,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'File too large. Maximum size is 2 MB.' }, { status: 400 })
   }
 
-  const ext      = extFor(file.type)
+  const bytes  = Buffer.from(await file.arrayBuffer())
+
+  // Validate actual file bytes via magic-byte inspection (same pattern as upload-evidence).
+  // This prevents a spoofed Content-Type from bypassing the type check.
+  const detected = await fileTypeFromBuffer(bytes)
+  const actualMime = detected?.mime ?? ''
+  if (!ALLOWED_TYPES.has(actualMime)) {
+    console.warn(`[org-logo] Rejected: reported=${file.type} detected=${detected?.mime}`)
+    return NextResponse.json({ error: 'File type not allowed. Use PNG, JPG, WebP, or GIF.' }, { status: 400 })
+  }
+
+  const ext      = extFor(actualMime)
   const path     = `${orgId}/logo.${ext}`
-  const bytes    = await file.arrayBuffer()
 
   // Upsert (upload, overwriting any existing logo for this org)
   const { error: uploadError } = await supabase.storage
     .from(BUCKET)
-    .upload(path, bytes, { contentType: file.type, upsert: true })
+    .upload(path, bytes, { contentType: actualMime, upsert: true })
 
   if (uploadError) {
     console.error('[org-logo] upload error:', uploadError)
