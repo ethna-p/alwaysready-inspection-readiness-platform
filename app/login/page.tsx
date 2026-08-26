@@ -310,7 +310,7 @@ function LoginForm() {
                 <h2 className="text-lg font-bold text-brand mb-2">Check your inbox</h2>
                 <p className="text-sm text-ink-dim mb-6">
                   If an account exists for that email address, you&apos;ll receive a reset link shortly.
-                  The link expires in 1 hour.
+                  The link expires in 15 minutes.
                 </p>
                 <button
                   type="button"

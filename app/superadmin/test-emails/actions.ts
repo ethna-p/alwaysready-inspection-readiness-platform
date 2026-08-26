@@ -1039,7 +1039,7 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
   return Promise.all([
     send('Reset your AlwaysReady password', `
       <p>We received a request to reset the password for your AlwaysReady account.</p>
-      <p style="color:#555;font-size:14px">Click the button below to set a new password. This link expires in 1 hour.</p>
+      <p style="color:#555;font-size:14px">Click the button below to set a new password. This link expires in 15 minutes.</p>
       <p>
         <a href="${PLATFORM_URL}/account/reset?token=EXAMPLE_TOKEN"
            style="display:inline-block;background:#014D4E;color:#fff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px">
