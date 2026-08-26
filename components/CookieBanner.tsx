@@ -45,14 +45,13 @@ export default function CookieBanner() {
       className="
         fixed bottom-0 inset-x-0 z-50
         bg-[#014D4E] text-white
-        px-4 py-4
+        px-4 py-3
         print:hidden
       "
     >
       <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm leading-relaxed">
-          This site uses cookies that are strictly necessary to keep it working — for example, to keep you logged in.
-          We do not use tracking or advertising cookies.{' '}
+          This site uses strictly necessary cookies only — no tracking or advertising.{' '}
           <a
             href="/dashboard/help#data-retention"
             className="underline hover:text-[#80cbc4] focus:outline-none focus:ring-1 focus:ring-white rounded"
