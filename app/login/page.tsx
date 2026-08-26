@@ -108,8 +108,8 @@ function LoginForm() {
         <Image
           src="/alwaysready-logo.svg"
           alt="AlwaysReady"
-          width={220}
-          height={48}
+          width={260}
+          height={57}
           style={{ height: 'auto' }}
           priority
         />
