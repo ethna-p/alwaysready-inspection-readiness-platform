@@ -75,11 +75,15 @@ export default async function OrganisationsPage({
   }
 
   // ── 2. Apply filter ────────────────────────────────────────────────────
-  const isDemo = (o: OrgListItem) => o.name.startsWith('Demo —')
+  const isDemo   = (o: OrgListItem) => o.name.startsWith('Demo —')
+  const isTester = (o: OrgListItem) => o.is_tester
+  const isReal   = (o: OrgListItem) => !isDemo(o) && !isTester(o)
+
   const filtered = (orgs ?? [])
     .filter(o =>
-      filter === 'demo' ? isDemo(o) :
-      filter === 'real' ? !isDemo(o) :
+      filter === 'demo'   ? isDemo(o)   :
+      filter === 'tester' ? isTester(o) :
+      filter === 'real'   ? isReal(o)   :
       true
     )
     .sort((a, b) =>
@@ -117,20 +121,21 @@ export default async function OrganisationsPage({
 
       {/* Filter tabs */}
       <div className="flex items-center gap-2 mb-6">
-        {(['all', 'real', 'demo'] as const).map(f => (
+        {(['all', 'real', 'tester', 'demo'] as const).map(f => (
           <Link
             key={f}
             href={f === 'all' ? '/superadmin/organisations' : `/superadmin/organisations?filter=${f}`}
             className={`
               px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-              ${filter === f || (f === 'all' && filter !== 'real' && filter !== 'demo')
+              ${filter === f || (f === 'all' && !['real', 'tester', 'demo'].includes(filter))
                 ? 'bg-[#014D4E] text-white'
                 : 'bg-card border border-line text-ink-muted hover:text-ink'}
             `}
           >
-            {f === 'all' ? `All (${(orgs ?? []).length})` :
-             f === 'real' ? `Real (${(orgs ?? []).filter(o => !o.name.startsWith('Demo —')).length})` :
-             `Demo (${(orgs ?? []).filter(o => o.name.startsWith('Demo —')).length})`}
+            {f === 'all'    ? `All (${(orgs ?? []).length})` :
+             f === 'real'   ? `Real (${(orgs ?? []).filter(isReal).length})` :
+             f === 'tester' ? `Testers (${(orgs ?? []).filter(isTester).length})` :
+             `Demo (${(orgs ?? []).filter(isDemo).length})`}
           </Link>
         ))}
       </div>
