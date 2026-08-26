@@ -4,6 +4,8 @@ This file is standing context for this project. Read it at the start of every se
 
 **Writing marketing copy or content about any platform feature? Read `docs/FEATURE_MAP.md` first, then read the relevant code folder. Do not rely on handoff docs, memory, or assumptions. The codebase is the ground truth.**
 
+**When asked about third-party dashboards (Supabase, Stripe, Vercel, Cloudflare, Resend, etc.) — if you do not know the exact current location of a setting, say so immediately and search for it rather than guessing. Do not direct AJ through incorrect navigation paths.**
+
 ---
 
 ## What This Is

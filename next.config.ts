@@ -78,9 +78,11 @@ export default withSentryConfig(nextConfig, {
     deleteSourcemapsAfterUpload: true,
   },
 
-  // Tree-shake Sentry logger statements out of the production bundle
-  disableLogger: true,
+  webpack: {
+    // Tree-shake Sentry logger statements out of the production bundle
+    treeshake: { removeDebugLogging: true },
 
-  // Automatically instrument Next.js data fetching methods for performance monitoring
-  autoInstrumentServerFunctions: true,
+    // Automatically instrument Next.js data fetching methods for performance monitoring
+    autoInstrumentServerFunctions: true,
+  },
 });
