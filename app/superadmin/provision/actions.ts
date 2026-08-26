@@ -22,6 +22,7 @@ export async function provisionOrganisation(
   const trialDays      = parseInt(formData.get('trial_days') as string ?? '14', 10)
   const isCharity      = formData.get('is_charity') === 'on'
   const isBeta         = formData.get('is_beta') === 'on'
+  const isTester       = formData.get('is_tester') === 'on'
 
   // Validate inputs
   if (!orgName || !serviceTypeKey || !adminEmail || !adminName || !adminPassword) {
@@ -57,6 +58,7 @@ export async function provisionOrganisation(
         subscription_tier: 'trial',
         trial_expires_at: trialExpiresAt.toISOString(),
         is_beta: isBeta,
+        is_tester: isTester,
       })
       .select('id')
       .single()
@@ -205,8 +207,9 @@ export async function provisionOrganisation(
 
     // ── 7. Notify superadmin ────────────────────────────────────────────
     const reference = `ORG-${org.id.slice(0, 8).toUpperCase()}`
-    const betaLabel  = isBeta    ? 'Yes' : 'No'
+    const betaLabel    = isBeta    ? 'Yes' : 'No'
     const charityLabel = isCharity ? 'Yes' : 'No'
+    const testerLabel  = isTester  ? 'Yes' : 'No'
 
     await sendEmail({
       to: process.env.SUPERADMIN_EMAIL ?? 'support@alwaysready.uk',
@@ -226,6 +229,7 @@ export async function provisionOrganisation(
               <strong>Admin email:</strong> ${adminEmail}<br>
               <strong>Beta:</strong> ${betaLabel}<br>
               <strong>Charity:</strong> ${charityLabel}<br>
+              <strong>Tester:</strong> ${testerLabel}<br>
               <strong>Trial length:</strong> ${trialDays} days (expires ${trialExpiryFormatted})<br>
               <strong>Org ID:</strong> <span style="font-family:monospace;font-size:12px">${org.id}</span>
             </td>

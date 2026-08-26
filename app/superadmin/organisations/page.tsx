@@ -18,7 +18,7 @@ import DeleteOrgButton from './DeleteOrgButton'
 type OrgListItem = {
   id: string; name: string; subscription_tier: string
   trial_expires_at: string | null; created_at: string
-  is_beta: boolean; is_charity: boolean; charity_number: string | null
+  is_beta: boolean; is_charity: boolean; is_tester: boolean; charity_number: string | null
   service_types: { name: string } | null
 }
 
@@ -60,7 +60,7 @@ export default async function OrganisationsPage({
   const { data: orgsRaw, error: orgsError } = await supabase
     .from('organisations')
     .select(`
-      id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity, charity_number,
+      id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity, is_tester, charity_number,
       service_types ( name )
     `)
     .order('created_at', { ascending: false })
@@ -170,6 +170,11 @@ export default async function OrganisationsPage({
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${tierStyle}`}>
                         {tierLabel}
                       </span>
+                      {org.is_tester && (
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                          Tester
+                        </span>
+                      )}
                       {org.is_beta && (
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
                           Beta

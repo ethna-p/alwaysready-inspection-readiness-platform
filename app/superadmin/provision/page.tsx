@@ -126,6 +126,18 @@ export default function ProvisionPage() {
 
           <div className="flex items-center gap-3">
             <input
+              id="is_tester"
+              name="is_tester"
+              type="checkbox"
+              className="h-4 w-4 accent-[#00b8a6] rounded"
+            />
+            <label htmlFor="is_tester" className="text-sm text-ink">
+              Internal tester (no billing, shown with Tester badge in Organisations list)
+            </label>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <input
               id="is_beta"
               name="is_beta"
               type="checkbox"
