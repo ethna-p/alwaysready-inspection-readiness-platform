@@ -10,49 +10,28 @@ export interface BroadcastResult {
   error?: string
 }
 
-const SUPERADMIN_EMAIL = process.env.SUPERADMIN_EMAIL ?? ''
-
 /**
- * Returns the total number of eligible broadcast recipients:
- * - Platform admin users from real orgs (is_tester = false), plus tester orgs
- *   where the admin email matches SUPERADMIN_EMAIL
- * - Blog subscribers (not unsubscribed)
+ * Returns the total number of eligible broadcast recipients.
+ * Broadcasts are blog post notifications — audience is blog subscribers only.
+ * Platform users are excluded: their marketing consent covers platform
+ * communications, not a separate blog newsletter (UK GDPR purpose limitation).
  */
 export async function getRecipientCount(): Promise<number> {
   await assertSuperadmin()
   const supabase = createAdminClient()
 
-  const [usersResult, subscribersResult] = await Promise.all([
-    supabase
-      .from('users')
-      .select('id, email, organisations!inner(is_tester)')
-      .eq('role', 'admin')
-      .eq('marketing_opt_out', false),
-    supabase
-      .from('blog_subscribers')
-      .select('id')
-      .is('unsubscribed_at', null),
-  ])
+  const { data, error } = await supabase
+    .from('blog_subscribers')
+    .select('id')
+    .is('unsubscribed_at', null)
 
-  const userCount = (usersResult.data ?? [])
-    .filter(u => {
-      if (u.email.endsWith('@staff.alwaysready.uk')) return false
-      const org = Array.isArray(u.organisations) ? u.organisations[0] : u.organisations
-      if (!org) return false
-      if (!org.is_tester) return true
-      return u.email === SUPERADMIN_EMAIL
-    }).length
-
-  const subscriberCount = (subscribersResult.data ?? []).length
-
-  return userCount + subscriberCount
+  if (error) return 0
+  return (data ?? []).length
 }
 
 /**
- * Sends a broadcast email to all eligible recipients.
+ * Sends a blog post broadcast to all active blog subscribers.
  * Each email includes a personalised unsubscribe link.
- *
- * Targets: admin users, real email addresses, non-demo orgs, not opted out.
  */
 export async function sendBroadcast(
   subject: string,
@@ -68,32 +47,14 @@ export async function sendBroadcast(
 
   const supabase = createAdminClient()
 
-  const [usersResult, subscribersResult] = await Promise.all([
-    supabase
-      .from('users')
-      .select('id, email, full_name, organisations!inner(is_tester)')
-      .eq('role', 'admin')
-      .eq('marketing_opt_out', false),
-    supabase
-      .from('blog_subscribers')
-      .select('id, email, full_name')
-      .is('unsubscribed_at', null),
-  ])
+  const { data: subscribers, error } = await supabase
+    .from('blog_subscribers')
+    .select('id, email, full_name')
+    .is('unsubscribed_at', null)
 
-  if (usersResult.error) {
-    return { sent: 0, skipped: 0, error: 'Failed to fetch recipients.' }
+  if (error) {
+    return { sent: 0, skipped: 0, error: 'Failed to fetch subscribers.' }
   }
-
-  const userRecipients = (usersResult.data ?? [])
-    .filter(u => {
-      if (u.email.endsWith('@staff.alwaysready.uk')) return false
-      const org = Array.isArray(u.organisations) ? u.organisations[0] : u.organisations
-      if (!org) return false
-      if (!org.is_tester) return true
-      return u.email === SUPERADMIN_EMAIL
-    })
-
-  const subscriberRecipients = subscribersResult.data ?? []
 
   // Convert newlines in intro to <p> tags
   const introHtml = intro
@@ -114,26 +75,9 @@ export async function sendBroadcast(
   let sent = 0
   let skipped = 0
 
-  // ── Platform users ──
-  for (const recipient of userRecipients) {
-    const firstName = recipient.full_name?.split(' ')[0] ?? null
-    const greeting  = firstName ? `Dear ${firstName},` : 'Dear AlwaysReady customer,'
-
-    const result = await sendEmail({
-      to: recipient.email,
-      subject,
-      bodyHtml: `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${greeting}</p>${bodyHtml}`,
-      type: 'marketing',
-      userId: recipient.id,
-    })
-
-    if (result.sent) sent++; else skipped++
-  }
-
-  // ── Blog subscribers ──
-  for (const subscriber of subscriberRecipients) {
+  for (const subscriber of subscribers ?? []) {
     const firstName = subscriber.full_name?.split(' ')[0] ?? null
-    const greeting  = firstName ? `Dear ${firstName},` : 'Dear reader,'
+    const greeting  = firstName ? `Hi ${firstName},` : 'Hi,'
 
     const result = await sendEmail({
       to: subscriber.email,
