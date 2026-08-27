@@ -23,7 +23,14 @@
  *   week_10 → days_elapsed >= 63
  *   week_11 → days_elapsed >= 70
  *   week_12 → days_elapsed >= 77
- *   week_25 → days_elapsed >= 175  (six-month check-in)
+ *
+ * Monthly check-ins (post-sequence):
+ *   week_16 → days_elapsed >= 112  (~4 months)
+ *   week_20 → days_elapsed >= 140  (~5 months)
+ *   week_25 → days_elapsed >= 175  (~6 months — six-month check-in)
+ *   week_30 → days_elapsed >= 210  (~7 months)
+ *   week_38 → days_elapsed >= 266  (~9 months)
+ *   week_52 → days_elapsed >= 365  (~12 months — annual)
  *
  * Security: requests must include Authorization: Bearer <CRON_SECRET>
  */
@@ -357,6 +364,56 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     `,
   },
   {
+    weekId:    'week_16',
+    threshold: 112,
+    subject:   'Is your evidence keeping up with your practice? ⭐',
+    body: (firstName) => `
+      <p>Dear ${firstName},</p>
+      <p>A quick check-in this month ⭐</p>
+      <p>One of the most common issues we see in CQC inspections is a gap between what a service does and
+      what it can prove. The care is good. The records do not show it. Inspectors can only act on what they
+      see — so if the evidence is thin or out of date, the rating will not reflect the work being done.</p>
+      <p>It is worth reviewing your evidence library this month with that question in mind: does what's
+      recorded in AlwaysReady still reflect how your service actually works today?</p>
+      <p><strong>Things worth checking:</strong></p>
+      <p>Are your highest-priority KLOEs backed by evidence from the last six months? If not, what has
+      changed in practice that should be documented?</p>
+      <p>Are there KLOEs where you feel confident about the care but the evidence is sparse? Those gaps
+      are worth closing before an inspection cycle begins.</p>
+      <p>Are any uploaded documents now out of date — old policies that have since been reviewed,
+      training records that have since been refreshed, meeting minutes from two years ago?</p>
+      <p>Your Daily Report will show you which KLOEs have not been updated recently. It is a good starting
+      point for this kind of monthly review.</p>
+      <p>If you're unsure where to start, just reply — we're happy to think it through with you.</p>
+    `,
+  },
+  {
+    weekId:    'week_20',
+    threshold: 140,
+    subject:   'Getting your team inspection-ready ⭐',
+    body: (firstName) => `
+      <p>Dear ${firstName},</p>
+      <p>This month's check-in is about your team ⭐</p>
+      <p>CQC inspectors do not only look at records. They talk to staff. They ask questions about how the
+      service works, how decisions are made, and how people who use the service are supported. What staff
+      say in those conversations matters — and it can make or break a rating.</p>
+      <p>Services that consistently perform well in inspections usually have one thing in common: staff who
+      feel genuinely involved in compliance, not just informed about it. They know what the KLOEs mean.
+      They understand why evidence is recorded. They can explain their own role in keeping the service safe
+      and effective.</p>
+      <p>That kind of team readiness does not happen overnight. It is built through regular conversations,
+      shared ownership of KLOEs, and a culture where governance is part of everyday practice rather than
+      something that happens before an inspection.</p>
+      <p><strong>A few things worth thinking about:</strong></p>
+      <p>Have your team members logged in and reviewed the KLOEs they are responsible for recently? Are
+      there staff who have never used the platform, or who are unsure what they are supposed to do in it?
+      Has your team discussed what an inspection looks like and how they should respond to an inspector's
+      questions?</p>
+      <p>If staff engagement is something you would like to improve, hit reply. It is one of the most
+      impactful things a registered manager can do before an inspection.</p>
+    `,
+  },
+  {
     weekId:    'week_25',
     threshold: 175,
     subject:   'Six months with AlwaysReady — how are things going? ⭐',
@@ -384,6 +441,80 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       feedback shapes what we build next.</p>
       <p>Hit reply and tell us how things are going. Even a one-line answer helps us understand what is
       working and what is not.</p>
+    `,
+  },
+  {
+    weekId:    'week_30',
+    threshold: 210,
+    subject:   'Preparing for your next CQC visit ⭐',
+    body: (firstName) => `
+      <p>Dear ${firstName},</p>
+      <p>Your monthly check-in ⭐</p>
+      <p>CQC inspections are unannounced. The average gap between inspections in adult social care is around
+      two to three years — but that gap can be shorter if something triggers a concern, and it can feel much
+      shorter than expected when an inspection letter actually arrives. The services that handle inspections
+      most confidently are the ones that are never really preparing for the next one, because they are always
+      ready for it.</p>
+      <p>This month, it is worth thinking about your inspection narrative — the story you would tell an
+      inspector if they walked through your door today.</p>
+      <p><strong>A useful exercise:</strong> imagine an inspector asks you to summarise your service's
+      progress over the past year. What would you say? What improvements have you made? What challenges have
+      you faced, and how have you responded? What are you most proud of, and what are you still working on?</p>
+      <p>If you can answer those questions clearly and point to evidence in AlwaysReady that supports each
+      one, you are in a strong position. If any of those answers feel uncertain, that is useful information —
+      it tells you where to focus before your next inspection cycle begins.</p>
+      <p>Your Trend Report and your Mock Inspection findings are good places to start this kind of review.
+      If you would like to talk through your inspection narrative, just reply.</p>
+    `,
+  },
+  {
+    weekId:    'week_38',
+    threshold: 266,
+    subject:   'Nine months in — a compliance review worth doing ⭐',
+    body: (firstName) => `
+      <p>Dear ${firstName},</p>
+      <p>Nine months — your monthly check-in ⭐</p>
+      <p>At around the nine-month mark, it is worth doing a more structured compliance review. Not the kind
+      of review you do the week before an inspection, but the kind that helps you genuinely understand where
+      your service stands and what still needs attention.</p>
+      <p><strong>A nine-month review is worth covering these four areas:</strong></p>
+      <p><strong>KLOE ratings:</strong> Go through each KLOE and ask honestly whether your current rating
+      still reflects practice. Have any areas improved and not yet been updated? Are any areas weaker than
+      they were six months ago?</p>
+      <p><strong>Evidence currency:</strong> How much of your uploaded evidence is from the past 12 months?
+      Anything older than that should be reviewed and either replaced or supplemented with something current.</p>
+      <p><strong>HR records:</strong> Are all DBS checks, training certificates, and supervision records
+      up to date? A gap here is one of the most common issues inspectors flag.</p>
+      <p><strong>Action plans:</strong> If you have run a mock inspection and generated findings, how many
+      of those action items have been completed? Incomplete action plans are a risk — they are evidence that
+      issues were identified but not resolved.</p>
+      <p>If you'd like a hand running through any of these areas, reply and let us know where you'd like
+      to start.</p>
+    `,
+  },
+  {
+    weekId:    'week_52',
+    threshold: 365,
+    subject:   'One year with AlwaysReady ⭐',
+    body: (firstName) => `
+      <p>Dear ${firstName},</p>
+      <p>One year. That is something worth acknowledging ⭐</p>
+      <p>Twelve months ago, you signed up to AlwaysReady. Since then, you have been building evidence,
+      updating KLOEs, managing HR records, and working to keep your service inspection-ready. That kind
+      of consistent effort is exactly what CQC is looking for — and it is not easy to sustain.</p>
+      <p>At the one-year mark, it is worth taking stock.</p>
+      <p><strong>Look at your Trend Report</strong> for the full picture of how your KLOE ratings have
+      changed since you started. Are you in a stronger position than you were 12 months ago? Which areas
+      have moved most? Which have stayed still?</p>
+      <p><strong>Think about what the next 12 months need.</strong> Is there a KLOE you have been putting
+      off? A team member who needs more support with compliance? An area of the platform you have not
+      used yet but probably should?</p>
+      <p><strong>And tell us what we can do better.</strong> You have been using AlwaysReady for a year.
+      You know what works and what does not. If there is something missing, something confusing, or
+      something you wish existed, we want to know. Everything we build is shaped by what we hear from
+      registered managers doing this work every day.</p>
+      <p>Thank you for being an AlwaysReady customer. We are genuinely glad you're here — hit reply
+      and tell us how the year has gone.</p>
     `,
   },
 ]
