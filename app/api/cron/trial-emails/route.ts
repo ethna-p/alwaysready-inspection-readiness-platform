@@ -74,8 +74,8 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions at any point, our support team is available via the
-        <strong>Support</strong> tab within the platform.
+        If you have any questions, or if anything is not working the way you expected, just reply
+        to this email — we're glad to help.
       </p>
     `,
   },
@@ -113,7 +113,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        The <strong>Support</strong> tab is always open — drop us a message anytime.
+        Which of these three have you tried first? Hit reply — we're curious.
       </p>
     `,
   },
@@ -152,9 +152,13 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Go to your dashboard &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#555">
         If you have questions about any of these features, the <strong>Help</strong> tab covers
         the most common questions by role, and <strong>Support</strong> lets you reach us directly.
+      </p>
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If there's anything you're stuck on, or something that isn't working the way you expected,
+        just reply to this email. We're a small team and we read every message.
       </p>
     `,
   },
@@ -238,7 +242,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         With five days of your trial remaining, we wanted to share a few features that are
-        easy to miss but genuinely useful in practice.
+        easy to miss but worth knowing about.
       </p>
       <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
         <strong style="color:#014D4E">The Audit Trail</strong> keeps a complete record of every
@@ -267,6 +271,9 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
           Explore these features &rarr;
         </a>
+      </p>
+      <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#555">
+        If you have questions about any of these, just reply to this email.
       </p>
     `,
   },
@@ -383,7 +390,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        You'll always find us in the <strong>Support</strong> tab.
+        Questions before you decide? Just reply.
       </p>
     `,
   },
@@ -502,8 +509,8 @@ const USER_EMAILS: UserEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you're not sure what's expected of you, the <strong>Help</strong> tab inside the
-        platform covers the most common questions by role.
+        If you're not sure what's expected of you, just reply to this email — we're happy to help.
+        The <strong>Help</strong> tab also covers the most common questions by role.
       </p>
     `,
   },
@@ -709,21 +716,26 @@ export async function GET(request: Request) {
         bodyHtml: `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            Your AlwaysReady trial ended on ${expiryDate}. Your data is safe and available
-            to download until <strong>${deletionDate}</strong>, after which it will be
-            permanently deleted. To regain access and keep your data, click the
-            <strong>Subscribe</strong> button below — everything will be exactly as you left it.
+            Your AlwaysReady trial ended on ${expiryDate}. The KLOEs you rated, evidence you
+            uploaded, and any HR records or team settings you created are all still there —
+            exactly as you left them.
+          </p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            Your data is available to download until <strong>${deletionDate}</strong>, after
+            which it will be permanently deleted. If you'd like to keep access and continue
+            building your inspection readiness, subscribing takes less than two minutes —
+            everything carries over immediately.
           </p>
           <p style="margin:0 0 32px">
             <a href="${upgradeUrl}"
                style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-              Subscribe now &rarr;
+              Subscribe and continue &rarr;
             </a>
           </p>
           <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-            If you have any feedback about your experience, or if there's anything we could have
-            done better, we'd genuinely welcome hearing from you at
-            <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+            If there's anything we could have done better, we'd genuinely welcome hearing from
+            you — just reply to this email. Whatever you decide, thank you for taking the time
+            to try AlwaysReady.
           </p>
         `,
       })
