@@ -28,6 +28,11 @@ export default async function SuperadminLeadsPage() {
     .select('id, invitee_email, invitee_name, demo_type, booked_at, cancelled, created_at')
     .order('created_at', { ascending: false })
 
+  const { data: blogSubscribers } = await supabase
+    .from('blog_subscribers')
+    .select('id, email, full_name, source, subscribed_at, unsubscribed_at')
+    .order('subscribed_at', { ascending: false })
+
   const nurtureCount = leads?.filter(l => l.nurture_opt_in).length ?? 0
 
   return (
@@ -248,6 +253,75 @@ export default async function SuperadminLeadsPage() {
                       <td className="px-5 py-3.5 font-medium text-ink">{lead.service_type}</td>
                       <td className="px-5 py-3.5 text-ink-muted">{lead.cqc_rating ?? '—'}</td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">{date}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* ── Blog subscribers ────────────────────────────────────────────────── */}
+      <div className="mt-12">
+        <div className="flex items-center gap-3 mb-2">
+          <h2 className="text-xl font-bold text-ink">Blog Subscribers</h2>
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 text-purple-700">
+            {blogSubscribers?.filter(s => !s.unsubscribed_at).length ?? 0} active
+          </span>
+          {(blogSubscribers?.length ?? 0) > 0 && (
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
+              {blogSubscribers?.length ?? 0} total
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-ink-muted mb-6">
+          People who signed up for the blog newsletter at alwaysready.uk. Separate consent from platform marketing.
+        </p>
+
+        {!blogSubscribers || blogSubscribers.length === 0 ? (
+          <p className="text-ink-muted text-sm">No blog subscribers yet.</p>
+        ) : (
+          <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-line bg-fill">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Name</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Source</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Subscribed</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {blogSubscribers.map(sub => {
+                  const subscribedDate = new Date(sub.subscribed_at).toLocaleDateString('en-GB', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                  })
+                  return (
+                    <tr key={sub.id} className="hover:bg-fill transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-ink">{sub.full_name ?? '—'}</td>
+                      <td className="px-5 py-3.5 text-ink-muted">
+                        <a
+                          href={`mailto:${sub.email}`}
+                          className="hover:text-brand transition-colors"
+                        >
+                          {sub.email}
+                        </a>
+                      </td>
+                      <td className="px-5 py-3.5 text-ink-muted text-xs">{sub.source}</td>
+                      <td className="px-5 py-3.5 text-ink-muted text-xs">{subscribedDate}</td>
+                      <td className="px-5 py-3.5">
+                        {sub.unsubscribed_at ? (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+                            Unsubscribed
+                          </span>
+                        ) : (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                            Active
+                          </span>
+                        )}
+                      </td>
                     </tr>
                   )
                 })}
