@@ -24,7 +24,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'Welcome to the AlwaysReady waitlist',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for joining. You're now on the AlwaysReady waitlist.
       </p>
@@ -55,7 +55,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'Why we built AlwaysReady',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Registered Managers lead complex services and oversee large, diverse teams. They have direct
         responsibility for the safety of vulnerable people. The role demands constant focus, sound
@@ -90,7 +90,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'How most services get caught out by CQC',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Most CQC inspections are unannounced. You can receive a call that morning.
       </p>
@@ -125,7 +125,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: "CQC's five key questions: what they mean in practice",
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         CQC's inspection framework is built around five key questions. These apply to every service
         and shape every line of enquiry an inspector pursues. Understanding what each one means shapes
@@ -175,7 +175,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'Safe staffing looks different on paper',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         A care service can have exactly the right staff in post — experienced, trained, DBS-checked —
         and still receive a finding on safe staffing.
@@ -209,7 +209,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'What separates Good from Outstanding',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Two services. Both rated Good. Both providing safe, effective, caring care. One stays Good
         at the next inspection. The other reaches Outstanding. What changed?
@@ -242,7 +242,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'What an inspector actually sees when they arrive',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         When a CQC inspector arrives, they're not starting from zero. Before they speak to anyone,
         they've already reviewed your last inspection report, looked at your KLOEs, and formed an
@@ -277,7 +277,7 @@ export function getWaitlistNurtureEmail(
       return {
         subject: "Beta Partner places — if you'd like to get started now",
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Over the past few weeks, we've covered what CQC inspectors look for, how strong evidence
         gets built, what separates Good from Outstanding, and why the gap between doing good care

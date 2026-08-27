@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
             subject: 'Your AlwaysReady subscription is now active',
             type:    'transactional',
             bodyHtml: `
-              <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
                 Thank you. Your subscription is now active and your account will continue without interruption.
               </p>

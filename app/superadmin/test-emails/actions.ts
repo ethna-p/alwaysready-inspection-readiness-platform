@@ -99,7 +99,7 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
 async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
   const emails = [
     send("[Day 0] Your AlwaysReady trial is ready — set your password to get started", `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your 14-day free trial of AlwaysReady is ready. Click the button below to
         set your password and get straight into your account.
@@ -123,7 +123,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 1] Welcome to AlwaysReady", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Welcome to AlwaysReady. Your 14-day free trial is now active and your account is ready to use.
       </p>
@@ -149,7 +149,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 3] A question worth thinking about", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         The managers who feel most prepared for inspection are those who build their evidence
         continuously, not in a rush when pressure hits.
@@ -175,7 +175,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 5] How are you getting on?", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You're five days into your AlwaysReady trial. We hope you've had a chance to start
         exploring — here are a few things worth doing before the halfway point.
@@ -210,7 +210,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 7] You're halfway through your trial — here's a quick checklist", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You have 7 days remaining on your AlwaysReady trial — you're at the halfway point.
       </p>
@@ -269,7 +269,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 9] A few things you might not have tried yet", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         With five days of your trial remaining, we wanted to share a few features that are
         easy to miss but genuinely useful in practice.
@@ -297,7 +297,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 11] Your AlwaysReady trial ends in 3 days", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your trial ends in <strong>3 days</strong>, on ${EXPIRY_DATE}. Before you decide,
         here are a few things you might not have had time to explore — each one is included
@@ -408,7 +408,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 13] Your trial ends tomorrow", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your AlwaysReady trial ends <strong>tomorrow</strong>, on ${EXPIRY_DATE}.
       </p>
@@ -430,7 +430,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 14a — Subscribed] Your AlwaysReady subscription is now active", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you. Your subscription is now active and your account will continue without interruption.
       </p>
@@ -446,7 +446,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send("[Day 14b — Lapsed] Your AlwaysReady trial has ended", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your AlwaysReady trial ended on ${EXPIRY_DATE}. Your data is safe and will be
         retained by us for 30 days. To regain access to the AlwaysReady platform,
@@ -534,7 +534,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
 async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
   const weeks: [string, string][] = [
     ['Week 1 — Welcome', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>Welcome to AlwaysReady — we're delighted to have you on board ⭐</p>
       <p>This week, we encourage you to begin building your evidence base straight away. A great first step
       is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
@@ -544,7 +544,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>If you need any help along the way, the <strong>Support</strong> tab inside the platform is the best place to reach us.</p>
     `],
     ['Week 2 — Setting up your team', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week, we focus on setting up your team on the platform ⭐</p>
       <p>You can invite staff members into AlwaysReady. You can also assign them specific KLOEs to manage.
       When everyone contributes, evidence is added steadily over time. This prevents the last-minute rush
@@ -558,7 +558,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>If you need any help, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ['Week 3 — Getting the most from your KLOEs', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week: getting the most from your KLOE section ⭐</p>
       <p><strong>Start with your weakest KLOEs</strong><br>
       Begin with the KLOEs you feel least confident about. These areas usually need the most attention, so
@@ -576,7 +576,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>Got a question? The <strong>Support</strong> tab is where to find us.</p>
     `],
     ['Week 4 — Building your evidence library', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on evidence ⭐</p>
       <p><strong>Upload evidence directly to each KLOE</strong><br>
       AlwaysReady lets you upload documents straight into the KLOE they relate to. This keeps everything organised
@@ -600,7 +600,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>We're here whenever you need us — just head to the <strong>Support</strong> tab.</p>
     `],
     ['Week 5 — Have you tried the Daily Report?', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on your Daily Report ⭐</p>
       <p><strong>Understand your current compliance position</strong><br>
       The Daily Report gives you a real-time snapshot of where your compliance stands today. It shows which KLOEs
@@ -621,7 +621,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>Head over to the <strong>Support</strong> tab if you have any questions.</p>
     `],
     ['Week 6 — Your audit trail', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on your audit trail ⭐</p>
       <p><strong>Every change is recorded</strong><br>
       Every update you make in AlwaysReady is automatically logged. The system records who made the change,
@@ -645,7 +645,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>You know the drill by now. Questions? Head over to the <strong>Support</strong> tab.</p>
     `],
     ['Week 7 — Sharing access with external visitors', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on visitor access ⭐</p>
       <p><strong>Create secure, time-limited visitor logins</strong><br>
       AlwaysReady lets you create a secure, time-limited visitor login for external reviewers. Visitors can
@@ -665,7 +665,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>The <strong>Support</strong> tab is there whenever you need a hand.</p>
     `],
     ['Week 8 — Track your progress with the Trend Report', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on your Trend Report ⭐</p>
       <p><strong>See how your compliance has evolved</strong><br>
       The Trend Report shows how your KLOE ratings have changed over time. It highlights improvements, dips,
@@ -686,7 +686,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>Any questions at all? The <strong>Support</strong> tab is the quickest way to reach us.</p>
     `],
     ['Week 9 — The HR module', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on your HR module ⭐</p>
       <p><strong>Keep essential staff records organised</strong><br>
       The HR module stores all key workforce documents in one place — DBS checks, right-to-work evidence,
@@ -706,7 +706,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>As always, if anything comes up, the <strong>Support</strong> tab is the best place to get in touch.</p>
     `],
     ['Week 10 — How AlwaysReady keeps your data safe', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on data security ⭐</p>
       <p><strong>Your information is handled with care</strong><br>
       We understand that the information you enter into AlwaysReady is sensitive. Protecting it is central to
@@ -736,7 +736,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>Questions? We're always happy to help — find us in the <strong>Support</strong> tab.</p>
     `],
     ['Week 11 — Your data, your rights', `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>This week we're focusing on data rights and responsibilities ⭐</p>
       <p><strong>People have rights over their personal data</strong><br>
       Under the UK GDPR, anyone whose personal information is stored in AlwaysReady has important rights. They
@@ -759,7 +759,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
       <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
     `],
     ["Week 12 — Thank you, and what's next", `
-      <p>Dear ${FIRST_NAME},</p>
+      <p>Hi ${FIRST_NAME},</p>
       <p>Twelve weeks in — you're building something strong ⭐</p>
       <p>It's been 12 weeks since you began your AlwaysReady journey, and we hope the platform is becoming a
       natural part of how you manage compliance day-to-day. The services that perform best in CQC inspections
@@ -812,7 +812,7 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `),
     send(`Re: Unable to upload evidence documents [${REF}]`, `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch. Here is our response to your enquiry:
       </p>
@@ -1040,7 +1040,7 @@ async function sendDataDeletion(
     send(
       'We have received your data deletion request — AlwaysReady',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           Thank you for your data deletion request, received on
           <strong>${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>.
@@ -1080,7 +1080,7 @@ async function sendDataDeletion(
     send(
       'Reminder: your AlwaysReady data will be deleted in 3 days',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           This is a reminder that the data for <strong>${ORG_NAME}</strong> on AlwaysReady
           will be permanently deleted on <strong>${deletionDate}</strong> — in 3 days.
@@ -1106,7 +1106,7 @@ async function sendDataDeletion(
     send(
       'Your AlwaysReady data has been deleted',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           All data associated with <strong>${ORG_NAME}</strong> on AlwaysReady
           has now been permanently deleted in accordance with our data retention policy and your request.
@@ -1141,7 +1141,7 @@ async function sendSubjectAccessRequest(
     send(
       'We have received your subject access request — AlwaysReady',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           Thank you for your subject access request (SAR), received on <strong>${receivedDate}</strong>.
           Under UK GDPR Article 15, you have the right to receive a copy of the personal data we hold about you.
@@ -1178,7 +1178,7 @@ async function sendSubjectAccessRequest(
     send(
       'Your AlwaysReady data — subject access request fulfilled',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           We have verified your identity and are writing to fulfil your subject access request, received on <strong>${receivedDate}</strong>.
         </p>
@@ -1223,7 +1223,7 @@ async function sendSubjectAccessRequest(
     send(
       'Your subject access request — AlwaysReady',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           We are writing regarding your subject access request received on <strong>${receivedDate}</strong>.
         </p>

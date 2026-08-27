@@ -53,19 +53,19 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Welcome to AlwaysReady',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Welcome to AlwaysReady. Your 14-day free trial is now active and your account is ready to use.
+        Welcome to AlwaysReady — your 14-day trial is live and your account is ready to go.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is designed to help adult social care providers prepare for a CQC inspection with confidence.
-        Over the next two weeks, we hope you enjoy exploring the platform — but if you'd like a
-        starting point, we suggest beginning with your KLOEs. Adding your current compliance
-        status to even a handful of areas will give you an immediate picture of where you stand.
+        The best first step is usually your KLOE tracker. Adding your current compliance status
+        to a handful of KLOEs — even rough ratings at this stage — will give you an immediate
+        picture of where your service stands. It takes about ten minutes and makes the rest of
+        the platform click into place.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Over the coming days, we'll send you a short series of emails with tips and suggestions
-        to help you get the most from your inspection readiness platform.
+        Over the next couple of weeks we'll send a few short emails with things worth exploring.
+        Nothing demanding — just nudges to help you get the most out of your trial.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/kloes"
@@ -74,8 +74,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        If you have any questions, or if anything is not working the way you expected, just reply
-        to this email — we're glad to help.
+        If anything isn't working the way you expected, just reply — we're glad to help.
       </p>
     `,
   },
@@ -83,28 +82,18 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     dayKey:      'day_03',
     dayIndex:    3,
     isMarketing: false,
-    subject:     'Three things worth exploring in AlwaysReady',
+    subject:     'Three things worth trying',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Now that you've had a couple of days to settle in, we wanted to highlight three features
-        that our users find particularly valuable.
+        Now you've had a couple of days to settle in, a few things worth trying.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The Daily Report</strong> gives you a snapshot of your
-        current compliance position — which KLOEs need attention, what's overdue, and what's
-        looking strong. It's designed to be the first thing a manager checks at the start of
-        the day.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">Evidence uploads</strong> allow you to attach documents
-        directly to each KLOE — policies, audits, meeting minutes, certificates. Everything is
-        stored securely and is accessible during an inspection.
-      </p>
-      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The Inspection Pack</strong> generates a single
-        downloadable document summarising your readiness across all KLOEs — useful as a
-        teaching tool for your team or as a reference when preparing for review.
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        The Daily Report is a good place to start each morning — it shows which KLOEs need
+        attention and which are looking strong, all in one view. The Inspection Pack is worth
+        downloading too: one click and you have a printable summary of your compliance position
+        across all KLOEs, ready to share with your team. And if you haven't tried attaching
+        evidence to a KLOE yet, it takes about two minutes and makes everything feel much more real.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard"
@@ -113,7 +102,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        Which of these three have you tried first? Hit reply — we're curious.
+        Which of those three have you tried? Hit reply — we're curious.
       </p>
     `,
   },
@@ -123,42 +112,28 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'How are you getting on?',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        You're five days into your AlwaysReady trial. We hope you've had a chance to start
-        exploring — here are a few things worth doing before the halfway point.
+        Five days in — how's it going?
       </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">Build your team</strong><br>
-        AlwaysReady works best when responsibility is shared. You can invite colleagues under
-        <strong>Account → Team</strong> and assign them specific KLOEs to manage. Shared
-        ownership means evidence gets added regularly, not all at once before an inspection.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">Assign your KLOEs</strong><br>
-        Head to your KLOE tracker and assign individual KLOEs to the team members best placed
-        to manage them. Each person will receive an email notification and can log in to update
-        their progress directly.
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        One thing that's worth doing before the halfway point: invite a colleague. AlwaysReady
+        works best when responsibility is shared. You can add team members under Account → Team,
+        assign them specific KLOEs to manage, and they'll get their own login. Evidence tends to
+        get added consistently when it's someone's job, not everyone's afterthought.
       </p>
       <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">Set review dates</strong><br>
-        KLOEs can have a scheduled review date. Setting these now means the platform will send
-        automatic reminders when a review is approaching or overdue — keeping your readiness
-        position current without you having to remember.
+        If you're managing everything yourself for now, that's fine too — but even adding one
+        other person usually changes how the platform feels.
       </p>
       <p style="margin:0 0 32px">
-        <a href="${PLATFORM_URL}/dashboard"
+        <a href="${PLATFORM_URL}/dashboard/account?tab=team"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Go to your dashboard &rarr;
+          Invite a team member &rarr;
         </a>
       </p>
-      <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#555">
-        If you have questions about any of these features, the <strong>Help</strong> tab covers
-        the most common questions by role, and <strong>Support</strong> lets you reach us directly.
-      </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        If there's anything you're stuck on, or something that isn't working the way you expected,
-        just reply to this email. We're a small team and we read every message.
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        If there's anything you're stuck on, just reply. We're a small team and we read every message.
       </p>
     `,
   },
@@ -204,15 +179,15 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
       }
 
       const introText = nonStarted
-        ? `If you haven't had a chance to log in yet, now is a great moment to start — everything is set up and waiting for you. The four steps below each take just a few minutes and will immediately show you what AlwaysReady can do for your service.`
+        ? `If you haven't had a chance to log in yet, now is a good moment — everything is set up and waiting. The four steps below each take about five minutes and will show you what AlwaysReady can do for your service.`
         : allDone
-          ? `You've already completed all the key setup steps — that's a great start. Log in to continue building your inspection readiness and make the most of your remaining trial time.`
-          : `You've already made a start — well done. Here's a summary of what you've done and what's still worth exploring before your trial ends.`
+          ? `You've already completed all the setup steps — nicely done. Log in to keep building your readiness and make the most of the week you have left.`
+          : `You've already made a start — well done. Here's where things stand and what's still worth exploring before your trial ends.`
 
       return `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          You have 7 days remaining on your AlwaysReady trial — you're at the halfway point.
+          Halfway through — seven days down, seven to go.
         </p>
         <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#1a1a1a">${introText}</p>
         <table style="width:100%;border-collapse:collapse;margin:0 0 28px">
@@ -237,43 +212,30 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     dayKey:      'day_09',
     dayIndex:    9,
     isMarketing: false,
-    subject:     'A few things you might not have tried yet',
+    subject:     'Five days left — things worth finding before you go',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        With five days of your trial remaining, we wanted to share a few features that are
-        easy to miss but worth knowing about.
+        Five days left — a few things that are easy to miss but worth finding before your trial ends.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The Audit Trail</strong> keeps a complete record of every
-        change made to a KLOE — who updated it, when, and what changed. This can be invaluable
-        during an inspection when you need to demonstrate how your compliance position has
-        developed over time.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">Visitor access</strong> allows you to grant a read-only
-        login to an external reviewer, consultant, or responsible individual — without giving
-        them editing rights. Access expires automatically. You'll find this under the
-        <strong>Team</strong> tab.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The Trend Report</strong> shows your readiness score
-        over time, so you can see at a glance whether your overall compliance position is
-        improving.
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        The Audit Trail logs every change made to a KLOE — who updated it, when, and what changed.
+        It's useful to know about before an inspection. The Trend Report shows how your readiness
+        score has moved over time. And if you haven't looked at the HR module yet, it keeps DBS
+        checks, training records, and supervision logs all in one place — accessible whenever you
+        need them.
       </p>
       <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">The HR module</strong> keeps your staff records,
-        training certificates, DBS checks, supervision logs, and appraisal records in one
-        place — all accessible during an inspection.
+        None of these take long to explore. Log in and have a look around.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Explore these features &rarr;
+          Explore the platform &rarr;
         </a>
       </p>
-      <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:#555">
-        If you have questions about any of these, just reply to this email.
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        Questions about anything? Just reply.
       </p>
     `,
   },
@@ -283,7 +245,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your AlwaysReady trial ends in 3 days',
     bodyHtml: (firstName, expiryDate, price) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your trial ends in <strong>3 days</strong>, on ${expiryDate}. Before you decide,
         here are a few things you might not have had time to explore — each one is included
@@ -400,7 +362,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your trial ends tomorrow',
     bodyHtml: (firstName, expiryDate, price) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your AlwaysReady trial ends <strong>tomorrow</strong>, on ${expiryDate}.
       </p>
@@ -445,7 +407,7 @@ const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 1,
     subject:  'Welcome to AlwaysReady — here\'s how to get started',
     bodyHtml: (firstName, orgName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You've been added to <strong>${orgName}</strong>'s AlwaysReady account.
         AlwaysReady is an inspection readiness platform that helps adult social care providers
@@ -485,7 +447,7 @@ const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 7,
     subject:  'A quick check-in on your KLOEs',
     bodyHtml: (firstName, _orgName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You've been on AlwaysReady for a week. We wanted to check in and make sure
         you've had a chance to get started.
@@ -714,7 +676,7 @@ export async function GET(request: Request) {
         subject: 'Your AlwaysReady trial has ended',
         type:    'transactional',
         bodyHtml: `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             Your AlwaysReady trial ended on ${expiryDate}. The KLOEs you rated, evidence you
             uploaded, and any HR records or team settings you created are all still there —

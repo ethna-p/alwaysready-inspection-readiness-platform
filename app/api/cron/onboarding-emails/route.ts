@@ -56,7 +56,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 1,
     subject:   'Welcome to AlwaysReady — we\'re delighted to have you on board ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>Welcome to AlwaysReady — we're delighted to have you on board ⭐</p>
       <p>This week, we encourage you to begin building your evidence base straight away. A great first step
       is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
@@ -74,7 +74,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 7,
     subject:   'Setting up your team on AlwaysReady ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week, we focus on setting up your team on the platform ⭐</p>
       <p>You can invite staff members into AlwaysReady. You can also assign them specific KLOEs to manage.
       When everyone contributes, evidence is added steadily over time. This prevents the last-minute rush
@@ -93,7 +93,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 14,
     subject:   'Getting the most from your KLOEs ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week: getting the most from your KLOE section ⭐</p>
       <p><strong>Start with your weakest KLOEs</strong><br>
       Begin with the KLOEs you feel least confident about. It can be tempting to focus on areas where you are
@@ -117,7 +117,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 21,
     subject:   'Building your evidence library ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week we're focusing on evidence ⭐</p>
       <p><strong>Upload evidence directly to each KLOE</strong><br>
       AlwaysReady lets you upload documents straight into the KLOE they relate to. This keeps everything organised
@@ -147,7 +147,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 28,
     subject:   'Have you tried the Daily Report? ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week we're focusing on your Daily Report ⭐</p>
       <p><strong>Understand your current compliance position</strong><br>
       The Daily Report gives you a real-time snapshot of where your compliance stands today. It shows which KLOEs
@@ -173,7 +173,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 35,
     subject:   'Your audit trail ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week we're focusing on your audit trail ⭐</p>
       <p><strong>Every change is recorded</strong><br>
       Every update you make in AlwaysReady is automatically logged. The system records who made the change,
@@ -202,7 +202,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 42,
     subject:   'Sharing access with external visitors ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week we're focusing on visitor access ⭐</p>
       <p><strong>Create secure, time-limited visitor logins</strong><br>
       AlwaysReady lets you create a secure, time-limited visitor login for external reviewers. Visitors can
@@ -227,7 +227,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 49,
     subject:   'Track your progress with the Trend Report ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week we're focusing on your Trend Report ⭐</p>
       <p><strong>See how your compliance has evolved</strong><br>
       The Trend Report shows how your KLOE ratings have changed over time. It highlights improvements, dips,
@@ -253,7 +253,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 56,
     subject:   'The HR module ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week we're focusing on your HR module ⭐</p>
       <p><strong>Keep essential staff records organised</strong><br>
       The HR module stores all key workforce documents in one place — DBS checks, right-to-work evidence,
@@ -278,7 +278,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 63,
     subject:   'What Outstanding services do differently ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week, something a little different ⭐</p>
       <p>Most registered managers we speak to are aiming for Good. A smaller number are aiming for Outstanding.
       The gap between the two is real — but it is not as wide as it might seem.</p>
@@ -310,7 +310,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 70,
     subject:   'How to run a mock inspection ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This week: how to run a mock inspection ⭐</p>
       <p>A mock inspection is one of the most effective things you can do to prepare for the real thing. It
       surfaces gaps you might not have noticed, builds staff confidence, and gives you a clear action list
@@ -345,7 +345,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 77,
     subject:   'Twelve weeks in — you\'re building something strong ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>Twelve weeks in — you're building something strong ⭐</p>
       <p>It's been 12 weeks since you began your AlwaysReady journey, and we hope the platform is becoming a
       natural part of how you manage compliance day-to-day. The services that perform best in CQC inspections
@@ -368,7 +368,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 112,
     subject:   'Is your evidence keeping up with your practice? ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>A quick check-in this month ⭐</p>
       <p>One of the most common issues we see in CQC inspections is a gap between what a service does and
       what it can prove. The care is good. The records do not show it. Inspectors can only act on what they
@@ -392,7 +392,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 140,
     subject:   'Getting your team inspection-ready ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>This month's check-in is about your team ⭐</p>
       <p>CQC inspectors do not only look at records. They talk to staff. They ask questions about how the
       service works, how decisions are made, and how people who use the service are supported. What staff
@@ -418,7 +418,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 175,
     subject:   'Six months with AlwaysReady — how are things going? ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>Six months. That is worth acknowledging ⭐</p>
       <p>It is six months since you subscribed to AlwaysReady, and we wanted to check in properly. A lot
       can change in six months — new staff, new challenges, maybe a visit from CQC. We'd love to know
@@ -448,7 +448,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 210,
     subject:   'Preparing for your next CQC visit ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>Your monthly check-in ⭐</p>
       <p>CQC inspections are unannounced. The average gap between inspections in adult social care is around
       two to three years — but that gap can be shorter if something triggers a concern, and it can feel much
@@ -472,7 +472,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 266,
     subject:   'Nine months in — a compliance review worth doing ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>Nine months — your monthly check-in ⭐</p>
       <p>At around the nine-month mark, it is worth doing a more structured compliance review. Not the kind
       of review you do the week before an inspection, but the kind that helps you genuinely understand where
@@ -497,7 +497,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 365,
     subject:   'One year with AlwaysReady ⭐',
     body: (firstName) => `
-      <p>Dear ${firstName},</p>
+      <p>Hi ${firstName},</p>
       <p>One year. That is something worth acknowledging ⭐</p>
       <p>Twelve months ago, you signed up to AlwaysReady. Since then, you have been building evidence,
       updating KLOEs, managing HR records, and working to keep your service inspection-ready. That kind
