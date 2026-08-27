@@ -199,8 +199,8 @@ export function getWaitlistNurtureEmail(
         the record stays current without you having to track it manually.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Next week, we'll look at what separates Good from Outstanding — and why the difference is
-        often smaller than people expect.
+        Is safe staffing something you feel confident evidencing right now, or is it an area with
+        gaps? Hit reply — it helps us understand what to cover next.
       </p>
     `,
       }
@@ -267,7 +267,8 @@ export function getWaitlistNurtureEmail(
         is always there.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Next week is the last update in this series — and it's one worth reading.
+        When an inspector reviews your compliance record, what do you think they would see —
+        and how confident are you in that record right now? Hit reply.
       </p>
     `,
       }
