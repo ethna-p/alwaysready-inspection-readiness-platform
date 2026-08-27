@@ -10,9 +10,12 @@ export interface BroadcastResult {
   error?: string
 }
 
+const SUPERADMIN_EMAIL = process.env.SUPERADMIN_EMAIL ?? ''
+
 /**
  * Returns the total number of eligible broadcast recipients:
- * - Platform admin users (non-demo orgs, not opted out, real email address)
+ * - Platform admin users from real orgs (is_tester = false), plus tester orgs
+ *   where the admin email matches SUPERADMIN_EMAIL
  * - Blog subscribers (not unsubscribed)
  */
 export async function getRecipientCount(): Promise<number> {
@@ -22,7 +25,7 @@ export async function getRecipientCount(): Promise<number> {
   const [usersResult, subscribersResult] = await Promise.all([
     supabase
       .from('users')
-      .select('id, email')
+      .select('id, email, organisations!inner(is_tester)')
       .eq('role', 'admin')
       .eq('marketing_opt_out', false),
     supabase
@@ -32,7 +35,13 @@ export async function getRecipientCount(): Promise<number> {
   ])
 
   const userCount = (usersResult.data ?? [])
-    .filter(u => !u.email.endsWith('@staff.alwaysready.uk')).length
+    .filter(u => {
+      if (u.email.endsWith('@staff.alwaysready.uk')) return false
+      const org = Array.isArray(u.organisations) ? u.organisations[0] : u.organisations
+      if (!org) return false
+      if (!org.is_tester) return true
+      return u.email === SUPERADMIN_EMAIL
+    }).length
 
   const subscriberCount = (subscribersResult.data ?? []).length
 
@@ -62,7 +71,7 @@ export async function sendBroadcast(
   const [usersResult, subscribersResult] = await Promise.all([
     supabase
       .from('users')
-      .select('id, email, full_name')
+      .select('id, email, full_name, organisations!inner(is_tester)')
       .eq('role', 'admin')
       .eq('marketing_opt_out', false),
     supabase
@@ -76,7 +85,13 @@ export async function sendBroadcast(
   }
 
   const userRecipients = (usersResult.data ?? [])
-    .filter(u => !u.email.endsWith('@staff.alwaysready.uk'))
+    .filter(u => {
+      if (u.email.endsWith('@staff.alwaysready.uk')) return false
+      const org = Array.isArray(u.organisations) ? u.organisations[0] : u.organisations
+      if (!org) return false
+      if (!org.is_tester) return true
+      return u.email === SUPERADMIN_EMAIL
+    })
 
   const subscriberRecipients = subscribersResult.data ?? []
 
