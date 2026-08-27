@@ -316,6 +316,70 @@ export function getWaitlistNurtureEmail(
     `,
       }
 
+    // ── Event-triggered emails (not part of the weekly sequence) ────────────────
+    // Email 9: sent when CQC publishes the new framework date
+    // Email 10: sent when AlwaysReady opens for new customers
+
+    case 9:
+      return {
+        subject: 'The new CQC framework: what it means for your service',
+        bodyHtml: `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        CQC has now published the new Adult Social Care Assessment Framework, and it's worth
+        understanding what changes — and what doesn't.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        The five key questions are unchanged. Safe, Effective, Caring, Responsive, and Well-led
+        remain the structure you're familiar with. What has shifted is what CQC expects to see as
+        evidence. The new framework places greater emphasis on continuous, documented governance
+        activity — not periodic reviews, but an ongoing record of how your service is managed.
+        Services with consistent, structured evidence are better placed under the new framework
+        from day one.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        AlwaysReady maps directly to the new framework. Every KLOE reflects the updated structure,
+        so from the moment you log in, your compliance tracker is aligned to what CQC will be looking
+        for. We're also publishing a detailed breakdown on our blog — practical guidance on what the
+        new framework means for each key question. We'll send you the link when it's live.
+      </p>
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        AlwaysReady is opening very soon. If you have questions in the meantime, you can reach us at
+        <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
+      </p>
+    `,
+      }
+
+    case 10:
+      return {
+        subject: 'AlwaysReady is open — your access is ready',
+        bodyHtml: `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        AlwaysReady is now open. As a waitlist member, you have priority access — your 14-day
+        free trial is available right now, and no payment is required until your trial ends.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Your trial gives you full access to the platform: the KLOE tracker pre-loaded with the
+        new CQC framework, evidence uploads and document management, the HR module covering staff
+        records, DBS, training, supervision and absence, team access so you can invite colleagues
+        and assign KLOEs, the readiness dashboard, mock inspection, and Evidence Pack.
+      </p>
+      <p style="margin:0 0 32px">
+        <a href="https://portal.alwaysready.uk/trial"
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+          Start your free 14-day trial &rarr;
+        </a>
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        After your trial, a full subscription is <strong>£75/month</strong>. Cancel anytime.
+        Charity discount applies automatically if you registered as a charity. If you have any
+        questions before you start, reach us at
+        <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
+      </p>
+    `,
+      }
+
     default:
       return null
   }

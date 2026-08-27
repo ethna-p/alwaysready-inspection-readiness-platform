@@ -156,7 +156,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
 
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-              We're getting in touch to let you know that your support request has been marked as resolved.
+              Your support request has been resolved.
             </p>
 
             <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">

@@ -67,11 +67,11 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
   return Promise.all([
     send("You're on the AlwaysReady waitlist", `
       <p>Hi ${FIRST_NAME},</p>
-      <p>Thank you for joining the AlwaysReady waitlist. You're in good company.</p>
+      <p>Thank you for joining the AlwaysReady waitlist.</p>
       <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
          and we'll open to new customers as soon as the framework is published.
          When that happens, you'll be the first to know.</p>
-      <p>If you have any questions about the platform, feel free to visit
+      <p>If you have any questions in the meantime, you can reach us at
          <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
     `),
     send("We've received your message", `
@@ -825,7 +825,7 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
     send(`Your support request has been resolved [${REF}]`, `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We're getting in touch to let you know that your support request has been marked as resolved.
+        Your support request has been resolved.
       </p>
       <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
         <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.05em">Resolved request</p>
@@ -891,6 +891,10 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to KLOE tracker &rarr;
         </a>
       </p>
+      <p style="margin:0;color:#6b7280;font-size:13px">
+        If you have any questions, reply to this email or contact us at
+        <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+      </p>
     `),
   ])
 }
@@ -932,6 +936,10 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to HR module &rarr;
         </a>
       </p>
+      <p style="margin:0;color:#6b7280;font-size:13px">
+        If you have any questions, reply to this email or contact us at
+        <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+      </p>
     `),
   ])
 }
@@ -954,83 +962,15 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
 // and when AlwaysReady launches (Email 10).
 
 async function sendWaitlistLaunch(send: Awaited<ReturnType<typeof makeSender>>) {
-  const emails: [string, string][] = [
-    // ── Email 9: New CQC framework explainer ────────────────────────────────
-    // SEND when CQC publishes the new Adult Social Care Assessment Framework date
-    ['[Waitlist 9] The new CQC framework: what it means for your service', `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        CQC has now published the new Adult Social Care Assessment Framework. Understanding it now
-        shapes how you build your evidence record from the start.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">The five key questions remain</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Safe, Effective, Caring, Responsive, and Well-led are unchanged. The structure you are
-        familiar with continues.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">Evidence expectations are higher</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        The new framework places greater emphasis on continuous, documented governance activity.
-        Services with a consistent evidence record are better placed to demonstrate compliance under it.
-      </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">AlwaysReady is built for this framework</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Every KLOE in AlwaysReady maps directly to the new framework. From the moment you log in,
-        your compliance tracker reflects the structure CQC uses.
-      </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        We're publishing a detailed breakdown of the new framework on our blog shortly. It will include
-        practical guidance on what it means for each key question. We'll send you the link when it's live.
-      </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is launching very soon.
-      </p>
-    `],
-
-    // ── Email 10: Launch announcement ────────────────────────────────────────
-    ['[Waitlist 10] AlwaysReady is open: your access is ready', `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${FIRST_NAME},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is now open. As a waitlist member, you have priority access.
-      </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your 14-day free trial gives you full access to every feature: the KLOE tracker, HR module,
-        evidence management, audit trail, mock inspection, and Evidence Pack. No payment is required
-        until your trial ends.
-      </p>
-      <div style="margin:0 0 24px;padding:20px 24px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
-        <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#014D4E">What's included</p>
-        <ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.9;color:#1a1a1a">
-          <li>KLOE tracker, pre-loaded with the new CQC framework</li>
-          <li>Evidence uploads and document management</li>
-          <li>HR module: staff records, DBS, training, supervision, absence</li>
-          <li>Team access: invite colleagues and assign KLOEs</li>
-          <li>Readiness dashboard and trend report</li>
-          <li>Mock inspection and Evidence Pack</li>
-          <li>Full audit trail on every change</li>
-        </ul>
-      </div>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        After your trial, a full subscription is <strong>£75/month</strong>. Cancel anytime.
-        Charity discount applies automatically if you registered as a charity.
-      </p>
-      <p style="margin:0 0 32px">
-        <a href="https://portal.alwaysready.uk/trial"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
-          Start your free 14-day trial &rarr;
-        </a>
-      </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
-        Any questions before you start, we're at
-        <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
-      </p>
-    `],
-  ]
-
+  // Emails 9 + 10: content pulled from shared lib/waitlist-nurture module
+  // (same source as the actual bulk send in app/superadmin/leads/actions.ts)
   const results = []
-  for (const [subject, bodyHtml] of emails) {
-    results.push(await send(subject, bodyHtml, 'marketing'))
-    await new Promise(resolve => setTimeout(resolve, 500))
+  for (const i of [9, 10] as const) {
+    const email = getWaitlistNurtureEmail(i, FIRST_NAME)
+    if (email) {
+      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing'))
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
   }
   return results
 }

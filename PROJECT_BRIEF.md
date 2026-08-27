@@ -6,6 +6,10 @@ This file is standing context for this project. Read it at the start of every se
 
 **When asked about third-party dashboards (Supabase, Stripe, Vercel, Cloudflare, Resend, etc.) — if you do not know the exact current location of a setting, say so immediately and search for it rather than guessing. Do not direct AJ through incorrect navigation paths.**
 
+**`npm run dev` is a blocking process that never exits. Never chain it with `&&` after other commands. Always run it alone as a standalone command in its own terminal step. Chaining causes the terminal to hang indefinitely and appear crashed.**
+
+**Every terminal command must begin with `cd ~/Sites/[repo-name]` so it is always clear which repo the command applies to. AJ uses one terminal window and moves between repos — never assume the working directory.**
+
 ---
 
 ## What This Is
