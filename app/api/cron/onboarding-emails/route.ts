@@ -23,6 +23,7 @@
  *   week_10 → days_elapsed >= 63
  *   week_11 → days_elapsed >= 70
  *   week_12 → days_elapsed >= 77
+ *   week_25 → days_elapsed >= 175  (six-month check-in)
  *
  * Security: requests must include Authorization: Bearer <CRON_SECRET>
  */
@@ -53,8 +54,8 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>This week, we encourage you to begin building your evidence base straight away. A great first step
       is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
       next steps. You can add notes, upload documents, and start recording your actions as you go.</p>
-      <p>This early activity is incredibly valuable — it shows CQC that you've recognised an area for
-      improvement and taken clear, proactive steps to address it.</p>
+      <p>This early activity matters — it shows CQC that you've recognised an area for improvement and
+      taken clear steps to address it.</p>
       <p>We also publish regular articles on CQC compliance, inspection preparation, and care sector best practice
       on our blog at <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
       We hope you find it a useful resource alongside the platform.</p>
@@ -77,7 +78,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>Over time, this builds a stronger culture of everyday governance. It means compliance becomes part
       of normal practice, not something that only happens when an inspection is due.</p>
       <p>To invite a team member, go to the <strong>Team</strong> section in the main navigation.</p>
-      <p>If you need any help, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>Questions? Hit reply — we read everything.</p>
     `,
   },
   {
@@ -101,7 +102,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Update little and often</strong><br>
       Small, regular updates keep you inspection-ready all year round. You do not need to set aside large blocks
       of time — even five minutes a day makes a real difference over weeks and months.</p>
-      <p>Got a question? The <strong>Support</strong> tab is where to find us.</p>
+      <p>We're here whenever you need us — just reply to this email or use the <strong>Support</strong> tab.</p>
     `,
   },
   {
@@ -130,7 +131,8 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       Whenever you upload evidence, include a short note explaining what happened, when it happened, and what the
       outcome was. This helps inspectors follow the journey from issue to action to improvement. It also shows that
       your governance processes are active, not passive.</p>
-      <p>We're here whenever you need us — just head to the <strong>Support</strong> tab.</p>
+      <p>What area of evidence feels hardest to keep up with? Reply and let us know — it helps us understand what
+      to focus on and what to build next.</p>
     `,
   },
   {
@@ -156,7 +158,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       When the Daily Report becomes part of your routine, your whole team benefits. Everyone knows what's expected.
       Everyone can see progress. And everyone feels more prepared for conversations with inspectors. This creates a
       culture where compliance is continuous, not occasional.</p>
-      <p>Head over to the <strong>Support</strong> tab if you have any questions.</p>
+      <p>You'll find more guidance in the <strong>Help</strong> tab, or just reply if you have a specific question.</p>
     `,
   },
   {
@@ -185,7 +187,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       A clear record of who made each change supports good governance. It encourages shared responsibility and
       helps everyone understand their role. It also gives managers confidence that actions are being taken and
       recorded properly. Transparency is one of the strongest indicators of a well-led service.</p>
-      <p>You know the drill by now. Questions? Head over to the <strong>Support</strong> tab.</p>
+      <p>As always, we're here if you need us — the <strong>Support</strong> tab is the quickest route.</p>
     `,
   },
   {
@@ -210,7 +212,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Easy to set up</strong><br>
       To create a visitor login, go to the <strong>Team</strong> section in the main navigation. Set the access
       period, send the login, and revoke it whenever you choose.</p>
-      <p>The <strong>Support</strong> tab is there whenever you need a hand.</p>
+      <p>The <strong>Support</strong> tab is there if you need a hand — or just reply to this email.</p>
     `,
   },
   {
@@ -236,7 +238,7 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       During an inspection, inspectors want to understand your story. The Trend Report helps you explain what has
       changed, why it changed, and what you're doing next. It supports a confident, evidence-based narrative that
       reflects continuous improvement.</p>
-      <p>Any questions at all? The <strong>Support</strong> tab is the quickest way to reach us.</p>
+      <p>Is the Trend Report showing progress you're pleased with, or are there areas giving you concern? Hit reply — we'd like to know how you're getting on.</p>
     `,
   },
   {
@@ -261,70 +263,74 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Support inspection readiness</strong><br>
       CQC often asks for proof of training, DBS status, and supervision frequency. With the HR module, you
       can provide this instantly. Clear, up-to-date records help demonstrate a well-managed, well-supported team.</p>
-      <p>As always, if anything comes up, the <strong>Support</strong> tab is the best place to get in touch.</p>
+      <p>If an HR record or training date is giving you trouble, just reply to this email — we're happy to help.</p>
     `,
   },
   {
     weekId:    'week_10',
     threshold: 63,
-    subject:   'How AlwaysReady keeps your data safe ⭐',
+    subject:   'What Outstanding services do differently ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we're focusing on data security ⭐</p>
-      <p><strong>Your information is handled with care</strong><br>
-      We understand that the information you enter into AlwaysReady is sensitive. Protecting it is central to
-      how the platform is built. Every upload, update, and record is stored using modern security standards
-      designed to keep your data safe at all times.</p>
-      <p><strong>Your data is encrypted at all times</strong><br>
-      All data is encrypted at rest and in transit. This means your information is protected when it's stored
-      and when it's moving between your device and our servers. Encryption ensures that even if data were
-      intercepted, it would be unreadable.</p>
-      <p><strong>Every file is scanned before storage</strong><br>
-      Every document you upload is automatically scanned for viruses and malicious content. This prevents
-      harmful files from entering the system and protects your organisation's devices and records.</p>
-      <p><strong>Your data is stored securely</strong><br>
-      All data is stored securely and we are committed to full compliance with UK GDPR. Your information is
-      never transferred outside the European Economic Area, and benefits from the data protection standards
-      that apply within it.</p>
-      <p><strong>Strong access controls: MFA and password security</strong><br>
-      Security isn't only about where your data is stored — it's also about who can access it. AlwaysReady
-      supports multi-factor authentication (MFA), which adds an extra layer of protection beyond your password.
-      Even if someone guessed or stole a password, MFA prevents them from logging in. We also encourage strong
-      password practices: unique passwords, regular updates, and avoiding shared logins. These small habits make
-      a big difference to your overall security.</p>
-      <p><strong>Designed for safety, transparency, and control</strong><br>
-      All of these protections work together to ensure your information is secure, traceable, and fully under
-      your control. You can confidently upload evidence, staff records, and governance documents knowing they
-      are protected at every stage.</p>
-      <p>Questions? We're always happy to help — find us in the <strong>Support</strong> tab.</p>
+      <p>This week, something a little different ⭐</p>
+      <p>Most registered managers we speak to are aiming for Good. A smaller number are aiming for Outstanding.
+      The gap between the two is real — but it is not as wide as it might seem.</p>
+      <p><strong>Outstanding is not about perfection</strong><br>
+      CQC does not expect Outstanding services to be without challenges. What they look for is how a service
+      responds to challenges. Outstanding services identify problems early, act on them quickly, and record what
+      they did and why. The record matters as much as the action.</p>
+      <p><strong>The difference is often cultural, not procedural</strong><br>
+      Research commissioned by CQC and carried out by The King's Fund found that Outstanding services share
+      five characteristics: they are truly person-centred; they have compassionate and inclusive leadership;
+      they prioritise equity and inclusion; they build continuous learning into daily practice; and they focus
+      deliberately on making a positive difference to outcomes. None of these are policy changes. They are
+      ways of working.</p>
+      <p><strong>People who use services can feel the difference</strong><br>
+      In the research, people who used Outstanding services described feeling genuinely known by staff — not
+      as a set of needs, but as a whole person. They said they had real influence over decisions. That level
+      of experience does not happen by accident. It is the result of leadership that takes person-centred care
+      seriously at every level.</p>
+      <p><strong>Evidence is what makes the difference visible</strong><br>
+      Outstanding services are often doing things that Good services also do. The difference is that they can
+      demonstrate it. Their evidence is specific, dated, and shows a clear journey from issue to action to
+      outcome. If that describes the work you are already doing, the next step is making sure it is recorded
+      with that level of detail.</p>
+      <p>If you're thinking about what Outstanding would look like for your service, hit reply — it's a conversation we enjoy having.</p>
     `,
   },
   {
     weekId:    'week_11',
     threshold: 70,
-    subject:   'Your data, your rights ⭐',
+    subject:   'How to run a mock inspection ⭐',
     body: (firstName) => `
       <p>Dear ${firstName},</p>
-      <p>This week we're focusing on data rights and responsibilities ⭐</p>
-      <p><strong>People have rights over their personal data</strong><br>
-      Under the UK GDPR, anyone whose personal information is stored in AlwaysReady has important rights. They
-      can access the data you hold about them, ask for corrections, request deletion in certain circumstances,
-      and object to certain types of processing. These rights are designed to give individuals confidence and
-      control over how their information is used.</p>
-      <p><strong>Your organisation is the data controller</strong><br>
-      Your organisation decides what personal data is collected, why it's collected, and how it's used. That
-      means you are the data controller. You are responsible for responding to staff requests about their data
-      and making sure those requests are handled correctly and on time.</p>
-      <p><strong>AlwaysReady is the data processor</strong><br>
-      AlwaysReady acts as a data processor. This means we process data on your behalf, following your
-      instructions. We keep the platform secure, ensure data is stored safely, and provide the tools you need
-      to manage information — but we do not decide how your staff data is used. That responsibility stays
-      with your organisation.</p>
-      <p><strong>Clear guidance is available</strong><br>
-      If you're ever unsure how to respond to a data-rights request, the ICO provides straightforward guidance
-      at <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a>. It explains each right and what
-      organisations need to do to comply.</p>
-      <p>If you have any questions, the <strong>Support</strong> tab is the best place to reach us.</p>
+      <p>This week: how to run a mock inspection ⭐</p>
+      <p>A mock inspection is one of the most effective things you can do to prepare for the real thing. It
+      surfaces gaps you might not have noticed, builds staff confidence, and gives you a clear action list
+      before CQC arrives. Here is how to approach it.</p>
+      <p><strong>Step 1 — Book a date and treat it seriously</strong><br>
+      Schedule a half-day and commit to it. Tell your team enough in advance that they can prepare, but make
+      clear that the purpose is to find gaps, not to perform. A mock inspection is most useful when it reflects
+      real, everyday practice.</p>
+      <p><strong>Step 2 — Walk through all five key questions</strong><br>
+      Work through Safe, Effective, Caring, Responsive, and Well-led in turn. For each one, ask: what is our
+      current rating? What evidence supports that? If an inspector arrived today, what would they see? Be honest.
+      The purpose is to identify what needs attention, not to confirm what you already know is strong.</p>
+      <p><strong>Step 3 — Check your documentation against your practice</strong><br>
+      This is where most services find their gaps. Policies say one thing; what staff actually do can be
+      different. Pick three or four common scenarios — a medication incident, a safeguarding concern, a
+      complaint — and trace what happens from start to finish. Does the paper trail match the process?</p>
+      <p><strong>Step 4 — Review your evidence in AlwaysReady</strong><br>
+      Look at each KLOE and ask whether the evidence is current, specific, and dated. Vague notes and
+      undated documents will not stand up under scrutiny. Anything more than 12 months old should be reviewed
+      and updated or replaced with something more recent.</p>
+      <p><strong>Step 5 — Build your action list</strong><br>
+      At the end of the mock inspection, write down everything that needs attention — ranked by risk. Assign
+      an owner and a deadline to each item. Review progress at your next team meeting. The action list is
+      itself evidence of good governance.</p>
+      <p>AlwaysReady's Mock Inspection feature inside the platform is designed for exactly this. If you have
+      not used it yet, now is a good time to start.</p>
+      <p>Any questions about running your first mock inspection? Just reply — we're glad to help.</p>
     `,
   },
   {
@@ -348,6 +354,36 @@ const ONBOARDING_EMAILS: OnboardingEmail[] = [
       progress into something visible and motivating.</p>
       <p>Thank you for being an AlwaysReady customer. We're genuinely glad you're here, and we're excited to
       see how your journey continues.</p>
+    `,
+  },
+  {
+    weekId:    'week_25',
+    threshold: 175,
+    subject:   'Six months with AlwaysReady — how are things going? ⭐',
+    body: (firstName) => `
+      <p>Dear ${firstName},</p>
+      <p>Six months. That is worth acknowledging ⭐</p>
+      <p>It is six months since you subscribed to AlwaysReady, and we wanted to check in properly. A lot
+      can change in six months — new staff, new challenges, maybe a visit from CQC. We'd love to know
+      how things are going for you.</p>
+      <p><strong>How is your compliance position looking?</strong><br>
+      Take a look at your Daily Report and your Trend Report. Are your KLOEs moving in the right direction?
+      Are there areas that have stalled or slipped back? Six months is a good point to review progress honestly
+      and decide where to focus for the next quarter.</p>
+      <p><strong>Is your evidence still current?</strong><br>
+      Evidence that was strong in January can feel thin by summer if the service has moved on. Check that your
+      uploaded documents still reflect current practice. Anything more than 12 months old is worth reviewing.
+      Inspectors notice when evidence does not match what they see on a visit.</p>
+      <p><strong>Have you used every part of the platform?</strong><br>
+      Some features take time to find their place in a service's routine. If you have not yet used the Mock
+      Inspection tool, the People's Voice section, or the visitor access feature, now is a good time to
+      explore them. Each one was built to solve a problem we heard from registered managers.</p>
+      <p><strong>Is there anything we could do better?</strong><br>
+      We are a small team and we build AlwaysReady based on what we hear from people using it. If something
+      is not working the way you expected, or if there is a feature you wish existed, we want to know. Your
+      feedback shapes what we build next.</p>
+      <p>Hit reply and tell us how things are going. Even a one-line answer helps us understand what is
+      working and what is not.</p>
     `,
   },
 ]
