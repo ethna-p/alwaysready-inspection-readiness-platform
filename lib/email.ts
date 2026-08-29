@@ -64,7 +64,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <tr>
             <td style="background-color:#014D4E;padding:32px 40px;text-align:center">
               <div style="margin-bottom:8px">
-                <span aria-hidden="true" style="display:inline-block;width:34px;height:34px;background:#ffd700;border-radius:50%;text-align:center;line-height:34px;font-size:20px;color:#ffffff;vertical-align:middle;margin-right:10px;font-weight:700">&#10003;</span><span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;vertical-align:middle">ALWAYSREADY</span>
+                <img src="https://portal.alwaysready.uk/logo-email.png" alt="AlwaysReady" width="220" height="48" style="display:block;margin:0 auto;border:0">
               </div>
               <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.15em;text-transform:uppercase">Inspection Readiness Platform</div>
             </td>
