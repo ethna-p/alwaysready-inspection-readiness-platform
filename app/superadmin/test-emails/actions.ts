@@ -976,25 +976,9 @@ async function sendWaitlistLaunch(send: Awaited<ReturnType<typeof makeSender>>) 
 }
 
 async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
+  // Note: password reset and password-changed emails are managed as Supabase Auth
+  // templates in the Supabase dashboard — they are not sent by platform code.
   return Promise.all([
-    send('Reset your AlwaysReady password', `
-      <p>We received a request to reset the password for your AlwaysReady account.</p>
-      <p style="color:#555;font-size:14px">Click the button below to set a new password. This link expires in 15 minutes.</p>
-      <p>
-        <a href="${PLATFORM_URL}/account/reset?token=EXAMPLE_TOKEN"
-           style="display:inline-block;background:#014D4E;color:#fff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px">
-          Reset my password
-        </a>
-      </p>
-      <p style="font-size:12px;color:#999;margin-top:24px">
-        If you didn't request this, you can safely ignore this email. Your password will not change.
-      </p>
-    `),
-    send('Your AlwaysReady password has been changed', `
-      <p>Your AlwaysReady password was successfully changed.</p>
-      <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do.
-      If it wasn't you, please change your password immediately or contact your administrator.</p>
-    `),
     send('Welcome to AlwaysReady — your login details', `
       <p style="margin:0 0 16px">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px">
