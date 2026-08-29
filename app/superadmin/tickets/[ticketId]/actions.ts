@@ -69,6 +69,7 @@ export async function staffReply(
 }
 
 export async function regenerateDraft(ticketId: string): Promise<string | null> {
+  await assertSuperadmin()
   const supabase = createAdminClient()
 
   const { data: ticket } = await supabase
@@ -110,6 +111,7 @@ export async function regenerateDraft(ticketId: string): Promise<string | null> 
 }
 
 export async function updateTicketStatus(ticketId: string, status: string) {
+  await assertSuperadmin()
   const supabase = createAdminClient()
   const validStatus = status as 'open' | 'in_progress' | 'resolved'
 
