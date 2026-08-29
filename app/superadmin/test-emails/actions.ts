@@ -116,7 +116,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Set your password and get started &rarr;
         </a>
       </p>
-      <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your trial runs until <strong>${EXPIRY_DATE}</strong>.
         If you have any questions, use the <strong>Support</strong> tab inside
         the platform and we will get back to you shortly.
@@ -143,7 +143,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to your KLOE tracker &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you have any questions at any point, our support team is available via the
         <strong>Support</strong> tab within the platform.
       </p>
@@ -204,7 +204,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to your dashboard &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you have questions about any of these features, the <strong>Help</strong> tab covers
         the most common questions by role, and <strong>Support</strong> lets you reach us directly.
       </p>
@@ -264,7 +264,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to your dashboard &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         Drop us a message through the <strong>Support</strong> tab whenever you need us.
       </p>
     `),
@@ -312,7 +312,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               Mock Inspection
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Walk through every KLOE and rate your evidence as Outstanding, Good, Requires
               Improvement, or Inadequate. The platform generates a mock inspection report
               showing a self-assessed rating for each of the five CQC key questions — so you
@@ -334,7 +334,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               Evidence Pack
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               One click generates a printable PDF summary of your full compliance position —
               RAG status, review dates, priority ratings, and evidence location notes for every
               KLOE. It is designed to be handed to an inspector or presented at a board meeting,
@@ -356,7 +356,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               HR Records
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Track DBS checks, supervision sessions, appraisals, mandatory training, and
               holiday entitlement for every member of staff — all in one place. The HR
               dashboard shows you which staff members are overdue or due soon at a glance,
@@ -378,7 +378,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               Automatic reminders
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Set a review frequency for each KLOE — monthly, quarterly, annually, or a
               custom interval — and AlwaysReady handles the rest. The platform emails the
               relevant team member when a review is due soon or overdue, so nothing slips
@@ -403,7 +403,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Subscribe now &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         You'll always find us in the <strong>Support</strong> tab.
       </p>
     `),
@@ -491,7 +491,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Log in to AlwaysReady &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
         the <strong>Support</strong> tab to reach our team directly.
       </p>
@@ -520,7 +520,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to your KLOEs &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you're not sure what's expected of you, the <strong>Help</strong> tab inside the
         platform covers the most common questions by role.
       </p>
@@ -996,7 +996,7 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
           </td>
         </tr>
       </table>
-      <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:14px;color:#1a1a1a;line-height:1.7">
+      <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:15px;color:#1a1a1a;line-height:1.7">
         <strong>A note on security</strong><br>
         AlwaysReady holds your service's compliance records, evidence documents, and staff data.
         This is sensitive information, and we take the security of your account seriously.<br><br>

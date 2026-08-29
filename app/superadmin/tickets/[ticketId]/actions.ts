@@ -56,7 +56,7 @@ export async function staffReply(
 
         <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px;font-size:15px;line-height:1.7;color:#1a1a1a;white-space:pre-wrap">${message}</div>
 
-        <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any further questions, please reply to this email or visit
           <a href="https://www.alwaysready.uk" style="color:#014D4E">www.alwaysready.uk</a>.
         </p>
@@ -174,7 +174,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
               }
             </p>
 
-            <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+            <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
               Thank you for using AlwaysReady. We hope we were able to help.
             </p>
           `,

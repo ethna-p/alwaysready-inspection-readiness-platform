@@ -45,15 +45,15 @@ export interface SendEmailResult {
 function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: string): string {
   const note = footerNote ?? 'You are receiving this email because you have an active AlwaysReady account.'
   const unsubscribeFooter = unsubscribeUrl
-    ? `<p style="margin:12px 0 0;font-size:12px;color:#888">
+    ? `<p style="margin:12px 0 0;font-size:12px;color:#6b6b6b">
          ${note}
-         <a href="${unsubscribeUrl}" style="color:#014D4E">Unsubscribe</a> from non-essential emails.
+         <a href="${unsubscribeUrl}" style="color:#014D4E;text-decoration:underline">Unsubscribe</a> from non-essential emails.
        </p>`
     : ''
 
   return `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AlwaysReady</title></head>
 <body style="margin:0;padding:0;background-color:#faf9f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
     <tr>
@@ -64,9 +64,9 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <tr>
             <td style="background-color:#014D4E;padding:32px 40px;text-align:center">
               <div style="margin-bottom:8px">
-                <span style="display:inline-block;width:34px;height:34px;background:#ffd700;border-radius:50%;text-align:center;line-height:34px;font-size:20px;color:#ffffff;vertical-align:middle;margin-right:10px;font-weight:700">&#10003;</span><span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;vertical-align:middle">ALWAYSREADY</span>
+                <span aria-hidden="true" style="display:inline-block;width:34px;height:34px;background:#ffd700;border-radius:50%;text-align:center;line-height:34px;font-size:20px;color:#ffffff;vertical-align:middle;margin-right:10px;font-weight:700">&#10003;</span><span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:0.5px;vertical-align:middle">ALWAYSREADY</span>
               </div>
-              <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.15em;text-transform:uppercase">Inspection Readiness Platform</div>
+              <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.15em;text-transform:uppercase">Inspection Readiness Platform</div>
             </td>
           </tr>
 
@@ -90,10 +90,10 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 <tr>
                   <td style="padding-top:12px;padding-left:12px;border-left:3px solid #ffd700">
                     <p style="margin:0 0 4px;font-size:13px">
-                      <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:none">support@alwaysready.uk</a>
+                      <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:underline">support@alwaysready.uk</a>
                     </p>
                     <p style="margin:0 0 4px;font-size:13px">
-                      <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:none">www.alwaysready.uk</a>
+                      <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:underline">www.alwaysready.uk</a>
                     </p>
                     <p style="margin:0;font-size:13px;color:#555555">82A James Carter Road, Mildenhall, IP28 7DE</p>
                   </td>
@@ -105,7 +105,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <!-- Footer -->
           <tr>
             <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:20px 40px;text-align:center">
-              <p style="margin:0;font-size:12px;color:#888;line-height:1.6">
+              <p style="margin:0;font-size:12px;color:#6b6b6b;line-height:1.6">
                 AlwaysReady is a product of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>

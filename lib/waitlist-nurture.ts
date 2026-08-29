@@ -371,7 +371,7 @@ export function getWaitlistNurtureEmail(
           Start your free 14-day trial &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         After your trial, a full subscription is <strong>£75/month</strong>. Cancel anytime.
         Charity discount applies automatically if you registered as a charity. If you have any
         questions before you start, reach us at

@@ -162,7 +162,7 @@ export async function provisionOrganisation(
           </tr>
         </table>
 
-        <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:14px;color:#1a1a1a;line-height:1.7">
+        <p style="margin:0 0 16px;background:#fef9ec;border-left:4px solid #ffd700;padding:12px 16px;border-radius:4px;font-size:15px;color:#1a1a1a;line-height:1.7">
           <strong>A note on security</strong><br>
           AlwaysReady holds your service's compliance records, evidence documents, and staff data.
           This is sensitive information, and we take the security of your account seriously.<br><br>

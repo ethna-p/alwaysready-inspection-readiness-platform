@@ -73,7 +73,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Go to your KLOE tracker &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If anything isn't working the way you expected, just reply — we're glad to help.
       </p>
     `,
@@ -101,7 +101,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Go to your dashboard &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         Which of those three have you tried? Hit reply — we're curious.
       </p>
     `,
@@ -132,7 +132,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Invite a team member &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If there's anything you're stuck on, just reply. We're a small team and we read every message.
       </p>
     `,
@@ -202,7 +202,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
             Go to your dashboard &rarr;
           </a>
         </p>
-        <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           Drop us a message through the <strong>Support</strong> tab whenever you need us.
         </p>
       `
@@ -234,7 +234,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Explore the platform &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         Questions about anything? Just reply.
       </p>
     `,
@@ -260,7 +260,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               Mock Inspection
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Walk through every KLOE and rate your evidence as Outstanding, Good, Requires
               Improvement, or Inadequate. The platform generates a mock inspection report
               showing a self-assessed rating for each of the five CQC key questions — so you
@@ -282,7 +282,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               Evidence Pack
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               One click generates a printable PDF summary of your full compliance position —
               RAG status, review dates, priority ratings, and evidence location notes for every
               KLOE. It is designed to be handed to an inspector or presented at a board meeting,
@@ -304,7 +304,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               HR Records
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Track DBS checks, supervision sessions, appraisals, mandatory training, and
               holiday entitlement for every member of staff — all in one place. The HR
               dashboard shows you which staff members are overdue or due soon at a glance,
@@ -326,7 +326,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
             <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
               Automatic reminders
             </p>
-            <p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Set a review frequency for each KLOE — monthly, quarterly, annually, or a
               custom interval — and AlwaysReady handles the rest. The platform emails the
               relevant team member when a review is due soon or overdue, so nothing slips
@@ -351,7 +351,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Subscribe now &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         Questions before you decide? Just reply.
       </p>
     `,
@@ -382,7 +382,7 @@ const TRIAL_EMAILS: TrialEmailDef[] = [
           Subscribe and continue &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for taking the time to try AlwaysReady. Whatever you decide, we hope it's
         been a useful experience.
       </p>
@@ -436,7 +436,7 @@ const USER_EMAILS: UserEmailDef[] = [
           Log in to AlwaysReady &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
         the <strong>Support</strong> tab to reach our team directly.
       </p>
@@ -470,7 +470,7 @@ const USER_EMAILS: UserEmailDef[] = [
           Go to your KLOEs &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you're not sure what's expected of you, just reply to this email — we're happy to help.
         The <strong>Help</strong> tab also covers the most common questions by role.
       </p>
@@ -694,7 +694,7 @@ export async function GET(request: Request) {
               Subscribe and continue &rarr;
             </a>
           </p>
-          <p style="margin:0;font-size:14px;line-height:1.6;color:#555">
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
             If there's anything we could have done better, we'd genuinely welcome hearing from
             you — just reply to this email. Whatever you decide, thank you for taking the time
             to try AlwaysReady.

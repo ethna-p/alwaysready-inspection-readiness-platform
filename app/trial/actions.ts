@@ -280,7 +280,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
         </a>
       </p>
 
-      <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#555">
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your trial runs until <strong>${expiry}</strong>.
         If you have any questions, use the <strong>Support</strong> tab inside
         the platform and we will get back to you shortly.
