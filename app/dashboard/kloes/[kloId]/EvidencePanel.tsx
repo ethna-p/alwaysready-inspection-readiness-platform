@@ -19,13 +19,6 @@ import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { saveEvidenceRecord, deleteEvidenceRecord } from './evidence-actions'
 
-const ACCEPTED_TYPES = [
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'image/jpeg',
-  'image/png',
-]
 const ACCEPTED_EXTENSIONS = '.pdf,.docx,.xlsx,.jpg,.jpeg,.png'
 const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 
@@ -63,7 +56,7 @@ function formatDate(iso: string): string {
 
 export default function EvidencePanel({
   kloItemId,
-  organisationId,
+  organisationId: _organisationId,
   initialFiles,
   isAdmin,
   canUpload,

@@ -34,15 +34,6 @@ interface Props {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function RegBadge({ reg }: { reg: string | null }) {
-  if (!reg) return null
-  return (
-    <span className="inline-block text-[10px] font-mono font-medium bg-fill-dim text-ink-dim rounded px-1.5 py-0.5 leading-none">
-      {reg}
-    </span>
-  )
-}
-
 // ─── Specialist sub-service colour config ─────────────────────────────────────
 
 const SPECIALIST_COLOURS: Record<string, {
