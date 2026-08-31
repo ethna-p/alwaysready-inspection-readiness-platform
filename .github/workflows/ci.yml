@@ -30,6 +30,40 @@ jobs:
       - name: Unit tests
         run: npm test
 
+  integration-tests:
+    name: Integration Tests (RLS + Migrations)
+    runs-on: ubuntu-latest
+    needs: typecheck-and-lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase (applies all migrations)
+        run: supabase start
+        # supabase start pulls Docker images and runs all 101 migrations.
+        # No SUPABASE_ACCESS_TOKEN needed — this is local-only, no remote auth.
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          # Local Supabase Postgres is always on this port when started via CLI
+          INTEGRATION_DB_URL: postgresql://postgres:postgres@localhost:54322/postgres
+
+      - name: Stop local Supabase
+        if: always()
+        run: supabase stop
+
   build:
     name: Next.js Build
     runs-on: ubuntu-latest

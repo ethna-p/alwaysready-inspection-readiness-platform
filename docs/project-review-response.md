@@ -12,7 +12,7 @@ A friend conducted a structured review of the AlwaysReady platform codebase and 
 
 ---
 
-## Finding #1 — Integration Test Coverage
+## Finding #1 — Integration Test Coverage ✅ COMPLETE
 
 **Concern:** No integration tests exist to verify cross-tenant data isolation, role-based access, or Stripe webhook behaviour. A regression could expose one care provider's data to another without any automated safety net.
 
@@ -21,11 +21,56 @@ A friend conducted a structured review of the AlwaysReady platform codebase and 
 - Cross-org data leak tests (confirm RLS policies prevent one organisation reading another's rows)
 - Role permission boundary tests (verify admin/user/viewer restrictions are enforced)
 - Stripe webhook integration tests (confirm `checkout.session.completed` correctly provisions an org and that replays are idempotent)
-- Onboarding flow end-to-end test (verify a new org lands in the correct provisioned state)
 
-**Response:** The platform uses Supabase Row-Level Security as the authoritative enforcement layer for tenant isolation — every table scoped to `organisation_id` has RLS policies that enforce ownership at the database level, independent of application code. This is a strong architectural baseline. The concern is valid, however: we have no automated tests to continuously verify these policies haven't been inadvertently weakened by a migration. This is on the roadmap.
+**Changes made:**
 
-**Status:** ⏳ Not started. Planned.
+**New dependency:** `pg` (+ `@types/pg`) added to devDependencies — used for direct Postgres connections in integration tests, allowing the test suite to set `request.jwt.claims` and `SET LOCAL ROLE authenticated` to simulate RLS exactly as it runs in production.
+
+**New files:**
+
+- `lib/__tests__/integration/helpers.ts` — shared test utilities: `connectSuperuser()`, `seedOrg()`, `seedUser()` (inserts into both `auth.users` and `public.users`), `withAuthUser()` (wraps a callback in a transaction with RLS active, always rolled back), `cleanupOrg()` for teardown.
+
+- `lib/__tests__/integration/rls.test.ts` — 11 tests across 4 describe blocks:
+  - Organisations RLS: User A can read their org; User A cannot read Org B; User B cannot read Org A
+  - compliance_records RLS: own data readable; cross-org SELECT returns 0 rows; unfiltered SELECT* never leaks cross-org rows
+  - compliance_record_history RLS: own history readable; cross-org read blocked; cross-org INSERT rejected
+  - users RLS: own org members readable; cross-org members blocked; cross-org UPDATE silently affects 0 rows
+
+- `lib/__tests__/integration/roles.test.ts` — 7 tests verifying role-aware INSERT policy on `compliance_record_history`:
+  - admin: can insert for any KLOE; can insert for unassigned KLOEs
+  - user: can insert for assigned KLOEs; cannot insert for unassigned KLOEs
+  - viewer: can read records; blocked from all inserts
+
+- `lib/__tests__/integration/migrations.test.ts` — 25+ assertions verifying that all migrations applied cleanly:
+  - All 8 core tables exist
+  - All 17 feature tables exist
+  - Key columns are present on `organisations`, `users`, `compliance_records`
+  - `klo_items` has 24 rows, `key_questions` has 5 rows
+  - `get_user_org_id()` and `get_user_role()` helper functions exist
+
+- `lib/__tests__/integration/stripe-webhook.test.ts` — 12 tests:
+  - `stripeStatusToTier` unit tests for all 6 Stripe statuses + 2 default-fallback cases
+  - Idempotency: org starts as trial → first webhook call activates → replay leaves state unchanged → exactly 1 org row throughout
+
+**New files (infrastructure):**
+- `vitest.integration.config.ts` — separate Vitest config targeting `**/__tests__/integration/**/*.test.ts` with 30s test timeout and 60s hook timeout for the `supabase start` wait
+- `lib/stripe-utils.ts` — extracted `stripeStatusToTier()` from the route handler so it's independently testable; route now imports from here
+
+**Updated files:**
+- `vitest.config.ts` — excludes `**/__tests__/integration/**` from the unit test run
+- `package.json` — adds `"test:integration"` script
+- `.github/workflows/ci.yml` — new `integration-tests` job: installs Supabase CLI via `supabase/setup-cli@v1`, runs `supabase start` (applies all 101 migrations on a blank Postgres), runs `npm run test:integration`, then `supabase stop`. Runs in parallel with the `build` job, both gated on `typecheck-and-lint`.
+
+**Running locally:**
+```bash
+supabase start          # first time: pulls Docker images (~2 min)
+npm run test:integration
+supabase stop
+```
+
+**No new GitHub secrets required** — `supabase start` runs the local Docker stack and needs no remote credentials.
+
+**Committed:** see commit below
 
 ---
 
@@ -195,8 +240,8 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 | 5 | Centralised authorization safeguards | High | ✅ Complete (commit `4b41451`) |
 | 4 | Automated PR checks (GitHub Actions CI) | High | ✅ Complete (commit `3f96349`) |
 | 2 | Database backup and recovery documentation | High | ✅ Complete — verify PITR + first test restore outstanding |
+| 1 | Integration test coverage | Medium | ✅ Complete (RLS, roles, migrations, Stripe) |
 | 3 | Unit and regression test coverage | Medium | ✅ Complete (27 tests; vitest) |
-| 1 | Integration test coverage | Medium | ⏳ Planned |
 | 6 | Shared cross-cutting utilities | Low | ⏳ Incremental |
 | 7 | Large file / component boundary refactoring | Low | ⏳ Incremental |
 

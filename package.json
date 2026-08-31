@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run",
-    "test:watch": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest"
+    "test:watch": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest",
+    "test:integration": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --config vitest.integration.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.5",
@@ -42,11 +43,13 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "critters": "^0.0.23",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "pg": "^8.23.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.11"

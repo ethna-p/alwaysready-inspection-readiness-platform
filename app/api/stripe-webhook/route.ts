@@ -18,6 +18,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { stripeStatusToTier } from '@/lib/stripe-utils'
 
 const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
 
@@ -216,15 +217,4 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ received: true }, { status: 200 })
 }
 
-/** Map Stripe subscription status to our subscription_tier values. */
-function stripeStatusToTier(status: Stripe.Subscription.Status): string {
-  switch (status) {
-    case 'active':
-    case 'trialing': return 'active'
-    case 'past_due': return 'past_due'
-    case 'canceled':
-    case 'unpaid':
-    case 'incomplete_expired': return 'canceled'
-    default: return 'past_due'
-  }
-}
+// stripeStatusToTier is exported from @/lib/stripe-utils
