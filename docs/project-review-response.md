@@ -243,12 +243,14 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 - `lib/onboarding-emails.ts` — `ONBOARDING_EMAILS`, `OnboardingEmail` type, `buildHtml()` (route: 644 → ~130 lines)
 - `app/superadmin/test-emails/actions.ts` — `sendTrial()` and `sendOnboarding()` rewritten to iterate `TRIAL_EMAILS`/`USER_EMAILS`/`ONBOARDING_EMAILS` from their respective lib modules; ~690 lines of duplicate HTML removed (1,281 → ~590 lines)
 
-**Incremental (future work — regression risk warrants separate sessions):**
-- `app/dashboard/reports/ReportBuilder.tsx` (1,127 lines) — complex React component with many interacting hooks; splitting safely requires careful prop threading and regression testing
-- `app/dashboard/analytics/AnalyticsSectionServer.tsx` (1,086 lines) — same; each chart section is a candidate for extraction but touches shared Supabase query logic
-- `lib/ai-draft.ts` (740 lines) — contains substantial inline FAQ content that could be extracted to a separate data file; lower risk but lower priority
+**Also completed (subsequent sessions):**
+- `app/dashboard/analytics/AnalyticsSectionServer.tsx` (was 1,086 lines) — split into focused sub-components (action plan cards, HR analytics cards, etc.) in task #657
+- `lib/ai-draft.ts` (was 740 lines) — FAQ content extracted to `lib/ai-draft-faq.ts` in task #656; main file now contains only the AI draft logic
 
-**Status:** ✅ In progress.
+**Still outstanding:**
+- `app/dashboard/reports/ReportBuilder.tsx` (~1,127 lines) — complex React component with many interacting hooks; split strategy to be proposed in task #658 before any changes are made
+
+**Status:** ✅ In progress (ReportBuilder split remaining).
 
 ---
 
