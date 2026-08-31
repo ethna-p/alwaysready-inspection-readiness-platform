@@ -21,6 +21,7 @@
  *     Uses a module-level Map (in-memory, per function instance).
  *     This catches burst brute-force attacks within the same serverless instance.
  */
+import { wrapMiddlewareWithSentry } from '@sentry/nextjs'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -65,7 +66,7 @@ function checkLoginRateLimit(ip: string): boolean {
 
 // ── Middleware ─────────────────────────────────────────────────────────────
 
-export async function middleware(request: NextRequest) {
+async function middlewareFn(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const { pathname } = request.nextUrl
@@ -212,6 +213,8 @@ export async function middleware(request: NextRequest) {
 
   return supabaseResponse
 }
+
+export const middleware = wrapMiddlewareWithSentry(middlewareFn)
 
 export const config = {
   matcher: [
