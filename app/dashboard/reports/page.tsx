@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
 import { calculateRAG } from '@/lib/rag'
 import ReportBuilder from './ReportBuilder'
-import type { KloeRow, ActionRow, HrRow, MockInspectionYear } from './ReportBuilder'
+import type { KloeRow, ActionRow, HrRow, MockInspectionYear } from './report-types'
 import HelpWidget from '@/components/HelpWidget'
 
 export const metadata = { title: 'Custom Reports — AlwaysReady' }
