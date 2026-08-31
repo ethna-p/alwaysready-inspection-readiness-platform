@@ -48,10 +48,10 @@ Created `docs/backup-and-recovery.md` covering:
 - An annual test restore procedure with a log table to record results
 - Contact and dashboard links
 
-**One action required from AJ:**
-- Open Supabase dashboard → Project Settings → Backups → confirm Point in Time Recovery shows **Enabled**
-- Fill in the project reference ID in the doc (Project Settings → General)
-- Complete the first test restore and fill in the log (§6)
+**Actions required from AJ:**
+- ⚠️ **URGENT**: Upgrade the Supabase project (`yrychopwshnoplblrzyx`) from FREE to **Pro plan** (~$25/month). The dashboard currently shows "No backups" — there is no recovery path for the production database until this is done.
+- After upgrading: confirm Point in Time Recovery shows **Enabled** under Project Settings → Backups
+- Complete the first test restore and fill in the log in `docs/backup-and-recovery.md` (§6)
 
 **Committed:** see `docs/backup-and-recovery.md`
 

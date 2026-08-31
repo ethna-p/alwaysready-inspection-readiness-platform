@@ -2,8 +2,9 @@
 
 **Platform:** AlwaysReady Inspection Readiness Platform  
 **Database:** Supabase (PostgreSQL)  
-**Last verified:** [AJ to fill in date after completing the verification steps below]  
-**Last test restore:** [AJ to fill in after completing the first test restore]
+**Last verified:** 31 August 2026  
+**Last test restore:** Not yet completed  
+**⚠️ Current status: FREE plan — no backups active. Upgrade to Pro required.**
 
 ---
 
@@ -22,7 +23,7 @@ Supabase Pro tier provides two layers of backup:
 - Must be explicitly enabled — it is not on by default.
 - Available in: Supabase dashboard → Project Settings → Backups → Point in Time Recovery.
 
-> **Action required:** Verify PITR is enabled on this project. If it is not, enable it now. The additional cost is included in the Pro plan up to a usage threshold.
+> **⚠️ Action required — URGENT:** The production project (`alwaysready-demo`) is currently on the **FREE plan**. Free plan has no automated backups and no PITR. The dashboard shows "No backups". Upgrade to **Supabase Pro (~$25/month)** immediately. Once upgraded, verify PITR is enabled under Project Settings → Backups.
 
 ---
 
@@ -75,7 +76,8 @@ Steps:
 
 Contact Supabase support immediately at support.supabase.com. Supabase retains deleted project backups for a short window (typically 24–48 hours). Provide the project reference ID and the time of deletion.
 
-Project reference ID: `[AJ to fill in — found in Supabase dashboard → Project Settings → General]`
+Project reference ID: `yrychopwshnoplblrzyx`  
+Project URL: `https://yrychopwshnoplblrzyx.supabase.co`
 
 ---
 
