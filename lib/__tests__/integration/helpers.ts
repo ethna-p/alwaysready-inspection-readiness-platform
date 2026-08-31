@@ -115,13 +115,16 @@ export async function withAuthUser<T>(
 
 /** Clean up seeded rows by id. Call in afterAll. */
 export async function cleanupOrg(client: Client, orgId: string): Promise<void> {
-  // Cascade delete handles users, compliance_records, etc.
-  await client.query(`DELETE FROM public.organisations WHERE id = $1`, [orgId])
-  // Auth users must be deleted separately (no FK cascade from public to auth schema)
+  // Delete auth.users first (FK: public.users.id → auth.users.id may cascade,
+  // but we also delete public.users explicitly before the organisation).
   await client.query(
     `DELETE FROM auth.users WHERE id IN (
        SELECT id FROM public.users WHERE organisation_id = $1
      )`,
     [orgId]
   )
+  // Delete public.users before the organisation — users_organisation_id_fkey is NOT cascade.
+  await client.query(`DELETE FROM public.users WHERE organisation_id = $1`, [orgId])
+  // Now safe to delete the organisation.
+  await client.query(`DELETE FROM public.organisations WHERE id = $1`, [orgId])
 }
