@@ -58,9 +58,10 @@ A friend conducted a structured review of the AlwaysReady platform codebase and 
 - `lib/stripe-utils.ts` — extracted `stripeStatusToTier()` from the route handler so it's independently testable; route now imports from here
 
 **Updated files:**
-- `vitest.config.ts` — excludes `**/__tests__/integration/**` from the unit test run
+- `vitest.config.ts` — scoped to `lib/__tests__/**/*.test.ts`, excludes `lib/__tests__/integration/**` and `node_modules/**`
+- `vitest.integration.config.ts` — scoped to `lib/__tests__/integration/**/*.test.ts`
 - `package.json` — adds `"test:integration"` script
-- `.github/workflows/ci.yml` — new `integration-tests` job: installs Supabase CLI via `supabase/setup-cli@v1`, runs `supabase start` (applies all 101 migrations on a blank Postgres), runs `npm run test:integration`, then `supabase stop`. Runs in parallel with the `build` job, both gated on `typecheck-and-lint`.
+- `.github/workflows/ci.yml` — new `integration-tests` job: installs Supabase CLI via `supabase/setup-cli@v1`, runs `supabase start` (applies all migrations on a blank Postgres), runs `npm run test:integration`, then `supabase stop`. Runs in parallel with the `build` job, both gated on `typecheck-and-lint`.
 
 **Running locally:**
 ```bash
@@ -262,6 +263,26 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 | 3 | Unit and regression test coverage | Medium | ✅ Complete (27 tests; vitest) |
 | 6 | Shared cross-cutting utilities | Low | ✅ In progress (`lib/utils/name.ts` — `getFirstName`; `lib/config.ts` — `PLATFORM_URL`) |
 | 7 | Large file / component boundary refactoring | Low | ✅ In progress (trial-emails + onboarding-emails extracted to lib; test-emails duplicate HTML removed) |
+
+---
+
+## CI Fixes (31 August 2026 — post-review session)
+
+A series of CI failures were resolved during the session that addressed the review findings. Not all were caused by the review work; some pre-existed.
+
+| Issue | Fix | Commit |
+|---|---|---|
+| 47 ESLint errors (glob `[kloId]`/`[ticketId]` treated as character classes) | Rewrote `eslint.config.mjs` with correct `*` wildcards | `3bd142e` |
+| `lib/rate-limit.ts` `no-require-imports` errors | Added `eslint-disable-next-line` to lazy `require()` calls | (same session) |
+| Sentry v10 proxy conflict (`middleware.ts` + `instrumentation-client.ts`) | Wrapped middleware with `wrapMiddlewareWithSentry` | `a8a272c` |
+| Vitest picking up `node_modules/tsconfig-paths` tests | Scoped `include` patterns to `lib/__tests__/` in both vitest configs | `1924c9b` |
+| `@anthropic-ai/sdk` dependency bump (0.112.5 → 0.122.0) | `npm install @anthropic-ai/sdk@0.122.0` | `85a80ed` |
+| `lib/utils/name.ts` not committed (Vercel module-not-found) | Added missing file commit | `67114c9` |
+
+**CI status as of 31 August 2026:**
+- TypeScript & Lint: ✅ Passing
+- Next.js Build: ✅ Passing
+- Integration Tests (RLS + Migrations): ❌ Under investigation — `supabase start` may be timing out on the GitHub Actions runner
 
 ---
 
