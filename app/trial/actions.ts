@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { fetchCqcLocation } from '@/lib/cqc'
+import { getFirstName } from '@/lib/utils/name'
 
 function escapeHtml(str: string): string {
   return str
@@ -226,7 +227,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   if (linkError) console.error('[trial-signup] generateLink error:', linkError.message)
 
   const setupLink = linkData?.properties?.action_link ?? `${baseUrl}/login`
-  const firstName = managerName.trim().split(' ')[0]
+  const firstName = getFirstName(managerName.trim())
   const expiry    = trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
   // ── 9. Notify AJ of new trial signup ────────────────────────────────────────

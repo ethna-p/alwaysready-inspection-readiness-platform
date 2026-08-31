@@ -5,7 +5,7 @@
  *   - app/superadmin/test-emails/actions.ts       (preview in test panel)
  */
 
-const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
+import { PLATFORM_URL } from '@/lib/config'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

@@ -20,8 +20,7 @@ import 'server-only'
 import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
-
-const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
+import { PLATFORM_URL }     from '@/lib/config'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

@@ -28,6 +28,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
+import { getFirstName } from '@/lib/utils/name'
 
 function escapeHtml(s: string): string {
   return s
@@ -291,7 +292,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Auto-responder for new tickets
-  const firstName = fromName.split(' ')[0] || 'there'
+  const firstName = getFirstName(fromName)
   await sendEmail({
     to:      from,
     subject: "We've received your message",

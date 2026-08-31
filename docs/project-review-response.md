@@ -220,7 +220,14 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 
 **Response:** Incremental — extract duplication as we encounter it during normal feature work rather than a big-bang refactor.
 
-**Status:** ✅ In progress. `getFirstName(fullName, fallback)` extracted to `lib/utils/name.ts`; all 13 inline `?.split(' ')[0] ?? 'there'` call-sites updated across the codebase. One intentional variant (`?? null` in `broadcast/actions.ts`) left unchanged — different semantic.
+**Completed now:**
+- `getFirstName(fullName, fallback)` extracted to `lib/utils/name.ts`; all call-sites updated.
+- `PLATFORM_URL` extracted to `lib/config.ts`; all 7 inline definitions replaced with `import { PLATFORM_URL } from '@/lib/config'` (files: `lib/trial-emails.ts`, `lib/onboarding-emails.ts`, `app/api/stripe-webhook/route.ts`, `app/api/cron/governance-digest/route.ts`, `app/api/cron/review-reminders/route.ts`, `app/api/cron/data-deletion/route.ts`, `app/api/cron/trial-emails/route.ts`). Note: `app/actions/stripe.ts` uses a different form (`process.env.NEXT_PUBLIC_SITE_URL` only, no fallback or replace) and is left intentionally unchanged.
+
+**Incremental (future work):**
+- Other shared constants or helpers as they surface during normal feature work.
+
+**Status:** ✅ In progress.
 
 ---
 
@@ -230,9 +237,17 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 
 **Response:** Agreed in principle. Specific files to target identified as: large server action files with many unrelated actions, and page components that mix data fetching with rendering.
 
-**Status:** ✅ In progress. Two large cron route files broken up by extracting email definitions into dedicated lib modules, mirroring the existing `lib/waitlist-nurture.ts` pattern:
+**Completed now:**
 - `lib/trial-emails.ts` — `TRIAL_EMAILS`, `USER_EMAILS`, types, `formatDate`, `daysElapsed` (route: 800 → ~340 lines)
 - `lib/onboarding-emails.ts` — `ONBOARDING_EMAILS`, `OnboardingEmail` type, `buildHtml()` (route: 644 → ~130 lines)
+- `app/superadmin/test-emails/actions.ts` — `sendTrial()` and `sendOnboarding()` rewritten to iterate `TRIAL_EMAILS`/`USER_EMAILS`/`ONBOARDING_EMAILS` from their respective lib modules; ~690 lines of duplicate HTML removed (1,281 → ~590 lines)
+
+**Incremental (future work — regression risk warrants separate sessions):**
+- `app/dashboard/reports/ReportBuilder.tsx` (1,127 lines) — complex React component with many interacting hooks; splitting safely requires careful prop threading and regression testing
+- `app/dashboard/analytics/AnalyticsSectionServer.tsx` (1,086 lines) — same; each chart section is a candidate for extraction but touches shared Supabase query logic
+- `lib/ai-draft.ts` (740 lines) — contains substantial inline FAQ content that could be extracted to a separate data file; lower risk but lower priority
+
+**Status:** ✅ In progress.
 
 ---
 
@@ -245,8 +260,8 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 | 2 | Database backup and recovery documentation | High | ✅ Complete — verify PITR + first test restore outstanding |
 | 1 | Integration test coverage | Medium | ✅ Complete (RLS, roles, migrations, Stripe) |
 | 3 | Unit and regression test coverage | Medium | ✅ Complete (27 tests; vitest) |
-| 6 | Shared cross-cutting utilities | Low | ✅ In progress (`lib/utils/name.ts` — `getFirstName`) |
-| 7 | Large file / component boundary refactoring | Low | ✅ In progress (trial-emails + onboarding-emails extracted to lib) |
+| 6 | Shared cross-cutting utilities | Low | ✅ In progress (`lib/utils/name.ts` — `getFirstName`; `lib/config.ts` — `PLATFORM_URL`) |
+| 7 | Large file / component boundary refactoring | Low | ✅ In progress (trial-emails + onboarding-emails extracted to lib; test-emails duplicate HTML removed) |
 
 ---
 

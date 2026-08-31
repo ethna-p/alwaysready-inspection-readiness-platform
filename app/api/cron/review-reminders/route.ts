@@ -23,8 +23,9 @@ import { sendEmail }         from '@/lib/email'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+import { PLATFORM_URL } from '@/lib/config'
+
 const DUE_SOON_DAYS = 7
-const PLATFORM_URL  = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

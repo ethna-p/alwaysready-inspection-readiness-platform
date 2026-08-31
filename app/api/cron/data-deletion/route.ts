@@ -22,8 +22,8 @@ import 'server-only'
 import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
-
-const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
+import { getFirstName }  from '@/lib/utils/name'
+import { PLATFORM_URL } from '@/lib/config'
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization')
@@ -83,7 +83,7 @@ export async function GET(request: Request) {
       const deletionDate = warnFrom0.toLocaleDateString('en-GB', {
         day: 'numeric', month: 'long', year: 'numeric',
       })
-      const firstName = admin.full_name?.split(' ')[0] ?? 'there'
+      const firstName = getFirstName(admin.full_name)
 
       const result = await sendEmail({
         to:      admin.email,
@@ -165,7 +165,7 @@ export async function GET(request: Request) {
     // Send deletion confirmation to each admin
     for (const admin of admins ?? []) {
       if (!admin.email) continue
-      const firstName = admin.full_name?.split(' ')[0] ?? 'there'
+      const firstName = getFirstName(admin.full_name)
       await sendEmail({
         to:      admin.email,
         subject: 'Your AlwaysReady data has been deleted',

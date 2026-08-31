@@ -19,8 +19,8 @@ import Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { stripeStatusToTier } from '@/lib/stripe-utils'
-
-const PLATFORM_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
+import { getFirstName } from '@/lib/utils/name'
+import { PLATFORM_URL } from '@/lib/config'
 
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
 
         for (const admin of admins ?? []) {
           if (!admin.email) continue
-          const firstName = admin.full_name?.split(' ')[0] ?? 'there'
+          const firstName = getFirstName(admin.full_name)
           await sendEmail({
             to:      admin.email,
             subject: 'Your AlwaysReady subscription is now active',
