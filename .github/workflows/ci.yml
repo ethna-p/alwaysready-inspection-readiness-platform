@@ -50,9 +50,10 @@ jobs:
           version: latest
 
       - name: Start local Supabase (applies all migrations)
-        run: supabase start
+        run: supabase start --debug
         # supabase start pulls Docker images and runs all 101 migrations.
         # No SUPABASE_ACCESS_TOKEN needed — this is local-only, no remote auth.
+        # --debug shows full Postgres error output when migrations fail.
 
       - name: Run integration tests
         run: npm run test:integration
