@@ -247,10 +247,16 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 - `app/dashboard/analytics/AnalyticsSectionServer.tsx` (was 1,086 lines) — split into focused sub-components (action plan cards, HR analytics cards, etc.) in task #657
 - `lib/ai-draft.ts` (was 740 lines) — FAQ content extracted to `lib/ai-draft-faq.ts` in task #656; main file now contains only the AI draft logic
 
-**Still outstanding:**
-- `app/dashboard/reports/ReportBuilder.tsx` (~1,127 lines) — complex React component with many interacting hooks; split strategy to be proposed in task #658 before any changes are made
+**Also completed (this session):**
+- `app/dashboard/reports/ReportBuilder.tsx` (was 1,127 lines) — split into four focused files in task #658:
+  - `report-types.ts` — all types, constants, and pure helpers (no React)
+  - `ReportFilterPanel.tsx` — the print:hidden filter controls
+  - `ReportOutput.tsx` — the printable report output
+  - `ReportBuilder.tsx` — thin state coordinator (~233 lines)
+  - `page.tsx` — type import updated from `ReportBuilder` → `report-types`
+  - TypeScript clean; committed `d796bf5`
 
-**Status:** ✅ In progress (ReportBuilder split remaining).
+**Status:** ✅ Complete — all large files addressed.
 
 ---
 
@@ -264,7 +270,7 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 | 1 | Integration test coverage | Medium | ✅ Complete (RLS, roles, migrations, Stripe) |
 | 3 | Unit and regression test coverage | Medium | ✅ Complete (27 tests; vitest) |
 | 6 | Shared cross-cutting utilities | Low | ✅ In progress (`lib/utils/name.ts` — `getFirstName`; `lib/config.ts` — `PLATFORM_URL`) |
-| 7 | Large file / component boundary refactoring | Low | ✅ In progress (trial-emails + onboarding-emails extracted to lib; test-emails duplicate HTML removed) |
+| 7 | Large file / component boundary refactoring | Low | ✅ Complete (trial-emails, onboarding-emails, AnalyticsSectionServer, ai-draft-faq, ReportBuilder all split) |
 
 ---
 
@@ -281,10 +287,17 @@ A series of CI failures were resolved during the session that addressed the revi
 | `@anthropic-ai/sdk` dependency bump (0.112.5 → 0.122.0) | `npm install @anthropic-ai/sdk@0.122.0` | `85a80ed` |
 | `lib/utils/name.ts` not committed (Vercel module-not-found) | Added missing file commit | `67114c9` |
 
-**CI status as of 31 August 2026:**
+**Additional CI fixes (31 August 2026 — later in session):**
+
+| Issue | Fix | Commit |
+|---|---|---|
+| Integration Tests: duplicate migration version `20260719000001` — `contact_inbound_tickets` and `checklist_content_corrections` shared the same version key, causing a `schema_migrations_pkey` unique constraint violation on `supabase start` | Renamed `20260719000001_contact_inbound_tickets.sql` → `20260719000000_contact_inbound_tickets.sql` | `9272c91` |
+| Email templates serving old logo (no white inner ring) | Regenerated `public/logo-email.png` from updated brand mark | `87f760d` |
+
+**CI status as of 31 August 2026 (end of session):**
 - TypeScript & Lint: ✅ Passing
 - Next.js Build: ✅ Passing
-- Integration Tests (RLS + Migrations): ❌ Under investigation — `supabase start` may be timing out on the GitHub Actions runner
+- Integration Tests (RLS + Migrations): ✅ Fix pushed — awaiting CI #24 confirmation
 
 ---
 
