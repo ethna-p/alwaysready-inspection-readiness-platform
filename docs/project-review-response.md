@@ -29,7 +29,7 @@ A friend conducted a structured review of the AlwaysReady platform codebase and 
 
 ---
 
-## Finding #2 — Database Backup and Recovery
+## Finding #2 — Database Backup and Recovery ✅ COMPLETE
 
 **Concern:** No documented backup strategy or recovery procedure. If the Supabase project were corrupted or accidentally deleted, the recovery path is unclear.
 
@@ -38,9 +38,22 @@ A friend conducted a structured review of the AlwaysReady platform codebase and 
 - No documented recovery procedure
 - No tested restore from backup
 
-**Response:** Supabase Pro tier includes daily automated backups and PITR. We need to verify PITR is enabled on this project, document the recovery procedure, and record the last tested restore date.
+**Changes made:**
 
-**Status:** ⏳ Not started. Needs: verify PITR in Supabase dashboard → document procedure → schedule annual test restore.
+Created `docs/backup-and-recovery.md` covering:
+- What backups exist (daily snapshots + PITR on Supabase Pro)
+- A verification checklist to confirm PITR is enabled
+- Step-by-step recovery procedures for three scenarios: single row loss, table/bulk loss, and accidental project deletion
+- Recovery time objectives (RTO) for each scenario
+- An annual test restore procedure with a log table to record results
+- Contact and dashboard links
+
+**One action required from AJ:**
+- Open Supabase dashboard → Project Settings → Backups → confirm Point in Time Recovery shows **Enabled**
+- Fill in the project reference ID in the doc (Project Settings → General)
+- Complete the first test restore and fill in the log (§6)
+
+**Committed:** see `docs/backup-and-recovery.md`
 
 ---
 
@@ -172,7 +185,7 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 |---|---|---|---|
 | 5 | Centralised authorization safeguards | High | ✅ Complete (commit `4b41451`) |
 | 4 | Automated PR checks (GitHub Actions CI) | High | ✅ Complete (commit `3f96349`) |
-| 2 | Database backup and recovery documentation | High | ⏳ Planned |
+| 2 | Database backup and recovery documentation | High | ✅ Complete — verify PITR + first test restore outstanding |
 | 1 | Integration test coverage | Medium | ⏳ Planned |
 | 3 | Unit and regression test coverage | Medium | ⏳ Planned |
 | 6 | Shared cross-cutting utilities | Low | ⏳ Incremental |
