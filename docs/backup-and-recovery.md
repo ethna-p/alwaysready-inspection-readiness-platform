@@ -4,7 +4,7 @@
 **Database:** Supabase (PostgreSQL)  
 **Last verified:** 31 August 2026  
 **Last test restore:** Not yet completed  
-**⚠️ Current status: FREE plan — no backups active. Upgrade to Pro required.**
+**Current status:** FREE plan — no paying customers yet. Upgrade to Pro on launch day (see §8).
 
 ---
 
@@ -123,7 +123,19 @@ Run this once per year to confirm backups are usable and the recovery procedure 
 
 ---
 
-## 7. Contacts
+## 8. Launch day checklist
+
+Complete these steps before the first paying customer signs up:
+
+- [ ] Upgrade `alwaysready-demo` Supabase project to **Pro plan** (~$25/month): Supabase dashboard → Settings → Billing → Upgrade
+- [ ] Confirm daily backups are active: Settings → Backups → at least one backup listed
+- [ ] Enable Point in Time Recovery: Settings → Backups → Point in Time Recovery → Enable
+- [ ] Complete first test restore (§5) and fill in the log (§6)
+- [ ] Record date completed in the header of this document
+
+---
+
+## 10. Contacts
 
 | Resource | URL |
 |---|---|

@@ -48,10 +48,12 @@ Created `docs/backup-and-recovery.md` covering:
 - An annual test restore procedure with a log table to record results
 - Contact and dashboard links
 
-**Actions required from AJ:**
-- ⚠️ **URGENT**: Upgrade the Supabase project (`yrychopwshnoplblrzyx`) from FREE to **Pro plan** (~$25/month). The dashboard currently shows "No backups" — there is no recovery path for the production database until this is done.
-- After upgrading: confirm Point in Time Recovery shows **Enabled** under Project Settings → Backups
-- Complete the first test restore and fill in the log in `docs/backup-and-recovery.md` (§6)
+**Context:** The platform has no paying customers yet, so the Free plan is acceptable for now. The runbook includes a launch day checklist (§8) that covers upgrading to Pro, enabling PITR, and completing the first test restore before the first customer signs up.
+
+**Actions required at launch:**
+- Upgrade `alwaysready-demo` Supabase project to Pro plan
+- Enable PITR under Project Settings → Backups
+- Complete first test restore and fill in the log in `docs/backup-and-recovery.md`
 
 **Committed:** see `docs/backup-and-recovery.md`
 
