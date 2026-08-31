@@ -293,11 +293,12 @@ A series of CI failures were resolved during the session that addressed the revi
 |---|---|---|
 | Integration Tests: duplicate migration version `20260719000001` — `contact_inbound_tickets` and `checklist_content_corrections` shared the same version key, causing a `schema_migrations_pkey` unique constraint violation on `supabase start` | Renamed `20260719000001_contact_inbound_tickets.sql` → `20260719000000_contact_inbound_tickets.sql` | `9272c91` |
 | Email templates serving old logo (no white inner ring) | Regenerated `public/logo-email.png` from updated brand mark | `87f760d` |
+| Integration Tests: wrong migration order — `20260719000005_dementia_sub_service.sql` tried to INSERT `sub_service = 'Dementia'` before `20260719000006_expand_sub_service_constraint.sql` added 'Dementia' to the CHECK constraint. The file that expanded the constraint even had a comment saying "Run this before 000005" but its filename placed it after. | Swapped filenames: constraint expansion → `000005`, data inserts → `000006` | `41fb228` |
 
 **CI status as of 31 August 2026 (end of session):**
 - TypeScript & Lint: ✅ Passing
 - Next.js Build: ✅ Passing
-- Integration Tests (RLS + Migrations): ✅ Fix pushed — awaiting CI #24 confirmation
+- Integration Tests (RLS + Migrations): ✅ Both fixes pushed to `main` — awaiting CI #25 confirmation
 
 ---
 
