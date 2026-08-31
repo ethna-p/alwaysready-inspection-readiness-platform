@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
+import { getFirstName } from '@/lib/utils/name'
 
 export type ReplyState =
   | { status: 'idle' }
@@ -42,7 +43,7 @@ export async function staffReply(
 
   // If this is a website enquiry, email the reply to the external sender
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
-    const firstName = ticket.external_name?.split(' ')[0] ?? 'there'
+    const firstName = getFirstName(ticket.external_name)
     await sendEmail({
       to:      ticket.external_email,
       subject: `Re: ${ticket.subject} [${ticket.reference}]`,
@@ -135,7 +136,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
       if ((ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
         // Website enquiry — email the external contact
         recipientEmail = ticket.external_email
-        firstName = ticket.external_name?.split(' ')[0] ?? 'there'
+        firstName = getFirstName(ticket.external_name)
       } else if (ticket.submitted_by) {
         // Platform user — look up their auth email and profile
         const { data: authUser } = await supabase.auth.admin.getUserById(ticket.submitted_by)
@@ -146,7 +147,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
           .single()
 
         recipientEmail = authUser?.user?.email ?? profile?.personal_email ?? null
-        firstName = profile?.full_name?.split(' ')[0] ?? 'there'
+        firstName = getFirstName(profile?.full_name)
       }
 
       if (recipientEmail) {

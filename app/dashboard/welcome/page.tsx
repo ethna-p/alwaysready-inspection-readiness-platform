@@ -8,6 +8,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { completeOnboarding } from './actions'
+import { getFirstName } from '@/lib/utils/name'
 
 export const metadata = { title: 'Welcome — AlwaysReady' }
 
@@ -25,7 +26,7 @@ export default async function WelcomePage() {
 
   if (profile?.onboarding_complete) redirect('/dashboard')
 
-  const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
+  const firstName = getFirstName(profile?.full_name)
 
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-6">

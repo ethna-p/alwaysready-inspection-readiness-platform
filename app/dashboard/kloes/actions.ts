@@ -22,6 +22,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin, requireRole } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import type { ComplianceStatus } from '@/lib/types'
+import { getFirstName } from '@/lib/utils/name'
 
 export type ActionState =
   | { success: true; message: string }
@@ -231,7 +232,7 @@ export async function assignKloe(
 
       if (assignee && klo) {
         const recipientEmail = assignee.personal_email || assignee.email
-        const firstName = assignee.full_name?.split(' ')[0] ?? 'there'
+        const firstName = getFirstName(assignee.full_name)
         const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
         const kloUrl = `${baseUrl}/dashboard/kloes/${kloItemId}`
 

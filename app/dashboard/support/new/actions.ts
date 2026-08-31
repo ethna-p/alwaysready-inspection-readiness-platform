@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
+import { getFirstName } from '@/lib/utils/name'
 
 export type SubmitTicketState =
   | { status: 'idle' }
@@ -52,7 +53,7 @@ export async function submitTicket(
   // Send auto-responder to the submitter (if we have an email address for them)
   const recipientEmail = profile.email ?? profileDetails?.personal_email ?? null
   if (recipientEmail) {
-    const firstName = profileDetails?.full_name?.split(' ')[0] ?? 'there'
+    const firstName = getFirstName(profileDetails?.full_name)
     await sendEmail({
       to:      recipientEmail,
       subject: `We've received your support request — ${ticket.reference}`,
