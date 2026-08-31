@@ -49,7 +49,9 @@ export function createRateLimiter({ windowMs, max }: RateLimiterOptions): RateLi
   // ── Upstash persistent limiter ─────────────────────────────────────────────
   if (redisUrl && redisToken) {
     // Lazy imports — only loaded when Redis is configured
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Redis }       = require('@upstash/redis')
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Ratelimit }   = require('@upstash/ratelimit')
 
     const redis = new Redis({ url: redisUrl, token: redisToken })

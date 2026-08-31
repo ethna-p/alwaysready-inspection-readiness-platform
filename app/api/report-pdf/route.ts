@@ -25,10 +25,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const buffer = await renderToBuffer(
-    React.createElement(ReportPdfDocument, body) as any
-  )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-pdf renderToBuffer does not accept the typed ReactElement union
+  const buffer = await renderToBuffer(React.createElement(ReportPdfDocument, body) as any)
 
   const slug = body.orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-')
   const date = new Date().toISOString().slice(0, 10)

@@ -59,8 +59,8 @@ export default async function PeoplesVoicePage() {
     .select('i_statement_id, confidence, evidence_summary, action_needed, recorded_by, recorded_at')
     .order('recorded_at', { ascending: false })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const typedHistory = historyRows ?? []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- history row join shape not inferred from select string
   const recorderIds = [...new Set(typedHistory.map((h: any) => h.recorded_by).filter(Boolean))] as string[]
   const recorderMap = new Map<string, string>()
   if (recorderIds.length > 0) {
@@ -192,14 +192,14 @@ export default async function PeoplesVoicePage() {
           ]} />
         </div>
         <p className="text-sm text-ink-dim leading-relaxed">
-          These are the <strong>"I" statements</strong> published by CQC as part of the draft 2026 assessment
+          These are the <strong>&quot;I&quot; statements</strong> published by CQC as part of the draft 2026 assessment
           framework, drawn from the Think Local Act Personal (TLAP) standards. During inspections, CQC gathers
           evidence directly from residents, families, and carers to assess whether each statement is met.
           Use this page to record what evidence you hold, rate its quality, set review dates, and track
           actions for any gaps.
         </p>
         <p className="text-sm text-ink-muted mt-2">
-          Source: CQC draft assessment framework v9 (2026). Well-Led has no published "I" statements in the
+          Source: CQC draft assessment framework v9 (2026). Well-Led has no published &quot;I&quot; statements in the
           current draft.
         </p>
       </div>
@@ -245,7 +245,7 @@ export default async function PeoplesVoicePage() {
       {/* Viewer notice */}
       {isViewer && (
         <div className="bg-[#e6f7f5] border border-[#c0eae5] rounded-xl px-4 py-3 text-sm text-brand">
-          You are viewing People's Voice in read-only mode.
+          You are viewing People&apos;s Voice in read-only mode.
         </div>
       )}
 

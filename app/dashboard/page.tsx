@@ -118,9 +118,9 @@ export default async function DashboardPage() {
   const isAdmin = profile?.role === 'admin'
 
   // ── CQC data — show stored data immediately, refresh in background ────────
-  let cqcRating:         CqcRating | null = (org?.cqc_rating as CqcRating) ?? null
-  let cqcInspectionDate: string | null    = org?.cqc_last_inspection_date ?? null
-  let cqcLocationName:   string | null    = org?.cqc_location_name ?? null
+  const cqcRating:         CqcRating | null = (org?.cqc_rating as CqcRating) ?? null
+  const cqcInspectionDate: string | null    = org?.cqc_last_inspection_date ?? null
+  const cqcLocationName:   string | null    = org?.cqc_location_name ?? null
 
   if (org?.cqc_location_id && profile?.organisation_id) {
     const fetchedAt = org.cqc_rating_fetched_at ? new Date(org.cqc_rating_fetched_at) : null

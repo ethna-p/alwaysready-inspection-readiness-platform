@@ -6,7 +6,11 @@
  * an inspection-ready document for the provider.
  *
  * Do NOT add 'use client' — this file is server-only.
+ *
+ * react/no-unescaped-entities is disabled file-wide: react-pdf <Text> elements
+ * do not parse HTML entities, so &apos; etc. must not be used here.
  */
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react'
 import {
   Document, Page, Text, View, StyleSheet,

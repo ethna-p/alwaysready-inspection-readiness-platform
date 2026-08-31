@@ -240,7 +240,7 @@ export default function GettingStartedWizard() {
                 All four steps complete!
               </p>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Your account is set up and you're ready to start building your
+                Your account is set up and you&apos;re ready to start building your
                 inspection readiness. This panel will close in a moment.
               </p>
             </div>

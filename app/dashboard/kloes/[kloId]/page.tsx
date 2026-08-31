@@ -253,7 +253,7 @@ export default async function KloeDetailPage({ params }: Props) {
           {kqName}
         </p>
         {kqDescription && (
-          <p className="text-sm text-ink-dim mb-2">"{kqDescription}"</p>
+          <p className="text-sm text-ink-dim mb-2">&quot;{kqDescription}&quot;</p>
         )}
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-brand">{klo.title}</h1>

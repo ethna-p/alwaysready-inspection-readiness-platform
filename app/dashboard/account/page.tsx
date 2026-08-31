@@ -544,7 +544,7 @@ export default async function AccountPage({
               </div>
               <div className="flex gap-2">
                 <dt className="font-medium w-16 shrink-0">User</dt>
-                <dd className="text-ink-dim">Can view all KLOEs and update the ones assigned to them. Sees their personal "My KLOEs" view on login.</dd>
+                <dd className="text-ink-dim">Can view all KLOEs and update the ones assigned to them. Sees their personal &quot;My KLOEs&quot; view on login.</dd>
               </div>
               <div className="flex gap-2">
                 <dt className="font-medium w-16 shrink-0">Viewer</dt>

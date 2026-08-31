@@ -177,6 +177,7 @@ export async function GET() {
   // ── Shape rows for CSV ──────────────────────────────────────────────────
 
   const kloeCsv = toCsv(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase joined query shape; typed below by field access
     (complianceRecords ?? []).map((r: any) => ({
       key_question:         r.klo_items?.key_questions?.name ?? '',
       kloe_title:           r.klo_items?.title ?? '',
@@ -195,6 +196,7 @@ export async function GET() {
   )
 
   const histCsv = toCsv(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase joined query shape
     (complianceHistory ?? []).map((r: any) => ({
       kloe_title:           r.klo_items?.title ?? '',
       status:               r.status ?? '',
@@ -210,6 +212,7 @@ export async function GET() {
   )
 
   const staffCsv = toCsv(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase joined query shape
     (hrStaff ?? []).map((r: any) => ({
       name:                       r.users?.full_name ?? '',
       email:                      r.users?.email ?? '',
@@ -234,6 +237,7 @@ export async function GET() {
   )
 
   const trainingCsv = toCsv(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase joined query shape
     (hrTraining ?? []).map((r: any) => ({
       name:             r.users?.full_name ?? '',
       email:            r.users?.email ?? '',
@@ -248,6 +252,7 @@ export async function GET() {
   )
 
   const holidayCsv = toCsv(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase joined query shape
     (hrHolidays ?? []).map((r: any) => ({
       name:             r.users?.full_name ?? '',
       email:            r.users?.email ?? '',
@@ -261,6 +266,7 @@ export async function GET() {
   )
 
   const teamCsv = toCsv(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase joined query shape
     (teamMembers ?? []).map((r: any) => ({
       name:                r.full_name ?? '',
       email:               r.email,

@@ -115,7 +115,7 @@ export default async function OrganisationsPage({
         <h1 className="text-2xl font-bold text-ink mb-1">Organisations</h1>
         <p className="text-sm text-ink-muted">
           All provisioned organisations.{' '}
-          <span className="font-medium">"View as admin"</span> opens their dashboard in a new tab — your superadmin session stays open here.
+          <span className="font-medium">&quot;View as admin&quot;</span> opens their dashboard in a new tab — your superadmin session stays open here.
         </p>
       </div>
 

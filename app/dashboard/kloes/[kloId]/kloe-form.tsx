@@ -118,7 +118,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
         <div>
           <label htmlFor="date_reviewed" className="block text-sm font-medium text-ink mb-1">
             Date of this review
-            <span className="ml-1 text-xs text-ink-dim font-normal">(when you actually completed the review, not today's date)</span>
+            <span className="ml-1 text-xs text-ink-dim font-normal">(when you actually completed the review, not today&apos;s date)</span>
             <Tooltip text="The date you actually completed the review — not today's date unless you reviewed it today. This date is used to calculate when the next review is due, and is permanently recorded in your audit trail." />
           </label>
           <input

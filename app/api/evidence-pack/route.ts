@@ -141,10 +141,8 @@ export async function GET() {
     kloesByCategory,
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const buffer = await renderToBuffer(
-    React.createElement(EvidencePackDocument, docProps) as any
-  )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-pdf renderToBuffer does not accept the typed ReactElement union
+  const buffer = await renderToBuffer(React.createElement(EvidencePackDocument, docProps) as any)
 
   const filename = `evidence-pack-${org.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${new Date().toISOString().slice(0, 10)}.pdf`
 

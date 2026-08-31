@@ -49,7 +49,7 @@ export default async function CampaignsPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-ink mb-1">Campaigns</h1>
         <p className="text-sm text-ink-muted">
-          Direct marketing campaigns — track who you've contacted and manage opt-outs.
+          Direct marketing campaigns — track who you&apos;ve contacted and manage opt-outs.
         </p>
       </div>
 
