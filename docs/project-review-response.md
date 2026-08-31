@@ -75,6 +75,31 @@ A friend conducted a structured review of the AlwaysReady platform codebase and 
 
 ---
 
+## Finding #4 — Automated Pull-Request Checks ✅ COMPLETE
+
+**Concern:** No CI pipeline. Merges to `main` are not gated by any automated check — type errors, lint failures, or broken builds could be shipped.
+
+**Specific gaps identified:**
+- No GitHub Actions workflow
+- No `tsc --noEmit` on push
+- No ESLint on push
+- No build verification before merge
+
+**Changes made:**
+
+Created `.github/workflows/ci.yml` with two jobs:
+
+1. **TypeScript & Lint** — runs `npx tsc --noEmit` then `npm run lint`. No secrets required. Runs on every push to `main` and every pull request targeting `main`.
+2. **Next.js Build** — runs `npm run build` with placeholder env vars. Only runs if the first job passes. Placeholder values are sufficient because Next.js App Router server actions do not execute at build time.
+
+Sentry source map uploads will warn (not fail) in CI without a real `SENTRY_AUTH_TOKEN` — this is acceptable; the build check itself succeeds.
+
+To upgrade the build job to use real credentials in future, add the values from `.env.example` as GitHub repository Secrets and reference them with `${{ secrets.SECRET_NAME }}` in the workflow.
+
+**Committed:** `3f96349 — Add GitHub Actions CI workflow (tsc, lint, next build)`
+
+---
+
 ## Finding #5 — Centralized Authorization Safeguards ✅ COMPLETE
 
 **Concern:** Authorization checks were duplicated inline across every server action file, using inconsistent patterns (some used `supabase.auth.getUser()` directly, some called `getCurrentUserProfile()`, one file had its own local `requireAdmin()` function). Any file that missed the check would silently be unprotected.
@@ -146,7 +171,7 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 | # | Finding | Priority | Status |
 |---|---|---|---|
 | 5 | Centralised authorization safeguards | High | ✅ Complete (commit `4b41451`) |
-| 4 | Automated PR checks (GitHub Actions CI) | High | ⏳ Planned |
+| 4 | Automated PR checks (GitHub Actions CI) | High | ✅ Complete (commit `3f96349`) |
 | 2 | Database backup and recovery documentation | High | ⏳ Planned |
 | 1 | Integration test coverage | Medium | ⏳ Planned |
 | 3 | Unit and regression test coverage | Medium | ⏳ Planned |
