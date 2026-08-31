@@ -68,10 +68,18 @@ export async function seedOrg(
 ): Promise<string> {
   const orgId = randomUUID()
   const name = opts.name ?? `Test Org ${orgId.slice(0, 8)}`
+
+  // service_type_id is NOT NULL — look up any seeded value from the reference table
+  const { rows } = await client.query<{ id: string }>(
+    `SELECT id FROM public.service_types LIMIT 1`
+  )
+  const serviceTypeId = rows[0]?.id
+  if (!serviceTypeId) throw new Error('No service_types rows found — migrations may not have run')
+
   await client.query(
-    `INSERT INTO public.organisations (id, name, subscription_tier)
-     VALUES ($1, $2, 'trial')`,
-    [orgId, name]
+    `INSERT INTO public.organisations (id, name, subscription_tier, service_type_id)
+     VALUES ($1, $2, 'trial', $3)`,
+    [orgId, name, serviceTypeId]
   )
   return orgId
 }
