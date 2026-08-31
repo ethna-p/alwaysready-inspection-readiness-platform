@@ -220,7 +220,7 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 
 **Response:** Incremental — extract duplication as we encounter it during normal feature work rather than a big-bang refactor.
 
-**Status:** ⏳ Not started. Incremental / ongoing.
+**Status:** ✅ In progress. `getFirstName(fullName, fallback)` extracted to `lib/utils/name.ts`; all 13 inline `?.split(' ')[0] ?? 'there'` call-sites updated across the codebase. One intentional variant (`?? null` in `broadcast/actions.ts`) left unchanged — different semantic.
 
 ---
 
@@ -230,7 +230,9 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 
 **Response:** Agreed in principle. Specific files to target identified as: large server action files with many unrelated actions, and page components that mix data fetching with rendering.
 
-**Status:** ⏳ Not started. Incremental / ongoing.
+**Status:** ✅ In progress. Two large cron route files broken up by extracting email definitions into dedicated lib modules, mirroring the existing `lib/waitlist-nurture.ts` pattern:
+- `lib/trial-emails.ts` — `TRIAL_EMAILS`, `USER_EMAILS`, types, `formatDate`, `daysElapsed` (route: 800 → ~340 lines)
+- `lib/onboarding-emails.ts` — `ONBOARDING_EMAILS`, `OnboardingEmail` type, `buildHtml()` (route: 644 → ~130 lines)
 
 ---
 
@@ -243,8 +245,8 @@ A generic `requireOrgResource()` helper was intentionally **not** added: ownersh
 | 2 | Database backup and recovery documentation | High | ✅ Complete — verify PITR + first test restore outstanding |
 | 1 | Integration test coverage | Medium | ✅ Complete (RLS, roles, migrations, Stripe) |
 | 3 | Unit and regression test coverage | Medium | ✅ Complete (27 tests; vitest) |
-| 6 | Shared cross-cutting utilities | Low | ⏳ Incremental |
-| 7 | Large file / component boundary refactoring | Low | ⏳ Incremental |
+| 6 | Shared cross-cutting utilities | Low | ✅ In progress (`lib/utils/name.ts` — `getFirstName`) |
+| 7 | Large file / component boundary refactoring | Low | ✅ In progress (trial-emails + onboarding-emails extracted to lib) |
 
 ---
 
