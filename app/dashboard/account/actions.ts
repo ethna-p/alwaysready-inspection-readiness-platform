@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser, requireAdmin } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 
 // ── Sub-services ──────────────────────────────────────────────────────────────
@@ -11,17 +12,10 @@ export async function toggleSubService(
   subService: string,
   enable: boolean
 ): Promise<void> {
+  const profile = await requireAdmin()
+  if (!profile) return
+
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id, role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile || profile.role !== 'admin') return
 
   if (enable) {
     await supabase
@@ -52,10 +46,10 @@ export async function updatePersonalContact(
   _prev: UpdateContactResult | null,
   formData: FormData
 ): Promise<UpdateContactResult> {
-  const supabase = await createClient()
+  const profile = await requireUser()
+  if (!profile) return { success: false, error: 'Not authenticated.' }
 
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-  if (authError || !user) return { success: false, error: 'Not authenticated.' }
+  const supabase = await createClient()
 
   const personalEmail = (formData.get('personal_email') as string | null)?.trim() || null
   const mobileNumber  = (formData.get('mobile_number') as string | null)?.trim() || null
@@ -63,7 +57,7 @@ export async function updatePersonalContact(
   const { error } = await supabase
     .from('users')
     .update({ personal_email: personalEmail, mobile_number: mobileNumber })
-    .eq('id', user.id)
+    .eq('id', profile.id)
 
   if (error) {
     console.error('[updatePersonalContact]', error)

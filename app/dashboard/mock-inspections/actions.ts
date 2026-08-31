@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireAdmin, requireUser } from '@/lib/auth'
 import type { MockInspectionRating, MockChecklistResponse } from '@/lib/types'
 
 // ── Start a new mock inspection ─────────────────────────────────────────────
@@ -10,18 +11,10 @@ export async function startMockInspection(
   type: 'full' | 'partial',
   keyQuestionId: string | null,
 ): Promise<{ id: string } | { error: string }> {
+  const profile = await requireAdmin()
+  if (!profile) return { error: 'Only admins can run mock inspections' }
+
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id, role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
-  if (profile.role !== 'admin') return { error: 'Only admins can run mock inspections' }
 
   const { data, error } = await supabase
     .from('mock_inspections')
@@ -30,7 +23,7 @@ export async function startMockInspection(
       type,
       key_question_id: keyQuestionId ?? null,
       status: 'in_progress',
-      conducted_by: user.id,
+      conducted_by: profile.id,
     })
     .select('id')
     .single()
@@ -49,16 +42,10 @@ export async function saveMockFinding(
   rating: MockInspectionRating,
   notes: string,
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  const profile = await requireUser()
+  if (!profile) return { error: 'Not authenticated' }
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id')
-    .eq('id', user.id)
-    .single()
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
+  const supabase = await createClient()
 
   // Verify the inspection belongs to the caller's org
   const { data: inspection } = await supabase
@@ -96,16 +83,10 @@ export async function saveMockChecklistResponse(
   response: MockChecklistResponse,
   note: string,
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  const profile = await requireUser()
+  if (!profile) return { error: 'Not authenticated' }
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id')
-    .eq('id', user.id)
-    .single()
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
+  const supabase = await createClient()
 
   // Verify the inspection belongs to the caller's org
   const { data: inspection } = await supabase
@@ -138,16 +119,10 @@ export async function saveMockChecklistResponse(
 export async function completeMockInspection(
   mockInspectionId: string,
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  const profile = await requireUser()
+  if (!profile) return { error: 'Not authenticated' }
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id')
-    .eq('id', user.id)
-    .single()
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('mock_inspections')

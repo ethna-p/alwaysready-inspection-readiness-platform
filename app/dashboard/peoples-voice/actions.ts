@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { requireAdmin, requireRole } from '@/lib/auth'
 import type { IStatementConfidence } from '@/lib/types'
 
 // ── Upsert evidence + review dates ───────────────────────────────────────────
@@ -14,19 +15,10 @@ export async function upsertIStatementEvidence(
   dateReviewed: string,
   nextReviewDue: string,
 ): Promise<{ success: true } | { error: string }> {
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { error: 'Not authenticated or insufficient permissions.' }
+
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id, role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
-  if (profile.role === 'viewer') return { error: 'Viewers cannot edit evidence' }
 
   const { error } = await supabase
     .from('i_statement_evidence')
@@ -40,7 +32,7 @@ export async function upsertIStatementEvidence(
         date_reviewed:    dateReviewed || null,
         next_review_due:  nextReviewDue || null,
         last_updated_at:  new Date().toISOString(),
-        updated_by:       user.id,
+        updated_by:       profile.id,
       },
       { onConflict: 'organisation_id,i_statement_id' },
     )
@@ -56,19 +48,10 @@ export async function upsertIStatementEvidence(
 export async function createIStatementAction(
   formData: FormData,
 ): Promise<{ success: true } | { error: string }> {
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { error: 'Not authenticated or insufficient permissions.' }
+
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id, role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
-  if (profile.role === 'viewer') return { error: 'Viewers cannot create action items' }
 
   const statementId  = formData.get('i_statement_id') as string
   const title        = (formData.get('title') as string)?.trim()
@@ -90,7 +73,7 @@ export async function createIStatementAction(
       due_date:        dueDate,
       priority:        priority as 'high' | 'medium' | 'low',
       assigned_to:     assignedTo || null,
-      created_by:      user.id,
+      created_by:      profile.id,
     })
 
   if (error) return { error: error.message }
@@ -102,19 +85,10 @@ export async function createIStatementAction(
 export async function signOffIStatementAction(
   formData: FormData,
 ): Promise<{ success: true } | { error: string }> {
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { error: 'Not authenticated or insufficient permissions.' }
+
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id, role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
-  if (profile.role === 'viewer') return { error: 'Viewers cannot sign off action items' }
 
   const id              = formData.get('id') as string
   const completionNotes = (formData.get('completion_notes') as string)?.trim() || null
@@ -125,7 +99,7 @@ export async function signOffIStatementAction(
       status:           'completed',
       completion_notes: completionNotes,
       completed_at:     new Date().toISOString(),
-      completed_by:     user.id,
+      completed_by:     profile.id,
     })
     .eq('id', id)
     .eq('organisation_id', profile.organisation_id)
@@ -139,19 +113,10 @@ export async function signOffIStatementAction(
 export async function deleteIStatementAction(
   formData: FormData,
 ): Promise<{ success: true } | { error: string }> {
+  const profile = await requireAdmin()
+  if (!profile) return { error: 'Only admins can delete action items.' }
+
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
-
-  const { data: profile } = await supabase
-    .from('users')
-    .select('organisation_id, role')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile?.organisation_id) return { error: 'No organisation found' }
-  if (profile.role !== 'admin') return { error: 'Only admins can delete action items' }
 
   const id = formData.get('id') as string
 

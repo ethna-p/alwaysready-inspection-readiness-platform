@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireUser } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 
 export type SubmitTicketState =
@@ -22,25 +23,22 @@ export async function submitTicket(
     return { status: 'error', message: 'Please provide a little more detail in your message (at least 20 characters).' }
   }
 
+  const profile = await requireUser()
+  if (!profile) return { status: 'error', message: 'Not authenticated.' }
+
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { status: 'error', message: 'Not authenticated.' }
 
-  const { data: profile } = await supabase
+  const { data: profileDetails } = await supabase
     .from('users')
-    .select('organisation_id, full_name, personal_email')
-    .eq('id', user.id)
+    .select('full_name, personal_email')
+    .eq('id', profile.id)
     .single()
-
-  if (!profile?.organisation_id) {
-    return { status: 'error', message: 'Could not determine your organisation.' }
-  }
 
   const { data: ticket, error } = await supabase
     .from('support_tickets')
     .insert({
       organisation_id: profile.organisation_id,
-      submitted_by: user.id,
+      submitted_by: profile.id,
       subject,
       message,
     })
@@ -52,9 +50,9 @@ export async function submitTicket(
   }
 
   // Send auto-responder to the submitter (if we have an email address for them)
-  const recipientEmail = user.email ?? profile.personal_email ?? null
+  const recipientEmail = profile.email ?? profileDetails?.personal_email ?? null
   if (recipientEmail) {
-    const firstName = profile.full_name?.split(' ')[0] ?? 'there'
+    const firstName = profileDetails?.full_name?.split(' ')[0] ?? 'there'
     await sendEmail({
       to:      recipientEmail,
       subject: `We've received your support request — ${ticket.reference}`,
@@ -98,7 +96,7 @@ export async function submitTicket(
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
           <tr><td style="padding:4px 16px 4px 0;color:#555">Reference</td><td style="padding:4px 0;font-family:monospace">${ticket.reference}</td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">Organisation</td><td style="padding:4px 0">${org?.name ?? '—'}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${profile.full_name ?? user.email ?? '—'}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${profileDetails?.full_name ?? profile.email ?? '—'}</td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${subject}</strong></td></tr>
         </table>
         <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${message}</p>

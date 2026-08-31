@@ -19,7 +19,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getCurrentUserProfile } from '@/lib/session'
+import { requireAdmin, requireRole } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import type { ComplianceStatus } from '@/lib/types'
 
@@ -42,12 +42,9 @@ export async function updateKloCompliance(
   const supabase = await createClient()
 
   // ── Auth + role ────────────────────────────────────────────
-  const profile = await getCurrentUserProfile()
+  const profile = await requireRole(['admin', 'user'])
   if (!profile) {
-    return { success: false, error: 'Not authenticated. Please sign in again.' }
-  }
-  if (profile.role === 'viewer') {
-    return { success: false, error: 'Viewers cannot make changes.' }
+    return { success: false, error: 'Not authenticated or insufficient permissions.' }
   }
 
   const isAdmin = profile.role === 'admin'
@@ -183,11 +180,8 @@ export async function assignKloe(
 ): Promise<ActionState> {
   const supabase = await createClient()
 
-  const profile = await getCurrentUserProfile()
+  const profile = await requireAdmin()
   if (!profile) {
-    return { success: false, error: 'Not authenticated. Please sign in again.' }
-  }
-  if (profile.role !== 'admin') {
     return { success: false, error: 'Only admins can assign KLOEs.' }
   }
 

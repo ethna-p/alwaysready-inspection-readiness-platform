@@ -8,20 +8,11 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getCurrentUserProfile } from '@/lib/session'
+import { requireAdmin } from '@/lib/auth'
 
 export type HrActionResult =
   | { success: true; message?: string }
   | { success: false; error: string }
-
-// ── Guard helper ─────────────────────────────────────────────────────────────
-
-async function requireAdmin() {
-  const profile = await getCurrentUserProfile()
-  if (!profile || !profile.organisation_id) return null
-  if (profile.role !== 'admin') return null
-  return profile as typeof profile & { organisation_id: string }
-}
 
 // ── Staff profile ────────────────────────────────────────────────────────────
 
