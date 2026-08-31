@@ -96,11 +96,10 @@ The following modules and features are fully built and deployed:
 - All 24 KLOE rating characteristics loaded verbatim from the CQC draft framework .docx and verified bullet-by-bullet
 
 **Pending (not yet built)**
-- Stripe integration (#132)
 - Cancel Subscription button on Account page (#133)
-- Dark/light theme toggle (#131)
-- Auto-email to superadmin on Beta user provision (#137)
-- Data Security Statement and Data Retention Policy added to Help page (#110)
+- DSCR integration — connect to partner DSCR APIs (Nourish, PCS) (#302)
+- Rebuild onboarding email sequence (#609)
+- /terms and /dpa pages on platform (#231) — pending solicitor review (#230)
 
 ---
 
@@ -307,6 +306,19 @@ Before the platform is opened to real paying customers:
 - `hr_training_records` — per-staff training completion records
 - `hr_training_certificates` — uploaded certificate files
 - `hr_holiday_allowances` — per-staff annual leave records
+- `hr_absence_records` — per-staff absence records
+- `hr_absence_categories` — per-org custom absence category definitions
+- `mock_inspection_findings` — findings logged during a mock inspection session
+- `action_items` — action plan items (may link to a mock inspection finding)
+- `i_statement_actions` — action items within People's Voice I-statement records
+- `i_statement_evidence_files` — uploaded evidence files for I-statement records
+- `saved_report_views` — named saved filter configurations for the ReportBuilder
+- `report_snapshots` — point-in-time snapshots of readiness % for progress delta
+- `demo_leads` — demo booking form submissions
+- `zeeg_bookings` — Zeeg calendar booking webhooks
+- `marketing_campaigns` — outbound email campaign records
+- `campaign_contacts` — per-campaign contact list
+- `marketing_suppressions` — opt-out suppression list for marketing campaigns
 
 ---
 
@@ -328,14 +340,15 @@ Never use `supabase db push` against the production database. Always use the SQL
 
 | # | Item | Owner |
 |---|---|---|
-| 110 | Add Data Security Statement and Data Retention Policy to Help page | Claude |
-| 131 | Add dark/light theme toggle | Claude |
-| 132 | Set up Stripe integration | Claude |
 | 133 | Add Cancel Subscription button to Account page | Claude |
 | 135 | Obtain DPA from solicitor | AJ |
 | 136 | Upgrade Resend to Pro plan before go-live | AJ |
-| 137 | Add auto-email to superadmin provision flow for Beta users | Claude |
 | 163 | Complete sales@ inbound email wiring (Resend inbound domain + webhook secret in Vercel + Gmail forward) — deferred until Resend Pro upgrade | AJ + Claude |
+| 229 | Purchase Simply Docs Business subscription; download T&Cs + DPA templates | AJ |
+| 230 | Solicitor review of T&Cs and DPA | AJ |
+| 231 | Create /terms and /dpa pages on platform (blocked on #230) | Claude |
+| 302 | DSCR integration — connect to partner DSCR APIs (Nourish, PCS) | Claude |
+| 609 | Rebuild onboarding email sequence | Claude |
 
 ---
 
