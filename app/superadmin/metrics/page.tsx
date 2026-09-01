@@ -143,6 +143,71 @@ export default async function MetricsPage() {
     })
     .sort((a, b) => b.count - a.count)
 
+  // ── 3b. Engagement quality ─────────────────────────────────────────────────
+  const { data: complianceRecords } = await supabase
+    .from('compliance_records')
+    .select('organisation_id, status, date_reviewed')
+
+  const { data: mockInspections } = await supabase
+    .from('mock_inspections')
+    .select('id, organisation_id, status, completed_at')
+
+  const { data: mockFindings } = await supabase
+    .from('mock_inspection_findings')
+    .select('mock_inspection_id')
+
+  // orgs that have touched the platform at all (non-tester, non-null trial)
+  const engagementOrgs = orgs.filter(o => o.trial_expires_at && !o.is_tester)
+
+  const compByOrg: Record<string, { anyProgress: boolean }> = {}
+  for (const c of complianceRecords ?? []) {
+    if (!compByOrg[c.organisation_id]) compByOrg[c.organisation_id] = { anyProgress: false }
+    if (c.status !== 'not_started' || c.date_reviewed) {
+      compByOrg[c.organisation_id].anyProgress = true
+    }
+  }
+  const mockOrgSet = new Set((mockInspections ?? []).map(m => m.organisation_id))
+  const evidenceOrgSet = new Set(Object.keys(evidenceByOrg))
+
+  const engagementRows = engagementOrgs.map(o => {
+    const hasCompliance = compByOrg[o.id]?.anyProgress ?? false
+    const hasMock       = mockOrgSet.has(o.id)
+    const hasEvidence   = evidenceOrgSet.has(o.id)
+    const score         = [hasCompliance, hasMock, hasEvidence].filter(Boolean).length
+    return {
+      name: o.name,
+      subscribed: !!o.subscribed_at,
+      hasCompliance,
+      hasMock,
+      hasEvidence,
+      score,
+    }
+  }).sort((a, b) => a.score - b.score)
+
+  // ── 3c. Mock inspection usage ───────────────────────────────────────────────
+  const findingsByInspection: Record<string, number> = {}
+  for (const f of mockFindings ?? []) {
+    findingsByInspection[f.mock_inspection_id] = (findingsByInspection[f.mock_inspection_id] ?? 0) + 1
+  }
+
+  const mockByOrg: Record<string, { count: number; completed: number; findingsTotal: number }> = {}
+  for (const m of mockInspections ?? []) {
+    if (!mockByOrg[m.organisation_id]) mockByOrg[m.organisation_id] = { count: 0, completed: 0, findingsTotal: 0 }
+    mockByOrg[m.organisation_id].count++
+    if (m.status === 'completed') {
+      mockByOrg[m.organisation_id].completed++
+      mockByOrg[m.organisation_id].findingsTotal += findingsByInspection[m.id] ?? 0
+    }
+  }
+  const mockRows = Object.entries(mockByOrg)
+    .map(([orgId, v]) => ({
+      name: orgById[orgId] ?? orgId,
+      total: v.count,
+      completed: v.completed,
+      avgFindings: v.completed > 0 ? (v.findingsTotal / v.completed).toFixed(1) : '—',
+    }))
+    .sort((a, b) => b.total - a.total)
+
   // ── 4. HR ───────────────────────────────────────────────────────────────────
 
   // DBS checks expiring in 60 days
@@ -187,6 +252,48 @@ export default async function MetricsPage() {
   const completionRows = Object.entries(completionsByType)
     .map(([name, v]) => ({ name, completions: v.count, staff: v.staffSet.size }))
     .sort((a, b) => b.completions - a.completions)
+
+  // Staff profile completeness
+  const { data: allActiveStaff } = await supabase
+    .from('hr_staff_profiles')
+    .select('organisation_id, employment_status, dbs_next_review_due, job_title')
+    .eq('employment_status', 'active')
+
+  const staffGapByOrg: Record<string, number> = {}
+  for (const s of allActiveStaff ?? []) {
+    if (!s.dbs_next_review_due) {
+      staffGapByOrg[s.organisation_id] = (staffGapByOrg[s.organisation_id] ?? 0) + 1
+    }
+  }
+  const staffGapRows = Object.entries(staffGapByOrg)
+    .map(([orgId, count]) => ({ name: orgById[orgId] ?? orgId, count }))
+    .sort((a, b) => b.count - a.count)
+
+  // Support ticket resolution time
+  const { data: tickets } = await supabase
+    .from('support_tickets')
+    .select('status, created_at, updated_at')
+
+  const ticketStats = {
+    open: 0,
+    in_progress: 0,
+    resolved: 0,
+    avgDaysToResolve: 0,
+  }
+  let resolvedDaysTotal = 0
+  let resolvedCount = 0
+  for (const t of tickets ?? []) {
+    if (t.status === 'open') ticketStats.open++
+    else if (t.status === 'in_progress') ticketStats.in_progress++
+    else if (t.status === 'resolved') {
+      ticketStats.resolved++
+      resolvedDaysTotal += (new Date(t.updated_at).getTime() - new Date(t.created_at).getTime()) / 86400000
+      resolvedCount++
+    }
+  }
+  ticketStats.avgDaysToResolve = resolvedCount > 0
+    ? Math.round((resolvedDaysTotal / resolvedCount) * 10) / 10
+    : 0
 
   // Training records without certificates
   const { data: allTraining } = await supabase
@@ -447,6 +554,121 @@ export default async function MetricsPage() {
                     <td className="px-4 py-3 text-ink">{r.name}</td>
                     <td className="px-4 py-3 text-right">{r.completions}</td>
                     <td className="px-4 py-3 text-right text-ink-muted">{r.staff}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* ── Engagement quality ── */}
+      <section>
+        <h2 className="text-base font-semibold text-ink mb-1">Engagement quality</h2>
+        <p className="text-xs text-ink-muted mb-4">Tester accounts excluded. Score = number of areas used (compliance, mock inspection, evidence).</p>
+        <div className="bg-card border border-line rounded-xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-fill text-ink-muted text-xs uppercase tracking-wide">
+              <tr>
+                <th className="px-4 py-3 text-left">Organisation</th>
+                <th className="px-4 py-3 text-center">Compliance</th>
+                <th className="px-4 py-3 text-center">Mock inspection</th>
+                <th className="px-4 py-3 text-center">Evidence</th>
+                <th className="px-4 py-3 text-center">Score</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {engagementRows.length === 0 ? (
+                <tr><td colSpan={5} className="px-4 py-4 text-ink-muted">No trial orgs yet.</td></tr>
+              ) : engagementRows.map(r => (
+                <tr key={r.name}>
+                  <td className="px-4 py-3 text-ink">
+                    {r.name}
+                    {r.subscribed && <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-teal-100 text-teal-700">Paid</span>}
+                  </td>
+                  <td className="px-4 py-3 text-center">{r.hasCompliance ? '✓' : <span className="text-red-400">✗</span>}</td>
+                  <td className="px-4 py-3 text-center">{r.hasMock ? '✓' : <span className="text-red-400">✗</span>}</td>
+                  <td className="px-4 py-3 text-center">{r.hasEvidence ? '✓' : <span className="text-red-400">✗</span>}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`font-bold ${r.score === 0 ? 'text-red-500' : r.score < 3 ? 'text-amber-500' : 'text-teal-600'}`}>
+                      {r.score}/3
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ── Mock inspection usage ── */}
+      <section>
+        <h2 className="text-base font-semibold text-ink mb-4">Mock inspection usage</h2>
+        {mockRows.length === 0 ? (
+          <p className="text-sm text-ink-muted">No mock inspections run yet.</p>
+        ) : (
+          <div className="bg-card border border-line rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-fill text-ink-muted text-xs uppercase tracking-wide">
+                <tr>
+                  <th className="px-4 py-3 text-left">Organisation</th>
+                  <th className="px-4 py-3 text-right">Total</th>
+                  <th className="px-4 py-3 text-right">Completed</th>
+                  <th className="px-4 py-3 text-right">Avg findings</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {mockRows.map(r => (
+                  <tr key={r.name}>
+                    <td className="px-4 py-3 text-ink">{r.name}</td>
+                    <td className="px-4 py-3 text-right">{r.total}</td>
+                    <td className="px-4 py-3 text-right">{r.completed}</td>
+                    <td className="px-4 py-3 text-right text-ink-muted">{r.avgFindings}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* ── Support tickets ── */}
+      <section>
+        <h2 className="text-base font-semibold text-ink mb-4">Support tickets</h2>
+        <div className="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Open', value: ticketStats.open, colour: 'text-red-700 bg-red-50 border-red-200' },
+            { label: 'In progress', value: ticketStats.in_progress, colour: 'text-amber-700 bg-amber-50 border-amber-200' },
+            { label: 'Resolved', value: ticketStats.resolved, colour: 'text-teal-700 bg-teal-50 border-teal-200' },
+            { label: 'Avg days to resolve', value: ticketStats.avgDaysToResolve, colour: 'text-gray-700 bg-gray-50 border-gray-200' },
+          ].map(({ label, value, colour }) => (
+            <div key={label} className={`rounded-xl border p-5 ${colour}`}>
+              <div className="text-3xl font-bold">{value}</div>
+              <div className="text-sm mt-1 font-medium">{label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Staff profile completeness ── */}
+      <section>
+        <h2 className="text-base font-semibold text-ink mb-4">Active staff missing DBS review date</h2>
+        {staffGapRows.length === 0 ? (
+          <p className="text-sm text-ink-muted">All active staff have a DBS review date recorded.</p>
+        ) : (
+          <div className="bg-card border border-line rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-fill text-ink-muted text-xs uppercase tracking-wide">
+                <tr>
+                  <th className="px-4 py-3 text-left">Organisation</th>
+                  <th className="px-4 py-3 text-right">Staff missing DBS date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {staffGapRows.map(r => (
+                  <tr key={r.name}>
+                    <td className="px-4 py-3 text-ink">{r.name}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-amber-600">{r.count}</td>
                   </tr>
                 ))}
               </tbody>
