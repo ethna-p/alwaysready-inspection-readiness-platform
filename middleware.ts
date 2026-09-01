@@ -140,8 +140,9 @@ async function middlewareFn(request: NextRequest) {
   // ── MFA guard ─────────────────────────────────────────────────────────
   // Runs for authenticated users on protected routes only.
   // Skip the MFA pages themselves to avoid redirect loops.
-  const isMfaVerifyPage = pathname === '/login/mfa'
-  const isMfaSetupPage  = pathname.startsWith('/dashboard/account/mfa')
+  const isMfaVerifyPage        = pathname === '/login/mfa'
+  const isMfaSetupPage         = pathname.startsWith('/dashboard/account/mfa')
+  const isSuperadminAccountPage = pathname === '/superadmin/account'
 
   if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/superadmin'))) {
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
@@ -154,8 +155,20 @@ async function middlewareFn(request: NextRequest) {
         return NextResponse.redirect(url)
       }
 
-      // 2. Admin with no factor enrolled → force enrolment
-      // (Only for /dashboard routes — superadmin has no profile row so skip for them)
+      // 2a. Superadmin with no factor enrolled → force enrolment on /superadmin/account
+      if (
+        aal.nextLevel !== 'aal2' &&
+        user.email === superadminEmail &&
+        pathname.startsWith('/superadmin') &&
+        !isSuperadminAccountPage
+      ) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/superadmin/account'
+        return NextResponse.redirect(url)
+      }
+
+      // 2b. Admin/user with no factor enrolled → force enrolment
+      // (dashboard routes only — superadmin handled above)
       if (
         aal.nextLevel !== 'aal2' &&
         user.email !== superadminEmail &&
