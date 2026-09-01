@@ -45,6 +45,15 @@ function toCsv(rows: Record<string, unknown>[]): string {
   return lines.join('\r\n')
 }
 
+// ── Safety caps ────────────────────────────────────────────────────────────
+// Each table query is bounded to MAX_ROWS_PER_TABLE rows to prevent a very
+// large organisation from triggering OOM or a response timeout. The combined
+// uncompressed CSV content is also capped at MAX_UNCOMPRESSED_BYTES (50 MB)
+// before building the ZIP. These limits are generous for any real care
+// provider but protect against pathological or adversarial data volumes.
+const MAX_ROWS_PER_TABLE     = 10_000
+const MAX_UNCOMPRESSED_BYTES = 50 * 1024 * 1024 // 50 MB
+
 // ── Route handler ──────────────────────────────────────────────────────────
 
 export async function GET() {
@@ -101,7 +110,8 @@ export async function GET() {
         updated_at
       `)
       .eq('organisation_id', orgId)
-      .order('updated_at', { ascending: false }),
+      .order('updated_at', { ascending: false })
+      .limit(MAX_ROWS_PER_TABLE),
 
     // Full compliance audit trail
     supabase
@@ -120,7 +130,8 @@ export async function GET() {
         system_recorded_at
       `)
       .eq('organisation_id', orgId)
-      .order('system_recorded_at', { ascending: false }),
+      .order('system_recorded_at', { ascending: false })
+      .limit(MAX_ROWS_PER_TABLE),
 
     // HR staff profiles with name and email from users
     supabase
@@ -145,7 +156,8 @@ export async function GET() {
         mandatory_training_complete,
         created_at
       `)
-      .eq('organisation_id', orgId),
+      .eq('organisation_id', orgId)
+      .limit(MAX_ROWS_PER_TABLE),
 
     // HR training records
     supabase
@@ -161,7 +173,8 @@ export async function GET() {
         updated_at
       `)
       .eq('organisation_id', orgId)
-      .order('updated_at', { ascending: false }),
+      .order('updated_at', { ascending: false })
+      .limit(MAX_ROWS_PER_TABLE),
 
     // HR holiday allowances
     supabase
@@ -174,14 +187,16 @@ export async function GET() {
         carry_over,
         created_at
       `)
-      .eq('organisation_id', orgId),
+      .eq('organisation_id', orgId)
+      .limit(MAX_ROWS_PER_TABLE),
 
     // Team members
     supabase
       .from('users')
       .select('full_name, email, role, onboarding_complete, created_at')
       .eq('organisation_id', orgId)
-      .order('role'),
+      .order('role')
+      .limit(MAX_ROWS_PER_TABLE),
   ])
 
   // ── Shape rows for CSV ──────────────────────────────────────────────────
@@ -285,6 +300,17 @@ export async function GET() {
       created_at:          r.created_at,
     }))
   )
+
+  // ── Size guard ─────────────────────────────────────────────────────────
+  // Reject before allocating ZIP memory if uncompressed content exceeds cap.
+  const csvFiles = [kloeCsv, histCsv, staffCsv, trainingCsv, holidayCsv, teamCsv]
+  const totalBytes = csvFiles.reduce((n, s) => n + Buffer.byteLength(s, 'utf8'), 0)
+  if (totalBytes > MAX_UNCOMPRESSED_BYTES) {
+    return NextResponse.json(
+      { error: 'Export too large. Please contact support.' },
+      { status: 413 }
+    )
+  }
 
   // ── Build ZIP ───────────────────────────────────────────────────────────
 
