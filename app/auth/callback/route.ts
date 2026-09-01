@@ -23,7 +23,11 @@ export async function GET(request: NextRequest) {
   const code       = searchParams.get('code')
   const tokenHash  = searchParams.get('token_hash')
   const type       = searchParams.get('type') as 'recovery' | 'signup' | 'email' | 'magiclink' | null
-  const next       = searchParams.get('next') ?? '/dashboard'
+
+  // Validate `next` to prevent open-redirect attacks.
+  // It must be a relative path: starts with '/', no protocol, no double-slash.
+  const rawNext = searchParams.get('next') ?? '/dashboard'
+  const next    = /^\/(?!\/)[^:]*$/.test(rawNext) ? rawNext : '/dashboard'
 
   const supabase = await createClient()
 
