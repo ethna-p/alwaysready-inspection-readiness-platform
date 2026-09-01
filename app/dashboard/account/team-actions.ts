@@ -123,6 +123,19 @@ export async function resetTeamMemberPassword(
 
   if (!userId) return { success: false, error: 'Missing user ID.' }
 
+  // Verify the target user belongs to the same organisation as the caller.
+  // Without this check an admin could supply any user_id and reset a password
+  // for a user in a different tenant via the admin auth client.
+  const { data: targetUser } = await adminSupabase
+    .from('users')
+    .select('organisation_id')
+    .eq('id', userId)
+    .single()
+
+  if (!targetUser || targetUser.organisation_id !== profile.organisation_id) {
+    return { success: false, error: 'User not found in your organisation.' }
+  }
+
   const password = generatePassword()
 
   const { error } = await adminSupabase.auth.admin.updateUserById(userId, { password })
