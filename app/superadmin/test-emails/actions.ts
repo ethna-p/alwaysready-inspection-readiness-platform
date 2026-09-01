@@ -76,15 +76,15 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
          <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
     `),
     send("We've received your message", `
-      <p>Hi ${FIRST_NAME},</p>
-      <p>Thank you for getting in touch. We've received your message and will get back to you shortly.</p>
-      <p>While you wait, you may find an answer straight away. Our FAQs cover
-        <a href="https://alwaysready.uk/waitlist/" style="color:#014D4E">how AlwaysReady works</a>
-        and
-        <a href="https://alwaysready.uk/pricing/" style="color:#014D4E">pricing</a>.
-        If you'd prefer to ask a question in your own words, our platform assistant is available
-        on every page of <a href="https://alwaysready.uk" style="color:#014D4E">alwaysready.uk</a>
-        — look for the chat icon in the bottom-right corner.
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Thank you for getting in touch. We have received your message and will get back to you shortly.
+      </p>
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        While you wait, you may find the answer you&rsquo;re looking for in our
+        <a href="https://alwaysready.uk/helpcentre" style="color:#014D4E">Help Centre</a>.
+        If you prefer to ask a question in your own words, our AI platform assistant is available
+        on every page in the bottom-right corner of most pages on the AlwaysReady website.
       </p>
     `),
     send("You're subscribed to the AlwaysReady blog", `
