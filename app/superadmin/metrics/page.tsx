@@ -103,7 +103,54 @@ export default async function MetricsPage() {
     expiredTrial: orgs.filter(o => !o.subscribed_at && o.trial_expires_at && o.trial_expires_at < now).length,
   }
 
-  // ── 2. Evidence uploads by org ──────────────────────────────────────────────
+  // ── 2. Marketing funnel ────────────────────────────────────────────────────
+  const eightWeeksAgo = daysAgo(56)
+
+  const { data: waitlistLeads } = await supabase
+    .from('waitlist_leads')
+    .select('id, created_at, nurture_opt_in')
+    .order('created_at', { ascending: false })
+
+  const { data: demoLeadsRaw } = await supabase
+    .from('demo_leads')
+    .select('id, created_at')
+    .order('created_at', { ascending: false })
+
+  const { data: zeegBookingsRaw } = await supabase
+    .from('zeeg_bookings')
+    .select('id, created_at, cancelled')
+    .order('created_at', { ascending: false })
+
+  const { data: blogSubscribersRaw } = await supabase
+    .from('blog_subscribers')
+    .select('id, subscribed_at, unsubscribed_at')
+
+  const funnelStats = {
+    waitlistTotal: (waitlistLeads ?? []).length,
+    waitlistNurture: (waitlistLeads ?? []).filter(l => l.nurture_opt_in).length,
+    demoTotal: (demoLeadsRaw ?? []).length,
+    zeegTotal: (zeegBookingsRaw ?? []).filter(b => !b.cancelled).length,
+    blogActive: (blogSubscribersRaw ?? []).filter(b => !b.unsubscribed_at).length,
+  }
+
+  // Weekly funnel breakdown (last 8 weeks)
+  const funnelByWeek: Record<string, { waitlist: number; demos: number; zeeg: number }> = {}
+  const ensureWeek = (w: string) => {
+    if (!funnelByWeek[w]) funnelByWeek[w] = { waitlist: 0, demos: 0, zeeg: 0 }
+  }
+  for (const l of (waitlistLeads ?? []).filter(l => l.created_at >= eightWeeksAgo)) {
+    const w = startOfWeek(new Date(l.created_at)); ensureWeek(w); funnelByWeek[w].waitlist++
+  }
+  for (const d of (demoLeadsRaw ?? []).filter(d => d.created_at >= eightWeeksAgo)) {
+    const w = startOfWeek(new Date(d.created_at)); ensureWeek(w); funnelByWeek[w].demos++
+  }
+  for (const b of (zeegBookingsRaw ?? []).filter(b => !b.cancelled && b.created_at >= eightWeeksAgo)) {
+    const w = startOfWeek(new Date(b.created_at)); ensureWeek(w); funnelByWeek[w].zeeg++
+  }
+  const funnelByWeekRows = Object.entries(funnelByWeek)
+    .sort(([a], [b]) => b.localeCompare(a))
+
+  // ── 3. Evidence uploads by org ──────────────────────────────────────────────
   const { data: evidence } = await supabase
     .from('kloe_evidence')
     .select('organisation_id, uploaded_at')
@@ -386,6 +433,48 @@ export default async function MetricsPage() {
               <div className="text-sm mt-1 font-medium">{label}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── Marketing funnel ── */}
+      <section>
+        <h2 className="text-base font-semibold text-ink mb-4">Marketing funnel</h2>
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {[
+            { label: 'Waitlist signups', value: funnelStats.waitlistTotal, colour: 'text-indigo-700 bg-indigo-50 border-indigo-200' },
+            { label: 'Nurture subscribers', value: funnelStats.waitlistNurture, colour: 'text-violet-700 bg-violet-50 border-violet-200' },
+            { label: 'Demo requests', value: funnelStats.demoTotal, colour: 'text-amber-700 bg-amber-50 border-amber-200' },
+            { label: 'Demos booked', value: funnelStats.zeegTotal, colour: 'text-teal-700 bg-teal-50 border-teal-200' },
+          ].map(({ label, value, colour }) => (
+            <div key={label} className={`rounded-xl border p-5 ${colour}`}>
+              <div className="text-3xl font-bold">{value}</div>
+              <div className="text-sm mt-1 font-medium">{label}</div>
+            </div>
+          ))}
+        </div>
+        <div className="bg-card border border-line rounded-xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-fill text-ink-muted text-xs uppercase tracking-wide">
+              <tr>
+                <th className="px-4 py-3 text-left">Week starting</th>
+                <th className="px-4 py-3 text-right">Waitlist</th>
+                <th className="px-4 py-3 text-right">Demo requests</th>
+                <th className="px-4 py-3 text-right">Demos booked</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {funnelByWeekRows.length === 0 ? (
+                <tr><td colSpan={4} className="px-4 py-4 text-ink-muted">No data.</td></tr>
+              ) : funnelByWeekRows.map(([week, v]) => (
+                <tr key={week}>
+                  <td className="px-4 py-3 text-ink">{week}</td>
+                  <td className="px-4 py-3 text-right">{v.waitlist || '—'}</td>
+                  <td className="px-4 py-3 text-right">{v.demos || '—'}</td>
+                  <td className="px-4 py-3 text-right">{v.zeeg || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
