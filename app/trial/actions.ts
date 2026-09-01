@@ -1,9 +1,15 @@
 'use server'
 
+import { headers } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { fetchCqcLocation } from '@/lib/cqc'
 import { getFirstName } from '@/lib/utils/name'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+// 3 trial signups per IP per hour — generous for legitimate use,
+// prevents automated provisioning of many orgs from one address.
+const trialSignupLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 3 })
 
 function escapeHtml(str: string): string {
   return str
@@ -72,6 +78,16 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     }
   }
 
+  // ── Rate limit — per IP, to prevent mass trial provisioning ────────────────
+  const headersList = await headers()
+  const ip =
+    headersList.get('x-forwarded-for')?.split(',')[0].trim() ??
+    headersList.get('x-real-ip') ??
+    'unknown'
+  if (!(await trialSignupLimiter.check(`trial:${ip}`))) {
+    return { success: false, error: 'Too many signup attempts. Please try again later.' }
+  }
+
   // ── Validate ────────────────────────────────────────────────────────────────
   if (!serviceName.trim() || !cqcLocationId.trim() || !serviceType || !managerName.trim() || !managerEmail.trim()) {
     return { success: false, error: 'All fields are required.' }
@@ -110,6 +126,24 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
 
   if (stError || !serviceTypeRow) {
     return { success: false, error: 'Could not resolve service type. Please try again.' }
+  }
+
+  // ── 1b. Block duplicate CQC Location ID ──────────────────────────────────────
+  // The unique index (migration 00007) enforces this at the DB level, but a
+  // pre-check here lets us return a friendly message rather than a raw error.
+  if (cqcLocationId.trim()) {
+    const { data: existingOrg } = await supabase
+      .from('organisations')
+      .select('id')
+      .eq('cqc_location_id', cqcLocationId.trim())
+      .maybeSingle()
+
+    if (existingOrg) {
+      return {
+        success: false,
+        error: 'An account for this CQC location already exists. If you need access, please contact support.',
+      }
+    }
   }
 
   // ── 2. Create organisation ───────────────────────────────────────────────────
