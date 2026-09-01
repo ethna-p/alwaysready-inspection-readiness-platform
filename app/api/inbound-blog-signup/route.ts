@@ -78,6 +78,20 @@ export async function POST(req: NextRequest) {
 
   const supabase = createAdminClient()
 
+  // ── Guard: do not re-subscribe a previously unsubscribed email ────────────
+  // If the email exists with unsubscribed_at set, someone has opted out.
+  // Clearing that via the public form would reverse consent without the
+  // subscriber's knowledge. Return 200 silently — no DB write, no email.
+  const { data: existing } = await supabase
+    .from('blog_subscribers')
+    .select('unsubscribed_at')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (existing?.unsubscribed_at) {
+    return NextResponse.json({ received: true }, { status: 200 })
+  }
+
   // ── Upsert into blog_subscribers ─────────────────────────────────────────
   const { error: dbError } = await supabase
     .from('blog_subscribers')
