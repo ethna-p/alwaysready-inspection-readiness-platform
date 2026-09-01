@@ -29,9 +29,13 @@ export default async function HrStaffDetailPage({
   const { userId } = await params
 
   const profile = await getCurrentUserProfile()
-  if (!profile || (profile.role !== 'admin' && profile.role !== 'viewer')) redirect('/dashboard')
+  if (!profile) redirect('/dashboard')
 
+  const isSelf = profile.role === 'staff' && userId === profile.id
   const isViewer = profile.role === 'viewer'
+
+  // Staff may only view their own profile; all other non-admin/viewer roles are blocked
+  if (!isSelf && profile.role !== 'admin' && profile.role !== 'viewer') redirect('/dashboard')
 
   const supabase = await createClient()
   const orgId = profile.organisation_id
@@ -112,10 +116,10 @@ export default async function HrStaffDetailPage({
     <div>
       {/* Back link */}
       <Link
-        href="/dashboard/hr"
+        href={isSelf ? '/dashboard' : '/dashboard/hr'}
         className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-brand mb-6"
       >
-        ← HR Records
+        ← {isSelf ? 'Dashboard' : 'HR Records'}
       </Link>
 
       {/* Header */}
@@ -126,39 +130,40 @@ export default async function HrStaffDetailPage({
         <p className="text-sm text-ink-muted mt-1 capitalize">{staffUser.role}</p>
       </div>
 
-      {/* Main form sections (employment, personal, emergency, compliance, supervision, appraisal) */}
+      {/* Main form sections — in self mode shows emergency contact only */}
       <HrStaffForm
         userId={userId}
         hrProfile={hrProfile}
         isViewer={isViewer}
+        isSelf={isSelf}
       />
 
-      {/* Training records */}
-      <HrTrainingSection
-        userId={userId}
-        trainingTypes={trainingTypes ?? []}
-        trainingRecords={trainingRecords ?? []}
-        certificates={certificates ?? []}
-        certUrls={certUrls}
-        isViewer={isViewer}
-      />
+      {/* Training, holiday, absence — admin/viewer only */}
+      {!isSelf && <>
+        <HrTrainingSection
+          userId={userId}
+          trainingTypes={trainingTypes ?? []}
+          trainingRecords={trainingRecords ?? []}
+          certificates={certificates ?? []}
+          certUrls={certUrls}
+          isViewer={isViewer}
+        />
 
-      {/* Holiday allowance */}
-      <HrHolidaySection
-        userId={userId}
-        allowances={holidayAllowances ?? []}
-        holidayUnit={org?.holiday_unit ?? 'days'}
-        isViewer={isViewer}
-      />
+        <HrHolidaySection
+          userId={userId}
+          allowances={holidayAllowances ?? []}
+          holidayUnit={org?.holiday_unit ?? 'days'}
+          isViewer={isViewer}
+        />
 
-      {/* Absence records */}
-      <HrAbsenceSection
-        userId={userId}
-        records={absenceRecords ?? []}
-        leaveYearStart={holidayAllowances?.[0]?.leave_year_start ?? null}
-        customCategories={(absenceCategories ?? []).map(c => c.name)}
-        isViewer={isViewer}
-      />
+        <HrAbsenceSection
+          userId={userId}
+          records={absenceRecords ?? []}
+          leaveYearStart={holidayAllowances?.[0]?.leave_year_start ?? null}
+          customCategories={(absenceCategories ?? []).map(c => c.name)}
+          isViewer={isViewer}
+        />
+      </>}
     </div>
   )
 }

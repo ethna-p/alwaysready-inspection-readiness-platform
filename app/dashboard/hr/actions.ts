@@ -72,6 +72,48 @@ export async function saveStaffProfile(
   return { success: true, message: 'Staff record saved.' }
 }
 
+// ── Staff self-service ───────────────────────────────────────────────────────
+
+/**
+ * Staff self-service: update only next_of_kin_name and next_of_kin_phone.
+ * The caller must be the owner of the profile (enforced here + RLS).
+ */
+export async function saveOwnProfile(data: {
+  next_of_kin_name: string | null
+  next_of_kin_phone: string | null
+}): Promise<HrActionResult> {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Not authenticated.' }
+
+  // Resolve org from users table
+  const { data: userRow } = await supabase
+    .from('users')
+    .select('organisation_id')
+    .eq('id', user.id)
+    .single()
+  if (!userRow) return { success: false, error: 'User record not found.' }
+
+  const { error } = await supabase
+    .from('hr_staff_profiles')
+    .upsert({
+      organisation_id: userRow.organisation_id,
+      user_id: user.id,
+      updated_at: new Date().toISOString(),
+      next_of_kin_name: data.next_of_kin_name,
+      next_of_kin_phone: data.next_of_kin_phone,
+    }, { onConflict: 'organisation_id,user_id' })
+
+  if (error) {
+    console.error('[saveOwnProfile]', error)
+    return { success: false, error: 'Failed to save. Please try again.' }
+  }
+
+  revalidatePath(`/dashboard/hr/${user.id}`)
+  return { success: true, message: 'Emergency contact saved.' }
+}
+
 // ── Training record ──────────────────────────────────────────────────────────
 
 export async function saveTrainingRecord(

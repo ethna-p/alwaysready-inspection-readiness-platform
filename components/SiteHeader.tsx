@@ -13,6 +13,7 @@ export default async function SiteHeader() {
   const supabase = await createClient()
   const profile = await getCurrentUserProfile()
   const isAdmin = profile?.role === 'admin'
+  const isStaff = profile?.role === 'staff'
 
   // Count unread staff replies for this org (RLS scopes this automatically)
   const { count: unreadCount } = await supabase
@@ -89,6 +90,14 @@ export default async function SiteHeader() {
               HR
             </Link>
           )}
+          {isStaff && profile?.id && (
+            <Link
+              href={`/dashboard/hr/${profile.id}`}
+              className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
+            >
+              My Profile
+            </Link>
+          )}
           {isAdmin && (
             <Link
               href="/dashboard/newsletter"
@@ -154,7 +163,7 @@ export default async function SiteHeader() {
           <div className="hidden sm:flex items-center gap-3">
             <UserMenu fullName={profile?.full_name ?? null} hasUnread={hasUnread} />
           </div>
-          <MobileNav isAdmin={isAdmin} hasUnread={hasUnread} />
+          <MobileNav isAdmin={isAdmin} hasUnread={hasUnread} isStaff={isStaff} userId={profile?.id} />
         </div>
       </div>
     </header>

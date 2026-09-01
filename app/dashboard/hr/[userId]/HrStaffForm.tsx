@@ -6,13 +6,15 @@
  */
 
 import { useState, useTransition } from 'react'
-import { saveStaffProfile } from '../actions'
+import { saveStaffProfile, saveOwnProfile } from '../actions'
 import type { HrStaffProfile } from '@/lib/types'
 
 type Props = {
   userId: string
   hrProfile: HrStaffProfile | null
   isViewer?: boolean
+  /** True when a staff member is viewing/editing their own profile. */
+  isSelf?: boolean
 }
 
 function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -47,7 +49,7 @@ const selectClass = `
   focus:outline-none focus:ring-2 focus:ring-[#014D4E]
 `
 
-export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Props) {
+export default function HrStaffForm({ userId, hrProfile, isViewer = false, isSelf = false }: Props) {
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -110,6 +112,17 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
     setError(null)
 
     startTransition(async () => {
+      // Staff self-service: only emergency contact fields
+      if (isSelf) {
+        const result = await saveOwnProfile({
+          next_of_kin_name: nokName || null,
+          next_of_kin_phone: nokPhone || null,
+        })
+        if (result.success) setMessage(result.message ?? 'Saved.')
+        else setError(result.error)
+        return
+      }
+
       const result = await saveStaffProfile(userId, {
         ni_number: niNumber || null,
         job_title: jobTitle || null,
@@ -171,13 +184,14 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
             disabled={isPending}
             className="rounded-lg bg-[#014D4E] text-white text-sm font-semibold px-6 py-2.5 hover:bg-[#013a3b] disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]"
           >
-            {isPending ? 'Saving…' : 'Save staff record'}
+            {isPending ? 'Saving…' : isSelf ? 'Save' : 'Save staff record'}
           </button>
         </div>
       )}
 
       {/* ── Employment ─────────────────────────────────────────────────── */}
-      <section className="bg-card rounded-xl border border-line p-6">
+      {/* Hidden in self-service mode — employment details are employer-managed */}
+      {!isSelf && <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Employment" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="NI Number">
@@ -217,10 +231,11 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
             <input className={inputClass} type="date" value={leavingDate} onChange={e => setLeavingDate(e.target.value)} />
           </Field>
         </div>
-      </section>
+      </section>}
 
       {/* ── Personal ───────────────────────────────────────────────────── */}
-      <section className="bg-card rounded-xl border border-line p-6">
+      {/* Hidden in self-service mode — equality monitoring data is employer-held */}
+      {!isSelf && <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading
           title="Personal Information"
           subtitle="Held for equality monitoring under the Equality Act 2010. Access is restricted to admin users only."
@@ -290,7 +305,7 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
             </select>
           </Field>
         </div>
-      </section>
+      </section>}
 
       {/* ── Emergency Contact ──────────────────────────────────────────── */}
       <section className="bg-card rounded-xl border border-line p-6">
@@ -306,7 +321,7 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
       </section>
 
       {/* ── Compliance ─────────────────────────────────────────────────── */}
-      <section className="bg-card rounded-xl border border-line p-6">
+      {!isSelf && <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Compliance" subtitle="DBS, right to work, and references" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <Field label="DBS Check Date">
@@ -367,10 +382,10 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
             <span className="text-sm text-ink">Mandatory training complete</span>
           </label>
         </div>
-      </section>
+      </section>}
 
       {/* ── Supervision ────────────────────────────────────────────────── */}
-      <section className="bg-card rounded-xl border border-line p-6">
+      {!isSelf && <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Supervision" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Field label="Last Supervision Date">
@@ -404,10 +419,10 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
             <input className={inputClass} type="date" value={supNext} onChange={e => setSupNext(e.target.value)} />
           </Field>
         </div>
-      </section>
+      </section>}
 
       {/* ── Appraisal ──────────────────────────────────────────────────── */}
-      <section className="bg-card rounded-xl border border-line p-6">
+      {!isSelf && <section className="bg-card rounded-xl border border-line p-6">
         <SectionHeading title="Appraisal" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <Field label="Last Appraisal Date">
@@ -447,7 +462,7 @@ export default function HrStaffForm({ userId, hrProfile, isViewer = false }: Pro
             placeholder="Any notes from the last appraisal…"
           />
         </Field>
-      </section>
+      </section>}
 
       {/* Save — bottom */}
       {!isViewer && (
