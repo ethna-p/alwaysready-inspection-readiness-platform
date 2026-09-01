@@ -63,9 +63,20 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <!-- Header -->
           <tr>
             <td style="background-color:#014D4E;padding:32px 40px;text-align:center">
-              <div style="margin-bottom:8px">
-                <img src="https://portal.alwaysready.uk/logo-email.png" alt="AlwaysReady" width="220" height="48" style="display:block;margin:0 auto;border:0">
-              </div>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 8px auto">
+                <tr>
+                  <td style="vertical-align:middle;padding-right:10px">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="40" height="40" role="img" aria-hidden="true" style="display:inline-block;vertical-align:middle">
+                      <circle cx="24" cy="24" r="22" fill="#ffd700"/>
+                      <circle cx="24" cy="24" r="17" fill="none" stroke="#ffffff" stroke-width="2"/>
+                      <polyline points="13,24 21,32 35,16" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </td>
+                  <td style="vertical-align:middle">
+                    <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff">AlwaysReady</span>
+                  </td>
+                </tr>
+              </table>
               <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.15em;text-transform:uppercase">Inspection Readiness Platform</div>
             </td>
           </tr>
