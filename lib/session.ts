@@ -7,11 +7,30 @@
  *
  * Returns null when:
  *   - the user is not authenticated, or
- *   - the users row doesn't exist yet (edge case during first sign-in)
+ *   - the users row doesn't exist yet (edge case during first sign-in), or
+ *   - the user has an MFA factor enrolled but hasn't completed verification
+ *     this session (nextLevel === aal2, currentLevel !== aal2). This enforces
+ *     AAL2 at the data layer for all API routes and server actions, closing
+ *     the gap left by middleware (which is excluded from /api/* paths).
  */
 
 import { createClient } from '@/lib/supabase/server'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import type { User } from '@/lib/types'
+
+/**
+ * Returns true when the session satisfies the required AAL level.
+ * A user who has enrolled MFA but not verified it this session fails the check.
+ * Users with no factor enrolled always pass (they are redirected to MFA setup
+ * by middleware on page load; this guard covers direct API/action calls).
+ */
+export async function isAAL2Satisfied(supabase: SupabaseClient): Promise<boolean> {
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+  if (!aal) return true // can't determine — allow and let RLS handle it
+  // nextLevel === 'aal2' means a factor is enrolled; if current is still aal1
+  // the user skipped the MFA step (e.g. called the API directly).
+  return !(aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2')
+}
 
 export type UserProfile = Pick<User, 'id' | 'email' | 'full_name' | 'username' | 'role' | 'organisation_id' | 'viewer_expires_at' | 'personal_email' | 'mobile_number'>
 
@@ -20,6 +39,10 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) return null
+
+  // Enforce AAL2: if the user has MFA enrolled but hasn't verified it this
+  // session, treat them as unauthenticated at the data layer.
+  if (!(await isAAL2Satisfied(supabase))) return null
 
   const { data, error } = await supabase
     .from('users')

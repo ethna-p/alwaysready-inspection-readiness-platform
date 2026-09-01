@@ -16,6 +16,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import JSZip from 'jszip'
+import { isAAL2Satisfied } from '@/lib/session'
 
 // ── CSV helpers ────────────────────────────────────────────────────────────
 
@@ -47,6 +48,9 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+  }
+  if (!(await isAAL2Satisfied(supabase))) {
+    return NextResponse.json({ error: 'MFA verification required.' }, { status: 401 })
   }
 
   // Role check — admin only

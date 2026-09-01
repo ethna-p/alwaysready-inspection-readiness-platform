@@ -9,6 +9,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { isAAL2Satisfied } from '@/lib/session'
 
 export async function GET() {
   const supabase = await createClient()
@@ -16,6 +17,9 @@ export async function GET() {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+  }
+  if (!(await isAAL2Satisfied(supabase))) {
+    return NextResponse.json({ error: 'MFA verification required.' }, { status: 401 })
   }
 
   // Get the user's org

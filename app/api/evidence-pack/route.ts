@@ -13,6 +13,7 @@ import { NextResponse }      from 'next/server'
 import { renderToBuffer }    from '@react-pdf/renderer'
 import React                 from 'react'
 import { createClient }      from '@/lib/supabase/server'
+import { isAAL2Satisfied }  from '@/lib/session'
 import { calculateRAG }      from '@/lib/rag'
 import { KLOE_CATEGORY_MAP } from '@/lib/evidence-categories'
 import { EvidencePackDocument } from './document'
@@ -25,6 +26,9 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+  }
+  if (!(await isAAL2Satisfied(supabase))) {
+    return NextResponse.json({ error: 'MFA verification required.' }, { status: 401 })
   }
 
   // ── Profile & org ─────────────────────────────────────────────────────────

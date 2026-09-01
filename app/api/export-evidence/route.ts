@@ -17,6 +17,7 @@ import { NextResponse } from 'next/server'
 import JSZip from 'jszip'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isAAL2Satisfied } from '@/lib/session'
 
 // Allow up to 5 minutes on Vercel Pro for large evidence collections
 export const maxDuration = 300
@@ -27,6 +28,9 @@ export async function GET() {
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 })
+  }
+  if (!(await isAAL2Satisfied(supabase))) {
+    return NextResponse.json({ error: 'MFA verification required.' }, { status: 401 })
   }
 
   const { data: profile } = await supabase
