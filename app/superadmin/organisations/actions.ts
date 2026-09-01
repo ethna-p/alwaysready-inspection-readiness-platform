@@ -201,3 +201,26 @@ export async function setCharityStatus(
   revalidatePath('/superadmin/organisations')
   return { success: true }
 }
+
+type SetTesterResult = { success: true } | { error: string }
+
+export async function setTesterStatus(
+  orgId: string,
+  isTester: boolean
+): Promise<SetTesterResult> {
+  await assertSuperadmin()
+
+  if (!orgId) return { error: 'No organisation ID provided.' }
+
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('organisations')
+    .update({ is_tester: isTester })
+    .eq('id', orgId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/superadmin/organisations')
+  return { success: true }
+}

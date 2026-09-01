@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import ImpersonateButton from './ImpersonateButton'
 import CharityToggleButton from './CharityToggleButton'
+import TesterToggleButton from './TesterToggleButton'
 import DeleteOrgButton from './DeleteOrgButton'
 
 type OrgListItem = {
@@ -227,6 +228,10 @@ export default async function OrganisationsPage({
 
                   {/* Right: actions */}
                   <div className="shrink-0 flex flex-col items-end gap-2">
+                    <TesterToggleButton
+                      orgId={org.id}
+                      isTester={org.is_tester === true}
+                    />
                     <CharityToggleButton
                       orgId={org.id}
                       isCharity={org.is_charity === true}
