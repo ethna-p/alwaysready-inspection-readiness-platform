@@ -12,6 +12,11 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserProfile } from '@/lib/session'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+// Burst guard: 1 generation per org per 10 seconds — prevents concurrent requests
+// both passing the monthly count check before either inserts the record (TOCTOU).
+const newsletterBurstLimiter = createRateLimiter({ windowMs: 10_000, max: 1 })
 
 const MONTHLY_LIMIT = 10
 
@@ -41,6 +46,11 @@ export async function generateNewsletter(input: NewsletterInput): Promise<Genera
   }
 
   const supabase = await createClient()
+
+  // ── Burst guard — prevent concurrent requests bypassing the monthly check ──
+  if (!(await newsletterBurstLimiter.check(`newsletter:${profile.organisation_id}`))) {
+    return { success: false, error: 'Please wait a moment before generating another draft.' }
+  }
 
   // ── Check monthly limit ────────────────────────────────────────────────────
   const { count } = await supabase

@@ -9,6 +9,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { getCurrentUserProfile } from '@/lib/session'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+// 20 AI calls per org per hour — enough for normal use, prevents runaway spend.
+const narrativeLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 20 })
 
 interface ReportSnapshot {
   orgName: string
@@ -36,6 +40,14 @@ export async function POST(req: NextRequest) {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  // Rate limit by org — prevents a single org burning the Anthropic API budget.
+  if (!(await narrativeLimiter.check(`report-narrative:${profile.organisation_id}`))) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait before generating another summary.' },
+      { status: 429 }
+    )
   }
 
   let body: ReportSnapshot
