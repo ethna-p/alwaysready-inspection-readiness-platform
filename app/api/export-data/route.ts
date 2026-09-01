@@ -22,7 +22,13 @@ import { isAAL2Satisfied } from '@/lib/session'
 
 function escapeCsv(value: unknown): string {
   if (value === null || value === undefined) return ''
-  const str = String(value)
+  // Neutralise CSV formula injection: spreadsheet apps treat cells starting
+  // with =, +, -, @, \t, or \r as formulas. Prefix with a single quote to
+  // prevent execution. The quote is visible in the cell but harmless.
+  let str = String(value)
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`
+  }
   if (str.includes(',') || str.includes('"') || str.includes('\n')) {
     return `"${str.replace(/"/g, '""')}"`
   }
