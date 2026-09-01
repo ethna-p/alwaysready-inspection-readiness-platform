@@ -245,6 +245,9 @@ export default async function MetricsPage() {
 
   // ── 4. HR ───────────────────────────────────────────────────────────────────
 
+  // Exclude tester orgs from all HR metrics
+  const testerOrgIds = new Set(orgs.filter(o => o.is_tester).map(o => o.id))
+
   // DBS checks expiring in 60 days
   const in60 = daysFromNow(60)
   const todayStr = today()
@@ -256,7 +259,7 @@ export default async function MetricsPage() {
     .lte('dbs_next_review_due', in60)
     .order('dbs_next_review_due', { ascending: true })
 
-  const dbsRows = (staffProfiles ?? []).map(sp => ({
+  const dbsRows = (staffProfiles ?? []).filter(sp => !testerOrgIds.has(sp.organisation_id)).map(sp => ({
     org: orgById[sp.organisation_id] ?? sp.organisation_id,
     jobTitle: sp.job_title ?? '—',
     due: sp.dbs_next_review_due as string,
@@ -276,7 +279,7 @@ export default async function MetricsPage() {
 
   const typeNameById = Object.fromEntries((trainingTypes ?? []).map(t => [t.id, t.name]))
   const completionsByType: Record<string, { count: number; staffSet: Set<string> }> = {}
-  for (const r of trainingRecords ?? []) {
+  for (const r of (trainingRecords ?? []).filter(r => !testerOrgIds.has(r.organisation_id))) {
     const name = typeNameById[r.training_type_id] ?? r.training_type_id
     if (!completionsByType[name]) completionsByType[name] = { count: 0, staffSet: new Set() }
     completionsByType[name].count++
@@ -293,7 +296,7 @@ export default async function MetricsPage() {
     .eq('employment_status', 'active')
 
   const staffGapByOrg: Record<string, number> = {}
-  for (const s of allActiveStaff ?? []) {
+  for (const s of (allActiveStaff ?? []).filter(s => !testerOrgIds.has(s.organisation_id))) {
     if (!s.dbs_next_review_due) {
       staffGapByOrg[s.organisation_id] = (staffGapByOrg[s.organisation_id] ?? 0) + 1
     }
