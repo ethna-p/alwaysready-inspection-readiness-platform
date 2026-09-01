@@ -39,9 +39,10 @@ const OOXML_MIME = 'application/zip' // .docx/.xlsx are ZIP-based — handled be
 async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{ clean: boolean; message: string }> {
   const apiKey = process.env.CLOUDMERSIVE_API_KEY
   if (!apiKey) {
-    // No API key configured — log and allow (graceful degradation)
-    console.warn('[upload-evidence] CLOUDMERSIVE_API_KEY not set — skipping virus scan')
-    return { clean: true, message: 'Scan skipped (not configured)' }
+    // No API key means scanning is not configured — fail closed.
+    // Uploads must not bypass the malware check due to a misconfiguration.
+    console.error('[upload-evidence] CLOUDMERSIVE_API_KEY not set — rejecting upload (fail closed)')
+    return { clean: false, message: 'File scanning is unavailable. Please try again later or contact support.' }
   }
 
   try {
@@ -55,9 +56,9 @@ async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{
     })
 
     if (!response.ok) {
-      console.error('[upload-evidence] Cloudmersive returned', response.status)
-      // On scan service error, allow upload but log it
-      return { clean: true, message: `Scan service error: ${response.status}` }
+      // Scan service returned an error — fail closed rather than allow.
+      console.error('[upload-evidence] Cloudmersive returned', response.status, '— rejecting upload (fail closed)')
+      return { clean: false, message: 'File scanning is temporarily unavailable. Please try again later.' }
     }
 
     const result = await response.json() as { CleanResult: boolean; FoundViruses: unknown[] | null }
@@ -67,9 +68,9 @@ async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{
 
     return { clean: true, message: 'Clean' }
   } catch (err) {
-    console.error('[upload-evidence] Cloudmersive scan failed:', err)
-    // On network error, allow upload but log it
-    return { clean: true, message: 'Scan network error — skipped' }
+    // Network error reaching the scan service — fail closed.
+    console.error('[upload-evidence] Cloudmersive scan failed:', err, '— rejecting upload (fail closed)')
+    return { clean: false, message: 'File scanning is temporarily unavailable. Please try again later.' }
   }
 }
 
