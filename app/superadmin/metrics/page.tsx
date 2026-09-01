@@ -150,7 +150,7 @@ export default async function MetricsPage() {
 
   const { data: mockInspections } = await supabase
     .from('mock_inspections')
-    .select('id, organisation_id, status, completed_at')
+    .select('id, organisation_id, status, completed_at, started_at')
 
   const { data: mockFindings } = await supabase
     .from('mock_inspection_findings')
@@ -159,13 +159,32 @@ export default async function MetricsPage() {
   // orgs that have touched the platform at all (non-tester, non-null trial)
   const engagementOrgs = orgs.filter(o => o.trial_expires_at && !o.is_tester)
 
-  const compByOrg: Record<string, { anyProgress: boolean }> = {}
+  const compByOrg: Record<string, { anyProgress: boolean; firstDate: string | null }> = {}
   for (const c of complianceRecords ?? []) {
-    if (!compByOrg[c.organisation_id]) compByOrg[c.organisation_id] = { anyProgress: false }
+    if (!compByOrg[c.organisation_id]) compByOrg[c.organisation_id] = { anyProgress: false, firstDate: null }
     if (c.status !== 'not_started' || c.date_reviewed) {
       compByOrg[c.organisation_id].anyProgress = true
     }
+    if (c.date_reviewed) {
+      const prev = compByOrg[c.organisation_id].firstDate
+      if (!prev || c.date_reviewed < prev) compByOrg[c.organisation_id].firstDate = c.date_reviewed
+    }
   }
+
+  // earliest evidence upload per org
+  const firstEvidenceByOrg: Record<string, string> = {}
+  for (const e of evidence ?? []) {
+    const prev = firstEvidenceByOrg[e.organisation_id]
+    if (!prev || e.uploaded_at < prev) firstEvidenceByOrg[e.organisation_id] = e.uploaded_at
+  }
+
+  // earliest mock inspection per org
+  const firstMockByOrg: Record<string, string> = {}
+  for (const m of mockInspections ?? []) {
+    const prev = firstMockByOrg[m.organisation_id]
+    if (!prev || m.started_at < prev) firstMockByOrg[m.organisation_id] = m.started_at
+  }
+
   const mockOrgSet = new Set((mockInspections ?? []).map(m => m.organisation_id))
   const evidenceOrgSet = new Set(Object.keys(evidenceByOrg))
 
@@ -174,6 +193,18 @@ export default async function MetricsPage() {
     const hasMock       = mockOrgSet.has(o.id)
     const hasEvidence   = evidenceOrgSet.has(o.id)
     const score         = [hasCompliance, hasMock, hasEvidence].filter(Boolean).length
+
+    // earliest first action across all three signals
+    const candidates = [
+      compByOrg[o.id]?.firstDate,
+      firstEvidenceByOrg[o.id],
+      firstMockByOrg[o.id],
+    ].filter(Boolean) as string[]
+    const firstAction = candidates.length > 0 ? candidates.sort()[0] : null
+    const daysToFirst = firstAction
+      ? Math.round((new Date(firstAction).getTime() - new Date(o.created_at).getTime()) / 86400000)
+      : null
+
     return {
       name: o.name,
       subscribed: !!o.subscribed_at,
@@ -181,6 +212,7 @@ export default async function MetricsPage() {
       hasMock,
       hasEvidence,
       score,
+      daysToFirst,
     }
   }).sort((a, b) => a.score - b.score)
 
@@ -575,11 +607,12 @@ export default async function MetricsPage() {
                 <th className="px-4 py-3 text-center">Mock inspection</th>
                 <th className="px-4 py-3 text-center">Evidence</th>
                 <th className="px-4 py-3 text-center">Score</th>
+                <th className="px-4 py-3 text-right">Days to first action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
               {engagementRows.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-4 text-ink-muted">No trial orgs yet.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-4 text-ink-muted">No trial orgs yet.</td></tr>
               ) : engagementRows.map(r => (
                 <tr key={r.name}>
                   <td className="px-4 py-3 text-ink">
@@ -593,6 +626,15 @@ export default async function MetricsPage() {
                     <span className={`font-bold ${r.score === 0 ? 'text-red-500' : r.score < 3 ? 'text-amber-500' : 'text-teal-600'}`}>
                       {r.score}/3
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    {r.daysToFirst === null ? (
+                      <span className="text-red-400">Never</span>
+                    ) : (
+                      <span className={`font-semibold ${r.daysToFirst <= 1 ? 'text-teal-600' : r.daysToFirst <= 7 ? 'text-amber-600' : 'text-red-500'}`}>
+                        {r.daysToFirst}d
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
