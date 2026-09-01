@@ -15,7 +15,7 @@
  * The webhook endpoint is: https://portal.alwaysready.uk/api/inbound-email
  */
 
-export default {
+const emailWorker = {
   async email(message, env) {
     // Read the raw email stream
     const rawEmail = await new Response(message.raw).text()
@@ -64,3 +64,5 @@ export default {
     }
   },
 }
+
+export default emailWorker

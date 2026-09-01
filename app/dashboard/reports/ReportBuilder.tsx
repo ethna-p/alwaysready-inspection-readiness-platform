@@ -111,7 +111,7 @@ export default function ReportBuilder({
   function toggleKQ(name: string, checked: boolean) {
     setSelectedKQs(prev => {
       const next = new Set(prev)
-      checked ? next.add(name) : next.delete(name)
+      if (checked) { next.add(name) } else { next.delete(name) }
       return next
     })
     setActiveView(null)
