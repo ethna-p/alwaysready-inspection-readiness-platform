@@ -216,6 +216,9 @@ export default async function MetricsPage() {
     }
   }).sort((a, b) => a.score - b.score)
 
+  // Org name lookup — used throughout sections 3c, 4
+  const orgById = Object.fromEntries(orgs.map(o => [o.id, o.name]))
+
   // ── 3c. Mock inspection usage ───────────────────────────────────────────────
   const findingsByInspection: Record<string, number> = {}
   for (const f of mockFindings ?? []) {
@@ -252,8 +255,6 @@ export default async function MetricsPage() {
     .not('dbs_next_review_due', 'is', null)
     .lte('dbs_next_review_due', in60)
     .order('dbs_next_review_due', { ascending: true })
-
-  const orgById = Object.fromEntries(orgs.map(o => [o.id, o.name]))
 
   const dbsRows = (staffProfiles ?? []).map(sp => ({
     org: orgById[sp.organisation_id] ?? sp.organisation_id,
