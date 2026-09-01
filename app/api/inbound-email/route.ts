@@ -304,7 +304,7 @@ export async function POST(req: NextRequest) {
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         While you wait, you may find the answer you&rsquo;re looking for in our
-        <a href="https://alwaysready.uk/help" style="color:#014D4E">Help Centre</a>.
+        <a href="https://alwaysready.uk/helpcentre" style="color:#014D4E">Help Centre</a>.
         If you prefer to ask a question in your own words, our AI platform assistant is available
         on every page in the bottom-right corner of most pages on the AlwaysReady website.
       </p>
