@@ -55,7 +55,8 @@ export default async function MetricsPage() {
     .select('id, name, created_at, subscribed_at, trial_expires_at, subscription_tier, is_beta, is_tester, cqc_rating')
     .order('created_at', { ascending: false })
 
-  const orgs = allOrgs ?? []
+  const orgs = (allOrgs ?? []).filter(o => !o.is_tester)
+  const liveOrgIds = orgs.map(o => o.id)
 
   // Signups by week (last 12 weeks)
   const twelveWeeksAgo = daysAgo(84)
@@ -102,6 +103,7 @@ export default async function MetricsPage() {
   const { data: evidence } = await supabase
     .from('kloe_evidence')
     .select('organisation_id, uploaded_at')
+    .in('organisation_id', liveOrgIds)
 
   const evidenceByOrg: Record<string, { count: number; last: string }> = {}
   for (const e of evidence ?? []) {
@@ -127,6 +129,7 @@ export default async function MetricsPage() {
     .from('notification_log')
     .select('notification_type, entity_type, organisation_id, sent_at')
     .gte('sent_at', thirtyDaysAgo)
+    .in('organisation_id', liveOrgIds)
 
   const notifByType: Record<string, { count: number; orgs: Set<string>; last: string }> = {}
   for (const n of notifLogs ?? []) {
@@ -147,10 +150,12 @@ export default async function MetricsPage() {
   const { data: complianceRecords } = await supabase
     .from('compliance_records')
     .select('organisation_id, status, date_reviewed')
+    .in('organisation_id', liveOrgIds)
 
   const { data: mockInspections } = await supabase
     .from('mock_inspections')
     .select('id, organisation_id, status, completed_at, started_at')
+    .in('organisation_id', liveOrgIds)
 
   const { data: mockFindings } = await supabase
     .from('mock_inspection_findings')
@@ -245,9 +250,6 @@ export default async function MetricsPage() {
 
   // ── 4. HR ───────────────────────────────────────────────────────────────────
 
-  // Exclude tester orgs from all HR metrics
-  const testerOrgIds = new Set(orgs.filter(o => o.is_tester).map(o => o.id))
-
   // DBS checks expiring in 60 days
   const in60 = daysFromNow(60)
   const todayStr = today()
@@ -257,9 +259,10 @@ export default async function MetricsPage() {
     .eq('employment_status', 'active')
     .not('dbs_next_review_due', 'is', null)
     .lte('dbs_next_review_due', in60)
+    .in('organisation_id', liveOrgIds)
     .order('dbs_next_review_due', { ascending: true })
 
-  const dbsRows = (staffProfiles ?? []).filter(sp => !testerOrgIds.has(sp.organisation_id)).map(sp => ({
+  const dbsRows = (staffProfiles ?? []).map(sp => ({
     org: orgById[sp.organisation_id] ?? sp.organisation_id,
     jobTitle: sp.job_title ?? '—',
     due: sp.dbs_next_review_due as string,
@@ -279,7 +282,7 @@ export default async function MetricsPage() {
 
   const typeNameById = Object.fromEntries((trainingTypes ?? []).map(t => [t.id, t.name]))
   const completionsByType: Record<string, { count: number; staffSet: Set<string> }> = {}
-  for (const r of (trainingRecords ?? []).filter(r => !testerOrgIds.has(r.organisation_id))) {
+  for (const r of trainingRecords ?? []) {
     const name = typeNameById[r.training_type_id] ?? r.training_type_id
     if (!completionsByType[name]) completionsByType[name] = { count: 0, staffSet: new Set() }
     completionsByType[name].count++
@@ -294,9 +297,10 @@ export default async function MetricsPage() {
     .from('hr_staff_profiles')
     .select('organisation_id, employment_status, dbs_next_review_due, job_title')
     .eq('employment_status', 'active')
+    .in('organisation_id', liveOrgIds)
 
   const staffGapByOrg: Record<string, number> = {}
-  for (const s of (allActiveStaff ?? []).filter(s => !testerOrgIds.has(s.organisation_id))) {
+  for (const s of allActiveStaff ?? []) {
     if (!s.dbs_next_review_due) {
       staffGapByOrg[s.organisation_id] = (staffGapByOrg[s.organisation_id] ?? 0) + 1
     }
