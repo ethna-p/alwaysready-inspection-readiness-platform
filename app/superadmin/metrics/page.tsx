@@ -709,7 +709,9 @@ export default async function MetricsPage() {
       {/* ── Staff profile completeness ── */}
       <section>
         <h2 className="text-base font-semibold text-ink mb-4">Active staff missing DBS review date</h2>
-        {staffGapRows.length === 0 ? (
+        {(allActiveStaff ?? []).length === 0 ? (
+          <p className="text-sm text-ink-muted">No data.</p>
+        ) : staffGapRows.length === 0 ? (
           <p className="text-sm text-ink-muted">All active staff have a DBS review date recorded.</p>
         ) : (
           <div className="bg-card border border-line rounded-xl overflow-hidden">
@@ -736,7 +738,9 @@ export default async function MetricsPage() {
       {/* ── Training without certificate ── */}
       <section>
         <h2 className="text-base font-semibold text-ink mb-4">Training records without certificate</h2>
-        {noCertRows.length === 0 ? (
+        {(allTraining ?? []).length === 0 ? (
+          <p className="text-sm text-ink-muted">No data.</p>
+        ) : noCertRows.length === 0 ? (
           <p className="text-sm text-ink-muted">All training records have a certificate uploaded.</p>
         ) : (
           <div className="bg-card border border-line rounded-xl overflow-hidden">
