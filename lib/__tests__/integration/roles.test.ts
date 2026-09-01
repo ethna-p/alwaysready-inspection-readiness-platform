@@ -49,7 +49,16 @@ beforeAll(async () => {
   userId   = user.authUserId
   viewerId = viewer.authUserId
 
-  // Seed compliance_records for both KLOEs; assign kloItemId to the 'user' role member
+  // Seed compliance_records for both KLOEs (current-state table).
+  // These must exist before the history inserts and the assigned_to update below.
+  await client.query(
+    `INSERT INTO public.compliance_records (organisation_id, klo_item_id)
+     VALUES ($1, $2), ($1, $3)
+     ON CONFLICT (organisation_id, klo_item_id) DO NOTHING`,
+    [orgId, kloItemId, kloItemId2]
+  )
+
+  // Also seed compliance_record_history (audit trail).
   await client.query(
     `INSERT INTO public.compliance_record_history
        (organisation_id, klo_item_id, status, priority, changed_by)
