@@ -24,6 +24,43 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
 import { getFirstName }  from '@/lib/utils/name'
 import { PLATFORM_URL } from '@/lib/config'
+import type { SupabaseClient } from '@supabase/supabase-js'
+
+/**
+ * Recursively lists and deletes all Storage objects under `prefix/` in `bucket`.
+ * Returns the total number of objects removed.
+ *
+ * Supabase Storage's list() is non-recursive: items with a null `id` are
+ * "pseudo-folders" (common prefixes) and items with a UUID `id` are real files.
+ * We recurse into pseudo-folders to reach every file.
+ */
+async function deleteStoragePrefix(
+  supabase: SupabaseClient,
+  bucket:   string,
+  prefix:   string,
+): Promise<number> {
+  let count = 0
+  const { data: items, error } = await supabase.storage
+    .from(bucket)
+    .list(prefix, { limit: 1000 })
+
+  if (error || !items) return count
+
+  const files   = items.filter(i => i.id !== null)
+  const folders = items.filter(i => i.id === null)
+
+  if (files.length > 0) {
+    const paths = files.map(f => `${prefix}/${f.name}`)
+    await supabase.storage.from(bucket).remove(paths)
+    count += files.length
+  }
+
+  for (const folder of folders) {
+    count += await deleteStoragePrefix(supabase, bucket, `${prefix}/${folder.name}`)
+  }
+
+  return count
+}
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization')
@@ -150,6 +187,30 @@ export async function GET(request: Request) {
       .eq('organisation_id', org.id)
       .eq('role', 'admin')
 
+    // ── Storage cleanup ──────────────────────────────────────────────────────
+    // Delete Storage files before the DB row so we have the org ID.
+    // Errors are non-fatal: we log them and still proceed with the DB deletion.
+    try {
+      const evidenceCount = await deleteStoragePrefix(supabase, 'evidence', org.id)
+      if (evidenceCount > 0) {
+        console.log(`[data-deletion] Removed ${evidenceCount} evidence file(s) for org ${org.id}`)
+      }
+    } catch (storageErr) {
+      console.error(`[data-deletion] Storage evidence cleanup failed for org ${org.id}:`, storageErr)
+    }
+
+    try {
+      const logoFiles = await supabase.storage.from('org-logos').list(org.id)
+      if (logoFiles.data && logoFiles.data.length > 0) {
+        const paths = logoFiles.data.map(f => `${org.id}/${f.name}`)
+        await supabase.storage.from('org-logos').remove(paths)
+        console.log(`[data-deletion] Removed org logo(s) for org ${org.id}`)
+      }
+    } catch (logoErr) {
+      console.error(`[data-deletion] Storage logo cleanup failed for org ${org.id}:`, logoErr)
+    }
+
+    // ── Database deletion ────────────────────────────────────────────────────
     const { error: delError } = await supabase
       .from('organisations')
       .delete()
