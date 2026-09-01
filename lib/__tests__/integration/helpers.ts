@@ -51,11 +51,16 @@ export async function seedUser(
     [authUserId, email]
   )
 
-  // Insert into public.users
+  // Insert into public.users.
+  // Viewers require a future viewer_expires_at to pass the H3 RLS policy.
+  const viewerExpiry = role === 'viewer'
+    ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
+    : null
+
   await client.query(
-    `INSERT INTO public.users (id, organisation_id, email, role, full_name, username)
-     VALUES ($1, $2, $3, $4, 'Test User', $5)`,
-    [authUserId, opts.organisationId, email, role, `testuser-${authUserId.slice(0, 8)}`]
+    `INSERT INTO public.users (id, organisation_id, email, role, full_name, username, viewer_expires_at)
+     VALUES ($1, $2, $3, $4, 'Test User', $5, $6)`,
+    [authUserId, opts.organisationId, email, role, `testuser-${authUserId.slice(0, 8)}`, viewerExpiry]
   )
 
   return { authUserId, email }
