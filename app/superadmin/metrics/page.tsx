@@ -279,6 +279,7 @@ export default async function MetricsPage() {
     .from('hr_training_records')
     .select('training_type_id, user_id, date_completed, organisation_id')
     .gte('date_completed', ninetyDaysAgo.slice(0, 10))
+    .in('organisation_id', liveOrgIds)
 
   const { data: trainingTypes } = await supabase
     .from('hr_training_types')
@@ -343,6 +344,7 @@ export default async function MetricsPage() {
   const { data: allTraining } = await supabase
     .from('hr_training_records')
     .select('id, organisation_id, training_type_id')
+    .in('organisation_id', liveOrgIds)
 
   const { data: certs } = await supabase
     .from('hr_training_certificates')
