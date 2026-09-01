@@ -17,7 +17,6 @@ import {
 } from '@react-pdf/renderer'
 import { EVIDENCE_CATEGORIES } from '@/lib/evidence-categories'
 import type { RAGStatus } from '@/lib/rag'
-import { RAG_LABELS } from '@/lib/rag'
 
 // ── Data types ────────────────────────────────────────────────────────────────
 

@@ -29,10 +29,6 @@ function formatDate(iso: string | null | undefined): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-function toInputDate(iso: string): string {
-  return iso.split('T')[0]
-}
-
 /** Days remaining in the 10-working-day FAC window (calendar days approximation: 14 days) */
 function facDaysRemaining(draftReceived: string): number {
   const deadline = new Date(draftReceived)

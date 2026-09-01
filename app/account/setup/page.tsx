@@ -13,12 +13,10 @@
  */
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 export default function AccountSetupPage() {
-  const router    = useRouter()
   const supabase  = createClient()
 
   const [password, setPassword]   = useState('')

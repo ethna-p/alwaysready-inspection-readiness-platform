@@ -51,7 +51,6 @@ export default async function MyKloesPage() {
     .select('id, name')
 
   const kqNameById = new Map((keyQuestions ?? []).map(kq => [kq.id, kq.name]))
-  const recordByKloId = new Map((assignedRecords ?? []).map(r => [r.klo_item_id, r]))
   const kloById = new Map((kloItems ?? []).map(k => [k.id, k]))
 
   // Sort: red first, then amber, then green, then grey

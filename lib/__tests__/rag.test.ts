@@ -47,7 +47,6 @@ describe('calculateRAG', () => {
 
   it('returns red when next_review_due equals now (not strictly future)', () => {
     // Exactly at midnight of NOW — still past
-    const midnight = new Date('2026-08-31T00:00:00Z')
     expect(calculateRAG({
       date_reviewed: '2026-01-01',
       next_review_due: '2026-08-31',

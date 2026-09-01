@@ -452,7 +452,7 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayKey:   'user_day_07',
     dayIndex: 7,
     subject:  'A quick check-in on your KLOEs',
-    bodyHtml: (firstName, _orgName) => `
+    bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         You've been on AlwaysReady for a week. We wanted to check in and make sure

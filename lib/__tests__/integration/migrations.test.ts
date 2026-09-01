@@ -11,7 +11,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { Client } from 'pg'
-import { connectSuperuser, DB_URL } from './helpers'
+import { connectSuperuser } from './helpers'
 
 let client: Client
 

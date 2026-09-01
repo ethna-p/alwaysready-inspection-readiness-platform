@@ -20,7 +20,6 @@ import KloeTableHeader, { type KloeSort, type KloeDir } from './KloeTableHeader'
 const RAG_SORT:    Record<RAGStatus, number>         = { red: 0, amber: 1, green: 2, grey: 3 }
 const STATUS_SORT: Record<string, number>            = { not_started: 0, in_progress: 1, completed: 2 }
 
-type KeyQuestionRow = { id: string; name: string; display_order: number; description: string | null }
 
 function formatDate(iso: string | null): string {
   if (!iso) return '—'

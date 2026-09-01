@@ -87,9 +87,6 @@ export default async function KloeDetailPage({ params }: Props) {
         .in('id', changedByIds)
     : { data: [] }
 
-  const nameById = new Map(
-    (userRows ?? []).map(u => [u.id, u.full_name ?? u.email])
-  )
 
   // ── Fetch org + service type (for checklist filtering) ─────────────────
   const { data: org } = await supabase

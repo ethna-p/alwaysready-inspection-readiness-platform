@@ -17,10 +17,9 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
-import { calculateRAG } from '@/lib/rag'
 import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
-import type { ComplianceRecord, KloItem } from '@/lib/types'
+import type { ComplianceRecord } from '@/lib/types'
 import KloeTableHeader, { type KloeDir, type SortColumnDef } from '../kloes/KloeTableHeader'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -128,7 +127,6 @@ export default async function DailyReportPage({
     ])
 
   const kqById  = new Map((keyQuestions ?? []).map(kq => [kq.id, kq]))
-  const kloById = new Map<string, KloItem>((kloItems ?? []).map(k => [k.id, k as unknown as KloItem]))
   const recordByKloId = new Map<string, ComplianceRecord>(
     (records ?? []).map(r => [r.klo_item_id, r])
   )
@@ -249,7 +247,7 @@ export default async function DailyReportPage({
               ({sortedUnassessed.length} {sortedUnassessed.length === 1 ? 'KLOE' : 'KLOEs'} — no review date set)
             </span>
           </h2>
-          <ReportTable items={sortedUnassessed} kloById={kloById} sort={sort} dir={dir} />
+          <ReportTable items={sortedUnassessed} sort={sort} dir={dir} />
         </section>
       )}
 
@@ -266,7 +264,7 @@ export default async function DailyReportPage({
               ({sortedRed.length} {sortedRed.length === 1 ? 'KLOE' : 'KLOEs'})
             </span>
           </h2>
-          <ReportTable items={sortedRed} kloById={kloById} sort={sort} dir={dir} />
+          <ReportTable items={sortedRed} sort={sort} dir={dir} />
         </section>
       )}
 
@@ -283,7 +281,7 @@ export default async function DailyReportPage({
               ({sortedAmber.length} {sortedAmber.length === 1 ? 'KLOE' : 'KLOEs'})
             </span>
           </h2>
-          <ReportTable items={sortedAmber} kloById={kloById} sort={sort} dir={dir} />
+          <ReportTable items={sortedAmber} sort={sort} dir={dir} />
         </section>
       )}
     </div>
@@ -294,12 +292,10 @@ export default async function DailyReportPage({
 
 function ReportTable({
   items,
-  kloById,
   sort,
   dir,
 }: {
   items: AttentionItem[]
-  kloById: Map<string, KloItem>
   sort: string
   dir: KloeDir
 }) {

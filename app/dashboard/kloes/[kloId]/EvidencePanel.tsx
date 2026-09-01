@@ -56,7 +56,6 @@ function formatDate(iso: string): string {
 
 export default function EvidencePanel({
   kloItemId,
-  organisationId: _organisationId,
   initialFiles,
   isAdmin,
   canUpload,

@@ -237,7 +237,6 @@ export async function GET(request: Request) {
 
       // Red + no assignee = falls through individual cron
       const isOverdue = status === 'completed' && reviewDue !== null && reviewDue < today
-      const isRedNotStarted = (!rec || status === 'not_started') && false // not_started is grey, not red
       if (isOverdue && !rec?.assigned_to) overdueUnassigned++
     }
 
