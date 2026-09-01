@@ -29,6 +29,11 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { getFirstName } from '@/lib/utils/name'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+// 10 inbound emails per sender per hour — generous for a support inbox,
+// but prevents a single address flooding ticket creation and AI draft calls.
+const inboundLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
 function escapeHtml(s: string): string {
   return s
@@ -178,6 +183,13 @@ export async function POST(req: NextRequest) {
 
   if (!from) {
     return NextResponse.json({ error: 'Missing from address' }, { status: 400 })
+  }
+
+  // Rate limit per sender — prevents a single address flooding ticket creation
+  // and triggering unbounded AI draft calls.
+  if (!(await inboundLimiter.check(`inbound-email:${from.toLowerCase()}`))) {
+    console.warn(`[inbound-email] Rate limit hit for sender: ${from}`)
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
   // Drop automated/transactional emails silently — no ticket, no auto-reply
