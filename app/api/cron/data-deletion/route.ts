@@ -54,6 +54,7 @@ export async function GET(request: Request) {
   const { data: warningOrgs } = await supabase
     .from('organisations')
     .select('id, name')
+    .neq('is_tester', true)
     .gte('data_deletion_due_at', warnFrom0.toISOString())
     .lte('data_deletion_due_at', warnTo0.toISOString())
 
@@ -138,6 +139,7 @@ export async function GET(request: Request) {
     .from('organisations')
     .select('id, name')
     .not('data_deletion_due_at', 'is', null)
+    .neq('is_tester', true)
     .lt('data_deletion_due_at', now.toISOString())
 
   for (const org of dueOrgs ?? []) {
