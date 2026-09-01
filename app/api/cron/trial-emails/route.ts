@@ -95,21 +95,20 @@ export async function GET(request: Request) {
 
       const firstName = getFirstName(admin.full_name)
 
-      // Check if already sent
-      const { data: existing } = await supabase
-        .from('notification_log')
-        .select('id')
-        .eq('organisation_id',   org.id)
-        .eq('notification_type', 'trial_day')
-        .eq('entity_type',       'trial')
-        .eq('entity_id',         emailDef.dayKey)
-        .eq('due_date',          dueDateKey)
-        .eq('recipient_email',   admin.email)
-        .maybeSingle()
-
-      if (existing) {
-        emailsSkipped++
-        continue
+      // Claim the slot atomically — insert into notification_log first.
+      // The unique index prevents a second concurrent cron run from also sending.
+      const { error: logClaimError } = await supabase.from('notification_log').insert({
+        organisation_id:   org.id,
+        notification_type: 'trial_day',
+        entity_type:       'trial',
+        entity_id:         emailDef.dayKey,
+        due_date:          dueDateKey,
+        recipient_email:   admin.email,
+      })
+      if (logClaimError) {
+        if (logClaimError.code === '23505') { emailsSkipped++; continue } // already sent
+        console.error(`[trial-emails] notification_log claim error:`, logClaimError)
+        errors.push(`${emailDef.dayKey} → ${admin.email}: log claim failed`); continue
       }
 
       // For day_07, query the org's actual wizard status to personalise the checklist
@@ -140,17 +139,14 @@ export async function GET(request: Request) {
       })
 
       if (result.sent) {
-        await supabase.from('notification_log').insert({
-          organisation_id:   org.id,
-          notification_type: 'trial_day',
-          entity_type:       'trial',
-          entity_id:         emailDef.dayKey,
-          due_date:          dueDateKey,
-          recipient_email:   admin.email,
-        })
         emailsSent++
         console.log(`[trial-emails] Sent ${emailDef.dayKey} to ${admin.email} (${org.name})`)
       } else {
+        // Sending failed — release the claim so the next cron run can retry
+        await supabase.from('notification_log').delete()
+          .eq('organisation_id', org.id).eq('notification_type', 'trial_day')
+          .eq('entity_type', 'trial').eq('entity_id', emailDef.dayKey)
+          .eq('due_date', dueDateKey).eq('recipient_email', admin.email)
         errors.push(`${emailDef.dayKey} → ${admin.email}: ${result.error ?? result.skipped}`)
       }
     }
@@ -192,19 +188,20 @@ export async function GET(request: Request) {
     for (const admin of admins ?? []) {
       if (!admin.email) continue
 
-      // Check if already sent
-      const { data: existing } = await supabase
-        .from('notification_log')
-        .select('id')
-        .eq('organisation_id',   org.id)
-        .eq('notification_type', 'trial_day')
-        .eq('entity_type',       'trial')
-        .eq('entity_id',         'day_14b')
-        .eq('due_date',          yesterdayStr)
-        .eq('recipient_email',   admin.email)
-        .maybeSingle()
-
-      if (existing) { emailsSkipped++; continue }
+      // Claim atomically — insert first, send only if the claim succeeds
+      const { error: logClaim14b } = await supabase.from('notification_log').insert({
+        organisation_id:   org.id,
+        notification_type: 'trial_day',
+        entity_type:       'trial',
+        entity_id:         'day_14b',
+        due_date:          yesterdayStr,
+        recipient_email:   admin.email,
+      })
+      if (logClaim14b) {
+        if (logClaim14b.code === '23505') { emailsSkipped++; continue }
+        console.error('[trial-emails] day_14b log claim error:', logClaim14b)
+        errors.push(`day_14b → ${admin.email}: log claim failed`); continue
+      }
 
       const firstName    = getFirstName(admin.full_name)
       const expiryDate   = formatDate(`${yesterdayStr}T00:00:00Z`)
@@ -243,17 +240,13 @@ export async function GET(request: Request) {
       })
 
       if (result.sent) {
-        await supabase.from('notification_log').insert({
-          organisation_id:   org.id,
-          notification_type: 'trial_day',
-          entity_type:       'trial',
-          entity_id:         'day_14b',
-          due_date:          yesterdayStr,
-          recipient_email:   admin.email,
-        })
         emailsSent++
         console.log(`[trial-emails] Sent day_14b to ${admin.email} (${org.name})`)
       } else {
+        await supabase.from('notification_log').delete()
+          .eq('organisation_id', org.id).eq('notification_type', 'trial_day')
+          .eq('entity_type', 'trial').eq('entity_id', 'day_14b')
+          .eq('due_date', yesterdayStr).eq('recipient_email', admin.email)
         errors.push(`day_14b → ${admin.email}: ${result.error ?? result.skipped}`)
       }
     }
@@ -291,18 +284,20 @@ export async function GET(request: Request) {
     const orgName    = org?.name ?? 'your organisation'
     const dueDateKey = today.toISOString().split('T')[0]
 
-    // Idempotency check
-    const { data: existing } = await supabase
-      .from('notification_log')
-      .select('id')
-      .eq('organisation_id',   usr.organisation_id)
-      .eq('notification_type', 'user_onboarding')
-      .eq('entity_type',       'user')
-      .eq('entity_id',         emailDef.dayKey)
-      .eq('recipient_email',   usr.email)
-      .maybeSingle()
-
-    if (existing) { emailsSkipped++; continue }
+    // Claim atomically — insert first, send only if the claim succeeds
+    const { error: logClaimUser } = await supabase.from('notification_log').insert({
+      organisation_id:   usr.organisation_id,
+      notification_type: 'user_onboarding',
+      entity_type:       'user',
+      entity_id:         emailDef.dayKey,
+      due_date:          dueDateKey,
+      recipient_email:   usr.email,
+    })
+    if (logClaimUser) {
+      if (logClaimUser.code === '23505') { emailsSkipped++; continue }
+      console.error('[trial-emails] user_onboarding log claim error:', logClaimUser)
+      errors.push(`${emailDef.dayKey} → ${usr.email}: log claim failed`); continue
+    }
 
     const result = await sendEmail({
       to:       usr.email,
@@ -312,17 +307,13 @@ export async function GET(request: Request) {
     })
 
     if (result.sent) {
-      await supabase.from('notification_log').insert({
-        organisation_id:   usr.organisation_id,
-        notification_type: 'user_onboarding',
-        entity_type:       'user',
-        entity_id:         emailDef.dayKey,
-        due_date:          dueDateKey,
-        recipient_email:   usr.email,
-      })
       emailsSent++
       console.log(`[trial-emails] Sent ${emailDef.dayKey} to ${usr.email} (${orgName})`)
     } else {
+      await supabase.from('notification_log').delete()
+        .eq('organisation_id', usr.organisation_id).eq('notification_type', 'user_onboarding')
+        .eq('entity_type', 'user').eq('entity_id', emailDef.dayKey)
+        .eq('due_date', dueDateKey).eq('recipient_email', usr.email)
       errors.push(`${emailDef.dayKey} → ${usr.email}: ${result.error ?? result.skipped}`)
     }
   }
