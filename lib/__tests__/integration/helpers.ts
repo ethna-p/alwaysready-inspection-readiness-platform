@@ -115,8 +115,11 @@ export async function withAuthUser<T>(
 
 /** Clean up seeded rows by id. Call in afterAll. */
 export async function cleanupOrg(client: Client, orgId: string): Promise<void> {
-  // Delete compliance_records before users — compliance_records_last_updated_by_fkey
-  // references public.users.id with no CASCADE.
+  // Delete all compliance child tables before users — changed_by / last_updated_by
+  // reference auth.users(id) with no ON DELETE CASCADE.
+  await client.query(`DELETE FROM public.priority_history WHERE organisation_id = $1`, [orgId])
+  await client.query(`DELETE FROM public.review_frequency_history WHERE organisation_id = $1`, [orgId])
+  await client.query(`DELETE FROM public.compliance_record_history WHERE organisation_id = $1`, [orgId])
   await client.query(`DELETE FROM public.compliance_records WHERE organisation_id = $1`, [orgId])
   // Delete auth.users first (FK: public.users.id → auth.users.id may cascade,
   // but we also delete public.users explicitly before the organisation).
