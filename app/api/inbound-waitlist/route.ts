@@ -157,7 +157,7 @@ export async function POST(req: NextRequest) {
       }
     } catch (err) {
       console.error('[inbound-waitlist] Turnstile verification error:', err)
-      // Soft-pass if Cloudflare is unreachable
+      return NextResponse.json({ error: 'Security check unavailable. Please try again.' }, { status: 503, headers: CORS_HEADERS })
     }
   }
 

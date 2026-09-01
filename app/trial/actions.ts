@@ -74,7 +74,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
         return { success: false, error: 'Security check failed. Please refresh the page and try again.' }
       }
     } catch {
-      // Soft-pass if Cloudflare is unreachable
+      return { success: false, error: 'Security check unavailable. Please try again in a moment.' }
     }
   }
 

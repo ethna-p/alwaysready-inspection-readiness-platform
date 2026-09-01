@@ -79,23 +79,21 @@ export async function POST(req: NextRequest) {
   if (secretKey) {
     const token = typeof body['cf-turnstile-response'] === 'string' ? body['cf-turnstile-response'] : ''
     if (!token) {
-      // Soft-pass: no token (Turnstile may not have loaded). Honeypot still provides basic bot protection.
-      console.warn('[blog-subscribe] No Turnstile token — soft-pass')
-    } else {
-      try {
-        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
-        })
-        const verifyData = await verifyRes.json() as { success: boolean; 'error-codes'?: string[] }
-        if (!verifyData.success) {
-          return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers })
-        }
-      } catch (err) {
-        console.error('[blog-subscribe] Turnstile verification error:', err)
-        // Soft-pass if Cloudflare is unreachable
+      return NextResponse.json({ error: 'Security check required. Please try again.' }, { status: 400, headers })
+    }
+    try {
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
+      })
+      const verifyData = await verifyRes.json() as { success: boolean; 'error-codes'?: string[] }
+      if (!verifyData.success) {
+        return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers })
       }
+    } catch (err) {
+      console.error('[blog-subscribe] Turnstile verification error:', err)
+      return NextResponse.json({ error: 'Security check unavailable. Please try again.' }, { status: 503, headers })
     }
   }
 
