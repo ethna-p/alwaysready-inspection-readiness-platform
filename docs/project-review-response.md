@@ -302,12 +302,76 @@ A series of CI failures were resolved during the session that addressed the revi
 
 ---
 
-## Other in-flight work (unrelated to Issue #7)
+## Session: 1 September 2026
 
-For completeness, other open issues at the time of this review:
+### RLS — Staff self-access on hr_staff_profiles (tasks #664–#669)
+
+Added two RLS policies allowing staff members to read and update their own profile row:
+
+```sql
+CREATE POLICY "hr_staff_profiles_self_select"
+  ON public.hr_staff_profiles FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+
+CREATE POLICY "hr_staff_profiles_self_update"
+  ON public.hr_staff_profiles FOR UPDATE TO authenticated
+  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+```
+
+Wired through `saveOwnProfile` server action and a new `isSelf` mode in `HrStaffForm`, exposing a "My Profile" nav link for staff-role users. Application layer restricts editable fields to `next_of_kin_name` and `next_of_kin_phone`; RLS provides the database-layer defence.
+
+Migration committed: `supabase/migrations/20260901000001_hr_staff_self_access.sql`
+
+### Onboarding email sequence — #609 ✅ Complete
+
+All 18 onboarding emails reviewed and updated:
+- All em dashes removed throughout
+- All contractions removed throughout
+- All "Trend Report" references updated to "Analytics Report"
+- Removed all "before an inspection" framing (inspections are unannounced)
+- Week 5: "right before an inspection" framing removed
+- Week 8: subject line updated
+- Week 9: Analytics HR compliance overview paragraph added
+- Week 11: step headers reformatted; closing updated to reflect partial/full mock inspection choice
+- Week 12: complete rewrite — new subject, feedback request paragraph added
+- Week 25: complete rewrite — leads with CQC insight rather than assumption about care managers
+- Week 52: rewrite
+
+Committed: `#609 Rebuild onboarding sequence — all 18 emails reviewed and updated`
+
+### Superadmin metrics dashboard (#670–#672)
+
+Built `/superadmin/metrics` — a server-rendered operational health page covering:
+- Subscription health (paid / active trial / expired trial)
+- Trial signups by week (last 12 weeks)
+- Trial-to-paid conversion by month (last 6 months)
+- Active subscribers table
+- Evidence uploads by org
+- Notifications sent by type (last 30 days)
+- Engagement quality — compliance / mock inspection / evidence usage per org, scored 0–3, with days-to-first-action column (green ≤1d, amber ≤7d, red >7d)
+- Mock inspection usage — total, completed, avg findings per org
+- Support ticket health — open / in progress / resolved counts + avg days to resolve
+- Active staff missing DBS review date
+- Training completions (last 90 days)
+- Training records without certificate
+
+Added "Metrics" link to superadmin nav. No raw SQL — all queries use the Supabase JS client and aggregate in JS.
+
+---
+
+## Supabase Pro upgrade (planned)
+
+AJ plans to upgrade to Supabase Pro this week. This unblocks:
+
+1. **Finding #2 — backup and recovery:** Pro plan enables PITR (Point-in-Time Recovery). Once upgraded, complete the launch-day checklist in `docs/backup-and-recovery.md` — enable PITR under Project Settings → Backups and complete the first test restore.
+
+2. **Integration tests in CI:** The `integration-tests` CI job runs `supabase start` (local Docker stack) and does not require a Pro plan — it works on Free. However, Pro unlocks the ability to run integration tests directly against the staging Supabase instance if needed in future.
+
+---
+
+## Other in-flight work (unrelated to Issue #7)
 
 - **#229** — Purchase Simply Docs Business subscription; download T&Cs + DPA templates
 - **#230** — Solicitor review of T&Cs and DPA
 - **#231** — Create `/terms` and `/dpa` pages on the platform
 - **#302** — DSCR integration
-- **#609** — Rebuild onboarding sequence (deferred until all Issue #7 findings resolved)
