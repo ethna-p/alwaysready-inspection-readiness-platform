@@ -194,11 +194,24 @@ export async function POST(req: NextRequest) {
   if (reference) {
     const { data: ticket } = await supabase
       .from('support_tickets')
-      .select('id, subject, message, status, external_name')
+      .select('id, subject, message, status, external_name, external_email')
       .eq('reference', reference)
       .single()
 
     if (ticket) {
+      // Verify the sender matches the ticket's original email address.
+      // Without this check, anyone who knows (or guesses) a ticket reference
+      // can inject replies, reopen resolved tickets, and corrupt the AI draft.
+      // If external_email is set (email-sourced tickets), it must match `from`.
+      // Web-form tickets may have no external_email — we allow those through
+      // since there's no address to compare against.
+      const ticketEmail = (ticket.external_email as string | null)?.toLowerCase()
+      if (ticketEmail && ticketEmail !== from.toLowerCase()) {
+        console.warn(
+          `[inbound-email] Sender ${from} does not match ticket ${reference} (${ticketEmail}) — creating new ticket`
+        )
+        // Fall through to new-ticket creation below
+      } else {
       // Reopen if resolved
       if (ticket.status === 'resolved') {
         await supabase
@@ -238,8 +251,9 @@ export async function POST(req: NextRequest) {
       await refreshDraft(ticket.id, thread)
 
       return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
+      } // end sender-match else
     }
-    // Reference not found — fall through to create new ticket
+    // Reference not found or sender mismatch — fall through to create new ticket
   }
 
   // ── Route: create new ticket ──────────────────────────────────────────────
