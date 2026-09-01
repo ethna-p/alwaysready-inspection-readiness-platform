@@ -26,6 +26,15 @@ import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 import { fetchCqcLocation } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 // 10 requests per IP per hour — generous for a waitlist signup
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
@@ -254,7 +263,7 @@ export async function POST(req: NextRequest) {
         type: 'marketing',
         subscriberEmail: email,
         bodyHtml: `
-          <p>Hi ${displayName},</p>
+          <p>Hi ${escapeHtml(displayName)},</p>
           <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>
           <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
              and we'll open to new customers as soon as the framework is published.

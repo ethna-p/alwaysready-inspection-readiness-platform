@@ -16,6 +16,15 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 // 10 requests per IP per hour — generous for a signup form
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
@@ -95,7 +104,7 @@ export async function POST(req: NextRequest) {
     type:            'marketing',
     subscriberEmail: email,
     bodyHtml: `
-      <p>Hi ${displayName},</p>
+      <p>Hi ${escapeHtml(displayName)},</p>
 
       <p>
         Thanks for subscribing to the AlwaysReady blog. We cover CQC inspection readiness,
@@ -123,8 +132,8 @@ export async function POST(req: NextRequest) {
           A new subscriber signed up via the website blog signup form.
         </p>
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
-          ${name ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${name}</td></tr>` : ''}
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${email}</td></tr>
+          ${name ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Name</td><td style="padding:4px 0">${escapeHtml(name)}</td></tr>` : ''}
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${escapeHtml(email)}</td></tr>
         </table>
       `,
     }).catch(err => {
