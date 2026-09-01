@@ -60,17 +60,15 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     subject:   'Setting up your team on AlwaysReady ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>This week, we focus on setting up your team on the platform ⭐</p>
-      <p>You can invite staff members into AlwaysReady. You can also assign them specific KLOEs to manage.
-      When everyone contributes, evidence is added steadily over time. This prevents the last-minute rush
-      that often happens before an inspection.</p>
-      <p>Sharing the workload also helps your team become more inspection-ready. As staff take ownership of
-      their KLOEs, they learn what good governance looks like. They become more confident with compliance
-      expectations. They also feel more prepared to talk to inspectors about the work they've done.</p>
-      <p>Over time, this builds a stronger culture of everyday governance. It means compliance becomes part
-      of normal practice, not something that only happens when an inspection is due.</p>
-      <p>To invite a team member, go to the <strong>Team</strong> section in the main navigation.</p>
-      <p>Questions? Hit reply — we read everything.</p>
+      <p>This week is about getting your team set up on the platform ⭐</p>
+      <p>Go to the <strong>Team</strong> section in the main navigation to invite staff members. Once they're in,
+      you can assign them specific KLOEs to manage, so evidence is added steadily throughout the year by the people
+      closest to the work.</p>
+      <p>Staff can also update their own profile in the <strong>My Profile</strong> section, including their
+      emergency contact details. This keeps HR records current without creating additional admin for you.</p>
+      <p>As your team takes ownership of their KLOEs, they build familiarity with compliance expectations and
+      become more confident discussing the work they do. That confidence matters whenever an inspector arrives.</p>
+      <p>If you have any questions, hit reply — we read everything.</p>
     `,
   },
   {
@@ -133,7 +131,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     subject:   'Have you tried the Daily Report? ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>This week we're focusing on your Daily Report ⭐</p>
+      <p>This week we are focusing on your Daily Report ⭐</p>
       <p><strong>Understand your current compliance position</strong><br>
       The Daily Report gives you a real-time snapshot of where your compliance stands today. It shows which KLOEs
       are up to date, which need reviewing, and which have never been assessed. This helps you see your strengths
@@ -141,16 +139,16 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Use it to guide your daily actions</strong><br>
       We encourage you to make the Daily Report part of your everyday routine. Even a quick five-minute check each
       morning helps you stay aware of what needs attention. Over time, these small daily check-ins build strong
-      habits. They also reduce the pressure that comes from trying to prepare everything right before an inspection.</p>
+      habits. They also reduce the pressure of having to catch up when a gap is identified.</p>
       <p><strong>Spot issues early and act quickly</strong><br>
-      By reviewing your Daily Report regularly, you can identify gaps before they become risks. You'll see where
+      By reviewing your Daily Report regularly, you can identify gaps before they become risks. You will see where
       evidence is missing, where updates are overdue, and where improvements are needed. Early action is one of the
       strongest indicators of good governance. It shows CQC that you monitor your service actively and respond promptly.</p>
       <p><strong>Build confidence across your team</strong><br>
-      When the Daily Report becomes part of your routine, your whole team benefits. Everyone knows what's expected.
+      When the Daily Report becomes part of your routine, your whole team benefits. Everyone knows what is expected.
       Everyone can see progress. And everyone feels more prepared for conversations with inspectors. This creates a
       culture where compliance is continuous, not occasional.</p>
-      <p>You'll find more guidance in the <strong>Help</strong> tab, or just reply if you have a specific question.</p>
+      <p>You will find more guidance in the <strong>Help</strong> tab, or just reply if you have a specific question.</p>
     `,
   },
   {
@@ -159,7 +157,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     subject:   'Your audit trail ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>This week we're focusing on your audit trail ⭐</p>
+      <p>This week we are focusing on your audit trail ⭐</p>
       <p><strong>Every change is recorded</strong><br>
       Every update you make in AlwaysReady is automatically logged. The system records who made the change,
       what was updated, and when it happened. This creates a clear, reliable audit trail. It shows how your
@@ -167,7 +165,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       decision-making, and see how actions link to outcomes.</p>
       <p><strong>Your journey matters to CQC</strong><br>
       CQC inspectors are interested in more than your current position. They want to understand the journey
-      you've been on. They look for evidence that you identify issues, take action, and follow through. A
+      you have been on. They look for evidence that you identify issues, take action, and follow through. A
       detailed audit trail shows that your governance is active, not reactive. It demonstrates that improvements
       are intentional, recorded, and part of everyday practice.</p>
       <p><strong>Show continuous improvement</strong><br>
@@ -179,7 +177,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       A clear record of who made each change supports good governance. It encourages shared responsibility and
       helps everyone understand their role. It also gives managers confidence that actions are being taken and
       recorded properly. Transparency is one of the strongest indicators of a well-led service.</p>
-      <p>As always, we're here if you need us — the <strong>Support</strong> tab is the quickest route.</p>
+      <p>As always, we are here if you need us. The <strong>Support</strong> tab is the quickest route.</p>
     `,
   },
   {
@@ -188,14 +186,14 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     subject:   'Sharing access with external visitors ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>This week we're focusing on visitor access ⭐</p>
+      <p>This week we are focusing on visitor access ⭐</p>
       <p><strong>Create secure, time-limited visitor logins</strong><br>
       AlwaysReady lets you create a secure, time-limited visitor login for external reviewers. Visitors can
       view your KLOE ratings and evidence, but they cannot make any changes. This keeps your records accurate
       and protected.</p>
       <p><strong>Ideal for CQC inspectors</strong><br>
       Viewer logins are especially helpful during a CQC inspection. Inspectors can access the information they
-      need quickly and see your evidence exactly as you've organised it. This makes inspections smoother and
+      need quickly and see your evidence exactly as you have organised it. This makes inspections smoother and
       shows confidence in your governance.</p>
       <p><strong>Useful for audits and peer reviews</strong><br>
       You can also use visitor access for consultants, peer reviewers, and quality assurance partners. They can
@@ -210,27 +208,27 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_08',
     threshold: 49,
-    subject:   'Track your progress with the Trend Report ⭐',
+    subject:   'Track your progress with the Analytics Report ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>This week we're focusing on your Trend Report ⭐</p>
+      <p>This week we are focusing on your Analytics Report ⭐</p>
       <p><strong>See how your compliance has evolved</strong><br>
-      The Trend Report shows how your KLOE ratings have changed over time. It highlights improvements, dips,
+      The Analytics Report shows how your KLOE ratings have changed over time. It highlights improvements, dips,
       and areas where your work has remained consistent. This gives you a clear picture of your journey since
       you started using AlwaysReady. It helps you understand not just where you are today, but how you got there.</p>
       <p><strong>Turn progress into evidence</strong><br>
       Trend data is powerful because it shows movement. Inspectors and stakeholders want to see that you identify
-      issues, take action, and follow through. The Trend Report gives you concrete evidence of that process. It
+      issues, take action, and follow through. The Analytics Report gives you concrete evidence of that process. It
       shows that your governance is active, ongoing, and responsive.</p>
       <p><strong>Share meaningful insights with stakeholders</strong><br>
-      You can use the Trend Report to update your board, your local authority, or a CQC inspector. It provides
+      You can use the Analytics Report to update your board, your local authority, or a CQC inspector. It provides
       a simple, visual way to demonstrate improvement and highlight areas that still need attention. This makes
-      conversations clearer, more focused, and more productive. It also shows that you monitor your service proactively.</p>
+      conversations clearer, more focused, and more productive. It also shows that you monitor your service actively.</p>
       <p><strong>Strengthen your inspection narrative</strong><br>
-      During an inspection, inspectors want to understand your story. The Trend Report helps you explain what has
-      changed, why it changed, and what you're doing next. It supports a confident, evidence-based narrative that
+      During an inspection, inspectors want to understand your story. The Analytics Report helps you explain what has
+      changed, why it changed, and what you are doing next. It supports a confident, evidence-based narrative that
       reflects continuous improvement.</p>
-      <p>Is the Trend Report showing progress you're pleased with, or are there areas giving you concern? Hit reply — we'd like to know how you're getting on.</p>
+      <p>Is the Analytics Report showing progress you are pleased with, or are there areas giving you concern? Hit reply. We would like to know how you are getting on.</p>
     `,
   },
   {
@@ -239,7 +237,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     subject:   'The HR module ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>This week we're focusing on your HR module ⭐</p>
+      <p>This week we are focusing on your HR module ⭐</p>
       <p><strong>Keep essential staff records organised</strong><br>
       The HR module stores all key workforce documents in one place — DBS checks, right-to-work evidence,
       training records, supervision and appraisal history, and employment status. Centralising these records
@@ -255,7 +253,11 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Support inspection readiness</strong><br>
       CQC often asks for proof of training, DBS status, and supervision frequency. With the HR module, you
       can provide this instantly. Clear, up-to-date records help demonstrate a well-managed, well-supported team.</p>
-      <p>If an HR record or training date is giving you trouble, just reply to this email — we're happy to help.</p>
+      <p><strong>Compliance overview in the Analytics section</strong><br>
+      The Analytics section also includes an overview of HR compliance across your team: how many staff have
+      current DBS checks, up-to-date training, and completed supervision. It gives you a dashboard view of
+      workforce compliance without having to check each record individually.</p>
+      <p>If an HR record or training date is giving you trouble, just reply. We are happy to help.</p>
     `,
   },
   {
@@ -287,7 +289,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       demonstrate it. Their evidence is specific, dated, and shows a clear journey from issue to action to
       outcome. If that describes the work you are already doing, the next step is making sure it is recorded
       with that level of detail.</p>
-      <p>If you're thinking about what Outstanding would look like for your service, hit reply — it's a conversation we enjoy having.</p>
+      <p>If you are thinking about what Outstanding would look like for your service, hit reply. It is a conversation we enjoy having.</p>
     `,
   },
   {
@@ -298,54 +300,57 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>Hi ${firstName},</p>
       <p>This week: how to run a mock inspection ⭐</p>
       <p>A mock inspection is one of the most effective things you can do to prepare for the real thing. It
-      surfaces gaps you might not have noticed, builds staff confidence, and gives you a clear action list
-      before CQC arrives. Here is how to approach it.</p>
-      <p><strong>Step 1 — Book a date and treat it seriously</strong><br>
+      surfaces gaps you might not have noticed, builds staff confidence, and gives you a clear action list.
+      Here is how to approach it.</p>
+      <p><strong>Step 1: Book a date and treat it seriously</strong><br>
       Schedule a half-day and commit to it. Tell your team enough in advance that they can prepare, but make
       clear that the purpose is to find gaps, not to perform. A mock inspection is most useful when it reflects
       real, everyday practice.</p>
-      <p><strong>Step 2 — Walk through all five key questions</strong><br>
+      <p><strong>Step 2: Walk through all five key questions</strong><br>
       Work through Safe, Effective, Caring, Responsive, and Well-led in turn. For each one, ask: what is our
       current rating? What evidence supports that? If an inspector arrived today, what would they see? Be honest.
       The purpose is to identify what needs attention, not to confirm what you already know is strong.</p>
-      <p><strong>Step 3 — Check your documentation against your practice</strong><br>
+      <p><strong>Step 3: Check your documentation against your practice</strong><br>
       This is where most services find their gaps. Policies say one thing; what staff actually do can be
-      different. Pick three or four common scenarios — a medication incident, a safeguarding concern, a
-      complaint — and trace what happens from start to finish. Does the paper trail match the process?</p>
-      <p><strong>Step 4 — Review your evidence in AlwaysReady</strong><br>
+      different. Pick three or four common scenarios: a medication incident, a safeguarding concern, a
+      complaint. Trace what happens from start to finish. Does the paper trail match the process?</p>
+      <p><strong>Step 4: Review your evidence in AlwaysReady</strong><br>
       Look at each KLOE and ask whether the evidence is current, specific, and dated. Vague notes and
       undated documents will not stand up under scrutiny. Anything more than 12 months old should be reviewed
       and updated or replaced with something more recent.</p>
-      <p><strong>Step 5 — Build your action list</strong><br>
-      At the end of the mock inspection, write down everything that needs attention — ranked by risk. Assign
+      <p><strong>Step 5: Build your action list</strong><br>
+      At the end of the mock inspection, write down everything that needs attention, ranked by risk. Assign
       an owner and a deadline to each item. Review progress at your next team meeting. The action list is
       itself evidence of good governance.</p>
-      <p>AlwaysReady's Mock Inspection feature inside the platform is designed for exactly this. If you have
-      not used it yet, now is a good time to start.</p>
-      <p>Any questions about running your first mock inspection? Just reply — we're glad to help.</p>
+      <p>AlwaysReady's Mock Inspection feature is designed for exactly this. You can complete a full mock
+      inspection across all five key questions, or work through a single KLOE at a time if that suits your
+      schedule better. If you have not used it yet, now is a good time to start.</p>
+      <p>Any questions about running your first mock inspection? Just reply. We are glad to help.</p>
     `,
   },
   {
     weekId:    'week_12',
     threshold: 77,
-    subject:   'Twelve weeks in — you\'re building something strong ⭐',
+    subject:   'Twelve weeks in ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>Twelve weeks in — you're building something strong ⭐</p>
-      <p>It's been 12 weeks since you began your AlwaysReady journey, and we hope the platform is becoming a
-      natural part of how you manage compliance day-to-day. The services that perform best in CQC inspections
-      are the ones that build small, steady habits. And you're doing exactly that.</p>
+      <p>Twelve weeks in: you are building something strong ⭐</p>
+      <p>It has been 12 weeks since you began your AlwaysReady journey, and we hope the platform is becoming a
+      natural part of how you manage compliance day to day. The services that perform best in CQC inspections
+      are the ones that build small, steady habits. You are doing exactly that.</p>
       <p><strong>Keep strengthening your lowest-rated KLOEs</strong><br>
-      Continue focusing on the areas that need the most attention. Each improvement you make — even a small one
-      — builds a clearer picture of safe, effective, responsive and well-led care.</p>
+      Continue focusing on the areas that need the most attention. Each improvement you make, even a small one,
+      builds a clearer picture of safe, effective, responsive, and well-led care.</p>
       <p><strong>Keep HR records current</strong><br>
       Up-to-date DBS checks, training certificates, and supervision dates are simple wins that make a big
       difference. They show strong governance and a well-supported team.</p>
-      <p><strong>Use your Trend Report to track progress</strong><br>
-      Check your Trend Report monthly to identify how far you've come and where to focus next. It turns your
-      progress into something visible and motivating.</p>
-      <p>Thank you for being an AlwaysReady customer. We're genuinely glad you're here, and we're excited to
-      see how your journey continues.</p>
+      <p><strong>Use your Analytics Report to track progress</strong><br>
+      Check your Analytics Report monthly to identify how far you have come and where to focus next. It turns
+      your progress into something visible and motivating.</p>
+      <p>Three months in feels like a good moment to ask: how has the journey been so far? What is working
+      well, and is there anything you wish the platform did differently? We read every reply and your feedback
+      shapes what we build next.</p>
+      <p>Thank you for being an AlwaysReady customer. We are genuinely glad you are here.</p>
     `,
   },
   {
@@ -357,19 +362,19 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>A quick check-in this month ⭐</p>
       <p>One of the most common issues we see in CQC inspections is a gap between what a service does and
       what it can prove. The care is good. The records do not show it. Inspectors can only act on what they
-      see — so if the evidence is thin or out of date, the rating will not reflect the work being done.</p>
-      <p>It is worth reviewing your evidence library this month with that question in mind: does what's
+      see, so if the evidence is thin or out of date, the rating will not reflect the work being done.</p>
+      <p>It is worth reviewing your evidence library this month with that question in mind: does what is
       recorded in AlwaysReady still reflect how your service actually works today?</p>
       <p><strong>Things worth checking:</strong></p>
       <p>Are your highest-priority KLOEs backed by evidence from the last six months? If not, what has
       changed in practice that should be documented?</p>
       <p>Are there KLOEs where you feel confident about the care but the evidence is sparse? Those gaps
-      are worth closing before an inspection cycle begins.</p>
-      <p>Are any uploaded documents now out of date — old policies that have since been reviewed,
+      are worth closing sooner rather than later.</p>
+      <p>Are any uploaded documents now out of date: old policies that have since been reviewed,
       training records that have since been refreshed, meeting minutes from two years ago?</p>
       <p>Your Daily Report will show you which KLOEs have not been updated recently. It is a good starting
       point for this kind of monthly review.</p>
-      <p>If you're unsure where to start, just reply — we're happy to think it through with you.</p>
+      <p>If you are unsure where to start, just reply. We are happy to think it through with you.</p>
     `,
   },
   {
@@ -381,51 +386,42 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>This month's check-in is about your team ⭐</p>
       <p>CQC inspectors do not only look at records. They talk to staff. They ask questions about how the
       service works, how decisions are made, and how people who use the service are supported. What staff
-      say in those conversations matters — and it can make or break a rating.</p>
+      say in those conversations matters, and it can make or break a rating.</p>
       <p>Services that consistently perform well in inspections usually have one thing in common: staff who
       feel genuinely involved in compliance, not just informed about it. They know what the KLOEs mean.
       They understand why evidence is recorded. They can explain their own role in keeping the service safe
       and effective.</p>
       <p>That kind of team readiness does not happen overnight. It is built through regular conversations,
       shared ownership of KLOEs, and a culture where governance is part of everyday practice rather than
-      something that happens before an inspection.</p>
+      something that only gets attention when an inspector is in the building.</p>
       <p><strong>A few things worth thinking about:</strong></p>
       <p>Have your team members logged in and reviewed the KLOEs they are responsible for recently? Are
       there staff who have never used the platform, or who are unsure what they are supposed to do in it?
       Has your team discussed what an inspection looks like and how they should respond to an inspector's
       questions?</p>
       <p>If staff engagement is something you would like to improve, hit reply. It is one of the most
-      impactful things a registered manager can do before an inspection.</p>
+      impactful things a registered manager can do.</p>
     `,
   },
   {
     weekId:    'week_25',
     threshold: 175,
-    subject:   'Six months with AlwaysReady — how are things going? ⭐',
+    subject:   'Six months in: something worth checking ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>Six months. That is worth acknowledging ⭐</p>
-      <p>It is six months since you subscribed to AlwaysReady, and we wanted to check in properly. A lot
-      can change in six months — new staff, new challenges, maybe a visit from CQC. We'd love to know
-      how things are going for you.</p>
-      <p><strong>How is your compliance position looking?</strong><br>
-      Take a look at your Daily Report and your Trend Report. Are your KLOEs moving in the right direction?
-      Are there areas that have stalled or slipped back? Six months is a good point to review progress honestly
-      and decide where to focus for the next quarter.</p>
-      <p><strong>Is your evidence still current?</strong><br>
-      Evidence that was strong in January can feel thin by summer if the service has moved on. Check that your
-      uploaded documents still reflect current practice. Anything more than 12 months old is worth reviewing.
-      Inspectors notice when evidence does not match what they see on a visit.</p>
-      <p><strong>Have you used every part of the platform?</strong><br>
-      Some features take time to find their place in a service's routine. If you have not yet used the Mock
-      Inspection tool, the People's Voice section, or the visitor access feature, now is a good time to
-      explore them. Each one was built to solve a problem we heard from registered managers.</p>
-      <p><strong>Is there anything we could do better?</strong><br>
-      We are a small team and we build AlwaysReady based on what we hear from people using it. If something
-      is not working the way you expected, or if there is a feature you wish existed, we want to know. Your
-      feedback shapes what we build next.</p>
-      <p>Hit reply and tell us how things are going. Even a one-line answer helps us understand what is
-      working and what is not.</p>
+      <p>Six months in ⭐</p>
+      <p>Something worth knowing at this stage: in CQC inspections, one of the most common findings is an
+      uneven evidence base. A service can have strong records for Safe and Caring, and almost nothing for
+      Well-Led. Inspectors notice that gap, and it affects ratings even when the underlying governance is
+      sound. The records do not reflect the reality.</p>
+      <p>It is worth opening your Analytics Report and looking at the spread across all five key questions.
+      Not just the overall score, but which KLOEs have recent evidence and which have gone quiet. If some
+      areas are thin, now is a good time to address them while there is no pressure to do so.</p>
+      <p>Did you know the platform includes a Mock Inspection tool? It walks you through all five key
+      questions so you can identify gaps before an inspector does. If you have not used it yet, it takes
+      around 30 minutes and often surfaces things that are easy to fix once you know they are there.</p>
+      <p>One question for us: what is the one thing you wish AlwaysReady did that it does not do yet?
+      We read every reply, and it directly shapes what we build next.</p>
     `,
   },
   {
@@ -436,45 +432,42 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>Hi ${firstName},</p>
       <p>Your monthly check-in ⭐</p>
       <p>CQC inspections are unannounced. The average gap between inspections in adult social care is around
-      two to three years — but that gap can be shorter if something triggers a concern, and it can feel much
-      shorter than expected when an inspection letter actually arrives. The services that handle inspections
-      most confidently are the ones that are never really preparing for the next one, because they are always
-      ready for it.</p>
-      <p>This month, it is worth thinking about your inspection narrative — the story you would tell an
+      two to three years, but that gap can be shorter if something triggers a concern. The services that
+      handle inspections most confidently are the ones that are never really preparing for the next one,
+      because they are always ready for it.</p>
+      <p>This month, it is worth thinking about your inspection narrative: the story you would tell an
       inspector if they walked through your door today.</p>
       <p><strong>A useful exercise:</strong> imagine an inspector asks you to summarise your service's
-      progress over the past year. What would you say? What improvements have you made? What challenges have
-      you faced, and how have you responded? What are you most proud of, and what are you still working on?</p>
+      progress over the past year. What improvements have you made? What challenges have you faced, and
+      how have you responded? What are you most proud of, and what are you still working on?</p>
       <p>If you can answer those questions clearly and point to evidence in AlwaysReady that supports each
-      one, you are in a strong position. If any of those answers feel uncertain, that is useful information —
-      it tells you where to focus before your next inspection cycle begins.</p>
-      <p>Your Trend Report and your Mock Inspection findings are good places to start this kind of review.
-      If you would like to talk through your inspection narrative, just reply.</p>
+      one, you are in a strong position. If any of those answers feel uncertain, that is useful to know.
+      It tells you where to focus your attention now.</p>
+      <p>Your Analytics Report and your Mock Inspection findings are good places to start this kind of
+      review. If you would like to talk through your inspection narrative, just reply.</p>
     `,
   },
   {
     weekId:    'week_38',
     threshold: 266,
-    subject:   'Nine months in — a compliance review worth doing ⭐',
+    subject:   'Nine months in: a compliance review worth doing ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>Nine months — your monthly check-in ⭐</p>
-      <p>At around the nine-month mark, it is worth doing a more structured compliance review. Not the kind
-      of review you do the week before an inspection, but the kind that helps you genuinely understand where
-      your service stands and what still needs attention.</p>
-      <p><strong>A nine-month review is worth covering these four areas:</strong></p>
+      <p>Nine months: your monthly check-in ⭐</p>
+      <p>At around the nine-month mark, it is worth doing a more structured compliance review. Not a reactive
+      review, but the kind that helps you genuinely understand where your service stands and what still needs
+      attention.</p>
       <p><strong>KLOE ratings:</strong> Go through each KLOE and ask honestly whether your current rating
       still reflects practice. Have any areas improved and not yet been updated? Are any areas weaker than
       they were six months ago?</p>
       <p><strong>Evidence currency:</strong> How much of your uploaded evidence is from the past 12 months?
-      Anything older than that should be reviewed and either replaced or supplemented with something current.</p>
+      Anything older than that should be reviewed and either replaced or supplemented with something more current.</p>
       <p><strong>HR records:</strong> Are all DBS checks, training certificates, and supervision records
       up to date? A gap here is one of the most common issues inspectors flag.</p>
       <p><strong>Action plans:</strong> If you have run a mock inspection and generated findings, how many
-      of those action items have been completed? Incomplete action plans are a risk — they are evidence that
+      of those action items have been completed? Incomplete action plans carry risk: they are evidence that
       issues were identified but not resolved.</p>
-      <p>If you'd like a hand running through any of these areas, reply and let us know where you'd like
-      to start.</p>
+      <p>If you would like a hand working through any of these areas, reply and let us know where to start.</p>
     `,
   },
   {
@@ -483,23 +476,21 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     subject:   'One year with AlwaysReady ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>One year. That is something worth acknowledging ⭐</p>
-      <p>Twelve months ago, you signed up to AlwaysReady. Since then, you have been building evidence,
-      updating KLOEs, managing HR records, and working to keep your service inspection-ready. That kind
-      of consistent effort is exactly what CQC is looking for — and it is not easy to sustain.</p>
-      <p>At the one-year mark, it is worth taking stock.</p>
-      <p><strong>Look at your Trend Report</strong> for the full picture of how your KLOE ratings have
-      changed since you started. Are you in a stronger position than you were 12 months ago? Which areas
-      have moved most? Which have stayed still?</p>
-      <p><strong>Think about what the next 12 months need.</strong> Is there a KLOE you have been putting
-      off? A team member who needs more support with compliance? An area of the platform you have not
-      used yet but probably should?</p>
-      <p><strong>And tell us what we can do better.</strong> You have been using AlwaysReady for a year.
-      You know what works and what does not. If there is something missing, something confusing, or
-      something you wish existed, we want to know. Everything we build is shaped by what we hear from
-      registered managers doing this work every day.</p>
-      <p>Thank you for being an AlwaysReady customer. We are genuinely glad you're here — hit reply
-      and tell us how the year has gone.</p>
+      <p>One year. That is worth acknowledging ⭐</p>
+      <p>Twelve months ago, you signed up to AlwaysReady. A year of consistent work on compliance, building
+      evidence, updating KLOEs, keeping HR records current, is exactly the kind of sustained effort CQC
+      looks for. It does not happen by accident.</p>
+      <p>At the one-year mark, your Analytics Report will show you something genuinely useful: how your KLOE
+      ratings have moved since you started. Which areas have strengthened? Which have stayed still? A year of
+      data gives you a real picture of direction, not just a snapshot.</p>
+      <p>It is also a good moment to look at what the next 12 months need. Is there a KLOE that has had
+      little attention? A part of the platform you have not yet used? The Mock Inspection tool, People's
+      Voice section, and the Inspection Pack are all worth exploring if they have not yet become part of
+      your routine.</p>
+      <p>One question: you have been using AlwaysReady for a year now. What is the one thing you wish it
+      did differently? Everything we build is shaped by what registered managers tell us. Hit reply and
+      let us know.</p>
+      <p>Thank you for being an AlwaysReady customer. We are genuinely glad you are here.</p>
     `,
   },
 ]
