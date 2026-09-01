@@ -56,7 +56,11 @@ export default async function MetricsPage() {
     .order('created_at', { ascending: false })
 
   const orgs = (allOrgs ?? []).filter(o => !o.is_tester)
-  const liveOrgIds = orgs.map(o => o.id)
+  // Guard: if no live orgs exist yet, use a non-existent UUID so .in() queries
+  // return zero rows rather than all rows (Supabase .in([]) returns everything).
+  const liveOrgIds = orgs.length > 0
+    ? orgs.map(o => o.id)
+    : ['00000000-0000-0000-0000-000000000000']
 
   // Signups by week (last 12 weeks)
   const twelveWeeksAgo = daysAgo(84)
