@@ -123,6 +123,7 @@ export async function createBetaCheckoutSession(): Promise<never> {
 export async function createBillingPortalSession(): Promise<never> {
   const profile = await getCurrentUserProfile()
   if (!profile?.organisation_id) redirect('/login')
+  if (profile.role !== 'admin') redirect('/dashboard')
 
   const adminSupabase = createAdminClient()
   const { data: org } = await adminSupabase
@@ -154,6 +155,7 @@ export async function createBillingPortalSession(): Promise<never> {
 export async function createCancellationPortalSession(): Promise<never> {
   const profile = await getCurrentUserProfile()
   if (!profile?.organisation_id) redirect('/login')
+  if (profile.role !== 'admin') redirect('/dashboard')
 
   const adminSupabase = createAdminClient()
   const { data: org } = await adminSupabase
