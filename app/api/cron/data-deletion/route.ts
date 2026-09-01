@@ -106,7 +106,7 @@ export async function GET(request: Request) {
               Log in to download or resubscribe &rarr;
             </a>
           </p>
-          <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
             If you have any questions, email us at
             <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
           </p>
@@ -179,7 +179,7 @@ export async function GET(request: Request) {
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             If you'd like to start a new account in the future, you're very welcome to do so.
           </p>
-          <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
             If you have any questions about this deletion, please contact
             <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
           </p>

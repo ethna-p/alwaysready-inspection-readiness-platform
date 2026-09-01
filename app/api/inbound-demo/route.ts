@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
           <td style="padding:6px 0;">${cqcRating ? escapeHtml(cqcRating) : 'Not provided'}</td>
         </tr>
       </table>
-      <p style="margin-top:16px;font-size:13px;color:#888;">
+      <p style="margin-top:16px;font-size:15px;line-height:1.7;color:#1a1a1a;">
         View all demo leads in the
         <a href="https://portal.alwaysready.uk/superadmin/leads" style="color:#014D4E;">superadmin Leads page</a>.
       </p>

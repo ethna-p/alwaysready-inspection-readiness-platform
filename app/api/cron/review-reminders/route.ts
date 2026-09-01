@@ -68,7 +68,7 @@ function kloeDueSoonHtml(kloeTitle: string, dueDate: string, daysLeft: number): 
         Go to KLOE tracker →
       </a>
     </p>
-    <p style="margin:0;color:#6b7280;font-size:13px">
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
       If you've already completed this review, you can ignore this message.
     </p>
   `
@@ -97,7 +97,7 @@ function kloeOverdueHtml(kloeTitle: string, dueDate: string): string {
         Go to KLOE tracker →
       </a>
     </p>
-    <p style="margin:0;color:#6b7280;font-size:13px">
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
       If you have any questions, reply to this email or contact us at
       <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
     </p>
@@ -153,7 +153,7 @@ function hrOverdueHtml(staffName: string, fieldLabel: string, dueDate: string): 
         Go to HR module →
       </a>
     </p>
-    <p style="margin:0;color:#6b7280;font-size:13px">
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
       If you have any questions, reply to this email or contact us at
       <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
     </p>

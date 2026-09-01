@@ -254,7 +254,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to KLOE tracker &rarr;
         </a>
       </p>
-      <p style="margin:0;color:#6b7280;font-size:13px">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you have any questions, reply to this email or contact us at
         <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
       </p>
@@ -299,7 +299,7 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
           Go to HR module &rarr;
         </a>
       </p>
-      <p style="margin:0;color:#6b7280;font-size:13px">
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you have any questions, reply to this email or contact us at
         <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
       </p>
@@ -416,7 +416,7 @@ async function sendDataDeletion(
           If you did not submit this request, please let us know immediately by replying to this email
           so we can protect your account.
         </p>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any questions, contact us at
           <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
         </p>
@@ -442,7 +442,7 @@ async function sendDataDeletion(
             Log in to download or resubscribe &rarr;
           </a>
         </p>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any questions, email us at
           <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
         </p>
@@ -466,7 +466,7 @@ async function sendDataDeletion(
           If you would like to start a new account in the future, you are very welcome to do so
           at <a href="https://alwaysready.uk" style="color:#014D4E">alwaysready.uk</a>.
         </p>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any questions about this deletion, contact us at
           <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
         </p>
@@ -514,7 +514,7 @@ async function sendSubjectAccessRequest(
         <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you did not submit this request, please let us know immediately by replying to this email.
         </p>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any questions, contact us at
           <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
         </p>
@@ -559,7 +559,7 @@ async function sendSubjectAccessRequest(
           If you are not satisfied with our response, you have the right to complain to the Information Commissioner's Office (ICO) at
           <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a> or by calling 0303 123 1113.
         </p>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any questions, contact us at
           <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
         </p>
@@ -584,7 +584,7 @@ async function sendSubjectAccessRequest(
           If you believe we have handled your request incorrectly, you have the right to complain to the Information Commissioner's Office (ICO) at
           <a href="https://ico.org.uk" style="color:#014D4E">ico.org.uk</a> or by calling 0303 123 1113.
         </p>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:#888">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you have any questions, contact us at
           <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
         </p>
