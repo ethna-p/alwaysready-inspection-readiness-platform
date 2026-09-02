@@ -27,6 +27,26 @@ Do not add "+ VAT" to any pricing copy, UI text, or emails.
 
 ---
 
+## Git push command format
+
+**Decided September 2026. Final.**
+
+Always use `git push origin main` — never a URL-based push. The remote `origin` is already configured on both repos.
+
+Platform:
+```
+cd ~/Sites/alwaysready-inspection-readiness-platform && git push origin main
+```
+
+Marketing site:
+```
+cd ~/Sites/alwaysready-site && git push origin main
+```
+
+AJ has one terminal window — always specify which repo the command is for.
+
+---
+
 ## Charity discount
 
 **Decided July 2026.**
