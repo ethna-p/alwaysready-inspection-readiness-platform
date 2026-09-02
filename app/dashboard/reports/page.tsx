@@ -238,7 +238,6 @@ export default async function ReportsPage() {
             { heading: 'What is a pre-built report type?', body: 'Pre-built types pre-configure the sections and filters for a common use case. Selecting one saves time — but you can always clear it and configure manually using the sections and filters below.' },
             { heading: 'Can I filter by key question?', body: 'Yes. Use the Key question areas section to limit the report to Safe, Effective, Caring, Responsive, or Well-Led. Useful when preparing for a focused or partial inspection.' },
             { heading: 'How do I save the report?', body: 'Use Print / Save as PDF. Your browser will open a print dialog where you can choose Save as PDF, select portrait or landscape, and choose where to save the file.' },
-            { heading: 'What is the AI summary?', body: 'The Generate AI summary button produces a short board-ready paragraph describing your current compliance position, written in plain English. It is based on the data in the current report view.' },
           ]} />
         </div>
         <p className="text-sm text-ink-dim">

@@ -64,14 +64,11 @@ Two-factor authentication (2FA) is required for all Admin and Staff accounts. It
 Support
 In-platform support tickets are submitted via Support in the navigation bar. Email support is available at support@alwaysready.uk.
 
-Newsletter Drafting Tool
-An AI-assisted drafting tool available to Admin users only. Accessed from the navigation bar. The admin selects an audience (staff, families, or both), a topic or occasion, a tone, and adds optional key points — the platform generates a ready-to-copy draft. AlwaysReady never sends newsletters on your behalf; the draft is for copying into email, print, or messaging. Do not include personal details of residents, patients, families, or individual staff in prompts. Each organisation can generate up to 10 drafts per calendar month.
-
 Analytics Dashboard
 The dashboard includes a rich analytics section with cards covering: KLOE evidence coverage (percentage of KLOEs with evidence documented), action plan coverage (percentage of KLOEs with at least one action item), action plan health (proportion of open, in-progress, and completed actions), and KLOE review calendar. People's Voice analytics show evidence coverage and action plan progress across the 19 'I' statements. Mock inspection analytics show self-assessed ratings by key question area and action plan coverage from findings. HR analytics show return-to-work interview rates, absence reason breakdown, Bradford Factor distribution, and overall HR compliance. Operational analytics cover: incidents (open count, last 90 days, breakdown by type), complaints and feedback (by category and open complaints count), and governance meetings (last 12 months, signed-off count, most recent meeting date). All analytics load from live data automatically.
 
 Report Builder
-Accessed from Reports in the navigation bar. Shows the full KLOE compliance dataset in a filterable, sortable table with columns for status, RAG, priority, review dates, evidence notes, and evidence file count. Features: saved views (store filter/sort settings as a named view; system views included; custom views can be saved and persist between sessions); progress snapshots (take a point-in-time record of overall readiness and compare to previous snapshot to show improvement); AI narrative summary (a short written description of the current compliance position generated from live KLOE data — for internal use only); Pre-Inspection view (surfaces KLOEs with Red/Amber RAG, lower evidence coverage, or open actions); readiness trend graph (overall readiness percentage over time, broken down by key question area).
+Accessed from Reports in the navigation bar. Shows the full KLOE compliance dataset in a filterable, sortable table with columns for status, RAG, priority, review dates, evidence notes, and evidence file count. Features: saved views (store filter/sort settings as a named view; system views included; custom views can be saved and persist between sessions); progress snapshots (take a point-in-time record of overall readiness and compare to previous snapshot to show improvement); Pre-Inspection view (surfaces KLOEs with Red/Amber RAG, lower evidence coverage, or open actions); readiness trend graph (overall readiness percentage over time, broken down by key question area).
 
 Organisation logo
 Admins can upload a logo (PNG or JPG) in Account → Organisation. It replaces the AlwaysReady wordmark in the platform header and appears in Inspection Pack and Report Builder PDF outputs. Useful when sharing inspection-related documents with boards or commissioners.
@@ -311,23 +308,6 @@ A: Yes. When you sign in, you can select any sub-specialisms you offer. AlwaysRe
 Q64: Which sub-specialisms does AlwaysReady support?
 A: AlwaysReady currently supports the following sub-specialisms: Dementia Care, Learning Disabilities, Mental Health, End-of-Life Care, Acquired Brain Injury (ABI), Physical Disabilities, Bariatric Care, Sensory Impairment, Epilepsy, and Autism. You can select sub-specialisms after you log in.
 
-NEWSLETTER DRAFTING TOOL
-
-Q65: What is the newsletter drafting tool?
-A: The newsletter drafting tool is an AI-assisted feature available to organisation admins. You choose your audience (staff, families and residents, or both), a topic or occasion, and a tone, then add any key points — the platform generates a ready-to-copy draft in seconds using Anthropic's Claude AI. It is a drafting aid only: AlwaysReady never sends newsletters on your behalf, and all output should be reviewed and edited before use.
-
-Q66: Who can use the newsletter drafting tool?
-A: The tool is available to admin users.
-
-Q67: Is there a limit to the number of newsletter drafts I can generate?
-A: Yes — each organisation can create up to 10 drafts per calendar month.
-
-Q68: Can I include resident or patient details in my newsletter prompt?
-A: No. Do not include personal details of residents, patients, families, or individual staff members in the drafting tool. The tool is for generating general compliance communications only. A notice reminding you of this is prominently displayed at the top of the tool.
-
-Q69: Does AlwaysReady send newsletters on my behalf?
-A: No. AlwaysReady generates a draft for you to copy and paste into your preferred channel — email, WhatsApp, a printed notice, or any other channel. You remain fully in control of what goes out and when.
-
 INSPECTION DAY
 
 Q70: How does AlwaysReady help on the day of inspection?
@@ -432,7 +412,7 @@ Q100: Do I need a credit card to start the free trial?
 A: No. You only need your service name, CQC Location ID, service type, and your name and email address.
 
 Q101: What is included in the free trial?
-A: Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, newsletter drafting tool, team access, and more. Data entered during the trial is retained if you subscribe.
+A: Everything — KLOE tracker, readiness dashboard, daily review report, evidence uploads, audit trail, inspection pack, HR module, mock inspection tool, team access, and more. Data entered during the trial is retained if you subscribe.
 
 Q102: How long does it take to get started?
 A: In under a minute. Fill in a short form, receive your login details by email, and your CQC KLOE framework is already loaded and ready to use.
