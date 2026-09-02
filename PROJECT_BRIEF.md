@@ -457,3 +457,14 @@ When a new table or column is added via a migration file, update `lib/types.ts` 
 ### `tsc --noEmit` passing is not sufficient validation if `as any` casts exist
 
 A clean TypeScript compile only proves the code is valid *given its type annotations*. It does not prove the code is correct if those annotations have been weakened with `any`. Before marking a TypeScript check task complete, also verify that no new `(supabase as any)` or unwarranted `as any` casts have been introduced.
+
+### Security assumptions must be stated before writing new code
+
+Before writing any new API route, server action, or database migration, state the security assumptions explicitly:
+
+- **Who can call this?** Unauthenticated public, any authenticated user, a specific role (admin/user/viewer), or superadmin only?
+- **What org-boundary checks apply?** Does the operation verify the target resource belongs to the caller's organisation before acting on it?
+- **What happens if inputs are malformed?** Does the route fail closed (reject the request) or fail open (proceed with partial data)?
+- **Is the operation idempotent?** If called twice with the same input, does it produce the same result without side effects (duplicate emails, duplicate rows, double charges)?
+
+These questions must be answered before the first line of implementation code is written. This rule exists because the September 2026 security audit (GitHub Issue #8) found 25 violations — all of which were features built correctly for the happy path but never considered against a malicious or misconfigured caller.
