@@ -155,10 +155,10 @@ export default function EvidencePanel({
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  async function handleDelete(evidenceId: string, storagePath: string) {
+  async function handleDelete(evidenceId: string) {
     if (!confirm('Delete this file? This cannot be undone.')) return
     setDeletingId(evidenceId)
-    const result = await deleteEvidenceRecord(evidenceId, storagePath, kloItemId)
+    const result = await deleteEvidenceRecord(evidenceId, kloItemId)
     if (result.success) {
       setFiles(prev => prev.filter(f => f.id !== evidenceId))
     } else {
@@ -269,7 +269,7 @@ export default function EvidencePanel({
                 {isAdmin && (
                   <button
                     type="button"
-                    onClick={() => handleDelete(f.id, f.storage_path)}
+                    onClick={() => handleDelete(f.id)}
                     disabled={deletingId === f.id}
                     aria-label={`Delete ${f.file_name}`}
                     className="text-xs font-medium text-red-600 hover:underline focus:outline-none focus:ring-2 focus:ring-red-500 rounded disabled:opacity-50"

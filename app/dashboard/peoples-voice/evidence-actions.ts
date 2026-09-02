@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getCurrentUserProfile } from '@/lib/session'
+import { requireRole, requireAdmin } from '@/lib/auth'
 
 export async function saveIStatementEvidenceRecord(
   iStatementId: string,
@@ -12,13 +12,10 @@ export async function saveIStatementEvidenceRecord(
   mimeType: string,
   scanStatus: string = 'clean',
 ): Promise<{ success: true } | { success: false; error: string }> {
-  const supabase = await createClient()
-  const profile  = await getCurrentUserProfile()
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { success: false, error: 'Not authenticated or insufficient permissions.' }
 
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-  if (!['admin', 'user'].includes(profile.role)) {
-    return { success: false, error: 'You do not have permission to upload files.' }
-  }
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('i_statement_evidence_files')
@@ -41,26 +38,39 @@ export async function saveIStatementEvidenceRecord(
 
 export async function deleteIStatementEvidenceRecord(
   evidenceId: string,
-  storagePath: string,
 ): Promise<{ success: true } | { success: false; error: string }> {
-  const supabase = await createClient()
-  const profile  = await getCurrentUserProfile()
+  const profile = await requireAdmin()
+  if (!profile) return { success: false, error: 'Only admins can delete files.' }
 
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-  if (profile.role !== 'admin') {
-    return { success: false, error: 'Only admins can delete files.' }
+  const supabase = await createClient()
+
+  // Fetch the record first to get the verified storage path from the DB —
+  // never trust a client-supplied path for storage operations.
+  // The org filter is defence-in-depth on top of RLS.
+  const { data: record, error: fetchError } = await supabase
+    .from('i_statement_evidence_files')
+    .select('id, storage_path')
+    .eq('id', evidenceId)
+    .eq('organisation_id', profile.organisation_id)
+    .single()
+
+  if (fetchError || !record) {
+    return { success: false, error: 'Evidence record not found or you do not have permission to delete it.' }
   }
 
+  // Delete from storage using the path from the DB (not the client)
   const { error: storageError } = await supabase.storage
     .from('evidence')
-    .remove([storagePath])
+    .remove([record.storage_path])
 
   if (storageError) return { success: false, error: 'Failed to delete file from storage.' }
 
+  // Delete metadata row (scoped to org for defence-in-depth)
   const { error: dbError } = await supabase
     .from('i_statement_evidence_files')
     .delete()
     .eq('id', evidenceId)
+    .eq('organisation_id', profile.organisation_id)
 
   if (dbError) return { success: false, error: 'Failed to delete file record.' }
 
