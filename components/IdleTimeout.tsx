@@ -50,10 +50,11 @@ export default function IdleTimeout({ storageKey }: { storageKey?: string } = {}
   const [showWarning, setShowWarning] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(60)
 
-  // Computed once on mount from localStorage (or default)
-  const idleTimeoutMsRef = useRef(getIdleTimeoutMs(storageKey))
-  const warnAtMsRef      = useRef(idleTimeoutMsRef.current - WARN_BEFORE_MS)
-  const warnMinutes      = Math.round(idleTimeoutMsRef.current / 60000) - 1
+  // Computed once on mount from localStorage (or default).
+  // warnAtMsRef is stable for the component lifetime; warnMinutes drives the warning text.
+  const idleTimeoutMs = getIdleTimeoutMs(storageKey)
+  const warnAtMsRef   = useRef(idleTimeoutMs - WARN_BEFORE_MS)
+  const warnMinutes   = Math.round(idleTimeoutMs / 60000) - 1
 
   const warnTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const logoutTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)

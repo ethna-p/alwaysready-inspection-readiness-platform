@@ -13,7 +13,7 @@ import type { KloeDir } from '../kloes/KloeTableHeader'
 import {
   type ViewKey, type KloeRow, type ActionRow, type HrRow,
   type MockInspectionYear, type SnapshotData,
-  SYSTEM_VIEWS, GAP_RAG_ORDER,
+  GAP_RAG_ORDER,
 } from './report-types'
 import ReportFilterPanel from './ReportFilterPanel'
 import ReportOutput from './ReportOutput'
