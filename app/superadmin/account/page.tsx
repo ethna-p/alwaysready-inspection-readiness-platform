@@ -132,18 +132,17 @@ function AccountContent() {
 
   // ── Session timeout preference ────────────────────────────────────────
   const STORAGE_KEY = 'superadmin_idle_timeout'
-  const [timeoutMins, setTimeoutMins] = useState<number>(15)
-  const [timeoutSaved, setTimeoutSaved] = useState(false)
-
-  useEffect(() => {
+  const [timeoutMins, setTimeoutMins] = useState<number>(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
       if (stored) {
         const mins = parseInt(stored, 10)
-        if ([15, 30, 60].includes(mins)) setTimeoutMins(mins)
+        if ([15, 30, 60].includes(mins)) return mins
       }
     } catch { /* ignore */ }
-  }, [])
+    return 15
+  })
+  const [timeoutSaved, setTimeoutSaved] = useState(false)
 
   function handleTimeoutChange(mins: number) {
     setTimeoutMins(mins)
