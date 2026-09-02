@@ -353,11 +353,6 @@ export default async function AccountPage({
                   category: 'Platform',
                   features: [
                     {
-                      name: 'Newsletter Drafting',
-                      desc: 'AI-powered newsletter drafts for your staff team, families, or residents. Choose a topic, tone, and key points — AlwaysReady generates a ready-to-copy draft in seconds. Admin access only.',
-                      href: '/dashboard/newsletter',
-                    },
-                    {
                       name: 'Specialist Care Configuration',
                       desc: 'Enable additional checklist items for the specialist care areas your service provides — Learning Disabilities, Mental Health, End of Life, Acquired Brain Injury, Physical Disabilities, Bariatric Care, Sensory Impairment, and Epilepsy.',
                       href: '/dashboard/account?tab=organisation',

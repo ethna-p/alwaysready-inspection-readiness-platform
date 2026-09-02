@@ -21,13 +21,14 @@
  * On receipt:
  *   1. If subject contains [AR-XXXX], append as a reply to that ticket.
  *   2. Otherwise, create a new ticket with source='email'.
- *   3. In both cases, generate an AI draft reply and store on the ticket.
+ *   3. Notify AJ and send an auto-responder to the sender.
+ *
+ * AI draft replies are generated on-demand from the ticket detail page.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
-import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
 
@@ -144,19 +145,6 @@ function stripQuotedText(text: string): string {
     .trim()
 }
 
-// Generate and persist an AI draft for a ticket — non-fatal
-async function refreshDraft(ticketId: string, thread: TicketThread): Promise<void> {
-  try {
-    const draft = await generateSupportDraft(thread)
-    const supabase = createAdminClient()
-    await supabase
-      .from('support_tickets')
-      .update({ draft_reply: draft })
-      .eq('id', ticketId)
-  } catch (err) {
-    console.error('[inbound-email] AI draft generation failed (non-fatal):', err)
-  }
-}
 
 export async function POST(req: NextRequest) {
   // ── Authenticate ──────────────────────────────────────────────────────────
@@ -242,27 +230,7 @@ export async function POST(req: NextRequest) {
           is_staff_reply: false,
         })
 
-      // Fetch full thread for draft generation
-      const { data: allReplies } = await supabase
-        .from('support_ticket_replies')
-        .select('message, is_staff_reply, created_at')
-        .eq('ticket_id', ticket.id)
-        .order('created_at', { ascending: true })
-
-      const thread: TicketThread = {
-        subject:         ticket.subject,
-        senderName:      ticket.external_name ?? (fromName || null),
-        originalMessage: ticket.message,
-        replies: (allReplies ?? []).map(r => ({
-          role:      r.is_staff_reply ? 'staff' : 'customer',
-          message:   r.message,
-          createdAt: new Date(r.created_at).toLocaleDateString('en-GB'),
-        })),
-      }
-
-      await refreshDraft(ticket.id, thread)
-
-      return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
+return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
       } // end sender-match else
     }
     // Reference not found or sender mismatch — fall through to create new ticket
@@ -289,15 +257,6 @@ export async function POST(req: NextRequest) {
     console.error('[inbound-email] ticket insert error:', ticketError?.message)
     return NextResponse.json({ error: ticketError?.message ?? 'insert failed' }, { status: 500 })
   }
-
-  // Generate AI draft for new ticket
-  const thread: TicketThread = {
-    subject:         cleanSubject,
-    senderName:      displayName || null,
-    originalMessage: cleanBody,
-    replies:         [],
-  }
-  await refreshDraft(newTicket.id, thread)
 
   // Notify AJ of new inbound email ticket
   const superadminEmail = process.env.SUPERADMIN_EMAIL

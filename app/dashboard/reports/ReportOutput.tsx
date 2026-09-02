@@ -63,8 +63,6 @@ interface Props {
   kloeSort: string
   kloeSortDir: KloeDir
   onKloeSort: (col: string, dir: KloeDir) => void
-  // AI narrative
-  narrative: string | null
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -76,7 +74,6 @@ export default function ReportOutput({
   evidenceCounts, ragCounts, actionCounts, previousSnapshot,
   showKloes, showActions, showHr, showAnnualReview, reviewYear,
   kloeSort, kloeSortDir, onKloeSort,
-  narrative,
 }: Props) {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', fontSize: '15px', color: '#111' }}>
@@ -181,19 +178,6 @@ export default function ReportOutput({
           </div>
         )
       })()}
-
-      {/* ── AI narrative ──────────────────────────────────────────────────── */}
-      {narrative && (
-        <div style={{
-          background: '#f0fdf9', border: '1px solid #99f6e4',
-          borderRadius: '8px', padding: '16px 20px', margin: '0 0 24px',
-        }}>
-          <p style={{ margin: '0 0 6px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#0d9488' }}>
-            Summary
-          </p>
-          <p style={{ margin: 0, fontSize: '15px', color: '#1a1a1a', lineHeight: 1.6 }}>{narrative}</p>
-        </div>
-      )}
 
       {/* ── KLOE with Actions combined view ───────────────────────────────── */}
       {activeView === 'kloe-with-actions' && (

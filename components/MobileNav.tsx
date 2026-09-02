@@ -77,11 +77,6 @@ export default function MobileNav({ isAdmin, hasUnread, isStaff, userId }: Props
               </Link>
             )}
             {isAdmin && (
-              <Link href="/dashboard/newsletter" className={NAV_LINK} onClick={() => setOpen(false)}>
-                Newsletter
-              </Link>
-            )}
-            {isAdmin && (
               <>
                 <Link href="/dashboard/mock-inspections" className={NAV_LINK} onClick={() => setOpen(false)}>
                   Mock Inspection

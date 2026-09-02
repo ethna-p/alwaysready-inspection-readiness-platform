@@ -54,11 +54,6 @@ interface Props {
   reviewYear: number
   setReviewYear: (v: number) => void
   availableYears: number[]
-  // narrative
-  narrative: string | null
-  narrativeLoading: boolean
-  narrativeError: string | null
-  onGenerateNarrative: () => void
   // print
   onPrint: () => void
 }
@@ -73,7 +68,6 @@ export default function ReportFilterPanel({
   selectedKQs, allKQsSelected, onToggleKQ, onToggleAllKQs,
   actionStatus, setActionStatus, selectedStaff, setSelectedStaff,
   reviewYear, setReviewYear, availableYears,
-  narrative, narrativeLoading, narrativeError, onGenerateNarrative,
   onPrint,
 }: Props) {
   const inputClass = `
@@ -228,23 +222,6 @@ export default function ReportFilterPanel({
 
       {/* Action buttons */}
       <div className="flex flex-wrap items-center gap-3">
-        {isAdmin && (
-          <button
-            type="button"
-            onClick={onGenerateNarrative}
-            disabled={narrativeLoading}
-            className="
-              inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
-              bg-fill border border-line text-ink text-sm font-semibold
-              hover:border-brand hover:text-brand disabled:opacity-50
-              focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2
-              transition-colors
-            "
-          >
-            <span aria-hidden="true">✨</span>
-            {narrativeLoading ? 'Generating…' : narrative ? 'Regenerate summary' : 'Generate AI summary'}
-          </button>
-        )}
         <button
           type="button"
           onClick={onPrint}
@@ -258,7 +235,6 @@ export default function ReportFilterPanel({
           <span aria-hidden="true">🖨</span> Print / Save as PDF
         </button>
       </div>
-      {narrativeError && <p className="text-sm text-red-600 mt-2">{narrativeError}</p>}
     </div>
   )
 }

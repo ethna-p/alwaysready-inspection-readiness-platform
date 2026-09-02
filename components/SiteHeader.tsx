@@ -100,14 +100,6 @@ export default async function SiteHeader() {
           )}
           {isAdmin && (
             <Link
-              href="/dashboard/newsletter"
-              className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
-            >
-              Newsletter
-            </Link>
-          )}
-          {isAdmin && (
-            <Link
               href="/dashboard/mock-inspections"
               className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
             >

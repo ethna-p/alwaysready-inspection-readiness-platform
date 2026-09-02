@@ -4,8 +4,8 @@
  * ReportBuilder — thin coordinator.
  *
  * Owns all state and derived data. Renders ReportFilterPanel (controls) and
- * ReportOutput (the printable report). All logic for filtering, sorting, and
- * narrative generation lives here; presentation lives in the two sub-components.
+ * ReportOutput (the printable report). All filtering and sorting logic lives
+ * here; presentation lives in the two sub-components.
  */
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
@@ -50,11 +50,6 @@ export default function ReportBuilder({
   const [selectedStaff, setSelectedStaff]       = useState('all')
   const [reviewYear, setReviewYear]             = useState(new Date().getFullYear())
 
-  // ── AI narrative ────────────────────────────────────────────────────────────
-  const [narrative, setNarrative]               = useState<string | null>(null)
-  const [narrativeLoading, setNarrativeLoading] = useState(false)
-  const [narrativeError, setNarrativeError]     = useState<string | null>(null)
-
   // ── KLOE table sort ───────────────────────────────────────────────────────
   const [kloeSort,    setKloeSort]    = useState<string>('default')
   const [kloeSortDir, setKloeSortDir] = useState<KloeDir>('asc')
@@ -70,7 +65,6 @@ export default function ReportBuilder({
   function selectView(key: ViewKey) {
     setActiveView(key)
     setSelectedKQs(new Set(keyQuestions))
-    setNarrative(null)
     setPreviousSnapshot(null)
 
     fetch(`/api/report-snapshot?view_key=${encodeURIComponent(key)}`)
@@ -242,44 +236,6 @@ export default function ReportBuilder({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeView])
 
-  const generateNarrative = useCallback(async () => {
-    setNarrativeLoading(true)
-    setNarrativeError(null)
-    try {
-      const activeViewEntry = activeView ? SYSTEM_VIEWS.find(v => v.key === activeView) : null
-      const res = await fetch('/api/report-narrative', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orgName,
-          generatedAt,
-          viewLabel: activeViewEntry?.label ?? null,
-          kloes: {
-            total:      filteredKloes.length,
-            green:      filteredKloes.filter(k => k.rag === 'green').length,
-            amber:      filteredKloes.filter(k => k.rag === 'amber').length,
-            red:        filteredKloes.filter(k => k.rag === 'red').length,
-            unassessed: filteredKloes.filter(k => k.rag === 'grey').length,
-            items:      filteredKloes.map(k => ({ title: k.title, keyQuestion: k.key_question_name, rag: k.rag, status: k.status })),
-          },
-          actions: {
-            total:   filteredActions.length,
-            open:    filteredActions.filter(a => a.status !== 'completed').length,
-            overdue: filteredActions.filter(a => a.status !== 'completed' && a.due_date && new Date(a.due_date) < new Date()).length,
-            items:   filteredActions.map(a => ({ title: a.title, status: a.status, dueDate: a.due_date, priority: a.priority })),
-          },
-        }),
-      })
-      const json = await res.json() as { narrative?: string; error?: string }
-      if (!res.ok || json.error) { setNarrativeError(json.error ?? 'Failed to generate summary.'); return }
-      setNarrative(json.narrative ?? null)
-    } catch {
-      setNarrativeError('Network error — please try again.')
-    } finally {
-      setNarrativeLoading(false)
-    }
-  }, [activeView, orgName, generatedAt, filteredKloes, filteredActions])
-
   const handlePrint = useCallback(() => {
     const images   = Array.from(document.querySelectorAll<HTMLImageElement>('img'))
     const unloaded = images.filter(img => !img.complete)
@@ -323,10 +279,6 @@ export default function ReportBuilder({
         reviewYear={reviewYear}
         setReviewYear={setReviewYear}
         availableYears={availableYears}
-        narrative={narrative}
-        narrativeLoading={narrativeLoading}
-        narrativeError={narrativeError}
-        onGenerateNarrative={generateNarrative}
         onPrint={handlePrint}
       />
       <ReportOutput
@@ -353,7 +305,6 @@ export default function ReportBuilder({
         kloeSort={kloeSort}
         kloeSortDir={kloeSortDir}
         onKloeSort={handleKloeSort}
-        narrative={narrative}
       />
     </div>
   )
