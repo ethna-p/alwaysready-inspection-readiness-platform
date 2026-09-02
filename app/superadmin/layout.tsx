@@ -47,6 +47,9 @@ export default function SuperadminLayout({
           <Link href="/superadmin/metrics" className="hover:text-brand transition-colors">
             Metrics
           </Link>
+          <Link href="/superadmin/infrastructure" className="hover:text-brand transition-colors">
+            Infrastructure
+          </Link>
           <Link href="/superadmin/email-log" className="hover:text-brand transition-colors">
             Email log
           </Link>
