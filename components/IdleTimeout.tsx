@@ -1,12 +1,19 @@
 'use client'
 
 /**
- * IdleTimeout — auto-logout after 15 minutes of inactivity.
+ * IdleTimeout — auto-logout after a configurable period of inactivity.
  *
  * Behaviour:
- *   - Resets a 15-minute timer on any user activity (mouse, keyboard, touch, scroll).
- *   - At 14 minutes: shows a warning dialog with a "Stay logged in" button.
- *   - At 15 minutes: signs the user out via Supabase and redirects to /login.
+ *   - Resets the idle timer on any user activity (mouse, keyboard, touch, scroll).
+ *   - One minute before logout: shows a warning dialog with a "Stay logged in" button.
+ *   - At the timeout: signs the user out via Supabase and redirects to /login.
+ *
+ * Props:
+ *   storageKey — if provided, reads the timeout preference (in minutes) from
+ *                localStorage at this key. Valid values: 15, 30, 60. Falls back
+ *                to 15 minutes if the key is absent or invalid.
+ *                The dashboard layout omits this prop so tenant users always
+ *                get the fixed 15-minute default.
  *
  * Implementation notes:
  *   - The warning state is tracked in BOTH a React state (for rendering) and a ref
@@ -20,16 +27,33 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const IDLE_TIMEOUT_MS  = 15 * 60 * 1000  // 15 minutes
-const WARN_BEFORE_MS   =  1 * 60 * 1000  //  1 minute before logout
-const WARN_AT_MS       = IDLE_TIMEOUT_MS - WARN_BEFORE_MS  // 14 minutes
+const WARN_BEFORE_MS = 1 * 60 * 1000  // always warn 1 minute before logout
+
+const VALID_MINUTES = [15, 30, 60] as const
+
+function getIdleTimeoutMs(storageKey?: string): number {
+  if (!storageKey || typeof window === 'undefined') return 15 * 60 * 1000
+  try {
+    const stored = localStorage.getItem(storageKey)
+    if (stored) {
+      const mins = parseInt(stored, 10)
+      if ((VALID_MINUTES as readonly number[]).includes(mins)) return mins * 60 * 1000
+    }
+  } catch { /* ignore */ }
+  return 15 * 60 * 1000
+}
 
 const ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'] as const
 
-export default function IdleTimeout() {
+export default function IdleTimeout({ storageKey }: { storageKey?: string } = {}) {
   const router = useRouter()
   const [showWarning, setShowWarning] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(60)
+
+  // Computed once on mount from localStorage (or default)
+  const idleTimeoutMsRef = useRef(getIdleTimeoutMs(storageKey))
+  const warnAtMsRef      = useRef(idleTimeoutMsRef.current - WARN_BEFORE_MS)
+  const warnMinutes      = Math.round(idleTimeoutMsRef.current / 60000) - 1
 
   const warnTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const logoutTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -57,7 +81,7 @@ export default function IdleTimeout() {
     clearAllTimers()
     setShowWarning(false)
 
-    // Warn at 14 minutes
+    // Warn 1 minute before logout
     warnTimerRef.current = setTimeout(() => {
       setShowWarning(true)
       setSecondsLeft(60)
@@ -73,11 +97,11 @@ export default function IdleTimeout() {
         })
       }, 1_000)
 
-      // Sign out at 15 minutes
+      // Sign out after warning period
       logoutTimerRef.current = setTimeout(() => {
         signOut()
       }, WARN_BEFORE_MS)
-    }, WARN_AT_MS)
+    }, warnAtMsRef.current)
   }, [clearAllTimers, signOut])
 
   const stayLoggedIn = useCallback(() => {
@@ -144,7 +168,7 @@ export default function IdleTimeout() {
           Still there?
         </h2>
         <p id="idle-warning-desc" className="text-sm text-ink-dim mb-1">
-          You&apos;ve been inactive for 14 minutes.
+          You&apos;ve been inactive for {warnMinutes} {warnMinutes === 1 ? 'minute' : 'minutes'}.
         </p>
         <p className="text-sm text-ink-dim mb-6">
           For security, you&apos;ll be logged out in{' '}

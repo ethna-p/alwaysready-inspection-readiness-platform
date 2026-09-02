@@ -130,6 +130,30 @@ function AccountContent() {
 
   const hasFactor = factors.length > 0
 
+  // ── Session timeout preference ────────────────────────────────────────
+  const STORAGE_KEY = 'superadmin_idle_timeout'
+  const [timeoutMins, setTimeoutMins] = useState<number>(15)
+  const [timeoutSaved, setTimeoutSaved] = useState(false)
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const mins = parseInt(stored, 10)
+        if ([15, 30, 60].includes(mins)) setTimeoutMins(mins)
+      }
+    } catch { /* ignore */ }
+  }, [])
+
+  function handleTimeoutChange(mins: number) {
+    setTimeoutMins(mins)
+    try {
+      localStorage.setItem(STORAGE_KEY, String(mins))
+      setTimeoutSaved(true)
+      setTimeout(() => setTimeoutSaved(false), 2000)
+    } catch { /* ignore */ }
+  }
+
   return (
     <div className="max-w-lg">
       <div className="mb-8">
@@ -280,6 +304,41 @@ function AccountContent() {
             </svg>
             Set up two-factor authentication
           </button>
+        )}
+      </div>
+      {/* ── Session timeout ─────────────────────────────────────────────── */}
+      <div className="bg-card border border-line rounded-xl p-6 shadow-sm mt-6">
+        <h2 className="text-base font-semibold text-brand mb-1">Session timeout</h2>
+        <p className="text-sm text-ink-dim mb-4">
+          How long you can be inactive before being automatically logged out. Applies to your superadmin session only.
+        </p>
+
+        <fieldset>
+          <legend className="sr-only">Session timeout duration</legend>
+          <div className="flex gap-3">
+            {([15, 30, 60] as const).map(mins => (
+              <button
+                key={mins}
+                type="button"
+                onClick={() => handleTimeoutChange(mins)}
+                className={`
+                  px-4 py-2 rounded-lg text-sm font-medium border transition-colors
+                  ${timeoutMins === mins
+                    ? 'bg-[#014D4E] text-white border-[#014D4E]'
+                    : 'bg-card text-ink border-line hover:border-[#014D4E] hover:text-[#014D4E]'}
+                `}
+                aria-pressed={timeoutMins === mins}
+              >
+                {mins} min
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        {timeoutSaved && (
+          <p className="mt-3 text-xs text-green-700" role="status">
+            Saved. Takes effect on your next login or page refresh.
+          </p>
         )}
       </div>
     </div>

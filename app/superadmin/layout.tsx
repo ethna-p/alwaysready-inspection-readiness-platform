@@ -13,7 +13,7 @@ export default function SuperadminLayout({
 }) {
   return (
     <div className="min-h-screen bg-canvas text-ink">
-      <IdleTimeout />
+      <IdleTimeout storageKey="superadmin_idle_timeout" />
       {/* Top bar */}
       <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between relative">
         <div className="flex items-center gap-4">
