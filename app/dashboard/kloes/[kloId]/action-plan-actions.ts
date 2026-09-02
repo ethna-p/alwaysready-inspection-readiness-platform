@@ -10,11 +10,14 @@
  *
  * Note: action_items is a runtime-migrated table not yet in Supabase's generated
  * types, so we cast the client to `any` to bypass the type checker.
+ *
+ * Defence-in-depth: all mutations scope to profile.organisation_id in addition
+ * to the RLS policies on the table, so a cross-org write fails at both layers.
  */
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { getCurrentUserProfile } from '@/lib/session'
+import { requireRole, requireAdmin } from '@/lib/auth'
 
 export type ActionResult =
   | { success: true }
@@ -23,9 +26,8 @@ export type ActionResult =
 // ─── Create ───────────────────────────────────────────────────────────────────
 
 export async function createActionItem(formData: FormData): Promise<ActionResult> {
-  const profile = await getCurrentUserProfile()
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-  if (profile.role === 'viewer') return { success: false, error: 'Viewers cannot create action items.' }
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { success: false, error: 'Not authenticated or insufficient permissions.' }
 
   const kloItemId      = (formData.get('klo_item_id') as string | null)?.trim()
   const title          = (formData.get('title') as string | null)?.trim()
@@ -45,7 +47,7 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
-  const { error } = await supabase.from('action_items').insert({
+  const { error } = await (supabase as any).from('action_items').insert({
     organisation_id:             profile.organisation_id,
     klo_item_id:                 kloItemId,
     title,
@@ -69,9 +71,8 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
 // ─── Update ───────────────────────────────────────────────────────────────────
 
 export async function updateActionItem(formData: FormData): Promise<ActionResult> {
-  const profile = await getCurrentUserProfile()
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-  if (profile.role === 'viewer') return { success: false, error: 'Viewers cannot edit action items.' }
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { success: false, error: 'Not authenticated or insufficient permissions.' }
 
   const id          = (formData.get('id') as string | null)?.trim()
   const kloItemId   = (formData.get('klo_item_id') as string | null)?.trim()
@@ -86,17 +87,37 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
     return { success: false, error: 'Missing required fields.' }
   }
 
+  if (!['high', 'medium', 'low'].includes(priority)) {
+    return { success: false, error: 'Invalid priority.' }
+  }
+  if (!['open', 'in_progress', 'completed'].includes(status)) {
+    return { success: false, error: 'Invalid status.' }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
-  const { error } = await supabase
+  // Scope to caller's org — defence-in-depth on top of RLS
+  const { data, error } = await (supabase as any)
     .from('action_items')
-    .update({ title, description, due_date: dueDate || null, priority: priority as 'high' | 'medium' | 'low', assigned_to: assignedTo || null, status: status as 'open' | 'in_progress' | 'completed' })
+    .update({
+      title,
+      description,
+      due_date:    dueDate || null,
+      priority:    priority as 'high' | 'medium' | 'low',
+      assigned_to: assignedTo || null,
+      status:      status as 'open' | 'in_progress' | 'completed',
+    })
     .eq('id', id)
+    .eq('organisation_id', profile.organisation_id)
+    .select('id')
 
   if (error) {
     console.error('[action-plan] updateActionItem error:', error)
     return { success: false, error: 'Could not update action item. Please try again.' }
+  }
+  if (!data || data.length === 0) {
+    return { success: false, error: 'Action item not found or you do not have permission to edit it.' }
   }
 
   revalidatePath(`/dashboard/kloes/${kloItemId}`)
@@ -106,9 +127,8 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
 // ─── Sign off ─────────────────────────────────────────────────────────────────
 
 export async function signOffActionItem(formData: FormData): Promise<ActionResult> {
-  const profile = await getCurrentUserProfile()
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-  if (profile.role === 'viewer') return { success: false, error: 'Viewers cannot sign off action items.' }
+  const profile = await requireRole(['admin', 'user'])
+  if (!profile) return { success: false, error: 'Not authenticated or insufficient permissions.' }
 
   const id               = (formData.get('id') as string | null)?.trim()
   const kloItemId        = (formData.get('klo_item_id') as string | null)?.trim()
@@ -119,7 +139,8 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
-  const { error } = await supabase
+  // Scope to caller's org — defence-in-depth on top of RLS
+  const { data, error } = await (supabase as any)
     .from('action_items')
     .update({
       status:           'completed',
@@ -128,10 +149,15 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
       completed_by:     profile.id,
     })
     .eq('id', id)
+    .eq('organisation_id', profile.organisation_id)
+    .select('id')
 
   if (error) {
     console.error('[action-plan] signOffActionItem error:', error)
     return { success: false, error: 'Could not sign off action item. Please try again.' }
+  }
+  if (!data || data.length === 0) {
+    return { success: false, error: 'Action item not found or you do not have permission to sign it off.' }
   }
 
   revalidatePath(`/dashboard/kloes/${kloItemId}`)
@@ -141,9 +167,8 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
 // ─── Delete ───────────────────────────────────────────────────────────────────
 
 export async function deleteActionItem(formData: FormData): Promise<ActionResult> {
-  const profile = await getCurrentUserProfile()
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-  if (profile.role !== 'admin') return { success: false, error: 'Only admins can delete action items.' }
+  const profile = await requireAdmin()
+  if (!profile) return { success: false, error: 'Only admins can delete action items.' }
 
   const id        = (formData.get('id') as string | null)?.trim()
   const kloItemId = (formData.get('klo_item_id') as string | null)?.trim()
@@ -153,11 +178,20 @@ export async function deleteActionItem(formData: FormData): Promise<ActionResult
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
-  const { error } = await supabase.from('action_items').delete().eq('id', id)
+  // Scope to caller's org — defence-in-depth on top of RLS
+  const { data, error } = await (supabase as any)
+    .from('action_items')
+    .delete()
+    .eq('id', id)
+    .eq('organisation_id', profile.organisation_id)
+    .select('id')
 
   if (error) {
     console.error('[action-plan] deleteActionItem error:', error)
     return { success: false, error: 'Could not delete action item. Please try again.' }
+  }
+  if (!data || data.length === 0) {
+    return { success: false, error: 'Action item not found.' }
   }
 
   revalidatePath(`/dashboard/kloes/${kloItemId}`)
