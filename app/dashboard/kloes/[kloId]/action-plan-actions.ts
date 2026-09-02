@@ -44,9 +44,9 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
     return { success: false, error: 'Invalid priority.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase as any).from('action_items').insert({
     organisation_id:             profile.organisation_id,
     klo_item_id:                 kloItemId,
@@ -94,10 +94,10 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
     return { success: false, error: 'Invalid status.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
   // Scope to caller's org — defence-in-depth on top of RLS
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)
     .from('action_items')
     .update({
@@ -136,10 +136,10 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
 
   if (!id || !kloItemId) return { success: false, error: 'Missing required fields.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
   // Scope to caller's org — defence-in-depth on top of RLS
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)
     .from('action_items')
     .update({
@@ -175,10 +175,10 @@ export async function deleteActionItem(formData: FormData): Promise<ActionResult
 
   if (!id || !kloItemId) return { success: false, error: 'Missing required fields.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = await createClient()
 
   // Scope to caller's org — defence-in-depth on top of RLS
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)
     .from('action_items')
     .delete()
