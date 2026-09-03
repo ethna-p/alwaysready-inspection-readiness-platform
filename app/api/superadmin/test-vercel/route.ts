@@ -8,15 +8,14 @@ export async function GET() {
   const teamId = process.env.INFRA_VERCEL_TEAM_ID
   if (!token) return NextResponse.json({ error: 'INFRA_VERCEL_TOKEN not set' }, { status: 500 })
 
-  const now  = Date.now()
-  const from = new Date()
-  from.setDate(1)
-  from.setHours(0, 0, 0, 0)
+  const now  = new Date()
+  const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const to   = now.toISOString()
 
   const results: Record<string, unknown> = {}
 
   for (const type of ['builds', 'edge', 'requests']) {
-    const params = new URLSearchParams({ type, from: String(from.getTime()), to: String(now) })
+    const params = new URLSearchParams({ type, from, to })
     if (teamId) params.set('teamId', teamId)
     const res = await fetch(`https://api.vercel.com/v2/usage?${params}`, {
       headers: { Authorization: `Bearer ${token}` },
