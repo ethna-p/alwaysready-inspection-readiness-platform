@@ -140,29 +140,38 @@ type VercelUsage = { bandwidthGB: number; buildMinutes: number }
 async function fetchVercelUsage(): Promise<VercelUsage | null> {
   const token  = process.env.INFRA_VERCEL_TOKEN
   const teamId = process.env.INFRA_VERCEL_TEAM_ID
-  if (!token) {
-    console.error('[Vercel] missing INFRA_VERCEL_TOKEN')
-    return null
-  }
+  if (!token) return null
   try {
-    const params = new URLSearchParams({ type: 'owner' })
-    if (teamId) params.set('teamId', teamId)
-    const res = await fetch(`https://api.vercel.com/v2/usage?${params}`, {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: 'no-store',
-    })
-    if (!res.ok) {
-      const body = await res.text()
-      console.error('[Vercel] API error', res.status, body)
-      return null
+    const now  = new Date()
+    const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    const to   = now.toISOString()
+
+    type UsageDay = { build_build_seconds?: number; bandwidth_outgoing_bytes?: number }
+    type UsageResponse = { data?: UsageDay[] }
+
+    async function fetchType(type: string): Promise<UsageDay[]> {
+      const params = new URLSearchParams({ type, from, to })
+      if (teamId) params.set('teamId', teamId)
+      const res = await fetch(`https://api.vercel.com/v2/usage?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+      })
+      if (!res.ok) return []
+      const json = await res.json() as UsageResponse
+      return json.data ?? []
     }
-    const data = await res.json() as {
-      bandwidth?:              { used?: number }
-      buildDurationInSeconds?: { used?: number }
-    }
+
+    const [buildsData, requestsData] = await Promise.all([
+      fetchType('builds'),
+      fetchType('requests'),
+    ])
+
+    const buildSeconds = buildsData.reduce((acc, d) => acc + (d.build_build_seconds ?? 0), 0)
+    const bandwidthBytes = requestsData.reduce((acc, d) => acc + (d.bandwidth_outgoing_bytes ?? 0), 0)
+
     return {
-      bandwidthGB:  Math.round((data.bandwidth?.used ?? 0) / (1024 ** 3) * 10) / 10,
-      buildMinutes: Math.round((data.buildDurationInSeconds?.used ?? 0) / 60),
+      buildMinutes: Math.round(buildSeconds / 60),
+      bandwidthGB:  Math.round(bandwidthBytes / (1024 ** 3) * 10) / 10,
     }
   } catch { return null }
 }
