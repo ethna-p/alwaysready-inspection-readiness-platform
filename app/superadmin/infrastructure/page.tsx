@@ -85,7 +85,7 @@ async function fetchUpstashStats(): Promise<UpstashStats | null> {
   }
   try {
     const auth = Buffer.from(`${email}:${apiKey}`).toString('base64')
-    const res  = await fetch(`https://api.upstash.com/v2/redis/${dbId}`, {
+    const res  = await fetch(`https://api.upstash.com/v2/redis/database/${dbId}`, {
       headers: { Authorization: `Basic ${auth}` },
       cache: 'no-store',
     })
