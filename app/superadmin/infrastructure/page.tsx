@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 /**
  * /superadmin/infrastructure — free-tier usage monitor.
  *
