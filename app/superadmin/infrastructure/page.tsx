@@ -139,14 +139,21 @@ type VercelUsage = { bandwidthGB: number; buildMinutes: number }
 async function fetchVercelUsage(): Promise<VercelUsage | null> {
   const token  = process.env.VERCEL_API_TOKEN
   const teamId = process.env.VERCEL_TEAM_ID
-  if (!token) return null
+  if (!token) {
+    console.error('[Vercel] missing VERCEL_API_TOKEN')
+    return null
+  }
   try {
     const qs  = teamId ? `?teamId=${teamId}` : ''
     const res = await fetch(`https://api.vercel.com/v2/usage${qs}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      const body = await res.text()
+      console.error('[Vercel] API error', res.status, body)
+      return null
+    }
     const data = await res.json() as {
       bandwidth?:              { used?: number }
       buildDurationInSeconds?: { used?: number }
