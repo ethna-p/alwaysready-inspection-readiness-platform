@@ -19,8 +19,8 @@
  *   UPSTASH_REDIS_DATABASE_ID     — Upstash console > your database > ID
  *   SENTRY_AUTH_TOKEN             — Sentry > Settings > Auth Tokens
  *   SENTRY_ORG_SLUG               — your Sentry organisation slug
- *   VERCEL_API_TOKEN              — Vercel > Settings > Tokens
- *   VERCEL_TEAM_ID                — Vercel team ID (omit for personal accounts)
+ *   INFRA_VERCEL_TOKEN            — Vercel > Settings > Tokens
+ *   INFRA_VERCEL_TEAM_ID          — Vercel team ID (omit for personal accounts)
  *   CLOUDFLARE_API_TOKEN          — Cloudflare > My Profile > API Tokens
  *   CLOUDFLARE_ACCOUNT_ID         — Cloudflare dashboard Overview sidebar
  *   CLOUDFLARE_WORKER_NAME        — script name of the chat worker (e.g. "chat")
@@ -138,10 +138,10 @@ async function fetchSentryStats(): Promise<SentryStats | null> {
 type VercelUsage = { bandwidthGB: number; buildMinutes: number }
 
 async function fetchVercelUsage(): Promise<VercelUsage | null> {
-  const token  = process.env.VERCEL_API_TOKEN
-  const teamId = process.env.VERCEL_TEAM_ID
+  const token  = process.env.INFRA_VERCEL_TOKEN
+  const teamId = process.env.INFRA_VERCEL_TEAM_ID
   if (!token) {
-    console.error('[Vercel] missing VERCEL_API_TOKEN')
+    console.error('[Vercel] missing INFRA_VERCEL_TOKEN')
     return null
   }
   try {
