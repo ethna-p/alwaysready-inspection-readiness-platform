@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { assertSuperadmin } from '@/lib/auth/assert'
+import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export async function GET() {
   await assertSuperadmin()
