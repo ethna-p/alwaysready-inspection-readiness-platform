@@ -7,7 +7,7 @@ export async function GET() {
   const token = process.env.INFRA_VERCEL_TOKEN
   if (!token) return NextResponse.json({ error: 'INFRA_VERCEL_TOKEN not set' }, { status: 500 })
 
-  const res = await fetch('https://api.vercel.com/v2/usage', {
+  const res = await fetch('https://api.vercel.com/v2/usage?type=owner', {
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   })

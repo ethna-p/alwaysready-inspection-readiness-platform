@@ -145,8 +145,9 @@ async function fetchVercelUsage(): Promise<VercelUsage | null> {
     return null
   }
   try {
-    const qs  = teamId ? `?teamId=${teamId}` : ''
-    const res = await fetch(`https://api.vercel.com/v2/usage${qs}`, {
+    const params = new URLSearchParams({ type: 'owner' })
+    if (teamId) params.set('teamId', teamId)
+    const res = await fetch(`https://api.vercel.com/v2/usage?${params}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
     })
