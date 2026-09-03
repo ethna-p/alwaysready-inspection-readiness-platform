@@ -84,5 +84,9 @@ export default withSentryConfig(nextConfig, {
 
     // Automatically instrument Next.js data fetching methods for performance monitoring
     autoInstrumentServerFunctions: true,
+
+    // Middleware is already manually wrapped with wrapMiddlewareWithSentry —
+    // disable auto-instrumentation to prevent the proxy.ts conflict error.
+    autoInstrumentMiddleware: false,
   },
 });
