@@ -79,14 +79,21 @@ async function fetchUpstashStats(): Promise<UpstashStats | null> {
   const email = process.env.UPSTASH_MANAGEMENT_EMAIL
   const apiKey = process.env.UPSTASH_MANAGEMENT_API_KEY
   const dbId   = process.env.UPSTASH_REDIS_DATABASE_ID
-  if (!email || !apiKey || !dbId) return null
+  if (!email || !apiKey || !dbId) {
+    console.error('[Upstash] missing env vars', { email: !!email, apiKey: !!apiKey, dbId: !!dbId })
+    return null
+  }
   try {
     const auth = Buffer.from(`${email}:${apiKey}`).toString('base64')
     const res  = await fetch(`https://api.upstash.com/v2/redis/${dbId}`, {
       headers: { Authorization: `Basic ${auth}` },
       cache: 'no-store',
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      const body = await res.text()
+      console.error('[Upstash] API error', res.status, body)
+      return null
+    }
     const data = await res.json() as Record<string, unknown>
     return {
       dailyCommands: typeof data.daily_request_count === 'number' ? data.daily_request_count : 0,
