@@ -162,6 +162,26 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
           <!-- Legal footer -->
           <tr>
             <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:16px 40px;text-align:center">
+              <!-- Social icons -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 12px auto">
+                <tr>
+                  <td style="padding:0 6px">
+                    <a href="https://www.facebook.com/alwaysreadyuk">
+                      <img src="https://portal.alwaysready.uk/images/email/facebook.png" width="40" height="40" alt="Facebook" style="display:block;border:0">
+                    </a>
+                  </td>
+                  <td style="padding:0 6px">
+                    <a href="https://www.instagram.com/alwaysreadyuk">
+                      <img src="https://portal.alwaysready.uk/images/email/instagram.png" width="40" height="40" alt="Instagram" style="display:block;border:0">
+                    </a>
+                  </td>
+                  <td style="padding:0 6px">
+                    <a href="https://www.linkedin.com/company/alwaysreadyuk">
+                      <img src="https://portal.alwaysready.uk/images/email/linkedin.png" width="40" height="40" alt="LinkedIn" style="display:block;border:0">
+                    </a>
+                  </td>
+                </tr>
+              </table>
               <p style="margin:0;font-size:11px;color:#6b6b6b;line-height:1.7">
                 &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
