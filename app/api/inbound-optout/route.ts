@@ -100,7 +100,6 @@ export async function POST(req: NextRequest) {
     const { data: contact } = await supabase
       .from('campaign_contacts')
       .select('id')
-      // @ts-expect-error -- optout_token added in migration 20260904000006; regenerate types after applying
       .eq('optout_token', optoutToken)
       .is('suppressed_at', null)
       .single() as { data: Pick<CampaignContact, 'id'> | null }

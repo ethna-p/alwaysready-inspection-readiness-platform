@@ -2054,6 +2054,7 @@ export type Database = {
           contacted_at:    string | null
           notes:           string | null
           suppressed_at:   string | null
+          optout_token:    string
           created_at:      string
         }
         Insert: {
@@ -2072,6 +2073,7 @@ export type Database = {
           contacted_at?:    string | null
           notes?:           string | null
           suppressed_at?:   string | null
+          optout_token?:    string
           created_at?:      string
         }
         Update: {
@@ -2090,6 +2092,7 @@ export type Database = {
           contacted_at?:    string | null
           notes?:           string | null
           suppressed_at?:   string | null
+          optout_token?:    string
           created_at?:      string
         }
         Relationships: [
@@ -2148,6 +2151,15 @@ export type Database = {
       seed_default_training_types: {
         Args: { p_organisation_id: string }
         Returns: void
+      }
+      get_org_upload_usage: {
+        Args: { p_org_id: string }
+        Returns: {
+          file_count:   number
+          total_bytes:  number
+          at_file_limit: boolean
+          at_byte_limit: boolean
+        }[]
       }
     }
     Enums: Record<string, never>

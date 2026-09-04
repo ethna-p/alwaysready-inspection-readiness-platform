@@ -147,11 +147,9 @@ export async function POST(request: NextRequest) {
 
   // ── 6. Per-org quota check ────────────────────────────────────────────────
   const adminSupabase = createAdminClient()
-  // get_org_upload_usage was added in migration 20260904000005; cast until types are regenerated
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: usage, error: quotaError } = await (adminSupabase as any)
+  const { data: usageRows, error: quotaError } = await adminSupabase
     .rpc('get_org_upload_usage', { p_org_id: profile.organisation_id })
-    .single() as { data: { file_count: number; total_bytes: number; at_file_limit: boolean; at_byte_limit: boolean } | null; error: unknown }
+  const usage = usageRows?.[0] ?? null
 
   if (quotaError || !usage) {
     console.error('[upload-evidence] Quota check failed:', quotaError)
