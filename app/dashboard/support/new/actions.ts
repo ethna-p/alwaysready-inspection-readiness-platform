@@ -6,6 +6,15 @@ import { requireUser } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import { getFirstName } from '@/lib/utils/name'
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export type SubmitTicketState =
   | { status: 'idle' }
   | { status: 'error'; message: string }
@@ -35,6 +44,12 @@ export async function submitTicket(
     .eq('id', profile.id)
     .single()
 
+  // Store external_email so inbound-email can verify sender identity when the
+  // user replies by email. Without this, any sender knowing the ticket reference
+  // could inject replies into platform-created tickets (null external_email bypasses
+  // the sender-match check in /api/inbound-email).
+  const recipientEmailForTicket = profile.email ?? profileDetails?.personal_email ?? null
+
   const { data: ticket, error } = await supabase
     .from('support_tickets')
     .insert({
@@ -42,6 +57,7 @@ export async function submitTicket(
       submitted_by: profile.id,
       subject,
       message,
+      external_email: recipientEmailForTicket,
     })
     .select('id, reference')
     .single()
@@ -59,7 +75,7 @@ export async function submitTicket(
       subject: `We've received your support request — ${ticket.reference}`,
       type:    'transactional',
       bodyHtml: `
-        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
+        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
 
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
           Thank you for getting in touch. We've received your support request and will get back to you as soon as possible.
@@ -68,7 +84,7 @@ export async function submitTicket(
         <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
           <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.05em">Your request</p>
           <p style="margin:0 0 4px;font-size:13px;color:#888;font-family:monospace">${ticket.reference}</p>
-          <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${subject}</p>
+          <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${escapeHtml(subject)}</p>
         </div>
 
         <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -96,11 +112,11 @@ export async function submitTicket(
         <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new support ticket has been submitted via the platform.</p>
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
           <tr><td style="padding:4px 16px 4px 0;color:#555">Reference</td><td style="padding:4px 0;font-family:monospace">${ticket.reference}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Organisation</td><td style="padding:4px 0">${org?.name ?? '—'}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${profileDetails?.full_name ?? profile.email ?? '—'}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${subject}</strong></td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Organisation</td><td style="padding:4px 0">${escapeHtml(org?.name ?? '—')}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${escapeHtml(profileDetails?.full_name ?? profile.email ?? '—')}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${escapeHtml(subject)}</strong></td></tr>
         </table>
-        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${message}</p>
+        <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${escapeHtml(message)}</p>
       `,
     })
   }

@@ -50,13 +50,29 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400, headers: CORS_HEADERS })
   }
 
-  const locationName = (body.location_name ?? '').trim()
-  const postcode     = (body.postcode      ?? '').trim().toUpperCase() || null
-  const email        = (body.email         ?? '').trim().toLowerCase() || null
+  const locationName  = (body.location_name ?? '').trim()
+  const postcode      = (body.postcode      ?? '').trim().toUpperCase() || null
+  const email         = (body.email         ?? '').trim().toLowerCase() || null
+  const optoutToken   = (body.token         ?? '').trim() || null
 
   if (!locationName) {
     return NextResponse.json(
       { error: 'location_name is required' },
+      { status: 400, headers: CORS_HEADERS }
+    )
+  }
+
+  // Reject postcode-only requests — require either a signed token or email+postcode.
+  // A postcode alone is publicly available and would let anyone opt out a competitor.
+  if (!optoutToken && !email) {
+    return NextResponse.json(
+      { error: 'Please provide your email address to complete the opt-out.' },
+      { status: 400, headers: CORS_HEADERS }
+    )
+  }
+  if (!optoutToken && postcode && !email) {
+    return NextResponse.json(
+      { error: 'Please provide your email address alongside the postcode.' },
       { status: 400, headers: CORS_HEADERS }
     )
   }
@@ -76,8 +92,28 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Match and suppress campaign contacts ───────────────────────────────────
-  // Match on postcode (normalised) — update all unsuppressed matches
-  if (postcode) {
+  // Priority 1: token — suppresses exactly one contact, no guessing.
+  // Priority 2: email + postcode — both must match.
+  let matchedContactId: string | null = null
+
+  if (optoutToken) {
+    const { data: contact } = await supabase
+      .from('campaign_contacts')
+      .select('id')
+      // @ts-expect-error -- optout_token added in migration 20260904000006; regenerate types after applying
+      .eq('optout_token', optoutToken)
+      .is('suppressed_at', null)
+      .single() as { data: Pick<CampaignContact, 'id'> | null }
+
+    if (contact) {
+      await supabase
+        .from('campaign_contacts')
+        .update({ suppressed_at: new Date().toISOString() })
+        .eq('id', contact.id)
+      matchedContactId = contact.id
+    }
+  } else if (email && postcode) {
+    // Require both email and postcode to match — postcode alone is not enough.
     const { data: matched } = await supabase
       .from('campaign_contacts')
       .select('id')
@@ -90,13 +126,15 @@ export async function POST(req: NextRequest) {
         .from('campaign_contacts')
         .update({ suppressed_at: new Date().toISOString() })
         .in('id', ids)
-
-      // Link suppression to first matched contact
-      await supabase
-        .from('marketing_suppressions')
-        .update({ campaign_contact_id: ids[0] })
-        .eq('id', suppression!.id)
+      matchedContactId = ids[0]
     }
+  }
+
+  if (matchedContactId) {
+    await supabase
+      .from('marketing_suppressions')
+      .update({ campaign_contact_id: matchedContactId })
+      .eq('id', suppression!.id)
   }
 
   // ── Notify AJ ─────────────────────────────────────────────────────────────

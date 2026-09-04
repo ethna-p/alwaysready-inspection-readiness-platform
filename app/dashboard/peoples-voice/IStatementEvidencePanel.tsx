@@ -17,7 +17,7 @@
 
 import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { saveIStatementEvidenceRecord, deleteIStatementEvidenceRecord } from './evidence-actions'
+import { saveIStatementEvidenceRecord, deleteIStatementEvidenceRecord, getIStatementEvidenceDownloadUrl } from './evidence-actions'
 
 const ACCEPTED_EXTENSIONS = '.pdf,.docx,.xlsx,.jpg,.jpeg,.png'
 const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
@@ -111,7 +111,7 @@ export default function IStatementEvidencePanel({
       return
     }
 
-    const { storagePath, fileSize, mimeType, scanStatus = 'clean' } = uploadData
+    const { storagePath, fileSize, mimeType } = uploadData
 
     const result = await saveIStatementEvidenceRecord(
       iStatementId,
@@ -119,7 +119,7 @@ export default function IStatementEvidencePanel({
       storagePath,
       fileSize ?? file.size,
       mimeType ?? file.type,
-      scanStatus,
+      // scanStatus is no longer accepted — the server action always writes 'clean'
     )
 
     if (!result.success) {
@@ -142,7 +142,7 @@ export default function IStatementEvidencePanel({
         mime_type:        file.type,
         uploaded_at:      new Date().toISOString(),
         uploaded_by_name: 'You',
-        scan_status:      scanStatus,
+        scan_status:      'clean',
       },
       ...prev,
     ])
@@ -163,23 +163,18 @@ export default function IStatementEvidencePanel({
     setDeletingId(null)
   }
 
-  async function handleDownload(storagePath: string, fileName: string) {
-    const supabase = createClient()
-    const { data, error } = await supabase.storage
-      .from('evidence')
-      .download(storagePath)
-
-    if (error || !data) {
-      alert('Could not download file. Please try again.')
+  async function handleDownload(evidenceId: string, fileName: string) {
+    // Server action verifies scan_status before issuing a signed URL — non-clean
+    // files are blocked server-side, not just hidden in the UI.
+    const result = await getIStatementEvidenceDownloadUrl(evidenceId)
+    if (!result.success) {
+      alert(result.error)
       return
     }
-
-    const url = URL.createObjectURL(data)
     const a   = document.createElement('a')
-    a.href     = url
+    a.href     = result.url
     a.download = fileName
     a.click()
-    URL.revokeObjectURL(url)
   }
 
   return (
@@ -258,7 +253,7 @@ export default function IStatementEvidencePanel({
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
-                  onClick={() => handleDownload(f.storage_path, f.file_name)}
+                  onClick={() => handleDownload(f.id, f.file_name)}
                   className="text-xs font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
                 >
                   Download

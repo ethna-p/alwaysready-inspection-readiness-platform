@@ -35,8 +35,9 @@ const OOXML_MIME = 'application/zip'
 async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{ clean: boolean; message: string }> {
   const apiKey = process.env.CLOUDMERSIVE_API_KEY
   if (!apiKey) {
-    console.warn('[upload-i-statement-evidence] CLOUDMERSIVE_API_KEY not set — skipping virus scan')
-    return { clean: true, message: 'Scan skipped (not configured)' }
+    // No API key means scanning is not configured — fail closed.
+    console.error('[upload-i-statement-evidence] CLOUDMERSIVE_API_KEY not set — rejecting upload (fail closed)')
+    return { clean: false, message: 'File scanning is unavailable. Please try again later or contact support.' }
   }
 
   try {
@@ -50,8 +51,9 @@ async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{
     })
 
     if (!response.ok) {
-      console.error('[upload-i-statement-evidence] Cloudmersive returned', response.status)
-      return { clean: true, message: `Scan service error: ${response.status}` }
+      // Scan service error — fail closed rather than allow.
+      console.error('[upload-i-statement-evidence] Cloudmersive returned', response.status, '— rejecting upload (fail closed)')
+      return { clean: false, message: 'File scanning is temporarily unavailable. Please try again later.' }
     }
 
     const result = await response.json() as { CleanResult: boolean; FoundViruses: unknown[] | null }
@@ -61,8 +63,9 @@ async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{
 
     return { clean: true, message: 'Clean' }
   } catch (err) {
-    console.error('[upload-i-statement-evidence] Cloudmersive scan failed:', err)
-    return { clean: true, message: 'Scan network error — skipped' }
+    // Network error reaching the scan service — fail closed.
+    console.error('[upload-i-statement-evidence] Cloudmersive scan failed:', err, '— rejecting upload (fail closed)')
+    return { clean: false, message: 'File scanning is temporarily unavailable. Please try again later.' }
   }
 }
 
@@ -141,9 +144,11 @@ export async function POST(request: NextRequest) {
 
   // ── 6. Per-org quota check ────────────────────────────────────────────────
   const adminSupabase = createAdminClient()
-  const { data: usage, error: quotaError } = await adminSupabase
+  // get_org_upload_usage was added in migration 20260904000005; cast until types are regenerated
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: usage, error: quotaError } = await (adminSupabase as any)
     .rpc('get_org_upload_usage', { p_org_id: profile.organisation_id })
-    .single()
+    .single() as { data: { file_count: number; total_bytes: number; at_file_limit: boolean; at_byte_limit: boolean } | null; error: unknown }
 
   if (quotaError || !usage) {
     console.error('[upload-i-statement-evidence] Quota check failed:', quotaError)
