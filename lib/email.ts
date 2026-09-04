@@ -113,11 +113,52 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
             </td>
           </tr>
 
-          <!-- Footer -->
+          <!-- Footer: CQC five key questions -->
           <tr>
-            <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:20px 40px;text-align:center">
-              <p style="margin:0;font-size:12px;color:#6b6b6b;line-height:1.6">
-                AlwaysReady is a product of Parker Digital &amp; Print Services<br>
+            <td style="background-color:#014D4E;padding:24px 40px 20px;text-align:center">
+              <p style="margin:0 0 16px;font-size:10px;color:#a8d5d5;letter-spacing:0.1em;text-transform:uppercase;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">Mapped to CQC&apos;s five key questions</p>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto">
+                <tr>
+                  <td align="center" style="padding:0 8px">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                      <td align="center" width="48" height="48" style="width:48px;height:48px;border-radius:24px;background-color:#5DCAA5;font-size:20px;color:#003d30;font-weight:700;line-height:48px;font-family:Arial,sans-serif">&#x2713;</td>
+                    </tr></table>
+                    <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#c8e8e8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.04em">Safe</p>
+                  </td>
+                  <td align="center" style="padding:0 8px">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                      <td align="center" width="48" height="48" style="width:48px;height:48px;border-radius:24px;background-color:#85B7EB;font-size:20px;color:#0c2a4a;font-weight:700;line-height:48px;font-family:Arial,sans-serif">&#x2191;</td>
+                    </tr></table>
+                    <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#c8e8e8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.04em">Effective</p>
+                  </td>
+                  <td align="center" style="padding:0 8px">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                      <td align="center" width="48" height="48" style="width:48px;height:48px;border-radius:24px;background-color:#ED93B1;font-size:20px;color:#4a0e24;font-weight:700;line-height:48px;font-family:Arial,sans-serif">&#x2665;</td>
+                    </tr></table>
+                    <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#c8e8e8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.04em">Caring</p>
+                  </td>
+                  <td align="center" style="padding:0 8px">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                      <td align="center" width="48" height="48" style="width:48px;height:48px;border-radius:24px;background-color:#EF9F27;font-size:20px;color:#3d2800;font-weight:700;line-height:48px;font-family:Arial,sans-serif">&#x26A1;</td>
+                    </tr></table>
+                    <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#c8e8e8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.04em">Responsive</p>
+                  </td>
+                  <td align="center" style="padding:0 8px">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                      <td align="center" width="48" height="48" style="width:48px;height:48px;border-radius:24px;background-color:#AFA9EC;font-size:20px;color:#211a4a;font-weight:700;line-height:48px;font-family:Arial,sans-serif">&#x2605;</td>
+                    </tr></table>
+                    <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#c8e8e8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.04em">Well-led</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Legal footer -->
+          <tr>
+            <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:16px 40px;text-align:center">
+              <p style="margin:0;font-size:11px;color:#6b6b6b;line-height:1.7">
+                &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
               ${unsubscribeFooter}
