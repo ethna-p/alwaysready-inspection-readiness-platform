@@ -170,7 +170,7 @@ Thank you for your data deletion request, received on ${today}. We will process 
 
 To verify your identity and confirm the request, please reply to this email with the following:
 
-1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName}.
+1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName} (if applicable).
 2. I am making this data subject request on my own behalf.
 3. I confirm that I submitted this request.
 
@@ -190,7 +190,7 @@ Thank you for your subject access request (SAR), received on ${today}. Under UK 
 
 Before we can release your data, we are required to verify your identity. Please reply to this email confirming the following:
 
-1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName}.
+1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName} (if applicable).
 2. I am making this subject access request on my own behalf.
 3. I confirm that I submitted this request.
 
