@@ -77,7 +77,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
     external_email: string | null
     organisations: { name: string } | null
   }
-  const isWebsite = t.source === 'website'
+  const isWebsite = t.source === 'website' || t.source === 'website_contact'
   const isEmail   = t.source === 'email'
   const isExternal = isWebsite || isEmail
   const orgName   = isExternal
