@@ -247,14 +247,16 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
   // --- Send ---
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const from = process.env.RESEND_FROM_ADDRESS ?? 'AlwaysReady <onboarding@resend.dev>'
+    const from    = process.env.RESEND_FROM_ADDRESS ?? 'AlwaysReady <onboarding@resend.dev>'
+    const replyTo = process.env.RESEND_REPLY_TO ?? 'support@alwaysready.uk'
 
     const { error } = await resend.emails.send({
       from,
-      to: opts.to,
-      subject: opts.subject,
+      to:       opts.to,
+      subject:  opts.subject,
       html,
-      headers: Object.keys(headers).length ? headers : undefined,
+      replyTo,
+      headers:  Object.keys(headers).length ? headers : undefined,
     })
 
     if (error) {
