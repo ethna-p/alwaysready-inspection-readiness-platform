@@ -50,9 +50,9 @@ export interface SendEmailResult {
 function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: string): string {
   const note = footerNote ?? 'You are receiving this email because you have an active AlwaysReady account.'
   const unsubscribeFooter = unsubscribeUrl
-    ? `<p style="margin:12px 0 0;font-size:12px;color:#6b6b6b">
+    ? `<p style="margin:12px 0 0;font-size:12px;color:rgba(255,255,255,0.6)">
          ${note}
-         <a href="${unsubscribeUrl}" style="color:#014D4E;text-decoration:underline">Unsubscribe</a> from non-essential emails.
+         <a href="${unsubscribeUrl}" style="color:rgba(255,255,255,0.9);text-decoration:underline">Unsubscribe</a> from non-essential emails.
        </p>`
     : ''
 
@@ -161,7 +161,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
 
           <!-- Legal footer -->
           <tr>
-            <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:16px 40px;text-align:center">
+            <td style="background-color:#014D4E;padding:20px 40px 24px;text-align:center">
               <!-- Social icons -->
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 12px auto">
                 <tr>
@@ -182,7 +182,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                   </td>
                 </tr>
               </table>
-              <p style="margin:0;font-size:11px;color:#6b6b6b;line-height:1.7">
+              <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);line-height:1.7">
                 &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
