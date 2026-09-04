@@ -47,6 +47,7 @@ async function makeSender(to: string) {
     subject: string,
     bodyHtml: string,
     type: 'transactional' | 'marketing' = 'transactional',
+    footerNote?: string,
   ): Promise<TestEmailResult> {
     // For marketing emails, pass subscriberEmail so the opt-out DB check is
     // skipped (no userId exists for the superadmin test recipient) while still
@@ -57,6 +58,7 @@ async function makeSender(to: string) {
       bodyHtml,
       type,
       ...(type === 'marketing' ? { subscriberEmail: to } : {}),
+      ...(footerNote ? { footerNote } : {}),
     })
     return { subject, sent: r.sent, error: r.error }
   }
@@ -313,7 +315,7 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
   for (let i = 1; i <= 8; i++) {
     const email = getWaitlistNurtureEmail(i, FIRST_NAME)
     if (email) {
-      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing'))
+      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing', 'You are receiving this because you joined the AlwaysReady waitlist.'))
       await new Promise(resolve => setTimeout(resolve, 500))
     }
   }
@@ -331,7 +333,7 @@ async function sendWaitlistLaunch(send: Awaited<ReturnType<typeof makeSender>>) 
   for (const i of [9, 10] as const) {
     const email = getWaitlistNurtureEmail(i, FIRST_NAME)
     if (email) {
-      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing'))
+      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing', 'You are receiving this because you joined the AlwaysReady waitlist.'))
       await new Promise(resolve => setTimeout(resolve, 500))
     }
   }
