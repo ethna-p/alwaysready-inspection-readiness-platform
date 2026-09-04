@@ -343,8 +343,14 @@ export function getWaitlistNurtureEmail(
         for. We're also publishing a detailed breakdown on our blog — practical guidance on what the
         new framework means for each key question. We'll send you the link when it's live.
       </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        AlwaysReady is launching very soon. Before it does, I wanted to let you know that waitlist
+        members will have the chance to join as a Beta Partner — a small group of services who get
+        a deep discount in exchange for sharing feedback as the platform grows. I'll share the
+        details when we launch.
+      </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-        AlwaysReady is opening very soon. If you have questions in the meantime, you can reach us at
+        If you have questions in the meantime, you can reach us at
         <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.
       </p>
     `,
