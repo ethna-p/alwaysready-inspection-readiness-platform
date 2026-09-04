@@ -359,12 +359,14 @@ export function getWaitlistNurtureEmail(
         AlwaysReady is now open. As a waitlist member, you have priority access — your 14-day
         free trial is available right now, and no payment is required until your trial ends.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your trial gives you full access to the platform: the KLOE tracker pre-loaded with the
-        new CQC framework, evidence uploads and document management, the HR module covering staff
-        records, DBS, training, supervision and absence, team access so you can invite colleagues
-        and assign KLOEs, the readiness dashboard, mock inspection, and Evidence Pack.
-      </p>
+      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">Your trial gives you full access to everything:</p>
+      <ul style="margin:0 0 16px;padding-left:20px;font-size:15px;line-height:1.9;color:#1a1a1a">
+        <li>KLOE tracker, pre-loaded with the new CQC framework</li>
+        <li>Evidence uploads and document management</li>
+        <li>HR module: staff records, DBS, training, supervision, and absence</li>
+        <li>Team access: invite colleagues and assign KLOEs</li>
+        <li>Readiness dashboard, mock inspection, and Evidence Pack</li>
+      </ul>
       <p style="margin:0 0 32px">
         <a href="https://portal.alwaysready.uk/trial"
            style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
