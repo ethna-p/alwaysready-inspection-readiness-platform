@@ -145,8 +145,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: scan.message }, { status: 400 })
   }
 
-  // ── 6. Upload to Supabase Storage (service role — bypasses storage RLS) ──
+  // ── 6. Per-org quota check ────────────────────────────────────────────────
   const adminSupabase = createAdminClient()
+  const { data: usage, error: quotaError } = await adminSupabase
+    .rpc('get_org_upload_usage', { p_org_id: profile.organisation_id })
+    .single()
+
+  if (quotaError || !usage) {
+    console.error('[upload-evidence] Quota check failed:', quotaError)
+    return NextResponse.json({ error: 'Upload check failed. Please try again.' }, { status: 500 })
+  }
+  if (usage.at_file_limit) {
+    return NextResponse.json(
+      { error: 'Your organisation has reached the maximum number of uploaded files (500). Please delete some files before uploading more.' },
+      { status: 400 }
+    )
+  }
+  if (usage.at_byte_limit) {
+    return NextResponse.json(
+      { error: 'Your organisation has reached the storage limit (500 MB). Please delete some files before uploading more.' },
+      { status: 400 }
+    )
+  }
+
+  // ── 7. Upload to Supabase Storage (service role — bypasses storage RLS) ──
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
   const storagePath = `${profile.organisation_id}/${kloItemId}/${Date.now()}-${safeName}`
 
