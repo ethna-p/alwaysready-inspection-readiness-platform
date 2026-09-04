@@ -167,17 +167,17 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 <tr>
                   <td style="padding:0 6px">
                     <a href="https://www.facebook.com/alwaysreadyuk">
-                      <img src="https://portal.alwaysready.uk/images/email/facebook.png" width="40" height="40" alt="Facebook" style="display:block;border:0">
+                      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAABP0lEQVR4nGNkwAEYff3+45KjBfi/eRMjVndgCNDZYegA3aFMyJyBdhw2NzDhkhhIgOwWJnSBwQJgbmIipHCgAeNgDD1kMOhDcNSBlIJRB1IKRh1IKWChtoGasjIMRQEBDA66ugzSQkIMHGxscLneDRsYSufNHzgH2mprMexsbERxFKWAqlE8NSODqo5jYKBiCMqJijLoyMujiG04cYIhdfIUhrefP5NtLtVCUEZYGENs+cFDFDmOgYGKDmRjxYyM779+UWwuxa2Z+shIhvrICKLUGhUUMFy4d58k8wd9OTjoHUi1BquDrg7DvtZWFDG/5haGLadPU2TuoA/BUQdSCkYdSCkYdSClYNSBlIJB70BGBobBObrFwAAZzBz0IcjEwIB7fHggAcxNTOgCgwEgu4UJl8RAAXQ34HTQYJmGAAB43lKF+mYI7QAAAABJRU5ErkJggg==" width="40" height="40" alt="Facebook" style="display:block;border:0">
                     </a>
                   </td>
                   <td style="padding:0 6px">
                     <a href="https://www.instagram.com/alwaysreadyuk">
-                      <img src="https://portal.alwaysready.uk/images/email/instagram.png" width="40" height="40" alt="Instagram" style="display:block;border:0">
+                      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAA/UlEQVR4nO2Z2w7DIAhAlez3Zr919v/mnkwIFScVC2l63qq9HCliLzEwxHcqXN8Kyp5j0+PQcLEYhYoC3rCWazkA12EJdgHa4IXqBP92tCZ6jB7GfQQfwVkewVle0gO++TN9UUjb8L7DZUZDjDIiKo6gZPSUM4McysF64hm53nl7XDpJzgzw8lkMaROJinOwB75lWumgItjKJa28VY0gltEqS9M5yEWqbs+Kul/q7i/I3UqXk2TFeq0i2IqiqzpY0V6rQxjMQa2SUZHkp8kDqwTxe7HbJ2or7l+oVwPcl00PlD1H/xEMgf8+bEl1AtrgAewCXIcV1IEV8vIb4gcAxmkxhbbr0wAAAABJRU5ErkJggg==" width="40" height="40" alt="Instagram" style="display:block;border:0">
                     </a>
                   </td>
                   <td style="padding:0 6px">
                     <a href="https://www.linkedin.com/company/alwaysreadyuk">
-                      <img src="https://portal.alwaysready.uk/images/email/linkedin.png" width="40" height="40" alt="LinkedIn" style="display:block;border:0">
+                      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAABaUlEQVR4nO2ZP0vDQByG3xyCUv8UAgrNWJSudRCXri6CjnXQL+GfODnoqB9CUZB2bYrgB3AsxcnRQgedLKUBM2gvLqakZ0+5Xuod4Z4p9/slx8ObIwkXCxysre2Q15sEYd2zRnr8KPyzGAsrSuID1XKjHAivoZK4C2ELuhA5kb9OVI2lY3pxtE/QCMpiBGUxgrIYQVmEBE92yqBeDdSroeK6k3IaIl0JqiBdHwu8NcjWl7JZ3B4dolut4PXmGtVjF45tjyU4NdZVv2DPz+Hh4hzLuRwAYCGTQblUworjYG3/ADQUu2GJr8GNYhF3jQYWd/eweXqGj34fALCaz2O9UBCeL3HBl04H7uUV3nwf980mntrtQS9KVYTEBR+fW/j8Tg0Aeu/B4Hh2Zlp4vsQF/SAYGtOQSs2n/XPQCMqivWC6XnUqMIKyEN7Opg6Edc/SP0GAvz+sksiJsAUdiLsQXkMVrANXSJffEF+1cnfm6/tzhQAAAABJRU5ErkJggg==" width="40" height="40" alt="LinkedIn" style="display:block;border:0">
                     </a>
                   </td>
                 </tr>
