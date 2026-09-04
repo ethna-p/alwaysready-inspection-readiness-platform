@@ -206,12 +206,14 @@ export async function POST(req: NextRequest) {
       // Web-form tickets may have no external_email — we allow those through
       // since there's no address to compare against.
       const ticketEmail = (ticket.external_email as string | null)?.toLowerCase()
-      if (ticketEmail && ticketEmail !== from.toLowerCase()) {
+      const senderMismatch = !!(ticketEmail && ticketEmail !== from.toLowerCase())
+
+      if (senderMismatch) {
         console.warn(
-          `[inbound-email] Sender ${from} does not match ticket ${reference} (${ticketEmail}) — creating new ticket`
+          `[inbound-email] Sender ${from} does not match ticket ${reference} (${ticketEmail}) — threading with warning`
         )
-        // Fall through to new-ticket creation below
-      } else {
+      }
+
       // Reopen if resolved
       if (ticket.status === 'resolved') {
         await supabase
@@ -220,13 +222,22 @@ export async function POST(req: NextRequest) {
           .eq('id', ticket.id)
       }
 
+      // If sender email didn't match, prepend a visible warning so AJ can
+      // see the discrepancy inline and make a judgement call. We still thread
+      // the reply — the ticket reference in the subject is proof the sender
+      // received the original email, and blocking mismatches silently caused
+      // identity verification replies to disappear from the support desk.
+      const messageBody = senderMismatch
+        ? `[Note: reply from ${from} — original ticket email was ${ticketEmail ?? 'not set'}]\n\n${cleanBody}`
+        : cleanBody
+
       // Append reply
       await supabase
         .from('support_ticket_replies')
         .insert({
           ticket_id:      ticket.id,
           sent_by:        null,
-          message:        cleanBody,
+          message:        messageBody,
           is_staff_reply: false,
         })
 
@@ -234,12 +245,16 @@ export async function POST(req: NextRequest) {
       const superadminEmail = process.env.SUPERADMIN_EMAIL
       if (superadminEmail) {
         const senderDisplay = fromName ? `${fromName} <${from}>` : from
+        const mismatchNote = senderMismatch
+          ? `<p style="margin:8px 0 12px;font-size:13px;color:#b45309;background:#fef3c7;padding:8px 12px;border-radius:4px">⚠️ Sender email (${escapeHtml(from)}) does not match original ticket email (${escapeHtml(ticketEmail ?? '')}).</p>`
+          : ''
         await sendEmail({
           to:      superadminEmail,
           subject: `Customer reply on ${reference}: ${ticket.subject}`,
           type:    'transactional',
           bodyHtml: `
             <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A customer has replied to an existing support ticket.</p>
+            ${mismatchNote}
             <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
               <tr><td style="padding:4px 16px 4px 0;color:#555">Ticket</td><td style="padding:4px 0"><strong>${escapeHtml(reference)}</strong> — ${escapeHtml(ticket.subject)}</td></tr>
               <tr><td style="padding:4px 16px 4px 0;color:#555">From</td><td style="padding:4px 0">${escapeHtml(senderDisplay)}</td></tr>
@@ -250,7 +265,6 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
-      } // end sender-match else
     }
     // Reference not found or sender mismatch — fall through to create new ticket
   }

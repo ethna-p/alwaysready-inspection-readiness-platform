@@ -24,9 +24,13 @@ const emailWorker = {
     const from = message.from ?? ''
     const to   = message.to   ?? ''
 
-    // Extract subject from raw headers
-    const subjectMatch = rawEmail.match(/^Subject:\s*(.+)$/im)
-    const subject = subjectMatch ? subjectMatch[1].trim() : '(No subject)'
+    // Extract subject from raw headers, handling RFC 2822 folded lines.
+    // A folded header has continuation lines starting with whitespace — join
+    // them before extracting so [AR-XXXX] is never split across a line break.
+    const subjectMatch = rawEmail.match(/^Subject:\s*([\s\S]+?)(?=\r?\n[^\t ]|\r?\n\r?\n|$)/im)
+    const subject = subjectMatch
+      ? subjectMatch[1].replace(/\r?\n[\t ]+/g, ' ').trim()
+      : '(No subject)'
 
     // Extract From display name if present e.g. "John Smith <john@example.com>"
     const fromHeaderMatch = rawEmail.match(/^From:\s*(.+)$/im)
