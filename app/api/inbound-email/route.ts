@@ -194,7 +194,7 @@ export async function POST(req: NextRequest) {
   if (reference) {
     const { data: ticket } = await supabase
       .from('support_tickets')
-      .select('id, subject, message, status, external_name, external_email')
+      .select('id, reference, subject, message, status, external_name, external_email')
       .eq('reference', reference)
       .single()
 
@@ -230,7 +230,26 @@ export async function POST(req: NextRequest) {
           is_staff_reply: false,
         })
 
-return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
+      // Notify AJ that a customer has replied to this ticket
+      const superadminEmail = process.env.SUPERADMIN_EMAIL
+      if (superadminEmail) {
+        const senderDisplay = fromName ? `${fromName} <${from}>` : from
+        await sendEmail({
+          to:      superadminEmail,
+          subject: `Customer reply on ${reference}: ${ticket.subject}`,
+          type:    'transactional',
+          bodyHtml: `
+            <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A customer has replied to an existing support ticket.</p>
+            <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
+              <tr><td style="padding:4px 16px 4px 0;color:#555">Ticket</td><td style="padding:4px 0"><strong>${escapeHtml(reference)}</strong> — ${escapeHtml(ticket.subject)}</td></tr>
+              <tr><td style="padding:4px 16px 4px 0;color:#555">From</td><td style="padding:4px 0">${escapeHtml(senderDisplay)}</td></tr>
+            </table>
+            <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${escapeHtml(cleanBody.slice(0, 500))}${cleanBody.length > 500 ? '…' : ''}</p>
+          `,
+        })
+      }
+
+      return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
       } // end sender-match else
     }
     // Reference not found or sender mismatch — fall through to create new ticket
