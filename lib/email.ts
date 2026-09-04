@@ -34,6 +34,11 @@ export interface SendEmailOptions {
    * Mutually exclusive with userId.
    */
   subscriberEmail?: string
+  /**
+   * Override the footer note text. If omitted, a default is chosen based on
+   * the email type and recipient kind (blog subscriber vs platform user).
+   */
+  footerNote?: string
 }
 
 export interface SendEmailResult {
@@ -223,9 +228,10 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
   if (opts.type === 'marketing') {
     if (opts.subscriberEmail) {
       unsubscribeUrl = buildSubscriberUnsubscribeUrl(opts.subscriberEmail)
-      footerNote = 'You are receiving this because you signed up for the AlwaysReady blog.'
+      footerNote = opts.footerNote ?? 'You are receiving this because you signed up for the AlwaysReady blog.'
     } else if (opts.userId) {
       unsubscribeUrl = buildUnsubscribeUrl(opts.userId)
+      footerNote = opts.footerNote
     }
   }
 

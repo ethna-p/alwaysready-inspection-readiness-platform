@@ -73,6 +73,7 @@ export async function sendBulkLaunchEmail(
         subject:         emailContent.subject,
         type:            'marketing',
         subscriberEmail: lead.email,
+        footerNote:      'You are receiving this because you joined the AlwaysReady waitlist.',
         bodyHtml:        emailContent.bodyHtml,
       })
       sent++
