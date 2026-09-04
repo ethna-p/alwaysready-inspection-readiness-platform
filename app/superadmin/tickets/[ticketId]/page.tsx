@@ -99,8 +99,8 @@ export default async function SuperadminTicketPage({ params }: Props) {
         ← All tickets
       </Link>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-      {/* ── LEFT COLUMN: ticket + thread ── */}
+      <div className="flex flex-col gap-6">
+      {/* ── Ticket + thread ── */}
       <div>
 
       {/* Header */}
@@ -194,8 +194,8 @@ export default async function SuperadminTicketPage({ params }: Props) {
 
       </div>{/* end left column */}
 
-      {/* ── RIGHT COLUMN: reply form + status ── */}
-      <div className="lg:sticky lg:top-6">
+      {/* ── Reply form + status ── */}
+      <div>
         <StaffReplyForm
           ticketId={ticketId}
           currentStatus={status}

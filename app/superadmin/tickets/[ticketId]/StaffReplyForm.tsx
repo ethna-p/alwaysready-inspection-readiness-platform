@@ -178,15 +178,15 @@ export default function StaffReplyForm({
           <textarea
             name="message"
             required
-            rows={10}
+            rows={14}
             value={message}
             onChange={e => setMessage(e.target.value)}
             placeholder={isGdpr ? 'Select a template above, then edit…' : 'Type your reply here…'}
             className="
               w-full bg-card border border-line rounded-lg
-              px-4 py-3 text-sm text-ink placeholder-gray-400
+              px-4 py-3 text-base text-gray-900 placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
-              resize-y
+              resize-y leading-relaxed
             "
           />
           <button
