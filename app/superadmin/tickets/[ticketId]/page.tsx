@@ -5,7 +5,23 @@ export const dynamic = 'force-dynamic'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
-import StaffReplyForm from './StaffReplyForm'
+import StaffReplyForm, { type TicketCategory } from './StaffReplyForm'
+
+/** Classify a ticket so the reply form can show the right controls. */
+function detectCategory(subject: string, message: string): TicketCategory {
+  const text = `${subject} ${message}`.toLowerCase()
+  if (
+    text.includes('delete') || text.includes('deletion') ||
+    text.includes('erasure') || text.includes('right to be forgotten') ||
+    text.includes('remove my data') || text.includes('remove my account')
+  ) return 'data-deletion'
+  if (
+    text.includes('subject access') || text.includes(' sar') ||
+    text.includes('dsar') || text.includes('right to access') ||
+    text.includes('copy of my data') || text.includes('what data')
+  ) return 'subject-access-request'
+  return 'general'
+}
 
 type Props = { params: Promise<{ ticketId: string }> }
 
@@ -67,7 +83,8 @@ export default async function SuperadminTicketPage({ params }: Props) {
   const orgName   = isExternal
     ? (t.external_name ?? (isEmail ? 'Sales enquiry' : 'Website enquiry'))
     : (t.organisations?.name ?? '—')
-  const status    = ticket.status
+  const status   = ticket.status
+  const category = detectCategory(ticket.subject ?? '', ticket.message ?? '')
   const created = new Date(ticket.created_at).toLocaleString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   })
@@ -182,7 +199,8 @@ export default async function SuperadminTicketPage({ params }: Props) {
         <StaffReplyForm
           ticketId={ticketId}
           currentStatus={status}
-          draftReply={(ticket as unknown as { draft_reply: string | null }).draft_reply}
+          draftReply={category === 'general' ? (ticket as unknown as { draft_reply: string | null }).draft_reply : null}
+          ticketCategory={category}
         />
       </div>
 

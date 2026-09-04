@@ -111,6 +111,147 @@ export async function regenerateDraft(ticketId: string): Promise<string | null> 
   }
 }
 
+// ── GDPR template names ───────────────────────────────────────────────────────
+
+export type GdprTemplateName =
+  | 'data-deletion-acknowledgement'
+  | 'sar-acknowledgement'
+  | 'sar-fulfilled'
+  | 'sar-declined'
+
+/**
+ * Return a plain-text GDPR response template pre-filled with the ticket's
+ * sender name, org name, and today's date. AJ edits before sending.
+ */
+export async function getTicketTemplate(
+  ticketId: string,
+  templateName: GdprTemplateName,
+): Promise<string | null> {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+
+  const { data: ticket } = await supabase
+    .from('support_tickets')
+    .select('external_name, submitted_by, organisations ( name )')
+    .eq('id', ticketId)
+    .single()
+
+  if (!ticket) return null
+
+  // Resolve first name
+  let firstName = 'there'
+  if (ticket.external_name) {
+    firstName = getFirstName(ticket.external_name)
+  } else if (ticket.submitted_by) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', ticket.submitted_by)
+      .single()
+    if (profile?.full_name) firstName = getFirstName(profile.full_name)
+  }
+
+  // Resolve org name
+  const t = ticket as unknown as { organisations: { name: string } | null }
+  const orgName = t.organisations?.name ?? '[organisation name]'
+
+  const today = new Date().toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  })
+  const deadline = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  })
+
+  switch (templateName) {
+    case 'data-deletion-acknowledgement':
+      return `Dear ${firstName},
+
+Thank you for your data deletion request, received on ${today}. We will process it in accordance with the UK GDPR and our Privacy Policy.
+
+To verify your identity and confirm the request, please reply to this email with the following:
+
+1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName}.
+2. I am making this data subject request on my own behalf.
+3. I confirm that I submitted this request.
+
+Once we have received your confirmation, we will process your request within 30 days as required under UK GDPR Article 17. You will receive a separate email when your data has been deleted.
+
+If you did not submit this request, please let us know immediately by replying to this email so we can protect your account.
+
+If you have any questions, contact us at support@alwaysready.uk.
+
+Kind regards,
+AlwaysReady`
+
+    case 'sar-acknowledgement':
+      return `Dear ${firstName},
+
+Thank you for your subject access request (SAR), received on ${today}. Under UK GDPR Article 15, you have the right to receive a copy of the personal data we hold about you. We will respond no later than ${deadline}.
+
+Before we can release your data, we are required to verify your identity. Please reply to this email confirming the following:
+
+1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName}.
+2. I am making this subject access request on my own behalf.
+3. I confirm that I submitted this request.
+
+Once we have verified your identity, we will provide your data within the 30-day window required by law.
+
+If you did not submit this request, please let us know immediately by replying to this email.
+
+If you have any questions, contact us at support@alwaysready.uk.
+
+Kind regards,
+AlwaysReady`
+
+    case 'sar-fulfilled':
+      return `Dear ${firstName},
+
+We have verified your identity and are writing to fulfil your subject access request, received on ${today}.
+
+The personal data we hold about you is set out below. You can also download a full copy of your data by logging in to your account and using the Export my data button on the Account page.
+
+Data we hold about you:
+- Account details: name, email address, organisation name, registered address
+- Subscription and billing information (payment data is held by Stripe, not AlwaysReady)
+- Compliance records and evidence you have entered into the platform
+- HR records associated with your account
+- Files you have uploaded
+- Email communication history with AlwaysReady support
+
+Where your data came from: directly from you, via the platform and any email correspondence.
+Why we process it: to provide the AlwaysReady service as described in our Privacy Policy.
+Who can see it: AlwaysReady staff only. We do not sell your data or share it with third parties except as set out in our Privacy Policy.
+
+If you believe any of your data is inaccurate or incomplete, you have the right to request a correction under UK GDPR Article 16. If you wish to have your data deleted, you may submit a deletion request by replying to this email.
+
+If you are not satisfied with our response, you have the right to complain to the Information Commissioner's Office (ICO) at ico.org.uk or by calling 0303 123 1113.
+
+If you have any questions, contact us at support@alwaysready.uk.
+
+Kind regards,
+AlwaysReady`
+
+    case 'sar-declined':
+      return `Dear ${firstName},
+
+We are writing regarding your subject access request received on ${today}.
+
+Unfortunately, we have been unable to fulfil your request at this time. We are required to verify the identity of anyone making a subject access request before releasing personal data. We did not receive a satisfactory response to our identity verification request.
+
+If you still wish to receive a copy of your data, please reply to this email with confirmation of your identity as described in our earlier message. We will be happy to process your request once identity has been confirmed.
+
+If you believe we have handled your request incorrectly, you have the right to complain to the Information Commissioner's Office (ICO) at ico.org.uk or by calling 0303 123 1113.
+
+If you have any questions, contact us at support@alwaysready.uk.
+
+Kind regards,
+AlwaysReady`
+
+    default:
+      return null
+  }
+}
+
 export async function updateTicketStatus(ticketId: string, status: string) {
   await assertSuperadmin()
   const supabase = createAdminClient()
