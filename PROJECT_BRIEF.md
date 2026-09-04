@@ -10,6 +10,8 @@ This file is standing context for this project. Read it at the start of every se
 
 **Every terminal command must begin with `cd ~/Sites/[repo-name]` so it is always clear which repo the command applies to. AJ uses one terminal window and moves between repos — never assume the working directory.**
 
+**Every piece of work gets finished in the session. Never suggest deferring a task to a later session — there is no later session. If something needs doing, do it now, no matter how small or large.**
+
 ---
 
 ## What This Is
