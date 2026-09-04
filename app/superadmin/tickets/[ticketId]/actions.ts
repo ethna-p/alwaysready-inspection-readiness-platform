@@ -168,13 +168,9 @@ export async function getTicketTemplate(
 
 Thank you for your data deletion request, received on ${today}. We will process it in accordance with the UK GDPR and our Privacy Policy.
 
-To verify your identity and confirm the request, please reply to this email with the following:
+To confirm your identity and proceed, please reply to this email with a short message confirming that you made this request and that you are the account holder. For example: "Yes, I confirm I have requested the deletion of my data."
 
-1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName} (if applicable).
-2. I am making this data subject request on my own behalf.
-3. I confirm that I submitted this request.
-
-Once we have received your confirmation, we will process your request within 30 days as required under UK GDPR Article 17. You will receive a separate email when your data has been deleted.
+Once we have your confirmation, we will process your request within 30 days as required under UK GDPR Article 17. You will receive a separate email when your data has been deleted.
 
 If you did not submit this request, please let us know immediately by replying to this email so we can protect your account.
 
@@ -188,13 +184,9 @@ AlwaysReady`
 
 Thank you for your subject access request (SAR), received on ${today}. Under UK GDPR Article 15, you have the right to receive a copy of the personal data we hold about you. We will respond no later than ${deadline}.
 
-Before we can release your data, we are required to verify your identity. Please reply to this email confirming the following:
+Before we can release your data, we need to verify your identity. Please reply to this email with a short message confirming that you made this request and that you are the account holder. For example: "Yes, I confirm I have submitted this subject access request."
 
-1. My full name is ___________________________________ and I am the account holder for the AlwaysReady account registered to ${orgName} (if applicable).
-2. I am making this subject access request on my own behalf.
-3. I confirm that I submitted this request.
-
-Once we have verified your identity, we will provide your data within the 30-day window required by law.
+Once we have your confirmation, we will provide your data within the 30-day window required by law.
 
 If you did not submit this request, please let us know immediately by replying to this email.
 
