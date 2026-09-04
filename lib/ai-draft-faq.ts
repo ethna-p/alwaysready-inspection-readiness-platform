@@ -545,16 +545,13 @@ A: Action plan health shows the proportion of action items across all KLOEs that
 REPORT BUILDER
 
 Q149: What is the Report Builder?
-A: The Report Builder is in the Reports section of the navigation bar. It shows the full KLOE compliance dataset in a filterable, sortable table with columns for status, RAG, priority, review dates, and evidence notes. Features include: saved views (store filter/sort settings as a named view); progress snapshots (compare current position to a previous snapshot to show improvement); AI narrative summary (a short written description of the compliance position generated from live data); Pre-Inspection view (surfaces KLOEs most likely to need attention before inspection); and a readiness trend graph.
+A: The Report Builder is in the Reports section of the navigation bar. It shows the full KLOE compliance dataset in a filterable, sortable table with columns for status, RAG, priority, review dates, and evidence notes. Features include: saved views (store filter/sort settings as a named view); progress snapshots (compare current position to a previous snapshot to show improvement); Pre-Inspection view (surfaces KLOEs most likely to need attention before inspection); and a readiness trend graph.
 
 Q150: What are saved report views?
 A: Saved views store preferred filter and sort settings as a named view, so the user can switch between them without reconfiguring each time. AlwaysReady includes built-in system views (All KLOEs, Pre-Inspection, by key question area) and users can save their own. Views persist between sessions.
 
 Q151: What is a progress snapshot?
 A: A progress snapshot records the compliance position at a specific point in time — how many KLOEs are complete, in progress, or not started, and the overall readiness percentage. When a new snapshot is taken, the Report Builder compares it to the previous one and shows the change.
-
-Q152: What is the AI summary in the Report Builder?
-A: The AI summary generates a short narrative description of the current compliance position based on live KLOE data. It is for internal use only and is regenerated fresh each time it is requested.
 
 Q153: What is the Pre-Inspection view?
 A: The Pre-Inspection view surfaces KLOEs most likely to need attention before an inspection — those with Red or Amber RAG status, lower evidence coverage, or open action items.

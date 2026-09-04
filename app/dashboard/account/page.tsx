@@ -274,7 +274,7 @@ export default async function AccountPage({
                     },
                     {
                       name: 'Report Builder',
-                      desc: 'Build a filtered view of your KLOE compliance position, save it as a named view, and take progress snapshots over time. Includes an AI-generated narrative summary and a Pre-Inspection view ready to hand to a CQC inspector.',
+                      desc: 'Build a filtered view of your KLOE compliance position, save it as a named view, and take progress snapshots over time. Includes a Pre-Inspection view ready to hand to a CQC inspector.',
                       href: '/dashboard/reports',
                     },
                     {
