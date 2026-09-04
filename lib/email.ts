@@ -155,8 +155,15 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                     <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.04em">Well-led</p>
                   </td>
                 </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Legal footer -->
+          <tr>
+            <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:16px 40px;text-align:center">
               <!-- Social icons -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:16px auto 0 auto">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 12px auto">
                 <tr>
                   <td style="padding:0 6px">
                     <a href="https://www.facebook.com/alwaysreadyuk">
@@ -175,13 +182,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
-
-          <!-- Legal footer -->
-          <tr>
-            <td style="background-color:#faf9f6;border-top:1px solid #e8e6e0;padding:16px 40px;text-align:center">
-<p style="margin:0;font-size:11px;color:#6b6b6b;line-height:1.7">
+              <p style="margin:0;font-size:11px;color:#6b6b6b;line-height:1.7">
                 &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
