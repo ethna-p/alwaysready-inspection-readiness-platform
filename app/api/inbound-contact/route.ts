@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
       external_email: email,
       external_name:  fullName,
     })
-    .select('id, reference')
+    .select('id')
     .single()
 
   if (ticketError || !newTicket) {
@@ -257,15 +257,9 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Send auto-responder ───────────────────────────────────────────────────
-  // Include the ticket reference in the subject so that if the customer
-  // replies to this email, the inbound-email webhook can thread their reply
-  // onto the correct ticket rather than creating a new one.
-  const autoResponderSubject = newTicket?.reference
-    ? `We've received your message [${newTicket.reference}]`
-    : "We've received your message"
   await sendEmail({
     to: email,
-    subject: autoResponderSubject,
+    subject: "We've received your message",
     type: 'transactional',
     bodyHtml: `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${displayName},</p>
