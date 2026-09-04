@@ -105,7 +105,7 @@ export async function withAuthUser<T>(
   await client.query('BEGIN')
   // Inject JWT claims — this is how Supabase's auth.uid() reads the current user
   await client.query(`SELECT set_config('request.jwt.claims', $1, true)`, [
-    JSON.stringify({ sub: authUserId, role: 'authenticated', iss: 'supabase-demo' }),
+    JSON.stringify({ sub: authUserId, role: 'authenticated', iss: 'supabase-demo', aal: 'aal2' }),
   ])
   // Activate RLS by switching to the authenticated role
   await client.query('SET LOCAL ROLE authenticated')
