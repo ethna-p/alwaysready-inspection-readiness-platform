@@ -26,7 +26,7 @@ export function buildHtml(bodyInner: string): string {
     ${bodyInner}
     <p style="margin:32px 0 0">
       <a href="${PLATFORM_URL}/dashboard"
-         style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+         style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
         Go to your dashboard &rarr;
       </a>
     </p>

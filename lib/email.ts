@@ -52,7 +52,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
   const unsubscribeFooter = unsubscribeUrl
     ? `<p style="margin:12px 0 0;font-size:12px;color:rgba(255,255,255,0.6)">
          ${note}
-         <a href="${unsubscribeUrl}" style="color:rgba(255,255,255,0.9);text-decoration:underline">Unsubscribe</a> from non-essential emails.
+         <a href="${unsubscribeUrl}" style="color:#ffffff;text-decoration:underline">Unsubscribe</a> from non-essential emails.
        </p>`
     : ''
 
@@ -88,7 +88,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
 
           <!-- Body -->
           <tr>
-            <td style="padding:40px 40px 0;color:#1a1a1a;font-size:15px;line-height:1.7">
+            <td style="padding:40px 40px 0;color:#111111;font-size:16px;line-height:1.7">
               ${bodyHtml}
             </td>
           </tr>
@@ -99,19 +99,19 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td style="padding-bottom:12px;border-bottom:2px solid #014D4E">
-                    <p style="margin:0 0 2px;font-size:15px;font-weight:700;color:#1a1a1a">Ethna Parker PhD</p>
-                    <p style="margin:0;font-size:13px;color:#555555">Founder - AlwaysReady</p>
+                    <p style="margin:0 0 2px;font-size:16px;font-weight:700;color:#111111">Ethna Parker PhD</p>
+                    <p style="margin:0;font-size:14px;color:#333333">Founder - AlwaysReady</p>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-top:12px;padding-left:12px;border-left:3px solid #ffd700">
-                    <p style="margin:0 0 4px;font-size:13px">
+                    <p style="margin:0 0 4px;font-size:14px">
                       <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:underline">support@alwaysready.uk</a>
                     </p>
-                    <p style="margin:0 0 4px;font-size:13px">
+                    <p style="margin:0 0 4px;font-size:14px">
                       <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:underline">www.alwaysready.uk</a>
                     </p>
-                    <p style="margin:0;font-size:13px;color:#555555">82A James Carter Road, Mildenhall, IP28 7DE</p>
+                    <p style="margin:0;font-size:14px;color:#333333">82A James Carter Road, Mildenhall, IP28 7DE</p>
                   </td>
                 </tr>
               </table>
@@ -182,7 +182,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                   </td>
                 </tr>
               </table>
-              <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);line-height:1.7">
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.85);line-height:1.7">
                 &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>

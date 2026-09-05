@@ -66,27 +66,27 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Welcome to AlwaysReady',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Welcome to AlwaysReady — your 14-day trial is live and your account is ready to go.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The best first step is usually your KLOE tracker. Adding your current compliance status
         to a handful of KLOEs — even rough ratings at this stage — will give you an immediate
         picture of where your service stands. It takes about ten minutes and makes the rest of
         the platform click into place.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Over the next couple of weeks we'll send a few short emails with things worth exploring.
         Nothing demanding — just nudges to help you get the most out of your trial.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/kloes"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Go to your KLOE tracker &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         If anything isn't working the way you expected, just reply — we're glad to help.
       </p>
     `,
@@ -97,11 +97,11 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Three things worth trying',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Now you've had a couple of days to settle in, a few things worth trying.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The Daily Report is a good place to start each morning — it shows which KLOEs need
         attention and which are looking strong, all in one view. The Inspection Pack is worth
         downloading too: one click and you have a printable summary of your compliance position
@@ -110,11 +110,11 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Go to your dashboard &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         Which of those three have you tried? Hit reply — we're curious.
       </p>
     `,
@@ -125,27 +125,27 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'How are you getting on?',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Five days in — how's it going?
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         One thing that's worth doing before the halfway point: invite a colleague. AlwaysReady
         works best when responsibility is shared. You can add team members under Account → Team,
         assign them specific KLOEs to manage, and they'll get their own login. Evidence tends to
         get added consistently when it's someone's job, not everyone's afterthought.
       </p>
-      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#111111">
         If you're managing everything yourself for now, that's fine too — but even adding one
         other person usually changes how the platform feels.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/account?tab=team"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Invite a team member &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         If there's anything you're stuck on, just reply. We're a small team and we read every message.
       </p>
     `,
@@ -183,7 +183,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
                            width:20px;height:20px;border-radius:50%;border:2px solid #014D4E"></span>
             </td>
             <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
-              <span style="font-size:15px;font-weight:600;color:#1a1a1a">${label}</span><br>
+              <span style="font-size:16px;font-weight:600;color:#1a1a1a">${label}</span><br>
               <span style="font-size:13px;color:#6b7280;line-height:1.5">${detail} —
                 <a href="${href}" style="color:#014D4E;font-weight:600">Go there now →</a>
               </span>
@@ -198,11 +198,11 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
           : `You've already made a start — well done. Here's where things stand and what's still worth exploring before your trial ends.`
 
       return `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+        <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
           Halfway through — seven days down, seven to go.
         </p>
-        <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#1a1a1a">${introText}</p>
+        <p style="margin:0 0 20px;font-size:16px;line-height:1.7;color:#111111">${introText}</p>
         <table style="width:100%;border-collapse:collapse;margin:0 0 28px">
           ${row(w.hasKloeRating,  'Rate your KLOEs',           'Open any KLOE and set your current compliance status',            `${PLATFORM_URL}/dashboard/kloes`)}
           ${row(w.hasEvidence,    'Upload your first evidence', 'Attach a policy, audit, or certificate to a KLOE',               `${PLATFORM_URL}/dashboard/kloes`)}
@@ -211,11 +211,11 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         </table>
         <p style="margin:0 0 32px">
           <a href="${PLATFORM_URL}/dashboard"
-             style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+             style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
             Go to your dashboard &rarr;
           </a>
         </p>
-        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
           Drop us a message through the <strong>Support</strong> tab whenever you need us.
         </p>
       `
@@ -227,27 +227,27 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Five days left — things worth finding before you go',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Five days left — a few things that are easy to miss but worth finding before your trial ends.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The Audit Trail logs every change made to a KLOE — who updated it, when, and what changed.
         It's useful to know about before an inspection. The Trend Report shows how your readiness
         score has moved over time. And if you haven't looked at the HR module yet, it keeps DBS
         checks, training records, and supervision logs all in one place — accessible whenever you
         need them.
       </p>
-      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#111111">
         None of these take long to explore. Log in and have a look around.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Explore the platform &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         Questions about anything? Just reply.
       </p>
     `,
@@ -258,8 +258,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your AlwaysReady trial ends in 3 days',
     bodyHtml: (firstName, expiryDate, price) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Your trial ends in <strong>3 days</strong>, on ${expiryDate}. Before you decide,
         here are a few things you might not have had time to explore — each one is included
         in your subscription.
@@ -270,10 +270,10 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         style="width:100%;margin:0 0 12px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
         <tr>
           <td style="padding:16px 20px">
-            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+            <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#014D4E">
               Mock Inspection
             </p>
-            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
               Walk through every KLOE and rate your evidence as Outstanding, Good, Requires
               Improvement, or Inadequate. The platform generates a mock inspection report
               showing a self-assessed rating for each of the five CQC key questions — so you
@@ -292,10 +292,10 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         style="width:100%;margin:0 0 12px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
         <tr>
           <td style="padding:16px 20px">
-            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+            <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#014D4E">
               Evidence Pack
             </p>
-            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
               One click generates a printable PDF summary of your full compliance position —
               RAG status, review dates, priority ratings, and evidence location notes for every
               KLOE. It is designed to be handed to an inspector or presented at a board meeting,
@@ -314,10 +314,10 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         style="width:100%;margin:0 0 12px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
         <tr>
           <td style="padding:16px 20px">
-            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+            <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#014D4E">
               HR Records
             </p>
-            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
               Track DBS checks, supervision sessions, appraisals, mandatory training, and
               holiday entitlement for every member of staff — all in one place. The HR
               dashboard shows you which staff members are overdue or due soon at a glance,
@@ -336,10 +336,10 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         style="width:100%;margin:0 0 28px;border:1px solid #e5e5e0;border-radius:8px;overflow:hidden">
         <tr>
           <td style="padding:16px 20px">
-            <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#014D4E">
+            <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#014D4E">
               Automatic reminders
             </p>
-            <p style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
               Set a review frequency for each KLOE — monthly, quarterly, annually, or a
               custom interval — and AlwaysReady handles the rest. The platform emails the
               relevant team member when a review is due soon or overdue, so nothing slips
@@ -353,18 +353,18 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         </tr>
       </table>
 
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         All of this — plus everything you have already built during your trial — continues
         without interruption when you subscribe for <strong>${price}/month</strong>.
         Your KLOEs, evidence, HR records, and team settings stay exactly as they are.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/upgrade"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Subscribe now &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         Questions before you decide? Just reply.
       </p>
     `,
@@ -375,27 +375,27 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your trial ends tomorrow',
     bodyHtml: (firstName, expiryDate, price) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Your AlwaysReady trial ends <strong>tomorrow</strong>, on ${expiryDate}.
       </p>
       <div style="margin:0 0 16px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
-        <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <p style="margin:0 0 8px;font-size:16px;line-height:1.7;color:#111111">
           <strong>If you'd like to continue:</strong> subscribe now for ${price}/month and your
           account continues without interruption. All your data and settings remain exactly as they are.
         </p>
-        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
           <strong>If you'd like to stop:</strong> simply do nothing. Your account will be
           suspended when the trial ends and you will not be charged.
         </p>
       </div>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/upgrade"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Subscribe and continue &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         Thank you for taking the time to try AlwaysReady. Whatever you decide, we hope it's
         been a useful experience.
       </p>
@@ -413,36 +413,36 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 1,
     subject:  'Welcome to AlwaysReady — here\'s how to get started',
     bodyHtml: (firstName, orgName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         You've been added to <strong>${orgName}</strong>'s AlwaysReady account.
         AlwaysReady is an inspection readiness platform that helps adult social care providers
         prepare for a CQC inspection — and you're now part of the team helping to build
         your service's readiness.
       </p>
-      <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 8px;font-size:16px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         As a team member, you may be assigned specific KLOEs (Key Lines of Enquiry) to manage.
         These are the areas the CQC inspects against — Safe, Effective, Caring, Responsive,
         and Well-led. When you're assigned a KLOE, you'll receive an email notification with a
         direct link. From there you can:
       </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:16px;line-height:1.9;color:#111111">
         <li>Record your service's current compliance status for that area</li>
         <li>Upload supporting evidence — policies, audits, certificates, and more</li>
         <li>Add notes that will be useful during an inspection</li>
       </ul>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Log in to your account to see any KLOEs already assigned to you. If none have been
         assigned yet, your account admin will be in touch shortly.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/kloes"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Log in to AlwaysReady &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
         the <strong>Support</strong> tab to reach our team directly.
       </p>
@@ -453,30 +453,30 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 7,
     subject:  'A quick check-in on your KLOEs',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         You've been on AlwaysReady for a week. We wanted to check in and make sure
         you've had a chance to get started.
       </p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         If you have KLOEs assigned to you, now is a good time to log in and:
       </p>
-      <ul style="margin:0 0 24px;padding-left:24px;font-size:15px;line-height:1.9;color:#1a1a1a">
+      <ul style="margin:0 0 24px;padding-left:24px;font-size:16px;line-height:1.9;color:#111111">
         <li>Set a compliance rating for each KLOE you're responsible for</li>
         <li>Upload at least one piece of supporting evidence per KLOE</li>
         <li>Add any notes that would be useful to have on record during an inspection</li>
       </ul>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The more evidence your team adds, the stronger your service's inspection readiness
         position will be. Every contribution counts.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/kloes"
-           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none">
+           style="display:inline-block;background-color:#014D4E;color:#ffffff;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;text-decoration:none">
           Go to your KLOEs &rarr;
         </a>
       </p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         If you're not sure what's expected of you, just reply to this email — we're happy to help.
         The <strong>Help</strong> tab also covers the most common questions by role.
       </p>
