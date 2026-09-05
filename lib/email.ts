@@ -166,17 +166,17 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 12px auto">
                 <tr>
                   <td style="padding:0 6px">
-                    <a href="https://www.facebook.com/alwaysreadyuk" style="text-decoration:none">
+                    <a href="https://www.facebook.com/profile.php?id=61592724841446" style="text-decoration:none">
                       <img src="https://portal.alwaysready.uk/icons/facebook.png" width="36" height="36" alt="Facebook" style="display:block;border:0">
                     </a>
                   </td>
                   <td style="padding:0 6px">
-                    <a href="https://www.instagram.com/alwaysreadyuk" style="text-decoration:none">
+                    <a href="https://www.instagram.com/alwaysready_platform/" style="text-decoration:none">
                       <img src="https://portal.alwaysready.uk/icons/instagram.png" width="36" height="36" alt="Instagram" style="display:block;border:0">
                     </a>
                   </td>
                   <td style="padding:0 6px">
-                    <a href="https://www.linkedin.com/company/alwaysreadyuk" style="text-decoration:none">
+                    <a href="https://www.linkedin.com/company/parker-digital-print-services/" style="text-decoration:none">
                       <img src="https://portal.alwaysready.uk/icons/linkedin.png" width="36" height="36" alt="LinkedIn" style="display:block;border:0">
                     </a>
                   </td>
