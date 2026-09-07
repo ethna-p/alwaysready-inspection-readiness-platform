@@ -21,11 +21,10 @@ import { NextResponse }                  from 'next/server'
 import { createAdminClient }             from '@/lib/supabase/admin'
 import { sendEmail }                     from '@/lib/email'
 import { getWaitlistNurtureEmail }       from '@/lib/waitlist-nurture'
+import { verifyCronSecret } from '@/lib/utils/cron'
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  const secret     = process.env.CRON_SECRET
-  if (!secret || authHeader !== `Bearer ${secret}`) {
+  if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
 

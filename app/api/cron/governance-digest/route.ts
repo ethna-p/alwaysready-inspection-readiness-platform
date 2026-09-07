@@ -20,6 +20,7 @@ import 'server-only'
 import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
+import { verifyCronSecret } from '@/lib/utils/cron'
 import { PLATFORM_URL }     from '@/lib/config'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -158,9 +159,7 @@ function digestHtml({
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  const secret     = process.env.CRON_SECRET
-  if (!secret || authHeader !== `Bearer ${secret}`) {
+  if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
 

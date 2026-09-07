@@ -59,3 +59,21 @@ export async function requireRole(
   if (!allowedRoles.includes(profile.role as 'admin' | 'user' | 'viewer')) return null
   return profile
 }
+
+/**
+ * Asserts that a resource belongs to the caller's organisation.
+ * Throws a plain Error (caught by the calling server action and returned
+ * as an error response) if the IDs do not match.
+ *
+ * Use this anywhere a route or server action accepts an organisationId
+ * parameter from the client — it prevents cross-tenant data access even
+ * if a valid session exists.
+ *
+ * @param profile        - The authenticated profile returned by requireUser() or requireAdmin().
+ * @param organisationId - The organisation ID associated with the resource being accessed.
+ */
+export function assertOwnOrg(profile: AuthedProfile, organisationId: string): void {
+  if (profile.organisation_id !== organisationId) {
+    throw new Error('Access denied: resource belongs to a different organisation.')
+  }
+}

@@ -14,65 +14,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { fileTypeFromBuffer } from 'file-type'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAAL2Satisfied } from '@/lib/session'
+import { MAX_SIZE_BYTES, validateFileMime, scanWithCloudmersive } from '@/lib/utils/upload'
 
-const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
-
-// Allowed MIME types and their accepted magic-byte equivalents.
-// Legacy .doc and .xls are intentionally excluded — those formats support
-// VBA macros and represent a meaningfully higher malware risk than the
-// modern Open XML equivalents (.docx, .xlsx).
-const ALLOWED_MIME_TYPES = new Set([
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'image/jpeg',
-  'image/png',
-])
-
-// file-type returns these for Office Open XML formats
-const OOXML_MIME = 'application/zip' // .docx/.xlsx are ZIP-based — handled below
-
-async function scanWithCloudmersive(buffer: Buffer, fileName: string): Promise<{ clean: boolean; message: string }> {
-  const apiKey = process.env.CLOUDMERSIVE_API_KEY
-  if (!apiKey) {
-    // No API key means scanning is not configured — fail closed.
-    // Uploads must not bypass the malware check due to a misconfiguration.
-    console.error('[upload-evidence] CLOUDMERSIVE_API_KEY not set — rejecting upload (fail closed)')
-    return { clean: false, message: 'File scanning is unavailable. Please try again later or contact support.' }
-  }
-
-  try {
-    const form = new FormData()
-    form.append('inputFile', new Blob([new Uint8Array(buffer)]), fileName)
-
-    const response = await fetch('https://api.cloudmersive.com/virus/scan/file', {
-      method: 'POST',
-      headers: { Apikey: apiKey },
-      body: form,
-    })
-
-    if (!response.ok) {
-      // Scan service returned an error — fail closed rather than allow.
-      console.error('[upload-evidence] Cloudmersive returned', response.status, '— rejecting upload (fail closed)')
-      return { clean: false, message: 'File scanning is temporarily unavailable. Please try again later.' }
-    }
-
-    const result = await response.json() as { CleanResult: boolean; FoundViruses: unknown[] | null }
-    if (!result.CleanResult) {
-      return { clean: false, message: 'File failed virus scan and was rejected.' }
-    }
-
-    return { clean: true, message: 'Clean' }
-  } catch (err) {
-    // Network error reaching the scan service — fail closed.
-    console.error('[upload-evidence] Cloudmersive scan failed:', err, '— rejecting upload (fail closed)')
-    return { clean: false, message: 'File scanning is temporarily unavailable. Please try again later.' }
-  }
-}
 
 export async function POST(request: NextRequest) {
   // ── 1. Authenticate ───────────────────────────────────────────────────────
@@ -118,31 +64,16 @@ export async function POST(request: NextRequest) {
 
   // ── 4. MIME validation via magic bytes ────────────────────────────────────
   const buffer = Buffer.from(await file.arrayBuffer())
-  const detected = await fileTypeFromBuffer(buffer)
-
-  // Determine the actual MIME type
-  let actualMime = detected?.mime ?? ''
-
-  // Office Open XML (.docx, .xlsx) are ZIP files — distinguish by extension
-  if (actualMime === OOXML_MIME) {
-    const ext = file.name.split('.').pop()?.toLowerCase()
-    if (ext === 'docx') actualMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    else if (ext === 'xlsx') actualMime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  const mimeResult = await validateFileMime(buffer, file.name)
+  if (!mimeResult.ok) {
+    return NextResponse.json({ error: mimeResult.error }, { status: 400 })
   }
-
-  if (!ALLOWED_MIME_TYPES.has(actualMime)) {
-    console.warn(`[upload-evidence] Rejected file: reported=${file.type} detected=${detected?.mime} resolved=${actualMime}`)
-    return NextResponse.json(
-      { error: 'File type not accepted. Please upload a PDF, Word (.docx), Excel (.xlsx), JPG, or PNG.' },
-      { status: 400 }
-    )
-  }
-
+  const actualMime = mimeResult.actualMime
   // ── 5. Virus scan ─────────────────────────────────────────────────────────
-  const scan = await scanWithCloudmersive(buffer, file.name)
+  const scan = await scanWithCloudmersive(buffer, file.name, '[upload-evidence]')
   if (!scan.clean) {
     console.warn(`[upload-evidence] Virus detected in upload by user ${user.id}: ${file.name}`)
-    return NextResponse.json({ error: scan.message }, { status: 400 })
+    return NextResponse.json({ error: (!scan.clean && scan.message) || 'File rejected.' }, { status: 400 })
   }
 
   // ── 6. Per-org quota check ────────────────────────────────────────────────
@@ -189,6 +120,6 @@ export async function POST(request: NextRequest) {
     fileName: file.name,
     fileSize: file.size,
     mimeType: actualMime,
-    scanStatus: scan.message === 'Clean' ? 'clean' : 'skipped',
+    scanStatus: 'clean',
   })
 }

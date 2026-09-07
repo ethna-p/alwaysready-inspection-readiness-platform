@@ -24,6 +24,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
 import { getFirstName }  from '@/lib/utils/name'
 import { PLATFORM_URL } from '@/lib/config'
+import { verifyCronSecret } from '@/lib/utils/cron'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 /**
@@ -63,9 +64,7 @@ async function deleteStoragePrefix(
 }
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  const secret     = process.env.CRON_SECRET
-  if (!secret || authHeader !== `Bearer ${secret}`) {
+  if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
 

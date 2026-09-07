@@ -24,6 +24,7 @@ import { sendEmail }         from '@/lib/email'
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 import { PLATFORM_URL } from '@/lib/config'
+import { verifyCronSecret } from '@/lib/utils/cron'
 
 const DUE_SOON_DAYS = 7
 
@@ -164,9 +165,7 @@ function hrOverdueHtml(staffName: string, fieldLabel: string, dueDate: string): 
 
 export async function GET(request: Request) {
   // Verify cron secret
-  const authHeader = request.headers.get('authorization')
-  const secret     = process.env.CRON_SECRET
-  if (!secret || authHeader !== `Bearer ${secret}`) {
+  if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
 

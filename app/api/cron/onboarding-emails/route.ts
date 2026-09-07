@@ -38,6 +38,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { verifyCronSecret } from '@/lib/utils/cron'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getFirstName } from '@/lib/utils/name'
@@ -46,10 +47,7 @@ import { ONBOARDING_EMAILS, buildHtml } from '@/lib/onboarding-emails'
 // ── Route handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET
-  const authHeader = req.headers.get('authorization')
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!verifyCronSecret(req)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
 
