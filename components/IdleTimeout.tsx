@@ -24,7 +24,7 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const WARN_BEFORE_MS = 1 * 60 * 1000  // always warn 1 minute before logout
@@ -46,7 +46,8 @@ function getIdleTimeoutMs(storageKey?: string): number {
 const ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'] as const
 
 export default function IdleTimeout({ storageKey }: { storageKey?: string } = {}) {
-  const router = useRouter()
+  const router   = useRouter()
+  const pathname = usePathname()
   const [showWarning, setShowWarning] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(60)
 
@@ -112,6 +113,9 @@ export default function IdleTimeout({ storageKey }: { storageKey?: string } = {}
   // Register activity listeners once — uses ref to check showWarning so
   // the effect doesn't re-run (and clear timers) when warning state changes.
   useEffect(() => {
+    // Don't run on MFA setup — user must complete setup before idle timeout applies.
+    if (pathname.startsWith('/dashboard/account/mfa')) return
+
     startTimers()
 
     const handleActivity = () => {
