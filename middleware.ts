@@ -225,6 +225,10 @@ async function middlewareFn(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Pass the pathname to server components so layouts can detect
+  // which route they are wrapping without needing additional DB queries.
+  supabaseResponse.headers.set('x-pathname', pathname)
+
   return supabaseResponse
 }
 

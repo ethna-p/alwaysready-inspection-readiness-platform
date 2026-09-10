@@ -4,6 +4,7 @@
  * Server component — verifies the user session server-side.
  */
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
@@ -18,6 +19,16 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  // MFA setup renders its own standalone UI and needs no dashboard chrome.
+  // More importantly, get_user_org_id() returns NULL for aal1 sessions (by design,
+  // per security migration h2), so the profile query below would return nothing
+  // for a user who hasn't set up MFA yet — causing a redirect loop. Bail early.
+  const headersList = await headers()
+  const pathname = headersList.get('x-pathname') ?? ''
+  if (pathname.startsWith('/dashboard/account/mfa')) {
+    return <>{children}</>
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
