@@ -186,6 +186,7 @@ async function middlewareFn(request: NextRequest) {
         if (profile?.role === 'admin' || profile?.role === 'user') {
           const url = request.nextUrl.clone()
           url.pathname = '/dashboard/account/mfa/setup'
+          url.searchParams.set('required', '1')
           return NextResponse.redirect(url)
         }
       }

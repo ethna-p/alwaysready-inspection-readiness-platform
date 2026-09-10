@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { requestPasswordReset } from './actions'
@@ -28,7 +28,6 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
-  const router       = useRouter()
   const searchParams = useSearchParams()
   const supabase     = createClient()
 
@@ -72,16 +71,10 @@ function LoginForm() {
         .eq('id', user.id)
         .single()
 
-      if (profile?.role === 'user') {
-        router.push('/dashboard/my-kloes')
-      } else {
-        router.push('/dashboard')
-      }
+      window.location.href = profile?.role === 'user' ? '/dashboard/my-kloes' : '/dashboard'
     } else {
-      router.push('/dashboard')
+      window.location.href = '/dashboard'
     }
-
-    router.refresh()
   }
 
   async function handleResetRequest(e: React.FormEvent) {
