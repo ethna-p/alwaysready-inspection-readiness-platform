@@ -67,9 +67,15 @@ function checkLoginRateLimit(ip: string): boolean {
 // ── Middleware ─────────────────────────────────────────────────────────────
 
 async function middlewareFn(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
-
   const { pathname } = request.nextUrl
+
+  // Forward the pathname to server components as a request header.
+  // Server components read request headers (not response headers) via headers(),
+  // so this must be set here, before NextResponse.next() is called.
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', pathname)
+
+  let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } })
 
   // ── Rate limit: login POST ────────────────────────────────────────────────
   if (pathname === '/login' && request.method === 'POST') {
@@ -100,7 +106,7 @@ async function middlewareFn(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
-          supabaseResponse = NextResponse.next({ request })
+          supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } })
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -224,10 +230,6 @@ async function middlewareFn(request: NextRequest) {
     url.pathname = user.email === superadminEmail ? '/superadmin' : '/dashboard'
     return NextResponse.redirect(url)
   }
-
-  // Pass the pathname to server components so layouts can detect
-  // which route they are wrapping without needing additional DB queries.
-  supabaseResponse.headers.set('x-pathname', pathname)
 
   return supabaseResponse
 }
