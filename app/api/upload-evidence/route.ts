@@ -57,6 +57,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing file or KLOE ID.' }, { status: 400 })
   }
 
+  // Validate kloItemId is a proper UUID to prevent path traversal in storage.
+  // kloItemId isn't org-scoped data (klo_items is a shared reference catalog,
+  // same for every org) so this is defence-in-depth/consistency with the
+  // sibling upload-i-statement-evidence route, not a tenant-isolation fix —
+  // the storage path's org segment is always server-derived regardless.
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!UUID_REGEX.test(kloItemId)) {
+    return NextResponse.json({ error: 'Invalid KLOE ID.' }, { status: 400 })
+  }
+
   // ── 3. Size check ─────────────────────────────────────────────────────────
   if (file.size > MAX_SIZE_BYTES) {
     return NextResponse.json({ error: 'File is too large. Maximum size is 10 MB.' }, { status: 400 })
