@@ -6,19 +6,13 @@ import { sendEmail } from '@/lib/email'
 import { fetchCqcLocation } from '@/lib/cqc'
 import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
+import { escapeHtml } from '@/lib/utils/escape'
+import { verifyTurnstile } from '@/lib/utils/turnstile'
 
 // 3 trial signups per IP per hour — generous for legitimate use,
 // prevents automated provisioning of many orgs from one address.
 const trialSignupLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 3 })
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
 
 const ACTIVE_SERVICE_TYPES = [
   'Residential Care Home',
@@ -58,24 +52,9 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   const { serviceName, cqcLocationId, serviceType, managerName, managerEmail, charityNumber, marketingConsent, termsAccepted, turnstileToken } = input
 
   // ── Turnstile verification ───────────────────────────────────────────────────
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
-  if (turnstileSecret) {
-    if (!turnstileToken) {
-      return { success: false, error: 'Security check required. Please complete the verification and try again.' }
-    }
-    try {
-      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${encodeURIComponent(turnstileSecret)}&response=${encodeURIComponent(turnstileToken)}`,
-      })
-      const verifyData = await verifyRes.json() as { success: boolean }
-      if (!verifyData.success) {
-        return { success: false, error: 'Security check failed. Please refresh the page and try again.' }
-      }
-    } catch {
-      return { success: false, error: 'Security check unavailable. Please try again in a moment.' }
-    }
+  const tsResult = await verifyTurnstile(turnstileToken, '[trial]')
+  if (!tsResult.ok) {
+    return { success: false, error: tsResult.error }
   }
 
   // ── Rate limit — per IP, to prevent mass trial provisioning ────────────────
