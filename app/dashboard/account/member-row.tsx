@@ -107,7 +107,9 @@ export default function MemberRow({ member, isSelf }: Props) {
                 <p className="font-mono text-sm text-brand font-semibold select-all">
                   {resetState.credentials.password}
                 </p>
-                <p className="text-xs text-ink-dim mt-1">Give this to {displayName} directly.</p>
+                <p className="text-xs text-ink-dim mt-1">
+                  Give this to {displayName} directly. They&apos;ll be required to set their own password on next login.
+                </p>
               </div>
             )}
             {resetState && !resetState.success && (

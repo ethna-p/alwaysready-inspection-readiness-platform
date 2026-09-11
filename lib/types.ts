@@ -256,6 +256,7 @@ export type Database = {
           personal_email: string | null
           mobile_number: string | null
           marketing_opt_out: boolean
+          must_change_password: boolean
           created_at: string
         }
         Insert: {
@@ -272,6 +273,7 @@ export type Database = {
           personal_email?: string | null
           mobile_number?: string | null
           marketing_opt_out?: boolean
+          must_change_password?: boolean
           created_at?: string
         }
         Update: {
@@ -288,6 +290,7 @@ export type Database = {
           personal_email?: string | null
           mobile_number?: string | null
           marketing_opt_out?: boolean
+          must_change_password?: boolean
           created_at?: string
         }
         Relationships: [

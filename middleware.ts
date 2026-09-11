@@ -149,6 +149,7 @@ async function middlewareFn(request: NextRequest) {
   const isMfaVerifyPage        = pathname === '/login/mfa'
   const isMfaSetupPage         = pathname.startsWith('/dashboard/account/mfa')
   const isSuperadminAccountPage = pathname === '/superadmin/account'
+  const isChangePasswordPage   = pathname === '/dashboard/account/change-password'
 
   if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/superadmin'))) {
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
@@ -203,8 +204,13 @@ async function middlewareFn(request: NextRequest) {
     }
   }
 
-  // ── First-login onboarding redirect ───────────────────────────────────
-  // If the user hasn't completed onboarding, send them to /dashboard/welcome.
+  // ── Forced password change + first-login onboarding redirect ───────────
+  // must_change_password: an admin reset this user's password for them
+  // (resetTeamMemberPassword) — they're still on the admin-generated one
+  // until they set their own. Checked in the same query as
+  // onboarding_complete rather than as a separate round-trip; password
+  // change takes priority when both are true.
+  // onboarding_complete === false: send them to /dashboard/welcome.
   // Skip if they're already on /dashboard/welcome (avoid loop).
   // Also skip for superadmin — they have no profile row.
   if (
@@ -212,13 +218,20 @@ async function middlewareFn(request: NextRequest) {
     user.email !== superadminEmail &&
     pathname.startsWith('/dashboard') &&
     pathname !== '/dashboard/welcome' &&
-    !isMfaSetupPage
+    !isMfaSetupPage &&
+    !isChangePasswordPage
   ) {
     const { data: profile } = await supabase
       .from('users')
-      .select('onboarding_complete')
+      .select('onboarding_complete, must_change_password')
       .eq('id', user.id)
       .single()
+
+    if (profile?.must_change_password) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard/account/change-password'
+      return NextResponse.redirect(url)
+    }
 
     if (profile && profile.onboarding_complete === false) {
       const url = request.nextUrl.clone()

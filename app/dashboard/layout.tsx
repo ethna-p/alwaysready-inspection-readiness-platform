@@ -23,9 +23,17 @@ export default async function DashboardLayout({
   // More importantly, get_user_org_id() returns NULL for aal1 sessions (by design,
   // per security migration h2), so the profile query below would return nothing
   // for a user who hasn't set up MFA yet — causing a redirect loop. Bail early.
+  //
+  // Forced password change is the same standalone treatment for a different
+  // reason: middleware redirects here whenever must_change_password is true,
+  // and the point is to block the dashboard chrome (nav, etc.) until that's
+  // resolved, not to route around an RLS gap.
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') ?? ''
-  if (pathname.startsWith('/dashboard/account/mfa')) {
+  if (
+    pathname.startsWith('/dashboard/account/mfa') ||
+    pathname === '/dashboard/account/change-password'
+  ) {
     return <>{children}</>
   }
 
