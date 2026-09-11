@@ -20,6 +20,7 @@ import 'server-only'
 import { NextResponse }    from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
+import { escapeHtml }        from '@/lib/utils/escape'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -105,7 +106,13 @@ function kloeOverdueHtml(kloeTitle: string, dueDate: string): string {
   `
 }
 
-function hrDueSoonHtml(staffName: string, fieldLabel: string, dueDate: string, daysLeft: number): string {
+function hrDueSoonHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: string, daysLeft: number): string {
+  // staffName is a team member's name and fieldLabel can be an
+  // admin-defined training type name — both user-supplied, shown to a
+  // different person (the recipient admin), not self-directed like most
+  // other email templates in this codebase.
+  const staffName  = escapeHtml(staffNameRaw)
+  const fieldLabel = escapeHtml(fieldLabelRaw)
   return `
     <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
@@ -131,7 +138,9 @@ function hrDueSoonHtml(staffName: string, fieldLabel: string, dueDate: string, d
   `
 }
 
-function hrOverdueHtml(staffName: string, fieldLabel: string, dueDate: string): string {
+function hrOverdueHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: string): string {
+  const staffName  = escapeHtml(staffNameRaw)
+  const fieldLabel = escapeHtml(fieldLabelRaw)
   return `
     <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">

@@ -22,6 +22,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { PLATFORM_URL }     from '@/lib/config'
+import { escapeHtml }       from '@/lib/utils/escape'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -40,7 +41,7 @@ function ragBadgeHtml(label: string, colour: string): string {
 }
 
 function digestHtml({
-  orgName,
+  orgName: orgNameRaw,
   readinessPct,
   totalKlos,
   compliantKlos,
@@ -60,6 +61,7 @@ function digestHtml({
   overdueActions: number
   reportDate: string
 }): string {
+  const orgName = escapeHtml(orgNameRaw)
   const hasAlerts = overdueUnassigned > 0 || neverStarted > 0 || openIncidents > 0 || overdueActions > 0
 
   const rows = [

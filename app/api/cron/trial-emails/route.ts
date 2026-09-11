@@ -280,8 +280,8 @@ export async function GET(request: Request) {
       .eq('id', usr.organisation_id)
       .single()
 
-    const firstName  = getFirstName(usr.full_name)
-    const orgName    = org?.name ?? 'your organisation'
+    const firstName  = escapeHtml(getFirstName(usr.full_name))
+    const orgName    = escapeHtml(org?.name ?? 'your organisation')
     const dueDateKey = today.toISOString().split('T')[0]
 
     // Claim atomically — insert first, send only if the claim succeeds
