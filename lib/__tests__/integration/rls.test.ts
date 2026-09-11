@@ -23,6 +23,7 @@ let client: Client
 let orgAId: string
 let orgBId: string
 let userAId: string
+let userA2Id: string
 let userBId: string
 let kloItemId: string
 
@@ -40,10 +41,13 @@ beforeAll(async () => {
   orgAId = await seedOrg(client, { name: 'RLS Test — Org A' })
   orgBId = await seedOrg(client, { name: 'RLS Test — Org B' })
 
-  // Seed one admin user per org
+  // Seed one admin user per org, plus a second Org A user for same-org
+  // cross-user aal1 checks.
   const userA = await seedUser(client, { organisationId: orgAId, role: 'admin' })
+  const userA2 = await seedUser(client, { organisationId: orgAId, role: 'user' })
   const userB = await seedUser(client, { organisationId: orgBId, role: 'admin' })
   userAId = userA.authUserId
+  userA2Id = userA2.authUserId
   userBId = userB.authUserId
 
   // Seed one compliance_record_history row per org (trigger creates the current-state row)
@@ -222,5 +226,51 @@ describe('users RLS', () => {
       `SELECT full_name FROM public.users WHERE id = $1`, [userBId]
     )
     expect(rows[0].full_name).not.toBe('Hacked')
+  })
+
+  // ── aal1 self-read (regression coverage for 20260911000001) ──────────────
+  //
+  // get_user_org_id()/get_user_role() return NULL for admin/user roles at
+  // aal1 (migration 20260904000002_h2_enforce_aal2_in_rls_helpers.sql), which
+  // means the org-scoped policy above ("User A can read members of their own
+  // org") resolves to zero rows at aal1 — including the caller's own row.
+  // That previously broke middleware/layout profile lookups for every
+  // just-provisioned user before they'd had a chance to enrol MFA, causing a
+  // login redirect loop. users_select_own_row (20260911000001) fixed it with
+  // an additive "read your own row regardless of AAL" policy. These tests
+  // pin that fix and its boundary so a future change to either policy can't
+  // silently reintroduce the loop or widen it into a cross-user/cross-org leak.
+  it('An aal1 admin/user CAN read their own row', async () => {
+    const rows = await withAuthUser(client, userAId, async (c) => {
+      const { rows } = await c.query<{ id: string; organisation_id: string }>(
+        `SELECT id, organisation_id FROM public.users WHERE id = $1`,
+        [userAId]
+      )
+      return rows
+    }, 'aal1')
+    expect(rows).toHaveLength(1)
+    expect(rows[0].organisation_id).toBe(orgAId)
+  })
+
+  it('An aal1 admin/user CANNOT read a same-org colleague\'s row', async () => {
+    const rows = await withAuthUser(client, userAId, async (c) => {
+      const { rows } = await c.query<{ id: string }>(
+        `SELECT id FROM public.users WHERE id = $1`,
+        [userA2Id]
+      )
+      return rows
+    }, 'aal1')
+    expect(rows).toHaveLength(0)
+  })
+
+  it('An aal1 admin/user CANNOT read another org\'s member (even themselves-shaped queries)', async () => {
+    const rows = await withAuthUser(client, userAId, async (c) => {
+      const { rows } = await c.query<{ id: string }>(
+        `SELECT id FROM public.users WHERE organisation_id = $1`,
+        [orgBId]
+      )
+      return rows
+    }, 'aal1')
+    expect(rows).toHaveLength(0)
   })
 })

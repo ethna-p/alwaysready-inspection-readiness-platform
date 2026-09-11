@@ -96,16 +96,29 @@ export async function seedOrg(
  * the callback can read/write but the changes are never committed.
  * The superuser client temporarily sets role=authenticated and injects
  * JWT claims so that auth.uid() and get_user_org_id() work correctly.
+ *
+ * `aal` defaults to 'aal2' (a fully-verified MFA session) so existing
+ * callers are unaffected. Pass 'aal1' to simulate a session with no
+ * completed MFA challenge — e.g. a just-provisioned admin/user account
+ * that hasn't enrolled a factor yet, or has one but hasn't verified it
+ * this session. get_user_org_id()/get_user_role() intentionally return
+ * NULL for admin/user roles at aal1 (see migration
+ * 20260904000002_h2_enforce_aal2_in_rls_helpers.sql) — any policy that
+ * relies on those helpers should be tested at both levels, since an
+ * aal1 regression here previously caused a login redirect loop for
+ * every newly-provisioned user (see migration
+ * 20260911000001_users_select_own_row.sql) without any test catching it.
  */
 export async function withAuthUser<T>(
   client: Client,
   authUserId: string,
-  fn: (client: Client) => Promise<T>
+  fn: (client: Client) => Promise<T>,
+  aal: 'aal1' | 'aal2' = 'aal2'
 ): Promise<T> {
   await client.query('BEGIN')
   // Inject JWT claims — this is how Supabase's auth.uid() reads the current user
   await client.query(`SELECT set_config('request.jwt.claims', $1, true)`, [
-    JSON.stringify({ sub: authUserId, role: 'authenticated', iss: 'supabase-demo', aal: 'aal2' }),
+    JSON.stringify({ sub: authUserId, role: 'authenticated', iss: 'supabase-demo', aal }),
   ])
   // Activate RLS by switching to the authenticated role
   await client.query('SET LOCAL ROLE authenticated')
