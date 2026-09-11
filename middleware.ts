@@ -175,12 +175,16 @@ async function middlewareFn(request: NextRequest) {
 
       // 2b. Admin/user with no factor enrolled → force enrolment
       // (dashboard routes only — superadmin handled above)
+      // Deliberately NOT exempting /dashboard/welcome: that page renders inside
+      // the full dashboard layout (nav, org branding, trial banner) and captures
+      // onboarding/marketing consent, so it must not be reachable before MFA is
+      // enrolled. A brand-new user is sent to MFA setup first; onboarding
+      // ('/dashboard/welcome') follows once aal2 is satisfied.
       if (
         aal.nextLevel !== 'aal2' &&
         user.email !== superadminEmail &&
         pathname.startsWith('/dashboard') &&
-        !isMfaSetupPage &&
-        pathname !== '/dashboard/welcome'
+        !isMfaSetupPage
       ) {
         // Fetch role to check if admin
         const { data: profile } = await supabase
