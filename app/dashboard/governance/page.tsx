@@ -27,7 +27,7 @@ export default async function GovernancePage() {
   const nameById = new Map((teamRows ?? []).map(u => [u.id, u.full_name ?? u.email ?? 'Unknown']))
 
   // Fetch all meetings for this org
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: rows, error } = await supabase
     .from('governance_meetings')
     .select('*')

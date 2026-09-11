@@ -31,7 +31,7 @@ export async function GET() {
 
   // RLS handles the filter (system views + org views), but we order nicely:
   // system views first, then custom views newest-first
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data, error } = await supabase
     .from('saved_report_views')
     .select('id, org_id, name, config, is_system, created_by, created_at')
@@ -116,7 +116,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 })
 
   // RLS policy prevents deleting system views or other orgs' views
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { error } = await supabase
     .from('saved_report_views')
     .delete()

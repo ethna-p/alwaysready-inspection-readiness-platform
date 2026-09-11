@@ -19,7 +19,7 @@ export default async function FeedbackPage() {
   const supabase = await createClient()
   const orgId    = profile.organisation_id
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: rows, error } = await supabase
     .from('feedback_records')
     .select('*')

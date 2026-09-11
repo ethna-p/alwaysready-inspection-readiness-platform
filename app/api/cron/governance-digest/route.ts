@@ -186,7 +186,7 @@ export async function GET(request: Request) {
 
   for (const org of orgs) {
     // Check idempotency — one digest per org per week (keyed on Monday's date)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const { data: alreadySent } = await supabase
       .from('notification_log')
       .select('id')
@@ -242,7 +242,7 @@ export async function GET(request: Request) {
     }
 
     // ── Open incidents ────────────────────────────────────────────────────
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const { count: openIncidents } = await supabase
       .from('incidents')
       .select('id', { count: 'exact', head: true })
@@ -250,7 +250,7 @@ export async function GET(request: Request) {
       .in('status', ['open', 'under_review'])
 
     // ── Overdue action items ──────────────────────────────────────────────
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const { count: overdueActions } = await supabase
       .from('action_items')
       .select('id', { count: 'exact', head: true })
@@ -289,7 +289,7 @@ export async function GET(request: Request) {
     }
 
     // Log to prevent re-send this week
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     await supabase.from('notification_log').insert({
       organisation_id:   org.id,
       notification_type: 'weekly_digest',

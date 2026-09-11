@@ -53,7 +53,7 @@ export default async function PeoplesVoicePage() {
   )
 
   // ── Fetch evidence history ────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: historyRows } = await supabase
     .from('i_statement_evidence_history')
     .select('i_statement_id, confidence, evidence_summary, action_needed, recorded_by, recorded_at')

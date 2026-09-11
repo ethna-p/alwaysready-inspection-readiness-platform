@@ -63,7 +63,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     supabase.from('compliance_record_history')
       .select('klo_item_id, status, next_review_due, system_recorded_at')
       .order('system_recorded_at', { ascending: true }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     supabase.from('action_items')
       .select('klo_item_id, status, priority, due_date, mock_inspection_finding_id')
       .eq('organisation_id', orgId),
@@ -83,7 +83,7 @@ export default async function AnalyticsSectionServer({ orgId, records, kloItemId
     supabase.from('i_statements').select('id'),
     supabase.from('klo_items').select('id, key_question_id').in('id', kloItemIds),
     supabase.from('key_questions').select('id, name').order('name'),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     supabase.from('i_statement_actions').select('i_statement_id').eq('organisation_id', orgId),
     supabase.from('incidents')
       .select('incident_type, status, date_of_incident')

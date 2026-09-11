@@ -30,7 +30,7 @@ export default async function SiteHeader() {
   const hasUnread = (unreadCount ?? 0) > 0
 
   // Org logo — shown in header if the org has uploaded one
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: orgData } = await supabase
     .from('organisations')
     .select('logo_url')

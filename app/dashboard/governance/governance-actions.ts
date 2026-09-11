@@ -25,7 +25,7 @@ export async function createMeeting(formData: FormData): Promise<{ error?: strin
 
   if (!title || !meeting_date) return { error: 'Title and date are required.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase.from('governance_meetings').insert({
@@ -65,7 +65,7 @@ export async function updateMeeting(
 
   if (!title || !meeting_date) return { error: 'Title and date are required.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -85,7 +85,7 @@ export async function signOffMeeting(meetingId: string): Promise<{ error?: strin
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Only admins can sign off meetings.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -109,7 +109,7 @@ export async function deleteMeeting(meetingId: string): Promise<{ error?: string
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase

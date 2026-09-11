@@ -22,7 +22,7 @@ export default async function ReportsPage() {
   const orgId = profile.organisation_id
 
   // ── Org name + logo ──────────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: org } = await supabase
     .from('organisations')
     .select('name, logo_url')
@@ -103,7 +103,7 @@ export default async function ReportsPage() {
   })
 
   // ── Action items ──────────────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: actionRows } = await supabase
     .from('action_items')
     .select(`

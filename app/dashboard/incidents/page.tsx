@@ -26,7 +26,7 @@ export default async function IncidentsPage() {
   const nameById = new Map((teamRows ?? []).map(u => [u.id, u.full_name ?? u.email ?? 'Unknown']))
 
   // Fetch all incidents for this org, most recent first
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: rows, error } = await supabase
     .from('incidents')
     .select('*')

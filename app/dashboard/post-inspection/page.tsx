@@ -40,7 +40,7 @@ export default async function PostInspectionPage() {
   const supabase = await createClient()
   const orgId    = profile.organisation_id
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: rows, error } = await supabase
     .from('post_inspection_reviews')
     .select('*')
@@ -56,7 +56,7 @@ export default async function PostInspectionPage() {
   }
 
   // Fetch FAC item counts per review
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: facRows } = await supabase
     .from('fac_items')
     .select('review_id')

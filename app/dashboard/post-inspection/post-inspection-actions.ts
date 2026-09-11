@@ -18,7 +18,7 @@ export async function createReview(formData: FormData): Promise<{ error?: string
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const inspection_date     = formData.get('inspection_date') as string
@@ -66,7 +66,7 @@ export async function updateReview(id: string, formData: FormData): Promise<{ er
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -100,7 +100,7 @@ export async function deleteReview(id: string): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -121,7 +121,7 @@ export async function createFacItem(reviewId: string, formData: FormData): Promi
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const key_question       = formData.get('key_question') as 'Safe' | 'Effective' | 'Caring' | 'Responsive' | 'Well-led'
@@ -156,7 +156,7 @@ export async function updateFacItem(id: string, reviewId: string, formData: Form
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -182,7 +182,7 @@ export async function deleteFacItem(id: string, reviewId: string): Promise<{ err
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase

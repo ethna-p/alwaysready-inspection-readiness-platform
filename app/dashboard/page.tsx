@@ -165,7 +165,7 @@ export default async function DashboardPage() {
     supabase.from('key_questions').select('id, name, display_order').order('display_order'),
     supabase.from('klo_items').select('id, key_question_id'),
     supabase.from('compliance_records').select('*'),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     supabase.from('incidents')
       .select('id', { count: 'exact', head: true })
       .eq('organisation_id', orgId)
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
       if (rag === 'grey') neverStartedCount++
       if (rag === 'red' && !rec?.assigned_to) overdueUnassignedCount++
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const { data: overdueActions } = await supabase
       .from('action_items')
       .select('id')

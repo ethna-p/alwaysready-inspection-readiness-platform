@@ -172,7 +172,7 @@ export async function POST(req: NextRequest) {
   const isNew = !existing
 
   // ── Upsert waitlist lead ──────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { error: leadError } = await supabase
     .from('waitlist_leads')
     .upsert(

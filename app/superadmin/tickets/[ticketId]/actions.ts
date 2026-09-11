@@ -133,7 +133,7 @@ export async function getTicketTemplate(
 
   const { data: ticket } = await supabase
     .from('support_tickets')
-    .select('external_name, submitted_by, organisations ( name )')
+    .select('external_name, submitted_by')
     .eq('id', ticketId)
     .single()
 
@@ -151,10 +151,6 @@ export async function getTicketTemplate(
       .single()
     if (profile?.full_name) firstName = getFirstName(profile.full_name)
   }
-
-  // Resolve org name
-  const t = ticket as unknown as { organisations: { name: string } | null }
-  const orgName = t.organisations?.name ?? '[organisation name]'
 
   const today = new Date().toLocaleDateString('en-GB', {
     day: 'numeric', month: 'long', year: 'numeric',

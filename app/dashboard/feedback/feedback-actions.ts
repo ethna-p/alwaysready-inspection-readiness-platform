@@ -18,7 +18,7 @@ export async function createFeedback(formData: FormData): Promise<{ error?: stri
     return { error: 'Permission denied.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const feedback_type          = formData.get('feedback_type') as FeedbackType
@@ -67,7 +67,7 @@ export async function updateFeedback(
     return { error: 'Permission denied.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const feedback_type        = formData.get('feedback_type') as FeedbackType
@@ -114,7 +114,7 @@ export async function deleteFeedback(id: string): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const supabase = await createClient()
 
   const { error } = await supabase

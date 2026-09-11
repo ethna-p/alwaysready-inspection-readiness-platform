@@ -65,7 +65,7 @@ export default async function PostInspectionDetailPage({
   const supabase = await createClient()
   const orgId    = profile.organisation_id
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: row, error: rowError } = await supabase
     .from('post_inspection_reviews')
     .select('*')
@@ -83,7 +83,7 @@ export default async function PostInspectionDetailPage({
 
   if (!row) notFound()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { data: facRows } = await supabase
     .from('fac_items')
     .select('*')

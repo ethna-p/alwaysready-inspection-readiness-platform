@@ -32,7 +32,7 @@ export async function createIncident(formData: FormData): Promise<{ error?: stri
     return { error: 'Title, type, date, and description are required.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { error } = await supabase.from('incidents').insert({
     organisation_id:    profile.organisation_id,
     title,
@@ -115,7 +115,7 @@ export async function updateIncident(
     return { error: 'Title, type, date, and description are required.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { error } = await supabase
     .from('incidents')
     .update({
@@ -145,7 +145,7 @@ export async function deleteIncident(incidentId: string): Promise<{ error?: stri
 
   const supabase = await createClient()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const { error } = await supabase
     .from('incidents')
     .delete()
