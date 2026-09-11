@@ -103,11 +103,16 @@ export default async function HrStaffDetailPage({
       .order('created_at', { ascending: true }),
   ])
 
-  // Generate signed URLs for certificates (15-minute expiry)
+  // Generate signed URLs for certificates (15-minute expiry).
+  // Bucket is 'evidence' — there is no 'kloe-evidence' bucket in this
+  // project, so this previously never returned a signed URL for any
+  // certificate (see app/dashboard/hr/actions.ts for the matching upload-side
+  // fix). Uses the regular client, so storage RLS applies: this only works
+  // now that file_path's first segment is the org id (also fixed there).
   const certUrls: Record<string, string> = {}
   for (const cert of certificates ?? []) {
     const { data } = await supabase.storage
-      .from('kloe-evidence')
+      .from('evidence')
       .createSignedUrl(cert.file_path, 900)
     if (data?.signedUrl) certUrls[cert.id] = data.signedUrl
   }

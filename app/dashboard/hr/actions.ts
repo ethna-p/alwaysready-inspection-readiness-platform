@@ -9,6 +9,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
+import { MAX_SIZE_BYTES, validateFileMime, scanWithCloudmersive } from '@/lib/utils/upload'
 
 export type HrActionResult =
   | { success: true; message?: string }
@@ -280,20 +281,29 @@ export async function uploadTrainingCertificate(
     return { success: false, error: 'Missing required fields.' }
   }
 
-  if (file.size > 10 * 1024 * 1024) {
+  // Was: a local size check and a MIME allowlist checked against the
+  // client-supplied file.type (trivially spoofable — it's just whatever
+  // Content-Type the browser sent, not inspected). Neither
+  // /api/upload-evidence nor /api/upload-i-statement-evidence trust
+  // file.type for this reason; this path shouldn't either. Also had no
+  // virus scan at all. Switched to the same shared, authoritative checks
+  // (lib/utils/upload.ts) those routes use — magic-byte MIME inspection and
+  // a fail-closed Cloudmersive scan.
+  if (file.size > MAX_SIZE_BYTES) {
     return { success: false, error: 'File must be under 10 MB.' }
   }
 
-  const ALLOWED_MIME = [
-    'application/pdf',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'image/jpeg',
-    'image/png',
-  ]
+  const buffer = Buffer.from(await file.arrayBuffer())
 
-  if (!ALLOWED_MIME.includes(file.type)) {
-    return { success: false, error: 'File type not allowed. Upload PDF, Word (.docx), Excel (.xlsx), JPG, or PNG.' }
+  const mimeResult = await validateFileMime(buffer, file.name)
+  if (!mimeResult.ok) {
+    return { success: false, error: mimeResult.error }
+  }
+
+  const scan = await scanWithCloudmersive(buffer, file.name, '[uploadTrainingCertificate]')
+  if (!scan.clean) {
+    console.warn(`[uploadTrainingCertificate] Virus detected in upload by user ${profile.id}: ${file.name}`)
+    return { success: false, error: scan.message }
   }
 
   const supabase = await createClient()
@@ -317,15 +327,20 @@ export async function uploadTrainingCertificate(
 
   const adminClient = createAdminClient()
 
-  // Upload to Supabase Storage
+  // Upload to Supabase Storage.
+  // Bucket is 'evidence' (reused from the KLOE evidence feature) — there is
+  // no 'kloe-evidence' bucket in this project, so this previously failed on
+  // every upload. The org id must be the *first* path segment: the
+  // evidence bucket's storage RLS SELECT policy requires
+  // (storage.foldername(name))[1] = get_user_org_id(), which the signed-URL
+  // read in app/dashboard/hr/[userId]/page.tsx relies on (that read uses the
+  // regular client, not the admin client, so RLS actually applies there).
   const ext = file.name.split('.').pop()
-  const filePath = `hr-certificates/${profile.organisation_id}/${userId}/${trainingRecordId}/${Date.now()}.${ext}`
-  const arrayBuffer = await file.arrayBuffer()
-  const buffer = Buffer.from(arrayBuffer)
+  const filePath = `${profile.organisation_id}/hr-certificates/${userId}/${trainingRecordId}/${Date.now()}.${ext}`
 
   const { error: uploadError } = await adminClient.storage
-    .from('kloe-evidence') // reuse existing bucket
-    .upload(filePath, buffer, { contentType: file.type, upsert: false })
+    .from('evidence')
+    .upload(filePath, buffer, { contentType: mimeResult.actualMime, upsert: false })
 
   if (uploadError) {
     console.error('[uploadTrainingCertificate] storage error:', uploadError)
@@ -341,8 +356,13 @@ export async function uploadTrainingCertificate(
       file_name: file.name,
       file_path: filePath,
       file_size: file.size,
-      mime_type: file.type,
-      scan_status: 'pending',
+      mime_type: mimeResult.actualMime,
+      // Was hardcoded 'pending' with nothing to ever flip it to 'clean' — no
+      // cron/webhook updates this column, and HrTrainingSection.tsx only
+      // shows the download link when scan_status === 'clean', so every
+      // uploaded certificate was permanently hidden. The scan above is
+      // synchronous and already passed by this point.
+      scan_status: 'clean',
       uploaded_by: profile.id,
     })
     .select('id')
@@ -510,7 +530,7 @@ export async function deleteTrainingCertificate(
   }
 
   // Delete from storage
-  await adminClient.storage.from('kloe-evidence').remove([cert.file_path])
+  await adminClient.storage.from('evidence').remove([cert.file_path])
 
   // Delete from database
   await supabase

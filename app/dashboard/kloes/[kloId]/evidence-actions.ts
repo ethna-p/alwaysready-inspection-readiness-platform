@@ -10,7 +10,18 @@ export async function saveEvidenceRecord(
   storagePath: string,
   fileSize: number,
   mimeType: string,
-  scanStatus: string = 'clean'
+  // scanStatus is intentionally NOT a parameter — see saveIStatementEvidenceRecord
+  // for why. It used to be client-supplied here (defaulting to 'clean' but
+  // overridable), which combined with the "org members can upload evidence
+  // files" storage RLS policy (any admin/user can INSERT into the evidence
+  // bucket directly via the Supabase client SDK, bypassing
+  // /api/upload-evidence's Cloudmersive scan entirely) meant any org member
+  // could mark an unscanned file as verified-clean for other members to
+  // download. Every record saved here is now unconditionally 'clean',
+  // because this action itself still only exists to record metadata for
+  // files that came from the scanning route — but the real fix is that
+  // *storage RLS itself* also allows unscanned uploads; see the follow-up
+  // issue filed for that.
 ): Promise<{ success: true } | { success: false; error: string }> {
   const profile = await requireRole(['admin', 'user'])
   if (!profile) return { success: false, error: 'Not authenticated or insufficient permissions.' }
@@ -27,7 +38,7 @@ export async function saveEvidenceRecord(
       storage_path: storagePath,
       file_size: fileSize,
       mime_type: mimeType,
-      scan_status: scanStatus,
+      scan_status: 'clean', // always set server-side — never trusted from client
     })
 
   if (error) return { success: false, error: 'Failed to save file record.' }

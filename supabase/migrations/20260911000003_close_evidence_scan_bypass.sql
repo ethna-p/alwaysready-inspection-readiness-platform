@@ -1,0 +1,38 @@
+-- Migration: close the evidence-bucket malware-scan bypass
+--
+-- SECURITY FIX: the "org members can upload evidence files" storage.objects
+-- policy (most recently recreated in 20260904000003_h3_fix_expired_viewer_direct_lookup.sql)
+-- lets any authenticated admin/user-role org member INSERT directly into the
+-- 'evidence' bucket via the ordinary Supabase client SDK, as long as the
+-- first path segment matches their own organisation_id.
+--
+-- That completely bypasses /api/upload-evidence and
+-- /api/upload-i-statement-evidence, which are the only places
+-- MAX_SIZE_BYTES/validateFileMime/scanWithCloudmersive (lib/utils/upload.ts)
+-- ever run. Those routes upload via the service-role admin client
+-- specifically so the app controls every byte that lands in this bucket --
+-- but storage RLS independently allowed the same result through a second,
+-- unscanned door. Combined with kloe_evidence's saveEvidenceRecord()
+-- previously accepting a client-supplied scanStatus (fixed separately --
+-- see app/dashboard/kloes/[kloId]/evidence-actions.ts), any org member
+-- could upload an unscanned file and have it recorded and served to
+-- colleagues as verified-clean.
+--
+-- Every legitimate write to this bucket already goes through the admin
+-- client in the two upload routes, which bypasses RLS entirely (service_role
+-- is exempt) -- so removing the "authenticated" INSERT policy costs nothing
+-- functionally and closes the bypass. Grepped the codebase for any direct
+-- client-side `storage.from('evidence').upload(...)` call before writing
+-- this -- none exist; only `.remove()` calls for delete/cleanup, which use
+-- the separate DELETE policy below (untouched by this migration).
+--
+-- SELECT and DELETE policies are unaffected -- org members still need to
+-- read their own org's evidence files, and admins still need to delete them.
+
+DROP POLICY IF EXISTS "org members can upload evidence files" ON storage.objects;
+
+-- Intentionally no replacement INSERT policy for the "authenticated" role.
+-- RLS defaults to deny with no matching permissive policy, so only the
+-- service_role (admin) client -- which bypasses RLS -- can write to this
+-- bucket going forward. That's exactly what /api/upload-evidence and
+-- /api/upload-i-statement-evidence already use.

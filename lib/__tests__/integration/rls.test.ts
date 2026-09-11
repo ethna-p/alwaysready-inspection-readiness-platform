@@ -11,6 +11,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { Client } from 'pg'
+import { randomUUID } from 'crypto'
 import {
   connectSuperuser,
   seedOrg,
@@ -272,5 +273,30 @@ describe('users RLS', () => {
       return rows
     }, 'aal1')
     expect(rows).toHaveLength(0)
+  })
+})
+
+// ── evidence bucket storage RLS ───────────────────────────────────────────────
+//
+// Regression coverage for 20260911000003_close_evidence_scan_bypass.sql.
+// /api/upload-evidence and /api/upload-i-statement-evidence are the only
+// places the app's MAX_SIZE_BYTES/validateFileMime/scanWithCloudmersive
+// checks (lib/utils/upload.ts) ever run, and both upload via the
+// service-role admin client (bypasses RLS). Before this migration, a
+// permissive storage.objects INSERT policy let any admin/user org member
+// write directly into the 'evidence' bucket via the ordinary client SDK,
+// skipping the scan entirely. Only the SELECT/DELETE policies should allow
+// "authenticated" access now — INSERT should have no permissive policy
+// left, so it fails closed by RLS's default-deny.
+describe('evidence bucket storage RLS', () => {
+  it('An org admin CANNOT upload directly to storage.objects (bypassing the scan route)', async () => {
+    await expect(
+      withAuthUser(client, userAId, async (c) => {
+        await c.query(
+          `INSERT INTO storage.objects (bucket_id, name) VALUES ('evidence', $1)`,
+          [`${orgAId}/unscanned-${randomUUID()}.pdf`]
+        )
+      })
+    ).rejects.toThrow(/row-level security|permission denied/i)
   })
 })

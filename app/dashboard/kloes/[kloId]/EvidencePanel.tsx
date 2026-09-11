@@ -104,7 +104,6 @@ export default function EvidencePanel({
       fileName?: string
       fileSize?: number
       mimeType?: string
-      scanStatus?: string
       error?: string
     }
 
@@ -115,15 +114,14 @@ export default function EvidencePanel({
       return
     }
 
-    const { storagePath, fileSize, mimeType, scanStatus = 'clean' } = uploadData
+    const { storagePath, fileSize, mimeType } = uploadData
 
     const result = await saveEvidenceRecord(
       kloItemId,
       file.name,
       storagePath,
       fileSize ?? file.size,
-      mimeType ?? file.type,
-      scanStatus
+      mimeType ?? file.type
     )
 
     if (!result.success) {
@@ -146,7 +144,7 @@ export default function EvidencePanel({
         mime_type: file.type,
         uploaded_at: new Date().toISOString(),
         uploaded_by_name: 'You',
-        scan_status: scanStatus,
+        scan_status: 'clean', // this optimistic row only renders after saveEvidenceRecord succeeded, which only ever records 'clean'
       },
       ...prev,
     ])
