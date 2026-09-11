@@ -5,6 +5,15 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireUser, requireAdmin } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
+import { createRateLimiter } from '@/lib/rate-limit'
+
+// changePassword re-authenticates with a client-supplied "current password" —
+// unlike /login (rate-limited per IP in middleware.ts), this had no limit at
+// all. It requires an already-valid session (not an unauthenticated attack
+// surface), but a stolen/shared session cookie without the actual password
+// could otherwise be used to brute-force it. Keyed by user id rather than IP
+// since the caller is already authenticated.
+const changePasswordLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 5 })
 
 // ── Sub-services ──────────────────────────────────────────────────────────────
 
@@ -95,6 +104,10 @@ export async function changePassword(
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (userError || !user?.email) {
     return { success: false, error: 'Unable to verify your session. Please sign in again.' }
+  }
+
+  if (!(await changePasswordLimiter.check(user.id))) {
+    return { success: false, error: 'Too many attempts. Please wait 15 minutes and try again.' }
   }
 
   // Verify current password by re-authenticating
