@@ -20,6 +20,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { stripeStatusToTier } from '@/lib/stripe-utils'
 import { getFirstName } from '@/lib/utils/name'
+import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
 
 export async function POST(req: NextRequest) {
@@ -105,7 +106,7 @@ export async function POST(req: NextRequest) {
             continue
           }
 
-          const firstName = getFirstName(admin.full_name)
+          const firstName = escapeHtml(getFirstName(admin.full_name))
           await sendEmail({
             to:      admin.email,
             subject: 'Your AlwaysReady subscription is now active',
@@ -217,7 +218,7 @@ export async function POST(req: NextRequest) {
             subject: 'Your AlwaysReady subscription has ended — download your data',
             type:    'transactional',
             bodyHtml: `
-              <p>Your AlwaysReady subscription for <strong>${org.name}</strong> has ended.</p>
+              <p>Your AlwaysReady subscription for <strong>${escapeHtml(org.name)}</strong> has ended.</p>
               <p>Your data is safe and available to download until <strong>${deletionDateStr}</strong>.
               After that date, it will be permanently deleted.</p>
               <p>To download your data, log in at

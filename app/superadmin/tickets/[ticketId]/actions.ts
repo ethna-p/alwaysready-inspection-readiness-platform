@@ -6,6 +6,7 @@ import { sendEmail } from '@/lib/email'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 import { getFirstName } from '@/lib/utils/name'
+import { escapeHtml } from '@/lib/utils/escape'
 
 export type ReplyState =
   | { status: 'idle' }
@@ -43,7 +44,7 @@ export async function staffReply(
 
   // If this is a website enquiry, email the reply to the external sender
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
-    const firstName = getFirstName(ticket.external_name)
+    const firstName = escapeHtml(getFirstName(ticket.external_name))
     await sendEmail({
       to:      ticket.external_email,
       subject: `Re: ${ticket.subject} [${ticket.reference}]`,
@@ -269,7 +270,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
       if ((ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
         // Website enquiry — email the external contact
         recipientEmail = ticket.external_email
-        firstName = getFirstName(ticket.external_name)
+        firstName = escapeHtml(getFirstName(ticket.external_name))
       } else if (ticket.submitted_by) {
         // Platform user — look up their auth email and profile
         const { data: authUser } = await supabase.auth.admin.getUserById(ticket.submitted_by)
@@ -280,7 +281,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
           .single()
 
         recipientEmail = authUser?.user?.email ?? profile?.personal_email ?? null
-        firstName = getFirstName(profile?.full_name)
+        firstName = escapeHtml(getFirstName(profile?.full_name))
       }
 
       if (recipientEmail) {
@@ -298,7 +299,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
             <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
               <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.05em">Resolved request</p>
               <p style="margin:0 0 4px;font-size:13px;color:#888;font-family:monospace">${ticket.reference}</p>
-              <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${ticket.subject}</p>
+              <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${escapeHtml(ticket.subject)}</p>
             </div>
 
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">

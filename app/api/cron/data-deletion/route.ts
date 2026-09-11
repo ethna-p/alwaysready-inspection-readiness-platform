@@ -23,6 +23,7 @@ import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
 import { getFirstName }  from '@/lib/utils/name'
+import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -128,7 +129,7 @@ export async function GET(request: Request) {
       const deletionDate = warnFrom0.toLocaleDateString('en-GB', {
         day: 'numeric', month: 'long', year: 'numeric',
       })
-      const firstName = getFirstName(admin.full_name)
+      const firstName = escapeHtml(getFirstName(admin.full_name))
 
       const result = await sendEmail({
         to:      admin.email,
@@ -137,7 +138,7 @@ export async function GET(request: Request) {
         bodyHtml: `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            This is a reminder that the data for <strong>${org.name}</strong> on AlwaysReady
+            This is a reminder that the data for <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
             will be permanently deleted on <strong>${deletionDate}</strong> — in 3 days.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -241,7 +242,7 @@ export async function GET(request: Request) {
     // Send deletion confirmation to each admin
     for (const admin of admins ?? []) {
       if (!admin.email) continue
-      const firstName = getFirstName(admin.full_name)
+      const firstName = escapeHtml(getFirstName(admin.full_name))
       await sendEmail({
         to:      admin.email,
         subject: 'Your AlwaysReady data has been deleted',
@@ -249,7 +250,7 @@ export async function GET(request: Request) {
         bodyHtml: `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            As notified, all data associated with <strong>${org.name}</strong> on AlwaysReady
+            As notified, all data associated with <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
             has now been permanently deleted in accordance with our data retention policy.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">

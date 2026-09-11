@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
+import { escapeHtml } from '@/lib/utils/escape'
 
 export interface BroadcastResult {
   sent: number
@@ -77,7 +78,7 @@ export async function sendBroadcast(
 
   for (const subscriber of subscribers ?? []) {
     const firstName = subscriber.full_name?.split(' ')[0] ?? null
-    const greeting  = firstName ? `Hi ${firstName},` : 'Hi,'
+    const greeting  = firstName ? `Hi ${escapeHtml(firstName)},` : 'Hi,'
 
     const result = await sendEmail({
       to: subscriber.email,
