@@ -12,15 +12,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import type { MarketingSuppression, CampaignContact } from '@/lib/types'
+import { escapeHtml } from '@/lib/utils/escape'
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
 
 // 10 requests per IP per hour
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })

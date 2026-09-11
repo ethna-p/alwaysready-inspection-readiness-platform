@@ -31,18 +31,12 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
+import { escapeHtml } from '@/lib/utils/escape'
 
 // 10 inbound emails per sender per hour — generous for a support inbox,
 // but prevents a single address flooding ticket creation and AI draft calls.
 const inboundLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
 
 // Parse a ticket reference like [AR-0001] from a subject line
 function extractReference(subject: string): string | null {
@@ -316,7 +310,7 @@ export async function POST(req: NextRequest) {
     subject: "We've received your message",
     type:    'transactional',
     bodyHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch. We have received your message and will get back to you shortly.
       </p>

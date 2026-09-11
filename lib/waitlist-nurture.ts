@@ -6,6 +6,8 @@
  *   - app/api/cron/waitlist-nurture/route.ts  (Emails 2–8, weekly)
  */
 
+import { escapeHtml } from '@/lib/utils/escape'
+
 export interface NurtureEmail {
   subject: string
   bodyHtml: string
@@ -17,8 +19,13 @@ export interface NurtureEmail {
  */
 export function getWaitlistNurtureEmail(
   emailNum: number,
-  firstName: string,
+  firstNameRaw: string,
 ): NurtureEmail | null {
+  // firstName is user-supplied (the waitlist signup form) and every template
+  // below interpolates it directly into HTML — escape once here rather than
+  // at each of the ~10 call sites below.
+  const firstName = escapeHtml(firstNameRaw)
+
   switch (emailNum) {
     case 1:
       return {

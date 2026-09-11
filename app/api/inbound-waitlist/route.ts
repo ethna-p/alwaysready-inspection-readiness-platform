@@ -25,15 +25,9 @@ import { sendEmail } from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 import { fetchCqcLocation } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
+import { escapeHtml } from '@/lib/utils/escape'
+import { verifyTurnstile } from '@/lib/utils/turnstile'
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-}
 
 // 10 requests per IP per hour — generous for a waitlist signup
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
@@ -140,25 +134,9 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Turnstile verification ────────────────────────────────────────────────
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
-  if (turnstileSecret) {
-    if (!turnstileToken) {
-      return NextResponse.json({ error: 'Security check required.' }, { status: 400, headers: CORS_HEADERS })
-    }
-    try {
-      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${encodeURIComponent(turnstileSecret)}&response=${encodeURIComponent(turnstileToken)}`,
-      })
-      const verifyData = await verifyRes.json() as { success: boolean }
-      if (!verifyData.success) {
-        return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers: CORS_HEADERS })
-      }
-    } catch (err) {
-      console.error('[inbound-waitlist] Turnstile verification error:', err)
-      return NextResponse.json({ error: 'Security check unavailable. Please try again.' }, { status: 503, headers: CORS_HEADERS })
-    }
+  const tsResult = await verifyTurnstile(turnstileToken, '[inbound-waitlist]')
+  if (!tsResult.ok) {
+    return NextResponse.json({ error: tsResult.error }, { status: tsResult.status, headers: CORS_HEADERS })
   }
 
   // ── CQC Location ID validation ─────────────────────────────────────────────
@@ -284,7 +262,7 @@ export async function POST(req: NextRequest) {
       type: 'marketing',
       subscriberEmail: email,
       bodyHtml: `
-        <p>Hi ${displayName},</p>
+        <p>Hi ${escapeHtml(displayName)},</p>
         <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
            sector updates, and inspection-readiness guidance — straight to your inbox.</p>
         <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>

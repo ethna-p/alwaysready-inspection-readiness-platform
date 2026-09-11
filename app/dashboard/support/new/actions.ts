@@ -5,15 +5,8 @@ import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import { getFirstName } from '@/lib/utils/name'
+import { escapeHtml } from '@/lib/utils/escape'
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
 
 export type SubmitTicketState =
   | { status: 'idle' }

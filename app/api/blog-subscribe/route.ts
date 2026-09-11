@@ -14,15 +14,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
+import { escapeHtml } from '@/lib/utils/escape'
+import { verifyTurnstile } from '@/lib/utils/turnstile'
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
 
 // 10 requests per IP per hour
 const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
@@ -75,26 +69,10 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Turnstile verification ────────────────────────────────────────────────
-  const secretKey = process.env.TURNSTILE_SECRET_KEY
-  if (secretKey) {
-    const token = typeof body['cf-turnstile-response'] === 'string' ? body['cf-turnstile-response'] : ''
-    if (!token) {
-      return NextResponse.json({ error: 'Security check required. Please try again.' }, { status: 400, headers })
-    }
-    try {
-      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
-      })
-      const verifyData = await verifyRes.json() as { success: boolean; 'error-codes'?: string[] }
-      if (!verifyData.success) {
-        return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400, headers })
-      }
-    } catch (err) {
-      console.error('[blog-subscribe] Turnstile verification error:', err)
-      return NextResponse.json({ error: 'Security check unavailable. Please try again.' }, { status: 503, headers })
-    }
+  const tsToken = typeof body['cf-turnstile-response'] === 'string' ? body['cf-turnstile-response'] : ''
+  const tsResult = await verifyTurnstile(tsToken, '[blog-subscribe]')
+  if (!tsResult.ok) {
+    return NextResponse.json({ error: tsResult.error }, { status: tsResult.status, headers })
   }
 
   try {
