@@ -42,6 +42,7 @@ import { verifyCronSecret } from '@/lib/utils/cron'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getFirstName } from '@/lib/utils/name'
+import { escapeHtml } from '@/lib/utils/escape'
 import { ONBOARDING_EMAILS, buildHtml } from '@/lib/onboarding-emails'
 
 // ── Route handler ──────────────────────────────────────────────────────────────
@@ -105,7 +106,7 @@ export async function GET(req: NextRequest) {
 
       for (const admin of admins) {
         if (!admin.email) continue
-        const firstName = getFirstName(admin.full_name)
+        const firstName = escapeHtml(getFirstName(admin.full_name))
 
         const result = await sendEmail({
           to:       admin.email,

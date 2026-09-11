@@ -27,6 +27,7 @@ import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
 import { getFirstName }      from '@/lib/utils/name'
+import { escapeHtml }        from '@/lib/utils/escape'
 import {
   TRIAL_EMAILS,
   USER_EMAILS,
@@ -92,7 +93,7 @@ export async function GET(request: Request) {
     for (const admin of admins) {
       if (!admin.email) continue
 
-      const firstName = getFirstName(admin.full_name)
+      const firstName = escapeHtml(getFirstName(admin.full_name))
 
       // Claim the slot atomically — insert into notification_log first.
       // The unique index prevents a second concurrent cron run from also sending.
@@ -202,7 +203,7 @@ export async function GET(request: Request) {
         errors.push(`day_14b → ${admin.email}: log claim failed`); continue
       }
 
-      const firstName    = getFirstName(admin.full_name)
+      const firstName    = escapeHtml(getFirstName(admin.full_name))
       const expiryDate   = formatDate(`${yesterdayStr}T00:00:00Z`)
       const deletionDate = formatDate(trialDeletionDue.toISOString())
       const upgradeUrl   = `${PLATFORM_URL}/upgrade`
