@@ -63,6 +63,13 @@ export async function POST(req: NextRequest) {
           stripe_customer_id:     String(session.customer),
           stripe_subscription_id: String(session.subscription),
           subscribed_at:          new Date().toISOString(),
+          // CRITICAL: clear any pending deletion. A trial that lapsed and
+          // then later subscribed would otherwise keep the deletion date
+          // set by the trial-lapse cron (data_deletion_due_at is never
+          // cleared anywhere else) — the daily data-deletion cron doesn't
+          // check subscription_tier, so an active paying customer's org
+          // would be permanently deleted on that stale date.
+          data_deletion_due_at:   null,
           ...(isBeta ? { is_beta: true } : {}),
         })
         .eq('id', orgId)
@@ -70,7 +77,11 @@ export async function POST(req: NextRequest) {
       if (error) {
         console.error('[stripe-webhook] checkout update error:', error.message)
       } else {
-        // Day 14a — send subscription confirmation email to the org admin
+        // Day 14a — send subscription confirmation email to the org admin.
+        // Stripe does not guarantee exactly-once delivery — the same event
+        // can be redelivered (timeouts, manual resends from the dashboard)
+        // — so claim against notification_log first, keyed by the stable
+        // event.id, same idempotency idiom used by the cron email jobs.
         const { data: admins } = await supabase
           .from('users')
           .select('email, full_name')
@@ -79,6 +90,21 @@ export async function POST(req: NextRequest) {
 
         for (const admin of admins ?? []) {
           if (!admin.email) continue
+
+          const { error: logClaim } = await supabase.from('notification_log').insert({
+            organisation_id:   orgId,
+            notification_type: 'stripe_event',
+            entity_type:       'subscription',
+            entity_id:         event.id,
+            due_date:          new Date().toISOString().split('T')[0],
+            recipient_email:   admin.email,
+          })
+          if (logClaim) {
+            if (logClaim.code === '23505') continue // already sent for this event
+            console.error('[stripe-webhook] checkout confirmation log claim error:', logClaim)
+            continue
+          }
+
           const firstName = getFirstName(admin.full_name)
           await sendEmail({
             to:      admin.email,
@@ -130,6 +156,15 @@ export async function POST(req: NextRequest) {
     const deletionDue = new Date()
     deletionDue.setDate(deletionDue.getDate() + 30)
 
+    // .is('data_deletion_due_at', null) doubles as the idempotency guard:
+    // Stripe doesn't guarantee exactly-once delivery, and without this a
+    // redelivery of the same event would recompute deletionDue as "30 days
+    // from now" every time, pushing the real deadline back indefinitely on
+    // every replay. On a genuine first delivery this is null (either never
+    // set, or cleared by checkout.session.completed on a prior
+    // subscribe) so the update proceeds normally; on a replay it's already
+    // set, so the update (and .single()) affects zero rows and we skip the
+    // email below rather than re-sending it.
     const { data: org, error } = await supabase
       .from('organisations')
       .update({
@@ -137,10 +172,11 @@ export async function POST(req: NextRequest) {
         data_deletion_due_at: deletionDue.toISOString(),
       })
       .eq('stripe_subscription_id', sub.id)
+      .is('data_deletion_due_at', null)
       .select('id, name')
       .single()
 
-    if (error) {
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows matched (already processed)
       console.error('[stripe-webhook] subscription delete error:', error.message)
     } else if (org) {
       // Notify the org's admin(s) that their data will be deleted in 30 days
@@ -161,8 +197,22 @@ export async function POST(req: NextRequest) {
           day: 'numeric', month: 'long', year: 'numeric',
         })
 
-        await Promise.all(adminEmails.map(email =>
-          sendEmail({
+        for (const email of adminEmails) {
+          const { error: logClaim } = await supabase.from('notification_log').insert({
+            organisation_id:   org.id,
+            notification_type: 'stripe_event',
+            entity_type:       'subscription',
+            entity_id:         event.id,
+            due_date:          new Date().toISOString().split('T')[0],
+            recipient_email:   email,
+          })
+          if (logClaim) {
+            if (logClaim.code === '23505') continue // already sent for this event
+            console.error('[stripe-webhook] deletion notice log claim error:', logClaim)
+            continue
+          }
+
+          await sendEmail({
             to:      email,
             subject: 'Your AlwaysReady subscription has ended — download your data',
             type:    'transactional',
@@ -176,7 +226,7 @@ export async function POST(req: NextRequest) {
               <p>If you'd like to resubscribe and keep your data, you can do so from the same page.</p>
             `,
           }).catch(err => console.error('[stripe-webhook] deletion notice email failed:', err))
-        ))
+        }
       }
     }
   }

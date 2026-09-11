@@ -87,10 +87,18 @@ export async function GET(request: Request) {
   const warnTo0   = new Date(warnFrom)
   warnTo0.setHours(23, 59, 59, 999)
 
+  // Defence-in-depth: never warn/delete an active (or past_due — still in a
+  // payment retry grace period) org, even if data_deletion_due_at is stale.
+  // The real fix is that checkout.session.completed now clears
+  // data_deletion_due_at when a subscription activates, but this table is
+  // never the only thing standing between a paying customer and permanent
+  // deletion for something this destructive.
   const { data: warningOrgs } = await supabase
     .from('organisations')
     .select('id, name')
     .neq('is_tester', true)
+    .neq('subscription_tier', 'active')
+    .neq('subscription_tier', 'past_due')
     .gte('data_deletion_due_at', warnFrom0.toISOString())
     .lte('data_deletion_due_at', warnTo0.toISOString())
 
@@ -170,12 +178,18 @@ export async function GET(request: Request) {
   // ── Hard deletion ─────────────────────────────────────────────────────────────
   // Delete any organisation where data_deletion_due_at < now().
   // Child rows are removed by ON DELETE CASCADE.
+  //
+  // Defence-in-depth: never delete an active (or past_due) org — see the
+  // matching comment on the warning query above. This is the actual
+  // destructive step, so this guard matters most here.
 
   const { data: dueOrgs } = await supabase
     .from('organisations')
     .select('id, name')
     .not('data_deletion_due_at', 'is', null)
     .neq('is_tester', true)
+    .neq('subscription_tier', 'active')
+    .neq('subscription_tier', 'past_due')
     .lt('data_deletion_due_at', now.toISOString())
 
   for (const org of dueOrgs ?? []) {

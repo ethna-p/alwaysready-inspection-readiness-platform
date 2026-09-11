@@ -654,8 +654,8 @@ export type Database = {
         Row: {
           id:                string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning' | 'stripe_event'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation' | 'subscription'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -664,8 +664,8 @@ export type Database = {
         Insert: {
           id?:               string
           organisation_id:   string
-          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning'
-          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation'
+          notification_type: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning' | 'stripe_event'
+          entity_type:       'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation' | 'subscription'
           entity_id:         string
           due_date:          string
           recipient_email:   string
@@ -674,8 +674,8 @@ export type Database = {
         Update: {
           id?:               string
           organisation_id?:  string
-          notification_type?: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning'
-          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation'
+          notification_type?: 'due_soon' | 'overdue' | 'trial_day' | 'onboarding_week' | 'user_onboarding' | 'weekly_digest' | 'data_deletion_warning' | 'stripe_event'
+          entity_type?:      'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training' | 'trial' | 'onboarding' | 'user' | 'governance_digest' | 'organisation' | 'subscription'
           entity_id?:        string
           due_date?:         string
           recipient_email?:  string
