@@ -10,12 +10,22 @@
  * Uses the admin client for the INSERT because compliance_records is normally
  * written via the compliance_record_history trigger. Direct seeding requires
  * bypassing RLS.
+ *
+ * Warm-instance cache: once we've confirmed (or performed) a seed for an org,
+ * remember it for the lifetime of this server instance so every subsequent
+ * dashboard render for that org skips the DB round-trip entirely. Same
+ * pattern as the login rate-limiter in middleware.ts — resets on cold start,
+ * which just means the cheap check runs again, not a correctness issue.
  */
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+const knownSeededOrgs = new Set<string>()
+
 export async function ensureComplianceRecordsSeeded(orgId: string): Promise<void> {
+  if (knownSeededOrgs.has(orgId)) return // Confirmed earlier in this instance's lifetime
+
   const supabase = await createClient()
 
   // Fast path: check if any records exist (index scan, head-only)
@@ -24,7 +34,10 @@ export async function ensureComplianceRecordsSeeded(orgId: string): Promise<void
     .select('id', { count: 'exact', head: true })
     .eq('organisation_id', orgId)
 
-  if ((count ?? 0) > 0) return // Already seeded — nothing to do
+  if ((count ?? 0) > 0) {
+    knownSeededOrgs.add(orgId)
+    return // Already seeded — nothing to do
+  }
 
   // Slow path: seed from klo_items via admin client
   console.warn(`[seed-compliance] org ${orgId} has no compliance records — seeding now`)
@@ -49,5 +62,6 @@ export async function ensureComplianceRecordsSeeded(orgId: string): Promise<void
     return // Non-fatal — will retry on next page load
   }
 
+  knownSeededOrgs.add(orgId)
   console.log(`[seed-compliance] seeded ${klos.length} compliance records for org ${orgId}`)
 }

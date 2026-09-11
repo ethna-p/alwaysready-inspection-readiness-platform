@@ -47,12 +47,19 @@ export default async function DashboardLayout({
     redirect(user.email === superadminEmail ? '/superadmin' : '/login')
   }
 
-  // Get org subscription state
-  const { data: org } = await supabase
-    .from('organisations')
-    .select('subscription_tier, trial_expires_at, is_beta')
-    .eq('id', profile.organisation_id)
-    .single()
+  // Org subscription state and the compliance-records self-heal check are
+  // independent of each other (both only need profile.organisation_id) — run
+  // them concurrently rather than adding the self-heal round-trip on top of
+  // the org query in series. Self-heal is idempotent, so running it even for
+  // an org we're about to redirect away from (canceled/past-due) is harmless.
+  const [{ data: org }] = await Promise.all([
+    supabase
+      .from('organisations')
+      .select('subscription_tier, trial_expires_at, is_beta')
+      .eq('id', profile.organisation_id)
+      .single(),
+    ensureComplianceRecordsSeeded(profile.organisation_id), // self-heal: handles transient seed failures at signup
+  ])
 
   // Block access for orgs that have no active subscription
   if (
@@ -64,9 +71,6 @@ export default async function DashboardLayout({
   ) {
     redirect('/upgrade')
   }
-
-  // Self-heal: ensure compliance records exist (handles transient seed failures at signup)
-  await ensureComplianceRecordsSeeded(profile.organisation_id)
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
