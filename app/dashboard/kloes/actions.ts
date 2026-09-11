@@ -19,7 +19,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { requireAdmin, requireRole } from '@/lib/auth'
+import { requireAdmin, requireRole, isUserInOrg } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import type { ComplianceStatus } from '@/lib/types'
 import { getFirstName } from '@/lib/utils/name'
@@ -191,6 +191,14 @@ export async function assignKloe(
 
   if (!kloItemId) {
     return { success: false, error: 'Missing KLOE identifier.' }
+  }
+
+  // assignToId is client-supplied and otherwise unchecked — the UPDATE below
+  // only scopes the compliance_records row being changed, not who it's being
+  // assigned to. Without this, an admin could assign (and trigger an email
+  // notification to) a user in a different organisation entirely.
+  if (assignToId && !(await isUserInOrg(supabase, assignToId, profile.organisation_id))) {
+    return { success: false, error: 'That team member was not found in your organisation.' }
   }
 
   const { error } = await supabase

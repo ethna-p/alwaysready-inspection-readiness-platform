@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { requireAdmin, requireRole } from '@/lib/auth'
+import { requireAdmin, requireRole, isUserInOrg } from '@/lib/auth'
 import type { IStatementConfidence } from '@/lib/types'
 
 // ── Upsert evidence + review dates ───────────────────────────────────────────
@@ -62,6 +62,11 @@ export async function createIStatementAction(
 
   if (!statementId) return { error: 'Missing statement ID' }
   if (!title)       return { error: 'Title is required' }
+
+  // assignedTo is client-supplied and otherwise unchecked here.
+  if (assignedTo && !(await isUserInOrg(supabase, assignedTo, profile.organisation_id))) {
+    return { error: 'That team member was not found in your organisation.' }
+  }
 
   const { error } = await supabase
     .from('i_statement_actions')

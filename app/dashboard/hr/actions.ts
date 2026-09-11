@@ -297,6 +297,24 @@ export async function uploadTrainingCertificate(
   }
 
   const supabase = await createClient()
+
+  // Verify the training record actually belongs to the caller's org before
+  // attaching anything to it — trainingRecordId is client-supplied and
+  // nothing else here checks it (unlike deleteTrainingCertificate below,
+  // which does). RLS on hr_training_certificates only validates the new
+  // row's own organisation_id, not that training_record_id cross-references
+  // a record in the same org.
+  const { data: trainingRecord } = await supabase
+    .from('hr_training_records')
+    .select('id')
+    .eq('id', trainingRecordId)
+    .eq('organisation_id', profile.organisation_id)
+    .single()
+
+  if (!trainingRecord) {
+    return { success: false, error: 'Training record not found.' }
+  }
+
   const adminClient = createAdminClient()
 
   // Upload to Supabase Storage

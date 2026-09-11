@@ -20,6 +20,7 @@
 
 import { getCurrentUserProfile } from '@/lib/session'
 import type { UserProfile } from '@/lib/session'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 /** A profile guaranteed to have an organisation_id (i.e. fully provisioned). */
 export type AuthedProfile = UserProfile & { organisation_id: string }
@@ -76,4 +77,29 @@ export function assertOwnOrg(profile: AuthedProfile, organisationId: string): vo
   if (profile.organisation_id !== organisationId) {
     throw new Error('Access denied: resource belongs to a different organisation.')
   }
+}
+
+/**
+ * Returns true if userId is a member of organisationId.
+ *
+ * Use this before writing a client-supplied user id into an assignee/
+ * reference column (e.g. compliance_records.assigned_to, action_items.assigned_to).
+ * Without it, any client-supplied user id is accepted as-is — RLS scopes the
+ * *row being written* to the caller's own org, but says nothing about which
+ * org the referenced user id belongs to, so a caller could silently assign
+ * work (and trigger an email notification) to a user in a different
+ * organisation entirely.
+ */
+export async function isUserInOrg(
+  supabase: SupabaseClient,
+  userId: string,
+  organisationId: string
+): Promise<boolean> {
+  const { data } = await supabase
+    .from('users')
+    .select('id')
+    .eq('id', userId)
+    .eq('organisation_id', organisationId)
+    .single()
+  return !!data
 }

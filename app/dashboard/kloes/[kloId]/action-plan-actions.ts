@@ -17,7 +17,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { requireRole, requireAdmin } from '@/lib/auth'
+import { requireRole, requireAdmin, isUserInOrg } from '@/lib/auth'
 
 export type ActionResult =
   | { success: true }
@@ -45,6 +45,11 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
   }
 
   const supabase = await createClient()
+
+  // assignedTo is client-supplied and otherwise unchecked here.
+  if (assignedTo && !(await isUserInOrg(supabase, assignedTo, profile.organisation_id))) {
+    return { success: false, error: 'That team member was not found in your organisation.' }
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase as any).from('action_items').insert({
@@ -95,6 +100,11 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
   }
 
   const supabase = await createClient()
+
+  // assignedTo is client-supplied and otherwise unchecked here.
+  if (assignedTo && !(await isUserInOrg(supabase, assignedTo, profile.organisation_id))) {
+    return { success: false, error: 'That team member was not found in your organisation.' }
+  }
 
   // Scope to caller's org — defence-in-depth on top of RLS
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
