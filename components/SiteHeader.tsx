@@ -13,7 +13,12 @@ export default async function SiteHeader() {
   const supabase = await createClient()
   const profile = await getCurrentUserProfile()
   const isAdmin = profile?.role === 'admin'
-  const isStaff = profile?.role === 'staff'
+  // The non-admin/non-viewer team-member role is 'user' (see
+  // supabase/migrations/20260715000002_roles_and_assignment.sql) — 'staff'
+  // was never a real, assignable role (no invite/creation flow ever sets
+  // it), so this previously matched nothing, and the "My Profile" HR
+  // self-service link below never rendered for anyone.
+  const isStaff = profile?.role === 'user'
 
   // Count unread staff replies for this org (RLS scopes this automatically)
   const { count: unreadCount } = await supabase

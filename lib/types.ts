@@ -248,7 +248,7 @@ export type Database = {
           email: string
           full_name: string | null
           username: string | null
-          role: 'admin' | 'user' | 'viewer' | 'staff'
+          role: 'admin' | 'user' | 'viewer'
           viewer_expires_at: string | null
           marketing_consent: boolean | null
           marketing_consent_at: string | null
