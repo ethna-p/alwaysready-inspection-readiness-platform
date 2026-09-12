@@ -88,6 +88,21 @@ function AccountContent() {
     setEnrolling(true)
     setEnrollIniting(true)
 
+    // BUG FOUND (Playwright walkthrough): listFactors().totp only lists
+    // VERIFIED factors, so an abandoned previous attempt — closed the tab,
+    // reloaded mid-setup — leaves an unverified factor this page's own
+    // `hasFactor` check never sees. enroll() always uses the same fixed
+    // friendlyName, and Supabase rejects a second factor under a name
+    // already in use, so a returning user hit "Could not start setup."
+    // permanently. Same root cause, same fix, as
+    // app/dashboard/account/mfa/setup/page.tsx.
+    const { data: existingFactors } = await supabase.auth.mfa.listFactors()
+    for (const factor of existingFactors?.all ?? []) {
+      if (factor.factor_type === 'totp' && factor.status === 'unverified') {
+        await supabase.auth.mfa.unenroll({ factorId: factor.id })
+      }
+    }
+
     const { data, error: err } = await supabase.auth.mfa.enroll({
       factorType: 'totp',
       friendlyName: 'Authenticator app',

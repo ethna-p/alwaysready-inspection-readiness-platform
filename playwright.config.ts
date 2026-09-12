@@ -74,6 +74,11 @@ export default defineConfig({
       SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_PREVIEW_SERVICE_ROLE_KEY ?? '',
       NEXT_PUBLIC_SITE_URL: BASE_URL,
       SUPERADMIN_EMAIL: env.SUPERADMIN_EMAIL ?? '',
+      // Only needed so e2e/support-tickets.spec.ts can genuinely exercise
+      // /api/inbound-email (simulating what the real Cloudflare Email Worker
+      // posts) rather than skip that code path entirely — not a production
+      // secret, see .env.local's own comment on this key.
+      INBOUND_EMAIL_SECRET: env.INBOUND_EMAIL_SECRET ?? '',
     },
   },
 })

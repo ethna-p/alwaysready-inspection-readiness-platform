@@ -34,6 +34,12 @@ const TEST_EMAIL       = 'e2e-admin@alwaysready.invalid'
 const TEST_PASSWORD    = 'E2E-test-fixture-pw-7f3a9c!'
 const TEAMMATE_EMAIL   = 'e2e-teammate@alwaysready.invalid'
 const TEAMMATE_PASSWORD = 'E2E-teammate-initial-pw-2b6e1!'
+// Superadmin status is purely email-based (see lib/assert-superadmin.ts) —
+// no organisation_id, no public.users row — so this fixture's email must be
+// the exact SUPERADMIN_EMAIL value the dev server itself is started with
+// (playwright.config.ts's webServer.env), not a fixed literal like the two
+// above.
+const SUPERADMIN_PASSWORD = 'E2E-superadmin-fixture-pw-9k4m2!'
 
 export async function seed() {
   const env = loadEnvLocal()
@@ -47,6 +53,10 @@ export async function seed() {
   // against anything that isn't clearly the preview project.
   if (!url.includes('ybvbkbpzciakicxlwghs')) {
     throw new Error('SAFETY ABORT: SUPABASE_PREVIEW_URL does not look like the preview project. Refusing to seed.')
+  }
+  const SUPERADMIN_EMAIL = env.SUPERADMIN_EMAIL
+  if (!SUPERADMIN_EMAIL) {
+    throw new Error('SUPERADMIN_EMAIL missing from .env.local — needed to seed the superadmin fixture.')
   }
 
   const admin = createClient(url, serviceRoleKey)
@@ -73,6 +83,23 @@ export async function seed() {
       .from('users')
       .select('id, email')
       .eq('organisation_id', existingOrg.id)
+
+    // support_tickets.submitted_by is NOT NULL REFERENCES auth.users(id) with
+    // no ON DELETE clause — same class of block as the auditTables below,
+    // found once e2e/support-tickets.spec.ts started actually creating
+    // tickets. Replies reference ticket_id, not organisation_id, so they
+    // need their own lookup first. Mirrors app/superadmin/organisations/
+    // actions.ts's own Step 2 (deleted before its Step 3 directTables loop,
+    // for the same reason).
+    const { data: existingTickets } = await admin
+      .from('support_tickets')
+      .select('id')
+      .eq('organisation_id', existingOrg.id)
+    const existingTicketIds = (existingTickets ?? []).map(t => t.id)
+    if (existingTicketIds.length > 0) {
+      await admin.from('support_ticket_replies').delete().in('ticket_id', existingTicketIds)
+    }
+    await admin.from('support_tickets').delete().eq('organisation_id', existingOrg.id)
 
     // A user who has ever made a compliance update (exactly what every spec
     // in this suite does) has rows in these audit tables referencing them
@@ -138,7 +165,7 @@ export async function seed() {
   // for them fails with "already been registered", with no path back to a
   // clean slate short of finding them by email directly, like this.
   const { data: allAuthUsers } = await admin.auth.admin.listUsers()
-  for (const email of [TEST_EMAIL, TEAMMATE_EMAIL]) {
+  for (const email of [TEST_EMAIL, TEAMMATE_EMAIL, SUPERADMIN_EMAIL]) {
     const orphan = allAuthUsers?.users.find(u => u.email === email)
     if (orphan) {
       const { error } = await admin.auth.admin.deleteUser(orphan.id)
@@ -227,6 +254,39 @@ export async function seed() {
   })
   if (teammateProfileError) throw new Error('teammate users row insert failed: ' + teammateProfileError.message)
 
+  // ── Create the superadmin fixture (auth user only — no org, no public.users
+  // row, matching the real superadmin's own design) with real MFA enrolled ──
+  const { data: superadminAuthUser, error: superadminAuthError } = await admin.auth.admin.createUser({
+    email: SUPERADMIN_EMAIL,
+    password: SUPERADMIN_PASSWORD,
+    email_confirm: true,
+  })
+  if (superadminAuthError || !superadminAuthUser?.user) {
+    throw new Error('superadmin auth user create failed: ' + superadminAuthError?.message)
+  }
+  const superadminUserId = superadminAuthUser.user.id
+
+  const superadminClient = createClient(url, serviceRoleKey)
+  const { error: superadminSignInError } = await superadminClient.auth.signInWithPassword({
+    email: SUPERADMIN_EMAIL,
+    password: SUPERADMIN_PASSWORD,
+  })
+  if (superadminSignInError) throw new Error('sign-in for superadmin MFA enrolment failed: ' + superadminSignInError.message)
+
+  const { data: superadminEnrollData, error: superadminEnrollError } = await superadminClient.auth.mfa.enroll({ factorType: 'totp' })
+  if (superadminEnrollError || !superadminEnrollData) throw new Error('superadmin MFA enroll failed: ' + superadminEnrollError?.message)
+
+  const superadminSecret = superadminEnrollData.totp.secret
+  const superadminCode = currentTotpCode(superadminSecret)
+
+  const { error: superadminVerifyError } = await superadminClient.auth.mfa.challengeAndVerify({
+    factorId: superadminEnrollData.id,
+    code: superadminCode,
+  })
+  if (superadminVerifyError) throw new Error('superadmin MFA verify (enrolment) failed: ' + superadminVerifyError.message)
+
+  await superadminClient.auth.signOut()
+
   // ── Write fixture ────────────────────────────────────────────────────────
   const fixtureDir = join(REPO_ROOT, 'e2e', '.fixtures')
   mkdirSync(fixtureDir, { recursive: true })
@@ -244,10 +304,16 @@ export async function seed() {
         password: TEAMMATE_PASSWORD,
         fullName: 'E2E Test Teammate',
       },
+      superadmin: {
+        userId: superadminUserId,
+        email: SUPERADMIN_EMAIL,
+        password: SUPERADMIN_PASSWORD,
+        totpSecret: superadminSecret,
+      },
     }, null, 2)
   )
 
-  return { orgId: org.id, userId, email: TEST_EMAIL, teammateUserId, teammateEmail: TEAMMATE_EMAIL }
+  return { orgId: org.id, userId, email: TEST_EMAIL, teammateUserId, teammateEmail: TEAMMATE_EMAIL, superadminUserId }
 }
 
 // Allow running directly: `node e2e/support/seed.ts` (via tsx) or imported as globalSetup.

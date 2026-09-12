@@ -13,6 +13,13 @@ export interface TeammateAccount {
   fullName: string
 }
 
+export interface SuperadminAccount {
+  userId: string
+  email: string
+  password: string
+  totpSecret: string
+}
+
 export interface TestAccount {
   orgId: string
   userId: string
@@ -20,6 +27,7 @@ export interface TestAccount {
   password: string
   totpSecret: string
   teammate: TeammateAccount
+  superadmin: SuperadminAccount
 }
 
 export function loadTestAccount(): TestAccount {
