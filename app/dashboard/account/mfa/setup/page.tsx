@@ -15,7 +15,7 @@
  *   5. Redirect to /dashboard/account with success message
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Image from 'next/image'
@@ -45,14 +45,44 @@ function MfaSetupForm() {
   const [initialising, setInitialising] = useState(true)
   const [showSecret, setShowSecret] = useState(false)
 
+  // Guards the enrol effect against running more than once per mount. Needed
+  // for two real reasons, not just React 18/19 Strict Mode's dev-only double-
+  // invoke of effects (which this also happens to neutralise): (1) without
+  // it, two overlapping calls race Supabase's own uniqueness constraint on
+  // factor friendly name, and whichever response lands last wins the UI
+  // state — usually invisible because the enroll that then "wins" already
+  // succeeded, but not always; (2) the friendly-name collision this exposed
+  // (see enroll() below) is real independently of any race — see its comment.
+  const hasStartedEnrolling = useRef(false)
+
   useEffect(() => {
     async function enroll() {
-      // Check if already enrolled — don't enroll twice
+      if (hasStartedEnrolling.current) return
+      hasStartedEnrolling.current = true
+
+      // Check if already enrolled — don't enroll twice.
       const { data: factors } = await supabase.auth.mfa.listFactors()
       if (factors?.totp?.length) {
         // Already enrolled — go to account page
         router.replace('/dashboard/account')
         return
+      }
+
+      // BUG FOUND (Playwright walkthrough, item 11): `factors.totp` only
+      // lists VERIFIED factors, so an earlier enrolment that was started but
+      // never completed — the user closed the tab, or simply reloaded this
+      // page mid-setup — leaves an UNVERIFIED factor behind that this check
+      // doesn't see at all. enroll() below always uses the same fixed
+      // friendlyName, and Supabase rejects a second factor with a name
+      // already in use — so returning to this page after an abandoned first
+      // attempt permanently failed with "Could not start setup." (visible
+      // in factors.all but not factors.totp is exactly that stale case).
+      // Clean any such leftover up first so a fresh attempt always has a
+      // clear name to enrol under.
+      for (const factor of factors?.all ?? []) {
+        if (factor.factor_type === 'totp' && factor.status === 'unverified') {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id })
+        }
       }
 
       const { data, error: enrollError } = await supabase.auth.mfa.enroll({
