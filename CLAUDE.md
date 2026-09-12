@@ -16,3 +16,13 @@
 ## Debugging schedule
 
 This repo has a living audit schedule tracked in [Issue #23](https://github.com/ethna-p/alwaysready-inspection-readiness-platform/issues/23) — a 7-chunk checklist (auth/session, data flow, uploads, cron, RLS, security, schema drift) plus a standing recommendation to periodically run an open-ended `/code-review` alongside it, since the chunks only catch patterns already seen once before. Read that issue before a scheduled audit pass, and amend it (new chunk, new check, dated update note) whenever a pass finds a category of bug the existing chunks didn't cover.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
