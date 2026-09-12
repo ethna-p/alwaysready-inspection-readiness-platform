@@ -87,7 +87,7 @@ export async function inviteTeamMember(
     return { success: false, error: 'Failed to save invitation. Please try again.' }
   }
 
-  revalidatePath('/dashboard/admin/team')
+  revalidatePath('/dashboard/account')
   return {
     success: true,
     message: `Invitation sent to ${email}. ${fullName} will receive an email with a link to set up their account.`,
@@ -209,15 +209,21 @@ export async function createVisitorLogin(
   }
 
   // ── Insert into public.users ─────────────────────────────────────────────
+  // onboarding_complete: true — a visitor joins an already-configured org for
+  // a fixed window and should never see the first-time welcome/consent screen
+  // (same reasoning as inviteTeamMember below). Without this, middleware
+  // redirects every /dashboard/* visit to /dashboard/welcome forever, since
+  // nothing in the visitor's flow can ever mark onboarding complete.
   const { error: insertError } = await adminSupabase
     .from('users')
     .insert({
-      id:                authData.user.id,
-      organisation_id:   profile.organisation_id,
+      id:                  authData.user.id,
+      organisation_id:     profile.organisation_id,
       email,
-      full_name:         fullName,
-      role:              'viewer',
-      viewer_expires_at: expiresAt.toISOString(),
+      full_name:           fullName,
+      role:                'viewer',
+      viewer_expires_at:   expiresAt.toISOString(),
+      onboarding_complete: true,
     })
 
   if (insertError) {
@@ -226,7 +232,7 @@ export async function createVisitorLogin(
     return { success: false, error: 'Failed to save visitor login. Please try again.' }
   }
 
-  revalidatePath('/dashboard/admin/team')
+  revalidatePath('/dashboard/account')
 
   return {
     success: true,
@@ -283,7 +289,7 @@ export async function revokeVisitorLogin(
     console.error('revokeVisitorLogin auth delete error:', deleteAuthError)
   }
 
-  revalidatePath('/dashboard/admin/team')
+  revalidatePath('/dashboard/account')
   return { success: true, message: `Visitor login for ${fullName} has been revoked.` }
 }
 
@@ -323,6 +329,6 @@ export async function changeTeamMemberRole(
     return { success: false, error: 'Failed to update role. Please try again.' }
   }
 
-  revalidatePath('/dashboard/admin/team')
+  revalidatePath('/dashboard/account')
   return { success: true, message: 'Role updated.' }
 }
