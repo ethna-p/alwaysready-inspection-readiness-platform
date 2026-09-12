@@ -2058,6 +2058,7 @@ export type Database = {
           notes:           string | null
           suppressed_at:   string | null
           optout_token:    string
+          optout_code:     string
           created_at:      string
         }
         Insert: {
@@ -2077,6 +2078,7 @@ export type Database = {
           notes?:           string | null
           suppressed_at?:   string | null
           optout_token?:    string
+          optout_code?:     string
           created_at?:      string
         }
         Update: {
@@ -2096,6 +2098,7 @@ export type Database = {
           notes?:           string | null
           suppressed_at?:   string | null
           optout_token?:    string
+          optout_code?:     string
           created_at?:      string
         }
         Relationships: [
@@ -2315,6 +2318,8 @@ export interface CampaignContact {
   contacted_at:    string | null
   notes:           string | null
   suppressed_at:   string | null
+  optout_token:    string
+  optout_code:     string
   created_at:      string
 }
 

@@ -40,7 +40,7 @@ export default async function CampaignDetailPage({
 
   const { data: contacts } = await supabase
     .from('campaign_contacts')
-    .select('id, location_id, location_name, provider_name, street_address, city, postcode, region, service_type, cqc_profile_url, contact_method, contacted_at, notes, suppressed_at, created_at')
+    .select('id, location_id, location_name, provider_name, street_address, city, postcode, region, service_type, cqc_profile_url, contact_method, contacted_at, notes, suppressed_at, optout_code, created_at')
     .eq('campaign_id', params.id)
     .order('created_at', { ascending: false }) as { data: CampaignContact[] | null }
 
@@ -107,6 +107,7 @@ export default async function CampaignDetailPage({
                 <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Address</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Region</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Type</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider" title="Print this on the letter — lets the recipient opt out without giving an email address">Opt-out code</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Letter sent</th>
                 <th className="px-4 py-3" />
@@ -133,6 +134,11 @@ export default async function CampaignDetailPage({
                   </td>
                   <td className="px-4 py-3 text-ink-muted text-xs">{c.region ?? '—'}</td>
                   <td className="px-4 py-3 text-xs text-ink-muted">{c.service_type ?? '—'}</td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs font-mono bg-fill border border-line rounded px-1.5 py-0.5 tracking-wider">
+                      {c.optout_code}
+                    </code>
+                  </td>
                   <td className="px-4 py-3">
                     {c.suppressed_at ? (
                       <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-red-100 text-red-700">Opted out</span>
