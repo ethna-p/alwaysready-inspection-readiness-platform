@@ -14,6 +14,7 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
+import { deleteStoragePrefix } from '@/lib/utils/storage-cleanup'
 
 export type ImpersonationResult =
   | { url: string }
@@ -163,6 +164,32 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
     .delete()
     .eq('organisation_id', orgId)
   if (usersError) return { error: `Failed to delete users: ${usersError.message}` }
+
+  // ── Step 4b: Delete Storage files ─────────────────────────────────────────
+  // The rows above only ever pointed at files in Storage — deleting them
+  // never deletes the files themselves. Without this, every org deleted
+  // through this tool leaves its uploaded evidence, HR certificates, and
+  // logo permanently orphaned in Storage (they all live under org-scoped
+  // path prefixes, evidence/i-statement/HR certs all under the 'evidence'
+  // bucket's ${orgId}/ prefix, logos under their own bucket). The automated
+  // GDPR-driven deletion cron (app/api/cron/data-deletion/route.ts) already
+  // does this — this mirrors it via the shared helper rather than silently
+  // relying on this tool being used only for orgs with nothing uploaded.
+  // Non-fatal: log and continue with the org row deletion either way, same
+  // as the cron does.
+  try {
+    await deleteStoragePrefix(supabase, 'evidence', orgId)
+  } catch (storageErr) {
+    console.error(`[deleteOrganisation] Storage evidence cleanup failed for org ${orgId}:`, storageErr)
+  }
+  try {
+    const { data: logoFiles } = await supabase.storage.from('org-logos').list(orgId)
+    if (logoFiles && logoFiles.length > 0) {
+      await supabase.storage.from('org-logos').remove(logoFiles.map(f => `${orgId}/${f.name}`))
+    }
+  } catch (logoErr) {
+    console.error(`[deleteOrganisation] Storage logo cleanup failed for org ${orgId}:`, logoErr)
+  }
 
   // ── Step 5: Delete the organisation ──────────────────────────────────────
   const { error: orgError } = await supabase

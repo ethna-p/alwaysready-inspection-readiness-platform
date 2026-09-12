@@ -311,7 +311,8 @@ export type Database = {
           id: string
           organisation_id: string
           klo_item_id: string
-          uploaded_by: string
+          /** Null once the uploading user's account has been deleted (ON DELETE SET NULL) — the evidence record itself is preserved. */
+          uploaded_by: string | null
           file_name: string
           storage_path: string
           file_size: number | null
@@ -325,7 +326,7 @@ export type Database = {
           id?: string
           organisation_id: string
           klo_item_id: string
-          uploaded_by: string
+          uploaded_by?: string | null
           file_name: string
           storage_path: string
           file_size?: number | null
@@ -338,7 +339,7 @@ export type Database = {
           id?: string
           organisation_id?: string
           klo_item_id?: string
-          uploaded_by?: string
+          uploaded_by?: string | null
           file_name?: string
           storage_path?: string
           file_size?: number | null

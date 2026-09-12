@@ -24,6 +24,7 @@ import { dirname, join } from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { loadEnvLocal } from './env.ts'
 import { currentTotpCode } from './totp.ts'
+import { deleteStoragePrefix } from '../../lib/utils/storage-cleanup.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = join(__dirname, '..', '..')
@@ -85,6 +86,7 @@ export async function seed() {
       'review_frequency_history',
       'priority_history',
       'compliance_records',
+      'kloe_evidence',
       'notification_log',
     ]
     for (const table of auditTables) {
@@ -100,6 +102,12 @@ export async function seed() {
     // deleteUser cascades the public.users row for a real FK-driven delete,
     // but belt-and-braces in case that row somehow outlived it.
     await admin.from('users').delete().eq('organisation_id', existingOrg.id)
+
+    // A spec that actually uploaded evidence (kloe-evidence-upload.spec.ts)
+    // left real files in Storage — the row deletes above never touch those.
+    // Mirrors the same real-app fix this session made to
+    // app/superadmin/organisations/actions.ts for exactly this reason.
+    await deleteStoragePrefix(admin, 'evidence', existingOrg.id)
 
     const { error: deleteOrgError } = await admin.from('organisations').delete().eq('id', existingOrg.id)
     if (deleteOrgError) {

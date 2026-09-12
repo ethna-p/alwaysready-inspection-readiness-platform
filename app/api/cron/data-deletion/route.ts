@@ -26,43 +26,7 @@ import { getFirstName }  from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
-import type { SupabaseClient } from '@supabase/supabase-js'
-
-/**
- * Recursively lists and deletes all Storage objects under `prefix/` in `bucket`.
- * Returns the total number of objects removed.
- *
- * Supabase Storage's list() is non-recursive: items with a null `id` are
- * "pseudo-folders" (common prefixes) and items with a UUID `id` are real files.
- * We recurse into pseudo-folders to reach every file.
- */
-async function deleteStoragePrefix(
-  supabase: SupabaseClient,
-  bucket:   string,
-  prefix:   string,
-): Promise<number> {
-  let count = 0
-  const { data: items, error } = await supabase.storage
-    .from(bucket)
-    .list(prefix, { limit: 1000 })
-
-  if (error || !items) return count
-
-  const files   = items.filter(i => i.id !== null)
-  const folders = items.filter(i => i.id === null)
-
-  if (files.length > 0) {
-    const paths = files.map(f => `${prefix}/${f.name}`)
-    await supabase.storage.from(bucket).remove(paths)
-    count += files.length
-  }
-
-  for (const folder of folders) {
-    count += await deleteStoragePrefix(supabase, bucket, `${prefix}/${folder.name}`)
-  }
-
-  return count
-}
+import { deleteStoragePrefix } from '@/lib/utils/storage-cleanup'
 
 export async function GET(request: Request) {
   if (!verifyCronSecret(request)) {

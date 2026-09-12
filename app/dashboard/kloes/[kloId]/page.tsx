@@ -157,8 +157,12 @@ export default async function KloeDetailPage({ params }: Props) {
     .eq('klo_item_id', kloId)
     .order('uploaded_at', { ascending: false })
 
-  // Resolve uploader display names
-  const uploaderIds = [...new Set((evidenceRows ?? []).map(e => e.uploaded_by))]
+  // Resolve uploader display names. uploaded_by is null once the uploading
+  // user's account has been deleted (ON DELETE SET NULL) — the evidence
+  // record is preserved either way, just with an unresolvable uploader.
+  const uploaderIds = [...new Set(
+    (evidenceRows ?? []).map(e => e.uploaded_by).filter(Boolean) as string[]
+  )]
   const { data: uploaderRows } = uploaderIds.length > 0
     ? await supabase
         .from('users')
@@ -177,7 +181,7 @@ export default async function KloeDetailPage({ params }: Props) {
     file_size: e.file_size,
     mime_type: e.mime_type,
     uploaded_at: e.uploaded_at,
-    uploaded_by_name: uploaderNameById.get(e.uploaded_by) ?? null,
+    uploaded_by_name: (e.uploaded_by ? uploaderNameById.get(e.uploaded_by) : null) ?? null,
     scan_status: e.scan_status ?? 'clean',
   }))
 
