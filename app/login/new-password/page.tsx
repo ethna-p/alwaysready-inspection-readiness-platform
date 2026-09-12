@@ -18,15 +18,12 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import SetPasswordForm from '@/components/SetPasswordForm'
 
 export default function NewPasswordPage() {
   const router   = useRouter()
   const supabase = createClient()
 
-  const [password, setPassword]   = useState('')
-  const [confirm, setConfirm]     = useState('')
-  const [error, setError]         = useState<string | null>(null)
-  const [loading, setLoading]     = useState(false)
   const [done, setDone]           = useState(false)
   const [hasSession, setHasSession] = useState<boolean | null>(null)
 
@@ -45,35 +42,19 @@ export default function NewPasswordPage() {
     }
   }, [hasSession, router])
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
-      return
-    }
-    if (password !== confirm) {
-      setError('Passwords do not match.')
-      return
-    }
-
-    setLoading(true)
-
+  async function handleSetPassword(password: string): Promise<{ error?: string }> {
     const { error: updateError } = await supabase.auth.updateUser({ password })
 
     if (updateError) {
-      setError(
-        'Could not set your new password. Your reset link may have expired — please go back and request a new one.'
-      )
-      setLoading(false)
-      return
+      return {
+        error: 'Could not set your new password. Your reset link may have expired — please go back and request a new one.',
+      }
     }
 
     // Sign out so they log in fresh with the new password
     await supabase.auth.signOut()
     setDone(true)
-    setLoading(false)
+    return {}
   }
 
   // Still checking session
@@ -145,76 +126,7 @@ export default function NewPasswordPage() {
                   Choose a new password for your account.
                 </p>
 
-                <form onSubmit={handleSubmit} noValidate>
-                  {error && (
-                    <div
-                      role="alert"
-                      className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700"
-                    >
-                      {error}
-                    </div>
-                  )}
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="new-password"
-                      className="block text-sm font-medium text-ink mb-1"
-                    >
-                      New password
-                    </label>
-                    <input
-                      id="new-password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="
-                        w-full rounded-lg border border-line px-3 py-2
-                        text-ink text-sm bg-card
-                        focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
-                      "
-                    />
-                    <p className="text-sm text-ink-dim mt-1">At least 8 characters.</p>
-                  </div>
-
-                  <div className="mb-6">
-                    <label
-                      htmlFor="confirm-password"
-                      className="block text-sm font-medium text-ink mb-1"
-                    >
-                      Confirm new password
-                    </label>
-                    <input
-                      id="confirm-password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={confirm}
-                      onChange={e => setConfirm(e.target.value)}
-                      className="
-                        w-full rounded-lg border border-line px-3 py-2
-                        text-ink text-sm bg-card
-                        focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
-                      "
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="
-                      w-full rounded-lg bg-[#014D4E] text-white font-semibold
-                      py-2.5 text-sm
-                      hover:bg-[#013a3b]
-                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]
-                      disabled:opacity-60 disabled:cursor-not-allowed
-                      transition-colors
-                    "
-                  >
-                    {loading ? 'Saving…' : 'Set new password'}
-                  </button>
-                </form>
+                <SetPasswordForm onSubmit={handleSetPassword} />
               </>
             )}
 
