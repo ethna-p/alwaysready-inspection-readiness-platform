@@ -122,9 +122,16 @@ function StatementRow({
       if ('error' in result) {
         setErrorMsg(result.error)
       } else {
+        // BUG FIX: this used to also call setOpen(false) here, in the same
+        // batch as setSavedMsg('Saved ✓') -- both state updates land in one
+        // React render, so the panel closes in the very render that would
+        // have shown the message. The confirmation the 2.5s auto-clear
+        // timeout was clearly meant to give the user time to see could
+        // never actually be seen. Every other save flow in this app (KLOE
+        // forms, HR forms) leaves the panel open and shows the confirmation
+        // inline instead -- matching that here, rather than auto-collapsing.
         setSavedMsg('Saved ✓')
         setTimeout(() => setSavedMsg(null), 2500)
-        setOpen(false)
       }
     })
   }

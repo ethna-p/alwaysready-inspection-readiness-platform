@@ -80,6 +80,12 @@ export async function seed() {
     // fails outright ("Database error deleting user") until those are
     // cleared first. Mirrors what the superadmin org-deletion flow
     // (app/superadmin/organisations/actions.ts) already does correctly.
+    // Was missing i_statement_evidence and the hr_* tables — added once the
+    // People's Voice and HR-record specs started actually writing to them
+    // (i_statement_evidence.updated_by has no ON DELETE clause at all, so it
+    // blocks deleteUser exactly like the others once a row references this
+    // org's admin/teammate). Now matches the reference list in
+    // app/superadmin/organisations/actions.ts exactly.
     const auditTables = [
       'klo_checklist_completions',
       'compliance_record_history',
@@ -87,6 +93,12 @@ export async function seed() {
       'priority_history',
       'compliance_records',
       'kloe_evidence',
+      'i_statement_evidence',
+      'hr_training_certificates',
+      'hr_training_records',
+      'hr_holiday_allowances',
+      'hr_staff_profiles',
+      'hr_training_types',
       'notification_log',
     ]
     for (const table of auditTables) {
