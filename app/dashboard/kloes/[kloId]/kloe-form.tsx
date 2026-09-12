@@ -9,10 +9,33 @@
  * Props:
  *   isAdmin — when false, priority and review frequency fields are hidden.
  *             Non-admins can only update status, review date, evidence, and notes.
+ *
+ * Stale-field correction after save (2026-09-12):
+ * React 19 resets an uncontrolled <form action={...}> back to its MOUNT-TIME
+ * defaultValue immediately after a successful submit — not to whatever was
+ * just typed/selected, and not to whatever the save actually persisted.
+ * Since every field here is uncontrolled (defaultValue, not value), that
+ * reset target is fixed at the page's FIRST load and never updates on its
+ * own even once the page revalidates with fresh data. Caught by an E2E test
+ * (e2e/kloe-timeline.spec.ts) doing two saves in a row: the second save
+ * silently resubmitted priority and review frequency back to their
+ * ORIGINAL pre-edit values, overwriting the change the first save had just
+ * made — a real, live risk for any real admin who edits a field, saves,
+ * then saves again (e.g. adding a note) without reselecting everything
+ * else first.
+ *
+ * Fixed by keeping refs to each field and, once `currentRecord` actually
+ * changes (which only happens after a save's revalidation lands fresh
+ * server data), imperatively re-syncing each field's live DOM value to
+ * match it — correcting React's own reset rather than fighting it.
+ * Deliberately NOT fixed by remounting the whole form (e.g. a `key` tied to
+ * currentRecord on the parent): that would also reset useActionState's own
+ * `state`, making the just-shown success banner vanish the instant fresh
+ * data arrives.
  */
 
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { useActionState, useEffect, useRef } from 'react'
 import { updateKloCompliance } from '../actions'
 import type { ActionState } from '../actions'
 import type { ComplianceRecord } from '@/lib/types'
@@ -65,6 +88,32 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
   const defaultFrequency = String(currentRecord?.review_frequency_days ?? 90)
   const defaultDate      = toDateInput(currentRecord?.date_reviewed ?? null)
   const defaultNotes     = currentRecord?.notes               ?? ''
+  const validFrequency   = FREQUENCY_OPTIONS.some(o => o.value === defaultFrequency)
+    ? defaultFrequency
+    : '90'
+
+  const statusRef    = useRef<HTMLSelectElement>(null)
+  const priorityRef  = useRef<HTMLSelectElement>(null)
+  const dateRef      = useRef<HTMLInputElement>(null)
+  const frequencyRef = useRef<HTMLSelectElement>(null)
+  const notesRef     = useRef<HTMLTextAreaElement>(null)
+
+  // Re-sync every field to the latest saved values once fresh data actually
+  // arrives — see the file header comment for why this exists. Skipped on
+  // the very first mount (nothing to correct yet) via the ref check.
+  const mountedRef = useRef(false)
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true
+      return
+    }
+    if (statusRef.current)    statusRef.current.value    = defaultStatus
+    if (priorityRef.current)  priorityRef.current.value  = defaultPriority
+    if (dateRef.current)      dateRef.current.value      = defaultDate
+    if (frequencyRef.current) frequencyRef.current.value = validFrequency
+    if (notesRef.current)     notesRef.current.value     = defaultNotes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRecord])
 
   // Get today's date as YYYY-MM-DD for the date input max attribute
   const todayStr = new Date().toISOString().substring(0, 10)
@@ -84,6 +133,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <select
             id="status"
             name="status"
+            ref={statusRef}
             defaultValue={defaultStatus}
             className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           >
@@ -104,6 +154,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             <select
               id="priority"
               name="priority"
+              ref={priorityRef}
               defaultValue={defaultPriority}
               className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
             >
@@ -125,6 +176,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             type="date"
             id="date_reviewed"
             name="date_reviewed"
+            ref={dateRef}
             defaultValue={defaultDate}
             max={todayStr}
             className="w-full border border-line rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
@@ -145,9 +197,8 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             <select
               id="review_frequency_days"
               name="review_frequency_days"
-              defaultValue={FREQUENCY_OPTIONS.some(o => o.value === defaultFrequency)
-                ? defaultFrequency
-                : '90'}
+              ref={frequencyRef}
+              defaultValue={validFrequency}
               className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-card text-ink focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
             >
               {FREQUENCY_OPTIONS.map(o => (
@@ -170,6 +221,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
           <textarea
             id="notes"
             name="notes"
+            ref={notesRef}
             rows={3}
             defaultValue={defaultNotes}
             placeholder="Any context about this review entry — actions taken, issues noted, etc."
