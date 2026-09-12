@@ -73,6 +73,7 @@ The following modules and features are fully built and deployed:
 
 **Subscription and trial**
 - Self-service trial signup flow
+- Cancel subscription — Account page button redirects the admin to Stripe's hosted billing portal, deep-linked directly to its cancellation flow; the resulting webhook (customer.subscription.deleted) updates the organisation
 - Trial banners and welcome screen
 - Demo leads capture with marketing consent
 - Trial email sequence (Days 3, 5, 7, 9, 11, 13) via Resend
@@ -98,7 +99,6 @@ The following modules and features are fully built and deployed:
 - All 24 KLOE rating characteristics loaded verbatim from the CQC draft framework .docx and verified bullet-by-bullet
 
 **Pending (not yet built)**
-- Cancel Subscription button on Account page (#133)
 - DSCR integration — connect to partner DSCR APIs (Nourish, PCS) (#302)
 - Rebuild onboarding email sequence (#609)
 - /terms and /dpa pages on platform (#231) — pending solicitor review (#230)
