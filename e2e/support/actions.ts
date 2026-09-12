@@ -35,3 +35,26 @@ export async function login(page: Page, account: LoginCredentials): Promise<void
     await page.getByRole('button', { name: 'Verify' }).click()
   }
 }
+
+/**
+ * Completes the mandatory TOTP enrolment flow at
+ * /dashboard/account/mfa/setup (middleware sends any admin/user-role
+ * account with no MFA factor here on their first dashboard visit) — the
+ * same real enroll -> compute code -> challengeAndVerify() flow a real
+ * user goes through, just automated. Returns the enrolled secret so the
+ * caller can log in with it again later in the same test.
+ *
+ * Assumes the page is already ON the setup page (middleware redirected
+ * there, or the caller navigated directly) when this is called.
+ */
+export async function completeMandatoryMfaSetup(page: Page): Promise<string> {
+  await page.waitForURL('**/dashboard/account/mfa/setup**')
+  await page.getByRole('button', { name: "Can't scan? Enter code manually" }).click()
+  const secret = (await page.getByText('Manual entry key:').locator('xpath=following-sibling::p[1]').innerText()).trim()
+
+  await page.locator('#totp-code').fill(currentTotpCode(secret))
+  await page.getByRole('button', { name: 'Activate two-factor authentication' }).click()
+  await page.waitForURL('**/dashboard/account?mfa=enrolled')
+
+  return secret
+}

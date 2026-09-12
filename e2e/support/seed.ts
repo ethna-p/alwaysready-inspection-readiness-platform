@@ -115,6 +115,25 @@ export async function seed() {
     }
   }
 
+  // Belt-and-braces, independent of the org-based cleanup above: that whole
+  // path only ever finds a stale user via organisation_id on their
+  // public.users row — if that row is EVER missing while the auth.users row
+  // survives (seen for real: a prior run's cascade deleted both fixture
+  // users' public.users rows, via ON DELETE CASCADE from an org row it
+  // successfully removed, but something orphaned the auth.users rows before
+  // that same pass reached them), the org-based query finds nothing to
+  // delete and those emails are stuck forever — every future createUser()
+  // for them fails with "already been registered", with no path back to a
+  // clean slate short of finding them by email directly, like this.
+  const { data: allAuthUsers } = await admin.auth.admin.listUsers()
+  for (const email of [TEST_EMAIL, TEAMMATE_EMAIL]) {
+    const orphan = allAuthUsers?.users.find(u => u.email === email)
+    if (orphan) {
+      const { error } = await admin.auth.admin.deleteUser(orphan.id)
+      if (error) throw new Error(`Failed to delete orphaned fixture auth user ${email}: ${error.message}`)
+    }
+  }
+
   // ── Create org ───────────────────────────────────────────────────────────
   const { data: svcType, error: svcTypeError } = await admin
     .from('service_types')

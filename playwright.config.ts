@@ -49,6 +49,15 @@ export default defineConfig({
     timeout: 10_000,
   },
 
+  // Default per-test timeout (30s) is tight for a spec doing genuinely more
+  // real work than most — e.g. kloe-assignment.spec.ts's full mandatory MFA
+  // enrolment (enroll() -> render QR -> reveal secret -> compute TOTP ->
+  // challengeAndVerify() -> hard navigation) on top of the rest of its
+  // steps. Passed standalone in ~16s but exceeded 30s under the full
+  // suite's cumulative load (same unoptimized-dev-server class of flake as
+  // the expect timeout above). 60s matches the same reasoning.
+  timeout: 60_000,
+
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],

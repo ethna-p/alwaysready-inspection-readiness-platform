@@ -17,6 +17,21 @@
  *   - setting a new password succeeds, signs the recovery session out,
  *     and the new password works for a real subsequent login
  *
+ * This specifically covers an account with NO MFA factor enrolled — the
+ * teammate fixture, same as every other spec that logs in as them. A real
+ * aal1-only recovery session genuinely cannot complete a password change
+ * once MFA IS enrolled (confirmed directly: Supabase's own updateUser()
+ * rejects it, "AAL2 required" in substance even though the app's own
+ * generic catch-all error message doesn't say so) — app/login/new-password
+ * has no path to verify MFA mid-recovery at all, so that's a real gap for
+ * any account with MFA on, which per this app's own middleware is
+ * eventually every admin/user account. Flagged, not fixed here — it's a
+ * genuine product decision (redirect through /login/mfa mid-recovery, or
+ * an embedded step) rather than a quick patch. The teammate's MFA factor
+ * (if kloe-assignment.spec.ts ran first and enrolled one for real) is
+ * explicitly removed below so this spec keeps testing the no-MFA case
+ * deterministically, regardless of what ran before it.
+ *
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.
  */
 import { test, expect } from '@playwright/test'
@@ -27,6 +42,12 @@ import { getAdminClient } from './support/admin'
 test('forgot password: request link, follow it, set a new password, log in with it', async ({ page, baseURL }) => {
   const account = loadTestAccount()
   const email = account.teammate.email
+
+  const admin = getAdminClient()
+  const { data: factorsData } = await admin.auth.admin.mfa.listFactors({ userId: account.teammate.userId })
+  for (const factor of factorsData?.factors ?? []) {
+    await admin.auth.admin.mfa.deleteFactor({ id: factor.id, userId: account.teammate.userId })
+  }
 
   // ── UI: request the reset from /login ───────────────────────────────────
   await page.goto('/login')
@@ -40,7 +61,6 @@ test('forgot password: request link, follow it, set a new password, log in with 
   // Same mechanism the app's own resetPasswordForEmail call drives
   // (Supabase Auth), same redirectTo the app itself builds — the only
   // difference is minting it directly instead of waiting on a real inbox.
-  const admin = getAdminClient()
   const { data, error } = await admin.auth.admin.generateLink({
     type: 'recovery',
     email,
