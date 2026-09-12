@@ -80,6 +80,23 @@ export async function deleteContact(contactId: string, campaignId: string) {
   revalidatePath(`/superadmin/campaigns/${campaignId}`)
 }
 
+/**
+ * Manually suppress a contact — the counterpart to the automatic token-based
+ * suppression in app/api/inbound-optout/route.ts. Used when an opt-out
+ * request arrives with no token (no way to verify it automatically, since
+ * postcode/business name are both public) and AJ has manually confirmed the
+ * match after reviewing the notification email.
+ */
+export async function suppressContact(contactId: string, campaignId: string) {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+  await supabase
+    .from('campaign_contacts')
+    .update({ suppressed_at: new Date().toISOString() })
+    .eq('id', contactId)
+  revalidatePath(`/superadmin/campaigns/${campaignId}`)
+}
+
 export async function addSuppression(formData: FormData) {
   await assertSuperadmin()
   const locationName = (formData.get('location_name') as string ?? '').trim()

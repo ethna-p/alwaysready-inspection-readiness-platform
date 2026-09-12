@@ -10,6 +10,7 @@ import { notFound }            from 'next/navigation'
 import { createAdminClient }   from '@/lib/supabase/admin'
 import AddContactForm           from './AddContactForm'
 import MarkContactedButton      from './MarkContactedButton'
+import SuppressContactButton    from './SuppressContactButton'
 import DeleteContactButton      from './DeleteContactButton'
 import CampaignStatusSelect     from './CampaignStatusSelect'
 import type { MarketingCampaign, CampaignContact } from '@/lib/types'
@@ -150,6 +151,9 @@ export default async function CampaignDetailPage({
                     <div className="flex items-center justify-end gap-2">
                       {!c.contacted_at && !c.suppressed_at && (
                         <MarkContactedButton contactId={c.id} campaignId={campaign.id} />
+                      )}
+                      {!c.suppressed_at && (
+                        <SuppressContactButton contactId={c.id} campaignId={campaign.id} name={c.location_name} />
                       )}
                       <DeleteContactButton contactId={c.id} campaignId={campaign.id} name={c.location_name} />
                     </div>

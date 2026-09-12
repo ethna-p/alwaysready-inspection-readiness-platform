@@ -3,8 +3,12 @@
  *
  * Receives opt-out form submissions from alwaysready.uk/optout.
  * 1. Creates a record in marketing_suppressions
- * 2. Attempts to match against campaign_contacts by postcode and marks them suppressed
- * 3. Notifies AJ
+ * 2. If a signed opt-out token was provided, verifies and auto-suppresses the
+ *    matching campaign_contacts row. Without a token (e.g. a letter recipient
+ *    with no digital link), nothing is auto-suppressed — postcode and
+ *    business name are both public, so neither is proof of identity.
+ * 3. Notifies AJ, flagging token-less requests for manual review/suppression
+ *    via the superadmin campaigns page.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -85,9 +89,16 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Match and suppress campaign contacts ───────────────────────────────────
-  // Priority 1: token — suppresses exactly one contact, no guessing.
-  // Priority 2: email + postcode — both must match.
+  // Only the token path auto-suppresses. A token proves the requester actually
+  // holds a specific marketing email (it's embedded in that email's opt-out
+  // link) — postcode and business name are both public CQC-register data, so
+  // no combination of them is ever proof of identity, and campaign_contacts
+  // has no email column to check an email against in the first place. A
+  // submission with no token (a letter recipient with no digital link to
+  // click) is recorded above and flagged to AJ below for manual matching —
+  // never auto-suppressed.
   let matchedContactId: string | null = null
+  let needsManualReview = false
 
   if (optoutToken) {
     const { data: contact } = await supabase
@@ -104,22 +115,8 @@ export async function POST(req: NextRequest) {
         .eq('id', contact.id)
       matchedContactId = contact.id
     }
-  } else if (email && postcode) {
-    // Require both email and postcode to match — postcode alone is not enough.
-    const { data: matched } = await supabase
-      .from('campaign_contacts')
-      .select('id')
-      .eq('postcode', postcode)
-      .is('suppressed_at', null) as { data: Pick<CampaignContact, 'id'>[] | null }
-
-    if (matched && matched.length > 0) {
-      const ids = matched.map(r => r.id)
-      await supabase
-        .from('campaign_contacts')
-        .update({ suppressed_at: new Date().toISOString() })
-        .in('id', ids)
-      matchedContactId = ids[0]
-    }
+  } else {
+    needsManualReview = true
   }
 
   if (matchedContactId) {
@@ -131,12 +128,23 @@ export async function POST(req: NextRequest) {
 
   // ── Notify AJ ─────────────────────────────────────────────────────────────
   const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
+  const reviewBanner = needsManualReview
+    ? `<p style="margin:0 0 12px;font-size:13px;color:#92400e;background:#fef3c7;padding:8px 12px;border-radius:4px">
+         ⚠️ <strong>Needs manual review.</strong> No opt-out token was provided (this request didn't come from
+         clicking a link in a marketing email), so nothing was automatically suppressed — postcode and business
+         name alone are public information and aren't proof this request is genuine. Confirm the match yourself
+         in the campaigns page, then suppress it there.
+       </p>`
+    : `<p style="margin:0 0 12px;font-size:13px;color:#065f46;background:#d1fae5;padding:8px 12px;border-radius:4px">
+         ✅ Verified via opt-out token — automatically suppressed, no action needed.
+       </p>`
   await sendEmail({
     to: ajEmail,
-    subject: `Marketing opt-out: ${locationName}`,
+    subject: `Marketing opt-out${needsManualReview ? ' (needs review)' : ''}: ${locationName}`,
     type: 'transactional',
     bodyHtml: `
       <p>A provider has requested to be removed from AlwaysReady marketing.</p>
+      ${reviewBanner}
       <table style="border-collapse:collapse;font-size:14px;margin-top:12px;">
         <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Service name</td>
@@ -152,8 +160,8 @@ export async function POST(req: NextRequest) {
         </tr>
       </table>
       <p style="margin-top:16px;font-size:15px;line-height:1.7;color:#1a1a1a;">
-        View all opt-outs in the
-        <a href="https://portal.alwaysready.uk/superadmin/leads" style="color:#014D4E;">superadmin Leads page</a>.
+        View and manage opt-outs in the
+        <a href="https://portal.alwaysready.uk/superadmin/campaigns" style="color:#014D4E;">superadmin Campaigns page</a>.
       </p>
     `,
   })
