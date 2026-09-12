@@ -50,22 +50,61 @@ export async function seed() {
 
   const admin = createClient(url, serviceRoleKey)
 
-  // ── Clean slate: remove any previous fixture ────────────────────────────
-  const { data: existingOrg } = await admin
+  // ── Clean slate: remove any previous fixture(s) ─────────────────────────
+  // Plural deliberately: .maybeSingle() here used to throw PGRST116 on more
+  // than one matching row and — since only `data` was destructured, never
+  // `error` — that failure was silent, so the whole cleanup block was
+  // skipped and a duplicate org+user was left behind. That's not a
+  // hypothetical: it's exactly what happened on 2026-09-12, compounded by
+  // the second bug below, and the fixed version needs to cope with an
+  // arbitrary number of stale orgs already sitting there from it, not just
+  // assume at most one.
+  const { data: existingOrgs, error: existingOrgsError } = await admin
     .from('organisations')
     .select('id')
     .eq('name', TEST_ORG_NAME)
-    .maybeSingle()
+  if (existingOrgsError) {
+    throw new Error('Failed to look up existing fixture org(s): ' + existingOrgsError.message)
+  }
 
-  if (existingOrg) {
+  for (const existingOrg of existingOrgs ?? []) {
     const { data: existingUsers } = await admin
       .from('users')
-      .select('id')
+      .select('id, email')
       .eq('organisation_id', existingOrg.id)
-    for (const u of existingUsers ?? []) {
-      await admin.auth.admin.deleteUser(u.id) // cascades the public.users row
+
+    // A user who has ever made a compliance update (exactly what every spec
+    // in this suite does) has rows in these audit tables referencing them
+    // via a NOT NULL FK with no ON DELETE clause — auth.admin.deleteUser
+    // fails outright ("Database error deleting user") until those are
+    // cleared first. Mirrors what the superadmin org-deletion flow
+    // (app/superadmin/organisations/actions.ts) already does correctly.
+    const auditTables = [
+      'klo_checklist_completions',
+      'compliance_record_history',
+      'review_frequency_history',
+      'priority_history',
+      'compliance_records',
+      'notification_log',
+    ]
+    for (const table of auditTables) {
+      await admin.from(table).delete().eq('organisation_id', existingOrg.id)
     }
-    await admin.from('organisations').delete().eq('id', existingOrg.id)
+
+    for (const u of existingUsers ?? []) {
+      const { error: deleteUserError } = await admin.auth.admin.deleteUser(u.id)
+      if (deleteUserError) {
+        throw new Error(`Failed to delete stale fixture user ${u.email}: ${deleteUserError.message}`)
+      }
+    }
+    // deleteUser cascades the public.users row for a real FK-driven delete,
+    // but belt-and-braces in case that row somehow outlived it.
+    await admin.from('users').delete().eq('organisation_id', existingOrg.id)
+
+    const { error: deleteOrgError } = await admin.from('organisations').delete().eq('id', existingOrg.id)
+    if (deleteOrgError) {
+      throw new Error(`Failed to delete stale fixture org ${existingOrg.id}: ${deleteOrgError.message}`)
+    }
   }
 
   // ── Create org ───────────────────────────────────────────────────────────
