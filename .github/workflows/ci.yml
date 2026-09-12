@@ -47,7 +47,16 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pinned, not "latest": "latest" makes the action call GitHub's
+          # release API on every run to resolve the newest tag, which is
+          # unauthenticated and shared across every Actions runner on this
+          # IP range — it intermittently hits GitHub's rate limit and fails
+          # the whole job before a single test runs (seen on run #183,
+          # 2026-09-12: "Failed to resolve latest Supabase CLI release: rate
+          # limit exceeded"). Pinning removes that lookup entirely. Bump
+          # this deliberately when there's a reason to (a CLI feature this
+          # repo needs), not routinely.
+          version: 2.117.0
 
       - name: Start local Supabase (applies all migrations)
         run: supabase start --debug
