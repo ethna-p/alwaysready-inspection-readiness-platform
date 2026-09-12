@@ -11,6 +11,17 @@
  *
  * After a successful exchange, redirects to `next` (defaults to /dashboard).
  * Password reset links set next=/login/new-password via the redirectTo param.
+ *
+ * A THIRD format exists and is NOT handled here at all: any link minted via
+ * the Admin API (auth.admin.generateLink, auth.admin.inviteUserByEmail — the
+ * latter is exactly how inviteTeamMember sends real staff invites) never
+ * carries a `code`, because PKCE needs a code_verifier that only ever exists
+ * in the browser that initiated the request — an admin-triggered link has no
+ * such browser. Those links deliver the session as a URL FRAGMENT instead
+ * (#access_token=...&refresh_token=...), which never reaches this server at
+ * all (browsers strip fragments before the request is sent) — so neither
+ * `code` nor `token_hash` will ever be present here for that case. The
+ * fallback below hands off to a client page that can actually see it.
  */
 
 import { createClient } from '@/lib/supabase/server'
@@ -49,6 +60,13 @@ export async function GET(request: NextRequest) {
     console.error('[auth/callback] verifyOtp error:', error)
   }
 
-  // Something went wrong — send back to login with an error hint
-  return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
+  // Neither `code` nor `token_hash` was present — this is exactly what an
+  // Admin-API-minted link looks like when it reaches the server (see the
+  // file comment above), so it's not necessarily a genuine failure yet.
+  // Hand off to a client page that can read the URL fragment directly: a
+  // same-origin redirect whose own Location has no fragment still carries
+  // the ORIGINAL request's fragment forward (standard browser behavior,
+  // confirmed against this app's own dev server), so #access_token=...
+  // survives this hop intact and is still there when that page mounts.
+  return NextResponse.redirect(`${origin}/auth/callback/complete?next=${encodeURIComponent(next)}`)
 }
