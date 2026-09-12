@@ -28,9 +28,11 @@ import { currentTotpCode } from './totp.ts'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = join(__dirname, '..', '..')
 
-const TEST_ORG_NAME = '__E2E_TEST_ORG__'
-const TEST_EMAIL    = 'e2e-admin@alwaysready.invalid'
-const TEST_PASSWORD = 'E2E-test-fixture-pw-7f3a9c!'
+const TEST_ORG_NAME    = '__E2E_TEST_ORG__'
+const TEST_EMAIL       = 'e2e-admin@alwaysready.invalid'
+const TEST_PASSWORD    = 'E2E-test-fixture-pw-7f3a9c!'
+const TEAMMATE_EMAIL   = 'e2e-teammate@alwaysready.invalid'
+const TEAMMATE_PASSWORD = 'E2E-teammate-initial-pw-2b6e1!'
 
 export async function seed() {
   const env = loadEnvLocal()
@@ -123,15 +125,51 @@ export async function seed() {
 
   await userClient.auth.signOut()
 
+  // ── Create a second, teammate account (role 'user', no MFA enrolled) ───
+  // Gives the admin fixture a real in-org target for team-management
+  // actions (e.g. resetTeamMemberPassword) without needing MFA of its own.
+  const { data: teammateAuthUser, error: teammateAuthError } = await admin.auth.admin.createUser({
+    email: TEAMMATE_EMAIL,
+    password: TEAMMATE_PASSWORD,
+    email_confirm: true,
+  })
+  if (teammateAuthError || !teammateAuthUser?.user) {
+    throw new Error('teammate auth user create failed: ' + teammateAuthError?.message)
+  }
+  const teammateUserId = teammateAuthUser.user.id
+
+  const { error: teammateProfileError } = await admin.from('users').insert({
+    id: teammateUserId,
+    organisation_id: org.id,
+    email: TEAMMATE_EMAIL,
+    role: 'user',
+    full_name: 'E2E Test Teammate',
+    username: 'e2e_test_teammate',
+    onboarding_complete: true,
+  })
+  if (teammateProfileError) throw new Error('teammate users row insert failed: ' + teammateProfileError.message)
+
   // ── Write fixture ────────────────────────────────────────────────────────
   const fixtureDir = join(REPO_ROOT, 'e2e', '.fixtures')
   mkdirSync(fixtureDir, { recursive: true })
   writeFileSync(
     join(fixtureDir, 'test-account.json'),
-    JSON.stringify({ orgId: org.id, userId, email: TEST_EMAIL, password: TEST_PASSWORD, totpSecret: secret }, null, 2)
+    JSON.stringify({
+      orgId: org.id,
+      userId,
+      email: TEST_EMAIL,
+      password: TEST_PASSWORD,
+      totpSecret: secret,
+      teammate: {
+        userId: teammateUserId,
+        email: TEAMMATE_EMAIL,
+        password: TEAMMATE_PASSWORD,
+        fullName: 'E2E Test Teammate',
+      },
+    }, null, 2)
   )
 
-  return { orgId: org.id, userId, email: TEST_EMAIL }
+  return { orgId: org.id, userId, email: TEST_EMAIL, teammateUserId, teammateEmail: TEAMMATE_EMAIL }
 }
 
 // Allow running directly: `node e2e/support/seed.ts` (via tsx) or imported as globalSetup.

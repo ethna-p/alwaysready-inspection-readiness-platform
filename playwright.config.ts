@@ -21,6 +21,14 @@ const BASE_URL = `http://localhost:${PORT}`
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false, // shared seeded fixture account — avoid cross-test races for now
+  // `fullyParallel: false` only serializes tests within one file; separate
+  // spec files still run in their own workers concurrently by default.
+  // Every spec logs in as the same seeded admin (shared TOTP secret), so two
+  // files verifying MFA at once can race — one computes/submits a code the
+  // instant the other's is still in flight, and Supabase's anti-replay
+  // guard on the previously-used code rejects it as "Incorrect code."
+  // Force one worker so specs run strictly one after another.
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
