@@ -8,7 +8,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { requireAdmin } from '@/lib/auth'
+import { requireAdmin, requireUser } from '@/lib/auth'
 import { MAX_SIZE_BYTES, validateFileMime, scanWithCloudmersive } from '@/lib/utils/upload'
 
 export type HrActionResult =
@@ -83,24 +83,19 @@ export async function saveOwnProfile(data: {
   next_of_kin_name: string | null
   next_of_kin_phone: string | null
 }): Promise<HrActionResult> {
+  // requireUser() enforces AAL2 (a factor-enrolled user who hasn't verified
+  // this session is rejected) and already carries organisation_id, unlike a
+  // raw supabase.auth.getUser() call.
+  const profile = await requireUser()
+  if (!profile) return { success: false, error: 'Not authenticated.' }
+
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: 'Not authenticated.' }
-
-  // Resolve org from users table
-  const { data: userRow } = await supabase
-    .from('users')
-    .select('organisation_id')
-    .eq('id', user.id)
-    .single()
-  if (!userRow) return { success: false, error: 'User record not found.' }
 
   const { error } = await supabase
     .from('hr_staff_profiles')
     .upsert({
-      organisation_id: userRow.organisation_id,
-      user_id: user.id,
+      organisation_id: profile.organisation_id,
+      user_id: profile.id,
       updated_at: new Date().toISOString(),
       next_of_kin_name: data.next_of_kin_name,
       next_of_kin_phone: data.next_of_kin_phone,
@@ -111,7 +106,7 @@ export async function saveOwnProfile(data: {
     return { success: false, error: 'Failed to save. Please try again.' }
   }
 
-  revalidatePath(`/dashboard/hr/${user.id}`)
+  revalidatePath(`/dashboard/hr/${profile.id}`)
   return { success: true, message: 'Emergency contact saved.' }
 }
 

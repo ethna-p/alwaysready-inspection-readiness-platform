@@ -216,7 +216,7 @@ export async function POST(req: NextRequest) {
   if (isNew) {
     if (nurtureOptIn) {
       // Send nurture Email 1 and record that it has been sent
-      const email1 = getWaitlistNurtureEmail(1, displayName)
+      const email1 = getWaitlistNurtureEmail(1, escapeHtml(displayName))
       if (email1) {
         await sendEmail({
           to: email,
