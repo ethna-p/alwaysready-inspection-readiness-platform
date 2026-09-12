@@ -22,6 +22,7 @@ import { stripeStatusToTier } from '@/lib/stripe-utils'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
+import { claimNotification } from '@/lib/notification-log'
 
 // notification_log's unique index is (organisation_id, notification_type,
 // entity_type, entity_id, due_date, recipient_email). For stripe_event rows,
@@ -102,19 +103,15 @@ export async function POST(req: NextRequest) {
         for (const admin of admins ?? []) {
           if (!admin.email) continue
 
-          const { error: logClaim } = await supabase.from('notification_log').insert({
-            organisation_id:   orgId,
-            notification_type: 'stripe_event',
-            entity_type:       'subscription',
-            entity_id:         event.id,
-            due_date:          STRIPE_EVENT_LOG_DUE_DATE,
-            recipient_email:   admin.email,
-          })
-          if (logClaim) {
-            if (logClaim.code === '23505') continue // already sent for this event
-            console.error('[stripe-webhook] checkout confirmation log claim error:', logClaim)
-            continue
-          }
+          const claim = await claimNotification(supabase, {
+            organisationId:   orgId,
+            notificationType: 'stripe_event',
+            entityType:       'subscription',
+            entityId:         event.id,
+            dueDate:          STRIPE_EVENT_LOG_DUE_DATE,
+            recipientEmail:   admin.email,
+          }, 'stripe-webhook checkout confirmation')
+          if (!claim.claimed) continue // already sent for this event, or claim failed (logged inside)
 
           const firstName = escapeHtml(getFirstName(admin.full_name))
           await sendEmail({
@@ -222,19 +219,15 @@ export async function POST(req: NextRequest) {
           // Each recipient's claim-then-send is independent (keyed by its own
           // recipient_email) — run them concurrently rather than serially.
           await Promise.all(adminEmails.map(async (email) => {
-            const { error: logClaim } = await supabase.from('notification_log').insert({
-              organisation_id:   org.id,
-              notification_type: 'stripe_event',
-              entity_type:       'subscription',
-              entity_id:         event.id,
-              due_date:          STRIPE_EVENT_LOG_DUE_DATE,
-              recipient_email:   email,
-            })
-            if (logClaim) {
-              if (logClaim.code === '23505') return // already sent for this event
-              console.error('[stripe-webhook] deletion notice log claim error:', logClaim)
-              return
-            }
+            const claim = await claimNotification(supabase, {
+              organisationId:   org.id,
+              notificationType: 'stripe_event',
+              entityType:       'subscription',
+              entityId:         event.id,
+              dueDate:          STRIPE_EVENT_LOG_DUE_DATE,
+              recipientEmail:   email,
+            }, 'stripe-webhook deletion notice')
+            if (!claim.claimed) return // already sent for this event, or claim failed (logged inside)
 
             await sendEmail({
               to:      email,

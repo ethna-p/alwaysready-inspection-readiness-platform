@@ -37,6 +37,7 @@ import {
 } from '@/lib/trial-emails'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
+import { claimNotification, releaseNotificationClaim } from '@/lib/notification-log'
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
@@ -95,19 +96,19 @@ export async function GET(request: Request) {
 
       const firstName = escapeHtml(getFirstName(admin.full_name))
 
-      // Claim the slot atomically — insert into notification_log first.
-      // The unique index prevents a second concurrent cron run from also sending.
-      const { error: logClaimError } = await supabase.from('notification_log').insert({
-        organisation_id:   org.id,
-        notification_type: 'trial_day',
-        entity_type:       'trial',
-        entity_id:         emailDef.dayKey,
-        due_date:          dueDateKey,
-        recipient_email:   admin.email,
-      })
-      if (logClaimError) {
-        if (logClaimError.code === '23505') { emailsSkipped++; continue } // already sent
-        console.error(`[trial-emails] notification_log claim error:`, logClaimError)
+      // Claim the slot atomically — the unique index prevents a second
+      // concurrent cron run from also sending.
+      const claimKey = {
+        organisationId:   org.id,
+        notificationType: 'trial_day',
+        entityType:       'trial',
+        entityId:         emailDef.dayKey,
+        dueDate:          dueDateKey,
+        recipientEmail:   admin.email,
+      }
+      const claim = await claimNotification(supabase, claimKey, 'trial-emails')
+      if (!claim.claimed) {
+        if (claim.reason === 'already_sent') { emailsSkipped++; continue }
         errors.push(`${emailDef.dayKey} → ${admin.email}: log claim failed`); continue
       }
 
@@ -143,10 +144,7 @@ export async function GET(request: Request) {
         console.log(`[trial-emails] Sent ${emailDef.dayKey} to ${admin.email} (${org.name})`)
       } else {
         // Sending failed — release the claim so the next cron run can retry
-        await supabase.from('notification_log').delete()
-          .eq('organisation_id', org.id).eq('notification_type', 'trial_day')
-          .eq('entity_type', 'trial').eq('entity_id', emailDef.dayKey)
-          .eq('due_date', dueDateKey).eq('recipient_email', admin.email)
+        await releaseNotificationClaim(supabase, claimKey)
         errors.push(`${emailDef.dayKey} → ${admin.email}: ${result.error ?? result.skipped}`)
       }
     }
@@ -188,18 +186,18 @@ export async function GET(request: Request) {
     for (const admin of admins ?? []) {
       if (!admin.email) continue
 
-      // Claim atomically — insert first, send only if the claim succeeds
-      const { error: logClaim14b } = await supabase.from('notification_log').insert({
-        organisation_id:   org.id,
-        notification_type: 'trial_day',
-        entity_type:       'trial',
-        entity_id:         'day_14b',
-        due_date:          yesterdayStr,
-        recipient_email:   admin.email,
-      })
-      if (logClaim14b) {
-        if (logClaim14b.code === '23505') { emailsSkipped++; continue }
-        console.error('[trial-emails] day_14b log claim error:', logClaim14b)
+      // Claim atomically — send only if the claim succeeds
+      const claimKey14b = {
+        organisationId:   org.id,
+        notificationType: 'trial_day',
+        entityType:       'trial',
+        entityId:         'day_14b',
+        dueDate:          yesterdayStr,
+        recipientEmail:   admin.email,
+      }
+      const claim14b = await claimNotification(supabase, claimKey14b, 'trial-emails day_14b')
+      if (!claim14b.claimed) {
+        if (claim14b.reason === 'already_sent') { emailsSkipped++; continue }
         errors.push(`day_14b → ${admin.email}: log claim failed`); continue
       }
 
@@ -243,10 +241,7 @@ export async function GET(request: Request) {
         emailsSent++
         console.log(`[trial-emails] Sent day_14b to ${admin.email} (${org.name})`)
       } else {
-        await supabase.from('notification_log').delete()
-          .eq('organisation_id', org.id).eq('notification_type', 'trial_day')
-          .eq('entity_type', 'trial').eq('entity_id', 'day_14b')
-          .eq('due_date', yesterdayStr).eq('recipient_email', admin.email)
+        await releaseNotificationClaim(supabase, claimKey14b)
         errors.push(`day_14b → ${admin.email}: ${result.error ?? result.skipped}`)
       }
     }
@@ -284,18 +279,18 @@ export async function GET(request: Request) {
     const orgName    = escapeHtml(org?.name ?? 'your organisation')
     const dueDateKey = today.toISOString().split('T')[0]
 
-    // Claim atomically — insert first, send only if the claim succeeds
-    const { error: logClaimUser } = await supabase.from('notification_log').insert({
-      organisation_id:   usr.organisation_id,
-      notification_type: 'user_onboarding',
-      entity_type:       'user',
-      entity_id:         emailDef.dayKey,
-      due_date:          dueDateKey,
-      recipient_email:   usr.email,
-    })
-    if (logClaimUser) {
-      if (logClaimUser.code === '23505') { emailsSkipped++; continue }
-      console.error('[trial-emails] user_onboarding log claim error:', logClaimUser)
+    // Claim atomically — send only if the claim succeeds
+    const claimKeyUser = {
+      organisationId:   usr.organisation_id,
+      notificationType: 'user_onboarding',
+      entityType:       'user',
+      entityId:         emailDef.dayKey,
+      dueDate:          dueDateKey,
+      recipientEmail:   usr.email,
+    }
+    const claimUser = await claimNotification(supabase, claimKeyUser, 'trial-emails user_onboarding')
+    if (!claimUser.claimed) {
+      if (claimUser.reason === 'already_sent') { emailsSkipped++; continue }
       errors.push(`${emailDef.dayKey} → ${usr.email}: log claim failed`); continue
     }
 
@@ -310,10 +305,7 @@ export async function GET(request: Request) {
       emailsSent++
       console.log(`[trial-emails] Sent ${emailDef.dayKey} to ${usr.email} (${orgName})`)
     } else {
-      await supabase.from('notification_log').delete()
-        .eq('organisation_id', usr.organisation_id).eq('notification_type', 'user_onboarding')
-        .eq('entity_type', 'user').eq('entity_id', emailDef.dayKey)
-        .eq('due_date', dueDateKey).eq('recipient_email', usr.email)
+      await releaseNotificationClaim(supabase, claimKeyUser)
       errors.push(`${emailDef.dayKey} → ${usr.email}: ${result.error ?? result.skipped}`)
     }
   }
