@@ -36,7 +36,6 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | Route | Purpose |
 |---|---|
 | `/api/cqc-lookup` | CQC Register lookup by Location ID |
-| `/api/evidence-pack` | Generate evidence pack PDF |
 | `/api/export-data` | GDPR data export (ZIP) |
 | `/api/export-evidence` | Evidence files export |
 | `/api/report-snapshot` | Save/retrieve report progress snapshots |

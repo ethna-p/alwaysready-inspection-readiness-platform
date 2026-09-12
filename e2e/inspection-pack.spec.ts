@@ -22,13 +22,15 @@
  *      there's no way to drive the OS-level print dialog itself, or to
  *      inspect a PDF it would produce, from here).
  *
- * Also flags, but does not act on: app/api/evidence-pack/route.ts is a
- * second, completely separate, fully-working PDF export (real
- * @react-pdf/renderer generation, grouped by CQC evidence category) that
- * was deliberately unwired from the UI in July (see git history —
- * "Remove CQC Evidence Pack button from Inspection Pack page", 39 minutes
- * after it was moved there) and never removed. It's not tested here since
- * nothing in the product actually links to it.
+ * There used to be a second, completely separate PDF export
+ * (app/api/evidence-pack/route.ts, real @react-pdf/renderer generation,
+ * grouped by CQC evidence category) that had been deliberately unwired
+ * from the UI in July (git history: "Remove CQC Evidence Pack button
+ * from Inspection Pack page", 39 minutes after it was moved there) but
+ * never actually deleted — found while building this spec, removed
+ * (along with components/EvidencePackButton.tsx and
+ * lib/evidence-categories.ts) on the user's confirmation, since nothing
+ * in the product linked to it any more.
  *
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.
  */
