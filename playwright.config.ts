@@ -39,6 +39,16 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  // Default 5s is tight against an unoptimized `next dev` server, especially
+  // for the first hit on a route it hasn't compiled yet mid-suite (KLOE
+  // detail pages pull in several sub-panels) — seen directly: a save's
+  // "Saving…" button was still correctly pending, just past 5s, not stuck
+  // or broken. 10s gives real slow-but-working saves room without masking
+  // a genuinely hung one.
+  expect: {
+    timeout: 10_000,
+  },
+
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
