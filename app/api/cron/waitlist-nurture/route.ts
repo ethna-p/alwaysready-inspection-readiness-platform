@@ -22,7 +22,6 @@ import { createAdminClient }             from '@/lib/supabase/admin'
 import { sendEmail }                     from '@/lib/email'
 import { getWaitlistNurtureEmail }       from '@/lib/waitlist-nurture'
 import { verifyCronSecret } from '@/lib/utils/cron'
-import { escapeHtml } from '@/lib/utils/escape'
 
 export async function GET(request: Request) {
   if (!verifyCronSecret(request)) {
@@ -54,7 +53,8 @@ export async function GET(request: Request) {
   for (const lead of leads) {
     const nextEmailNum = lead.nurture_emails_sent + 1
 
-    const emailContent = getWaitlistNurtureEmail(nextEmailNum, escapeHtml(lead.first_name || 'there'))
+    // getWaitlistNurtureEmail() escapes firstName internally — don't escape here too.
+    const emailContent = getWaitlistNurtureEmail(nextEmailNum, lead.first_name || 'there')
     if (!emailContent) {
       emailsSkipped++
       continue

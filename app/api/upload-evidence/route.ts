@@ -18,6 +18,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAAL2Satisfied } from '@/lib/session'
 import { MAX_SIZE_BYTES, validateFileMime, scanWithCloudmersive } from '@/lib/utils/upload'
+import { isValidUuid } from '@/lib/utils/validate'
 
 
 export async function POST(request: NextRequest) {
@@ -62,8 +63,7 @@ export async function POST(request: NextRequest) {
   // same for every org) so this is defence-in-depth/consistency with the
   // sibling upload-i-statement-evidence route, not a tenant-isolation fix —
   // the storage path's org segment is always server-derived regardless.
-  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (!UUID_REGEX.test(kloItemId)) {
+  if (!isValidUuid(kloItemId)) {
     return NextResponse.json({ error: 'Invalid KLOE ID.' }, { status: 400 })
   }
 

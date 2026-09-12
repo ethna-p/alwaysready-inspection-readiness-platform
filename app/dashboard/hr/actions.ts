@@ -276,6 +276,27 @@ export async function uploadTrainingCertificate(
     return { success: false, error: 'Missing required fields.' }
   }
 
+  const supabase = await createClient()
+
+  // Verify the training record actually belongs to the caller's org before
+  // doing anything else with it — trainingRecordId is client-supplied and
+  // nothing else here checks it (unlike deleteTrainingCertificate below,
+  // which does). RLS on hr_training_certificates only validates the new
+  // row's own organisation_id, not that training_record_id cross-references
+  // a record in the same org. Checked before the size/MIME/scan work below
+  // (rather than after) so a request for an out-of-org record is rejected
+  // before paying for a Cloudmersive scan round-trip.
+  const { data: trainingRecord } = await supabase
+    .from('hr_training_records')
+    .select('id')
+    .eq('id', trainingRecordId)
+    .eq('organisation_id', profile.organisation_id)
+    .single()
+
+  if (!trainingRecord) {
+    return { success: false, error: 'Training record not found.' }
+  }
+
   // Was: a local size check and a MIME allowlist checked against the
   // client-supplied file.type (trivially spoofable — it's just whatever
   // Content-Type the browser sent, not inspected). Neither
@@ -299,25 +320,6 @@ export async function uploadTrainingCertificate(
   if (!scan.clean) {
     console.warn(`[uploadTrainingCertificate] Virus detected in upload by user ${profile.id}: ${file.name}`)
     return { success: false, error: scan.message }
-  }
-
-  const supabase = await createClient()
-
-  // Verify the training record actually belongs to the caller's org before
-  // attaching anything to it — trainingRecordId is client-supplied and
-  // nothing else here checks it (unlike deleteTrainingCertificate below,
-  // which does). RLS on hr_training_certificates only validates the new
-  // row's own organisation_id, not that training_record_id cross-references
-  // a record in the same org.
-  const { data: trainingRecord } = await supabase
-    .from('hr_training_records')
-    .select('id')
-    .eq('id', trainingRecordId)
-    .eq('organisation_id', profile.organisation_id)
-    .single()
-
-  if (!trainingRecord) {
-    return { success: false, error: 'Training record not found.' }
   }
 
   const adminClient = createAdminClient()

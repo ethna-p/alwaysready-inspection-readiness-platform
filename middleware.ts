@@ -185,14 +185,26 @@ async function middlewareFn(request: NextRequest) {
         aal.nextLevel !== 'aal2' &&
         user.email !== superadminEmail &&
         pathname.startsWith('/dashboard') &&
-        !isMfaSetupPage
+        !isMfaSetupPage &&
+        !isChangePasswordPage
       ) {
-        // Fetch role to check if admin
+        // Fetch role + must_change_password in one query. A forced password
+        // change takes priority over forcing MFA enrolment: if MFA setup
+        // ran first, whoever currently holds the admin-generated temporary
+        // password (the admin who reset it, or anyone it was shared with)
+        // could complete enrolment — registering their own authenticator —
+        // before the real account owner ever sets their own password.
         const { data: profile } = await supabase
           .from('users')
-          .select('role')
+          .select('role, must_change_password')
           .eq('id', user.id)
           .single()
+
+        if (profile?.must_change_password) {
+          const url = request.nextUrl.clone()
+          url.pathname = '/dashboard/account/change-password'
+          return NextResponse.redirect(url)
+        }
 
         if (profile?.role === 'admin' || profile?.role === 'user') {
           const url = request.nextUrl.clone()

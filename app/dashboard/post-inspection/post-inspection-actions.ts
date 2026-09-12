@@ -18,7 +18,6 @@ export async function createReview(formData: FormData): Promise<{ error?: string
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-
   const supabase = await createClient()
 
   const inspection_date     = formData.get('inspection_date') as string
@@ -66,7 +65,6 @@ export async function updateReview(id: string, formData: FormData): Promise<{ er
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -100,7 +98,6 @@ export async function deleteReview(id: string): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -120,7 +117,6 @@ export async function deleteReview(id: string): Promise<{ error?: string }> {
 export async function createFacItem(reviewId: string, formData: FormData): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
-
 
   const supabase = await createClient()
 
@@ -156,7 +152,6 @@ export async function updateFacItem(id: string, reviewId: string, formData: Form
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
 
-
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -181,7 +176,6 @@ export async function updateFacItem(id: string, reviewId: string, formData: Form
 export async function deleteFacItem(id: string, reviewId: string): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
-
 
   const supabase = await createClient()
 

@@ -5,7 +5,6 @@ import { revalidatePath }          from 'next/cache'
 import { assertSuperadmin }        from '@/lib/assert-superadmin'
 import { sendEmail }               from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
-import { escapeHtml }              from '@/lib/utils/escape'
 
 export async function deleteLead(id: string) {
   await assertSuperadmin()
@@ -65,7 +64,8 @@ export async function sendBulkLaunchEmail(
   const errors: string[] = []
 
   for (const lead of leads) {
-    const emailContent = getWaitlistNurtureEmail(emailNum, escapeHtml(lead.first_name || 'there'))
+    // getWaitlistNurtureEmail() escapes firstName internally — don't escape here too.
+    const emailContent = getWaitlistNurtureEmail(emailNum, lead.first_name || 'there')
     if (!emailContent) continue
 
     try {

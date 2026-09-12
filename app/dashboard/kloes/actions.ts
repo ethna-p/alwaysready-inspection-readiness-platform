@@ -19,7 +19,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { requireAdmin, requireRole, isUserInOrg } from '@/lib/auth'
+import { requireAdmin, requireRole } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import type { ComplianceStatus } from '@/lib/types'
 import { getFirstName } from '@/lib/utils/name'
@@ -197,9 +197,21 @@ export async function assignKloe(
   // assignToId is client-supplied and otherwise unchecked — the UPDATE below
   // only scopes the compliance_records row being changed, not who it's being
   // assigned to. Without this, an admin could assign (and trigger an email
-  // notification to) a user in a different organisation entirely.
-  if (assignToId && !(await isUserInOrg(supabase, assignToId, profile.organisation_id))) {
-    return { success: false, error: 'That team member was not found in your organisation.' }
+  // notification to) a user in a different organisation entirely. Fetches
+  // the fields the notification email needs too, in this same query, rather
+  // than re-querying the same user row again further down.
+  let assignee: { full_name: string | null; email: string; personal_email: string | null } | null = null
+  if (assignToId) {
+    const { data } = await supabase
+      .from('users')
+      .select('full_name, email, personal_email')
+      .eq('id', assignToId)
+      .eq('organisation_id', profile.organisation_id)
+      .single()
+    if (!data) {
+      return { success: false, error: 'That team member was not found in your organisation.' }
+    }
+    assignee = data
   }
 
   const { error } = await supabase
@@ -226,18 +238,13 @@ export async function assignKloe(
     try {
       const adminSupabase = createAdminClient()
 
-      const [{ data: assignee }, { data: klo }] = await Promise.all([
-        adminSupabase
-          .from('users')
-          .select('full_name, email, personal_email')
-          .eq('id', assignToId)
-          .single(),
-        adminSupabase
-          .from('klo_items')
-          .select('title')
-          .eq('id', kloItemId)
-          .single(),
-      ])
+      // assignee was already fetched above (during org-membership validation) —
+      // no need to query the same users row again here.
+      const { data: klo } = await adminSupabase
+        .from('klo_items')
+        .select('title')
+        .eq('id', kloItemId)
+        .single()
 
       if (assignee && klo) {
         const recipientEmail = assignee.personal_email || assignee.email

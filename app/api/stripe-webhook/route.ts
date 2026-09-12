@@ -23,6 +23,16 @@ import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
 
+// notification_log's unique index is (organisation_id, notification_type,
+// entity_type, entity_id, due_date, recipient_email). For stripe_event rows,
+// entity_id (the Stripe event.id) is already the stable, unique-per-event
+// dedup key — due_date has no real meaning here and must therefore be a
+// FIXED constant, not "today". Using today's date broke the dedup across a
+// calendar-day boundary: a redelivery of the same event on the next day got
+// a different due_date, didn't collide with the earlier claim (no 23505),
+// and the confirmation/deletion-notice email was sent a second time.
+const STRIPE_EVENT_LOG_DUE_DATE = '2000-01-01'
+
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
   const stripeKey = process.env.STRIPE_SECRET_KEY
@@ -97,7 +107,7 @@ export async function POST(req: NextRequest) {
             notification_type: 'stripe_event',
             entity_type:       'subscription',
             entity_id:         event.id,
-            due_date:          new Date().toISOString().split('T')[0],
+            due_date:          STRIPE_EVENT_LOG_DUE_DATE,
             recipient_email:   admin.email,
           })
           if (logClaim) {
@@ -157,76 +167,90 @@ export async function POST(req: NextRequest) {
     const deletionDue = new Date()
     deletionDue.setDate(deletionDue.getDate() + 30)
 
-    // .is('data_deletion_due_at', null) doubles as the idempotency guard:
-    // Stripe doesn't guarantee exactly-once delivery, and without this a
-    // redelivery of the same event would recompute deletionDue as "30 days
-    // from now" every time, pushing the real deadline back indefinitely on
-    // every replay. On a genuine first delivery this is null (either never
-    // set, or cleared by checkout.session.completed on a prior
-    // subscribe) so the update proceeds normally; on a replay it's already
-    // set, so the update (and .single()) affects zero rows and we skip the
-    // email below rather than re-sending it.
-    const { data: org, error } = await supabase
+    // Look up the org first, separately from the update — this lets us tell
+    // "no org has this stripe_subscription_id at all" (a genuine problem:
+    // data mismatch, wrong project, deleted org) apart from "this org
+    // already has data_deletion_due_at set" (an expected idempotent replay,
+    // since Stripe doesn't guarantee exactly-once delivery). Folding both
+    // into one query and treating any PGRST116 (no rows matched) as
+    // "already processed" — as a previous version of this handler did —
+    // silently swallows the genuine-mismatch case too, with zero logging.
+    const { data: existingOrg, error: lookupError } = await supabase
       .from('organisations')
-      .update({
-        subscription_tier:    'canceled' as 'trial' | 'active',
-        data_deletion_due_at: deletionDue.toISOString(),
-      })
+      .select('id, name, data_deletion_due_at')
       .eq('stripe_subscription_id', sub.id)
-      .is('data_deletion_due_at', null)
-      .select('id, name')
-      .single()
+      .maybeSingle()
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows matched (already processed)
-      console.error('[stripe-webhook] subscription delete error:', error.message)
-    } else if (org) {
-      // Notify the org's admin(s) that their data will be deleted in 30 days
-      const { data: admins } = await supabase
-        .from('users')
-        .select('id')
-        .eq('organisation_id', org.id)
-        .eq('role', 'admin')
-
-      if (admins && admins.length > 0) {
-        const { data: authUsers } = await supabase.auth.admin.listUsers()
-        const adminIds = new Set(admins.map(a => a.id))
-        const adminEmails = (authUsers?.users ?? [])
-          .filter(u => adminIds.has(u.id) && u.email)
-          .map(u => u.email!)
-
-        const deletionDateStr = deletionDue.toLocaleDateString('en-GB', {
-          day: 'numeric', month: 'long', year: 'numeric',
+    if (lookupError) {
+      console.error('[stripe-webhook] subscription delete lookup error:', lookupError.message)
+    } else if (!existingOrg) {
+      console.error(`[stripe-webhook] subscription delete: no organisation found for stripe_subscription_id ${sub.id}`)
+    } else if (existingOrg.data_deletion_due_at) {
+      // Already processed by an earlier delivery of this same event — skip silently.
+    } else {
+      const { data: org, error } = await supabase
+        .from('organisations')
+        .update({
+          subscription_tier:    'canceled' as 'trial' | 'active',
+          data_deletion_due_at: deletionDue.toISOString(),
         })
+        .eq('id', existingOrg.id)
+        .select('id, name')
+        .single()
 
-        for (const email of adminEmails) {
-          const { error: logClaim } = await supabase.from('notification_log').insert({
-            organisation_id:   org.id,
-            notification_type: 'stripe_event',
-            entity_type:       'subscription',
-            entity_id:         event.id,
-            due_date:          new Date().toISOString().split('T')[0],
-            recipient_email:   email,
+      if (error) {
+        console.error('[stripe-webhook] subscription delete update error:', error.message)
+      } else if (org) {
+        // Notify the org's admin(s) that their data will be deleted in 30 days
+        const { data: admins } = await supabase
+          .from('users')
+          .select('id')
+          .eq('organisation_id', org.id)
+          .eq('role', 'admin')
+
+        if (admins && admins.length > 0) {
+          const { data: authUsers } = await supabase.auth.admin.listUsers()
+          const adminIds = new Set(admins.map(a => a.id))
+          const adminEmails = (authUsers?.users ?? [])
+            .filter(u => adminIds.has(u.id) && u.email)
+            .map(u => u.email!)
+
+          const deletionDateStr = deletionDue.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'long', year: 'numeric',
           })
-          if (logClaim) {
-            if (logClaim.code === '23505') continue // already sent for this event
-            console.error('[stripe-webhook] deletion notice log claim error:', logClaim)
-            continue
-          }
 
-          await sendEmail({
-            to:      email,
-            subject: 'Your AlwaysReady subscription has ended — download your data',
-            type:    'transactional',
-            bodyHtml: `
-              <p>Your AlwaysReady subscription for <strong>${escapeHtml(org.name)}</strong> has ended.</p>
-              <p>Your data is safe and available to download until <strong>${deletionDateStr}</strong>.
-              After that date, it will be permanently deleted.</p>
-              <p>To download your data, log in at
-              <a href="https://portal.alwaysready.uk/login" style="color:#014D4E">portal.alwaysready.uk</a>
-              and use the download buttons on the page shown.</p>
-              <p>If you'd like to resubscribe and keep your data, you can do so from the same page.</p>
-            `,
-          }).catch(err => console.error('[stripe-webhook] deletion notice email failed:', err))
+          // Each recipient's claim-then-send is independent (keyed by its own
+          // recipient_email) — run them concurrently rather than serially.
+          await Promise.all(adminEmails.map(async (email) => {
+            const { error: logClaim } = await supabase.from('notification_log').insert({
+              organisation_id:   org.id,
+              notification_type: 'stripe_event',
+              entity_type:       'subscription',
+              entity_id:         event.id,
+              due_date:          STRIPE_EVENT_LOG_DUE_DATE,
+              recipient_email:   email,
+            })
+            if (logClaim) {
+              if (logClaim.code === '23505') return // already sent for this event
+              console.error('[stripe-webhook] deletion notice log claim error:', logClaim)
+              return
+            }
+
+            await sendEmail({
+              to:      email,
+              subject: 'Your AlwaysReady subscription has ended — download your data',
+              type:    'transactional',
+              bodyHtml: `
+                <p>Your AlwaysReady subscription for <strong>${escapeHtml(org.name)}</strong> has ended.</p>
+                <p>Your data is safe and available to download until <strong>${deletionDateStr}</strong>.
+                After that date, it will be permanently deleted.</p>
+                <p>To download your data, log in at
+                <a href="https://portal.alwaysready.uk/login" style="color:#014D4E">portal.alwaysready.uk</a>
+                and use the download buttons on the page shown.</p>
+                <p>If you'd like to resubscribe and keep your data, you can do so from the same page.</p>
+              `,
+            }).catch(err => console.error('[stripe-webhook] deletion notice email failed:', err))
+          }))
         }
       }
     }

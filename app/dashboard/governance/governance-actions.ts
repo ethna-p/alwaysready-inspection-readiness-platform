@@ -25,7 +25,6 @@ export async function createMeeting(formData: FormData): Promise<{ error?: strin
 
   if (!title || !meeting_date) return { error: 'Title and date are required.' }
 
-
   const supabase = await createClient()
 
   const { error } = await supabase.from('governance_meetings').insert({
@@ -65,7 +64,6 @@ export async function updateMeeting(
 
   if (!title || !meeting_date) return { error: 'Title and date are required.' }
 
-
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -84,7 +82,6 @@ export async function updateMeeting(
 export async function signOffMeeting(meetingId: string): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Only admins can sign off meetings.' }
-
 
   const supabase = await createClient()
 
@@ -108,7 +105,6 @@ export async function signOffMeeting(meetingId: string): Promise<{ error?: strin
 export async function deleteMeeting(meetingId: string): Promise<{ error?: string }> {
   const profile = await getCurrentUserProfile()
   if (profile?.role !== 'admin') return { error: 'Permission denied.' }
-
 
   const supabase = await createClient()
 

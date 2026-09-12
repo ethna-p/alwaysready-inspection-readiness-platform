@@ -11,21 +11,20 @@
  * written via the compliance_record_history trigger. Direct seeding requires
  * bypassing RLS.
  *
- * Warm-instance cache: once we've confirmed (or performed) a seed for an org,
- * remember it for the lifetime of this server instance so every subsequent
- * dashboard render for that org skips the DB round-trip entirely. Same
- * pattern as the login rate-limiter in middleware.ts — resets on cold start,
- * which just means the cheap check runs again, not a correctness issue.
+ * No warm-instance cache here (unlike, say, the login rate-limiter in
+ * middleware.ts): an in-memory "already seeded" cache would keep that belief
+ * for the rest of that server instance's life even if the org's records were
+ * later wiped by something else (a support/superadmin action, a bug, a
+ * migration mistake) — silently defeating the self-heal this function exists
+ * for, for as long as that instance stays warm. The count check below is
+ * already a cheap head-only index scan, so there's little to gain from
+ * caching it and a real correctness risk in doing so.
  */
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const knownSeededOrgs = new Set<string>()
-
 export async function ensureComplianceRecordsSeeded(orgId: string): Promise<void> {
-  if (knownSeededOrgs.has(orgId)) return // Confirmed earlier in this instance's lifetime
-
   const supabase = await createClient()
 
   // Fast path: check if any records exist (index scan, head-only)
@@ -35,7 +34,6 @@ export async function ensureComplianceRecordsSeeded(orgId: string): Promise<void
     .eq('organisation_id', orgId)
 
   if ((count ?? 0) > 0) {
-    knownSeededOrgs.add(orgId)
     return // Already seeded — nothing to do
   }
 
@@ -62,6 +60,5 @@ export async function ensureComplianceRecordsSeeded(orgId: string): Promise<void
     return // Non-fatal — will retry on next page load
   }
 
-  knownSeededOrgs.add(orgId)
   console.log(`[seed-compliance] seeded ${klos.length} compliance records for org ${orgId}`)
 }

@@ -19,6 +19,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAAL2Satisfied } from '@/lib/session'
 import { MAX_SIZE_BYTES, validateFileMime, scanWithCloudmersive } from '@/lib/utils/upload'
+import { isValidUuid } from '@/lib/utils/validate'
 
 
 export async function POST(request: NextRequest) {
@@ -58,8 +59,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Validate iStatementId is a proper UUID to prevent path traversal in storage
-  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (!UUID_REGEX.test(iStatementId)) {
+  if (!isValidUuid(iStatementId)) {
     return NextResponse.json({ error: 'Invalid statement ID.' }, { status: 400 })
   }
 
