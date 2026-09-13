@@ -129,7 +129,14 @@ export async function seed() {
       'notification_log',
     ]
     for (const table of auditTables) {
-      await admin.from(table).delete().eq('organisation_id', existingOrg.id)
+      const { error: auditDeleteError } = await admin.from(table).delete().eq('organisation_id', existingOrg.id)
+      // Errors here were previously swallowed silently -- the only symptom
+      // was deleteUser failing several steps later with a generic "Database
+      // error deleting user", giving no hint which table's leftover row was
+      // actually the cause. Surface it here instead, at the source.
+      if (auditDeleteError) {
+        throw new Error(`Failed to clear ${table} for stale fixture org ${existingOrg.id}: ${auditDeleteError.message}`)
+      }
     }
 
     for (const u of existingUsers ?? []) {
