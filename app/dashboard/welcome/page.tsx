@@ -3,7 +3,7 @@
  *
  * Shown to any user whose onboarding_complete = false.
  * Captures GDPR marketing consent before redirecting to the dashboard.
- * Redirect here is enforced by proxy.ts.
+ * Redirect here is enforced by middleware.ts.
  */
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'

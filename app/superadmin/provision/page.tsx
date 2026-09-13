@@ -1,7 +1,7 @@
 /**
  * /superadmin/provision — create a new organisation + admin user.
  *
- * Protected by proxy.ts: only SUPERADMIN_EMAIL may access this route.
+ * Protected by middleware.ts: only SUPERADMIN_EMAIL may access this route.
  * Uses the service-role admin client to bypass RLS.
  */
 'use client'

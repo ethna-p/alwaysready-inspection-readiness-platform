@@ -1,6 +1,7 @@
 /**
  * Superadmin layout — wraps all /superadmin/* routes.
- * Access is gated in proxy.ts by SUPERADMIN_EMAIL.
+ * Access is gated in middleware.ts by SUPERADMIN_EMAIL (page loads) and
+ * lib/assert-superadmin.ts (server actions, independent of middleware).
  * This layout adds a simple top bar so it's clear you're in superadmin mode.
  */
 import Link from 'next/link'

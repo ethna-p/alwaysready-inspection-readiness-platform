@@ -1,7 +1,7 @@
 /**
  * /superadmin/organisations — list of all provisioned orgs with impersonation.
  *
- * Protected by proxy.ts: only SUPERADMIN_EMAIL may access this route.
+ * Protected by middleware.ts: only SUPERADMIN_EMAIL may access this route.
  * Uses the service-role admin client to bypass RLS.
  *
  * "View as admin →" generates a one-time magic link for the org's admin user
