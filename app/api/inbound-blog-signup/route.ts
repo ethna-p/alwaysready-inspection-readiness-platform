@@ -19,7 +19,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 
 
 // 10 requests per IP per hour — generous for a signup form
-const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+const limiter = createRateLimiter({ name: 'inbound-blog-signup', windowMs: 60 * 60_000, max: 10 })
 
 export async function POST(req: NextRequest) {
   if (!await limiter.check(getClientIp(req))) {

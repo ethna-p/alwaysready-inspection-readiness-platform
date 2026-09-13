@@ -30,7 +30,7 @@ import { verifyTurnstile } from '@/lib/utils/turnstile'
 
 
 // 10 requests per IP per hour — generous for a waitlist signup
-const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+const limiter = createRateLimiter({ name: 'inbound-waitlist', windowMs: 60 * 60_000, max: 10 })
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',

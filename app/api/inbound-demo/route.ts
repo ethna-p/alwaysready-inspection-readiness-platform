@@ -18,7 +18,7 @@ import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 
 // 10 requests per IP per hour
-const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+const limiter = createRateLimiter({ name: 'inbound-demo', windowMs: 60 * 60_000, max: 10 })
 
 
 const CORS_HEADERS = {

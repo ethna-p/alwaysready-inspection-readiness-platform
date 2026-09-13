@@ -54,7 +54,17 @@ export async function completeMandatoryMfaSetup(page: Page): Promise<string> {
 
   await page.locator('#totp-code').fill(currentTotpCode(secret))
   await page.getByRole('button', { name: 'Activate two-factor authentication' }).click()
-  await page.waitForURL('**/dashboard/account?mfa=enrolled')
+
+  // The page's own completion logic always targets /dashboard/account?mfa=
+  // enrolled, but middleware then immediately re-redirects on top of that
+  // for an account with onboarding_complete still false (a fresh trial
+  // signup, unlike every other account this helper has been used for so
+  // far, which all had it true already) -- landing on
+  // /dashboard/welcome?mfa=enrolled instead. Wait for the query param
+  // itself, regardless of which path it ends up attached to, and leave the
+  // specific destination to the caller's own assertion (same philosophy as
+  // login() above).
+  await page.waitForURL(url => url.searchParams.get('mfa') === 'enrolled')
 
   return secret
 }

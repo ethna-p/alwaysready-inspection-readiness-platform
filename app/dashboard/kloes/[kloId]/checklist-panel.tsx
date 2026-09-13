@@ -214,7 +214,17 @@ function ChecklistItemRow({
                 {saving ? 'Saving…' : 'Save'}
               </button>
             )}
-            {saved && !isDirty && (
+            {/* Gated on `saved` alone, not `saved && !isDirty` -- `isDirty`
+                depends on the `evidence` prop catching up after the parent
+                re-renders with fresh data post-save, which can lag a render
+                or two behind `saved` being set true right after the save
+                call resolves. Requiring both silently swallowed this badge
+                whenever that lag outran a single tick (a real timing race,
+                not just a test flake -- confirmed directly: the save had
+                genuinely succeeded, but "Saved ✓" never appeared at all).
+                `saved` is already reset on every keystroke (onChange above),
+                so it alone is sufficient. */}
+            {saved && (
               <span className="text-[11px] text-green-600 font-medium shrink-0">Saved ✓</span>
             )}
           </div>

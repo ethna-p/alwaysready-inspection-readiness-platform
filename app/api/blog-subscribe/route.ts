@@ -19,7 +19,7 @@ import { verifyTurnstile } from '@/lib/utils/turnstile'
 
 
 // 10 requests per IP per hour
-const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+const limiter = createRateLimiter({ name: 'blog-subscribe', windowMs: 60 * 60_000, max: 10 })
 
 const ALLOWED_ORIGINS = [
   'https://www.alwaysready.uk',

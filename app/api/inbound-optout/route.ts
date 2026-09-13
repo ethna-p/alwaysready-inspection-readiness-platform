@@ -31,7 +31,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 
 
 // 10 requests per IP per hour
-const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+const limiter = createRateLimiter({ name: 'inbound-optout', windowMs: 60 * 60_000, max: 10 })
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://alwaysready.uk',

@@ -165,6 +165,31 @@ test('subscribing via Stripe Checkout activates the organisation for real', asyn
     // ── Cleanup: real Stripe test-mode objects + restore the shared org ────
     if (subscriptionId) {
       await stripe.subscriptions.cancel(subscriptionId).catch(() => {})
+
+      // stripe.subscriptions.cancel() above triggers a genuine, ASYNC
+      // customer.subscription.deleted webhook (forwarded by `stripe listen`)
+      // that sets this shared org to subscription_tier: 'canceled'. Its
+      // delivery isn't ordered against this test's own code -- if it lands
+      // after the plain reset below, it silently clobbers the shared fixture
+      // org back to 'canceled' for every spec that runs afterwards (a real
+      // failure mode observed directly: support-tickets.spec.ts and
+      // visitor-login.spec.ts, both of which run later and share this same
+      // org, started failing with a redirect to /upgrade). Wait (best-effort,
+      // bounded) for that webhook to actually land first, so the final reset
+      // below is guaranteed to be the last write regardless of delivery
+      // timing -- never throws even if it doesn't land in time, since this
+      // is cleanup and must still run the reset either way.
+      const deadline = Date.now() + 15_000
+      while (Date.now() < deadline) {
+        const { data } = await admin
+          .from('organisations')
+          .select('subscription_tier')
+          .eq('id', account.orgId)
+          .single()
+        if (data?.subscription_tier === 'canceled') break
+        await new Promise(r => setTimeout(r, 500))
+      }
+
       const { data: cleanupOrg } = await admin
         .from('organisations')
         .select('stripe_customer_id')

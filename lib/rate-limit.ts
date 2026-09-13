@@ -4,9 +4,13 @@
  * Persistent rate limiter backed by Upstash Redis when env vars are present,
  * falling back to an in-memory sliding-window implementation for local dev.
  *
- * Usage (unchanged from before):
- *   const limiter = createRateLimiter({ windowMs: 60_000, max: 10 })
+ * Usage:
+ *   const limiter = createRateLimiter({ name: 'my-route', windowMs: 60_000, max: 10 })
  *   if (!limiter.check(ip)) return new NextResponse('Too Many Requests', { status: 429 })
+ *
+ * `name` must be unique per call site (see the note on `prefix` below) —
+ * every limiter in the app is namespaced by it so unrelated routes never
+ * share a bucket.
  *
  * Production behaviour:
  *   - Uses @upstash/ratelimit with a sliding-window algorithm
@@ -21,6 +25,16 @@
 import { NextRequest } from 'next/server'
 
 export interface RateLimiterOptions {
+  /**
+   * Unique name for this limiter (e.g. 'trial-signup', 'cqc-lookup'). Used to
+   * namespace its Redis keys — without this, every limiter in the app shared
+   * the same `ar:rl:<ip>` key once Upstash was configured, so a burst of
+   * requests against one rate-limited route (e.g. the trial form's own
+   * on-blur CQC lookup, 60/10min) silently consumed a completely unrelated
+   * limiter's budget for the same IP (e.g. trial signup, 3/hour) and could
+   * false-positive 429 it well before its own real max was reached.
+   */
+  name: string
   /** Time window in milliseconds */
   windowMs: number
   /** Maximum number of requests per IP per window */
@@ -42,7 +56,7 @@ export function getClientIp(req: NextRequest): string {
 }
 
 /** Factory — call once at module level so the limiter instance is reused. */
-export function createRateLimiter({ windowMs, max }: RateLimiterOptions): RateLimiter {
+export function createRateLimiter({ name, windowMs, max }: RateLimiterOptions): RateLimiter {
   const redisUrl   = process.env.UPSTASH_REDIS_REST_URL
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN
 
@@ -60,7 +74,7 @@ export function createRateLimiter({ windowMs, max }: RateLimiterOptions): RateLi
       redis,
       limiter: Ratelimit.slidingWindow(max, `${windowMs}ms` as `${number}ms`),
       analytics: false,
-      prefix: 'ar:rl',
+      prefix: `ar:rl:${name}`,
     })
 
     return {

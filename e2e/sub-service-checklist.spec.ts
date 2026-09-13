@@ -112,12 +112,26 @@ test('toggling a sub-service on shows its checklist items on the relevant KLOE, 
   await dementiaCheckbox.click()
   await expect(dementiaCheckbox).not.toBeChecked()
 
-  const { data: disabledRows } = await admin
-    .from('organisation_sub_services')
-    .select('sub_service')
-    .eq('organisation_id', account.orgId)
-    .eq('sub_service', 'Dementia')
-  expect(disabledRows).toEqual([])
+  // The checkbox's unchecked state is driven entirely by fresh server data
+  // (SubServicesForm's `checked` is bound straight to a prop -- no local
+  // optimistic state), so it can only render unchecked once the page has
+  // re-fetched post-revalidatePath(). That normally means the underlying
+  // delete has already landed by the time this runs -- but a real gap was
+  // observed directly: the checkbox showed unchecked while this exact query
+  // still found the row. Poll rather than assume instant consistency, same
+  // reasoning as the klo_checklist_completions poll above. A first version
+  // of this poll used the suite's default 10s expect timeout and still
+  // timed out for real under this suite's own heavier load (many specs, a
+  // real Stripe/Supabase round trip each) -- 20s gives real headroom
+  // without masking a genuinely broken delete.
+  await expect.poll(async () => {
+    const { data } = await admin
+      .from('organisation_sub_services')
+      .select('sub_service')
+      .eq('organisation_id', account.orgId)
+      .eq('sub_service', 'Dementia')
+    return data?.length ?? null
+  }, { timeout: 20_000 }).toBe(0)
 
   // ── The item is hidden again, but its completion + evidence survive ─────
   await page.goto(`/dashboard/kloes/${kloItem!.id}`)

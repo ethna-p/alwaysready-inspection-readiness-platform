@@ -13,7 +13,7 @@ import { createRateLimiter } from '@/lib/rate-limit'
 // surface), but a stolen/shared session cookie without the actual password
 // could otherwise be used to brute-force it. Keyed by user id rather than IP
 // since the caller is already authenticated.
-const changePasswordLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 5 })
+const changePasswordLimiter = createRateLimiter({ name: 'change-password', windowMs: 15 * 60_000, max: 5 })
 
 // ── Sub-services ──────────────────────────────────────────────────────────────
 
@@ -27,16 +27,22 @@ export async function toggleSubService(
   const supabase = await createClient()
 
   if (enable) {
-    await supabase
+    const { error } = await supabase
       .from('organisation_sub_services')
       .insert({ organisation_id: profile.organisation_id, sub_service: subService })
       .select()
+    // Neither branch's error was checked before -- a failed write (a
+    // transient Supabase error, a dropped connection) proceeded straight to
+    // revalidatePath() as if it had succeeded, silently leaving the org's
+    // real state out of sync with whatever the UI ends up showing next.
+    if (error) throw new Error(`Failed to enable sub-service "${subService}": ${error.message}`)
   } else {
-    await supabase
+    const { error } = await supabase
       .from('organisation_sub_services')
       .delete()
       .eq('organisation_id', profile.organisation_id)
       .eq('sub_service', subService)
+    if (error) throw new Error(`Failed to disable sub-service "${subService}": ${error.message}`)
   }
 
   revalidatePath('/dashboard/account')

@@ -27,7 +27,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
 
 // 5 requests per IP per hour — generous for a contact form
-const limiter = createRateLimiter({ windowMs: 60 * 60_000, max: 5 })
+const limiter = createRateLimiter({ name: 'inbound-contact', windowMs: 60 * 60_000, max: 5 })
 
 
 const CORS_HEADERS = {

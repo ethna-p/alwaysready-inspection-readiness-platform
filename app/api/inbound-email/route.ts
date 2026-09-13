@@ -35,7 +35,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 
 // 10 inbound emails per sender per hour — generous for a support inbox,
 // but prevents a single address flooding ticket creation and AI draft calls.
-const inboundLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 })
+const inboundLimiter = createRateLimiter({ name: 'inbound-email', windowMs: 60 * 60_000, max: 10 })
 
 
 // Parse a ticket reference like [AR-0001] from a subject line

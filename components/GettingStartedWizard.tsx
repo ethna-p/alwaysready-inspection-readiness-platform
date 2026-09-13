@@ -16,6 +16,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 interface WizardStatus {
   hasKloeRating:  boolean
@@ -97,6 +98,7 @@ export default function GettingStartedWizard() {
   // localStorage values — causing a visible flash on every page load.
   // Returning null until mounted means the server HTML is always empty for this
   // component, so there is no mismatch and no flash.
+  const pathname = usePathname()
   const [mounted, setMounted]       = useState(false)
   const [dismissed, setDismissed]   = useState(false)
   const [open, setOpen]             = useState(false)
@@ -171,7 +173,11 @@ export default function GettingStartedWizard() {
     setDismissed(true)
   }
 
-  if (!mounted || dismissed) return null
+  // /dashboard/welcome is the onboarding/consent step itself -- rendering this
+  // widget there too duplicates that page's own "get set up" messaging and,
+  // being open by default on a brand-new account, can visually overlap and
+  // block its "Get started" button (every real trial signup lands here first).
+  if (!mounted || dismissed || pathname === '/dashboard/welcome') return null
 
   const completedCount = status
     ? STEPS.filter(s => status[s.key]).length

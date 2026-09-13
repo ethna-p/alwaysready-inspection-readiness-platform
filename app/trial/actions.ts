@@ -11,7 +11,7 @@ import { verifyTurnstile } from '@/lib/utils/turnstile'
 
 // 3 trial signups per IP per hour — generous for legitimate use,
 // prevents automated provisioning of many orgs from one address.
-const trialSignupLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 3 })
+const trialSignupLimiter = createRateLimiter({ name: 'trial-signup', windowMs: 60 * 60_000, max: 3 })
 
 
 const ACTIVE_SERVICE_TYPES = [

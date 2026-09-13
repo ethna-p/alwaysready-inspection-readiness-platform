@@ -24,7 +24,7 @@ const CORS_HEADERS = {
 
 // 60 lookups per 10 minutes per IP — allows repeated onBlur validation
 // without being exploitable as a CQC API proxy
-const limiter = createRateLimiter({ windowMs: 10 * 60_000, max: 60 })
+const limiter = createRateLimiter({ name: 'cqc-lookup', windowMs: 10 * 60_000, max: 60 })
 
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
