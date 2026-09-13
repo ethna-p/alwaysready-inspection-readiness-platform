@@ -85,6 +85,11 @@ export default defineConfig({
       STRIPE_PRICE_ID: env.STRIPE_PRICE_ID ?? '',
       STRIPE_BETA_PRICE_ID: env.STRIPE_BETA_PRICE_ID ?? '',
       STRIPE_CHARITY_PRICE_ID: env.STRIPE_CHARITY_PRICE_ID ?? '',
+      // Printed fresh each time `stripe listen --forward-to
+      // localhost:3100/api/stripe-webhook` starts — only valid while that
+      // process is running, needed for e2e/subscribe.spec.ts's real
+      // checkout-to-webhook round trip.
+      STRIPE_WEBHOOK_SECRET: env.STRIPE_WEBHOOK_SECRET ?? '',
     },
   },
 })
