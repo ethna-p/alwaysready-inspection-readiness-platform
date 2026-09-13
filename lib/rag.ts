@@ -19,8 +19,18 @@ export const RAG_LABELS: Record<RAGStatus, string> = {
   green: 'Up to Date',
 }
 
-/** Within this many days of next_review_due → Amber */
-const DUE_SOON_DAYS = 14
+/**
+ * Within this many days of next_review_due → Amber.
+ *
+ * Exported so every other "due soon" surface in the app (e.g. the Daily
+ * Review Report) shares this single number rather than hardcoding its own —
+ * the Daily Report used to hardcode 30 here, a real, live divergence from
+ * this file that a real E2E test (e2e/daily-report.spec.ts) found and
+ * proved, then AJ confirmed 14 is the correct "due soon" window and 30 is
+ * too far out to call "due soon". Reconciled by having that page import
+ * this constant instead of repeating its own.
+ */
+export const DUE_SOON_DAYS = 14
 
 /**
  * Calculate the RAG status for a compliance record.

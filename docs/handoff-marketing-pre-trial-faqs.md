@@ -70,7 +70,7 @@ Yes — AlwaysReady includes a mock inspection tool. It walks you through each K
 ---
 
 **14. What is the RAG status system?**
-RAG stands for Red, Amber, Green — a colour-coded status system used throughout the platform to show inspection readiness at a glance. Green means a KLOE has been reviewed and is up to date. Amber means it is in progress or due for review within 30 days. Red means it is overdue and needs urgent attention. Grey means no review has been recorded yet. The RAG status updates automatically based on the dates and statuses you enter — you never have to set it manually.
+RAG stands for Red, Amber, Green — a colour-coded status system used throughout the platform to show inspection readiness at a glance. Green means a KLOE has been reviewed and is up to date. Amber means it is in progress or due for review within 14 days. Red means it is overdue and needs urgent attention. Grey means no review has been recorded yet. The RAG status updates automatically based on the dates and statuses you enter — you never have to set it manually.
 
 ---
 

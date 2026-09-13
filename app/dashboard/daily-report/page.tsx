@@ -19,6 +19,7 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import RagBadge from '@/components/RagBadge'
 import StatusBadge from '@/components/StatusBadge'
+import { DUE_SOON_DAYS } from '@/lib/rag'
 import type { ComplianceRecord } from '@/lib/types'
 import KloeTableHeader, { type KloeDir, type SortColumnDef } from '../kloes/KloeTableHeader'
 
@@ -134,7 +135,12 @@ export default async function DailyReportPage({
   const now = new Date()
 
   // ── Build attention list ──────────────────────────────────────────────────
-  const DUE_SOON_DAYS = 30
+  // DUE_SOON_DAYS comes from lib/rag.ts's calculateRAG -- this page used to
+  // hardcode its own, wider 30-day window here, a real divergence a real
+  // E2E test found (a KLOE 15-30 days out would show RAG green everywhere
+  // else but still surface in this report). Confirmed 14 days is the
+  // correct "due soon" window; this page now shares that single number
+  // rather than repeating its own.
 
   const redItems:        AttentionItem[] = []
   const amberItems:      AttentionItem[] = []
@@ -276,7 +282,7 @@ export default async function DailyReportPage({
             className="flex items-center gap-2 text-lg font-bold text-amber-700 mb-4"
           >
             <span className="w-3 h-3 rounded-full bg-amber-400" aria-hidden="true" />
-            Due within 30 days
+            Due within {DUE_SOON_DAYS} days
             <span className="text-sm font-normal text-amber-600">
               ({sortedAmber.length} {sortedAmber.length === 1 ? 'KLOE' : 'KLOEs'})
             </span>

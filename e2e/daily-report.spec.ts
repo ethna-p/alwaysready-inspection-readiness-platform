@@ -1,15 +1,17 @@
 /**
  * Daily Review Report.
  *
- * app/dashboard/daily-report/page.tsx has its OWN classification logic,
- * deliberately different from lib/rag.ts's calculateRAG in one specific,
- * easy-to-miss way: its "due soon" window is 30 days, not calculateRAG's
- * 14. A KLOE reviewed such that its next review is, say, 20-30 days out is
- * RAG-green everywhere else (the KLOE list, the KLOE's own page, the
- * dashboard) but still shows up here under "Due within 30 days" — this is
- * the single most valuable thing to verify about this page, since it's
- * exactly the kind of divergence a naive "just reuse calculateRAG" refactor
- * would silently break.
+ * app/dashboard/daily-report/page.tsx used to have its OWN "due soon"
+ * window, hardcoded to 30 days — a real, live divergence from lib/rag.ts's
+ * calculateRAG (14 days) found by an earlier version of this spec. A KLOE
+ * reviewed such that its next review was 15-30 days out was RAG-green
+ * everywhere else (the KLOE list, the KLOE's own page, the dashboard) but
+ * still showed up here under "Due within 30 days". Confirmed 14 days is the
+ * correct "due soon" window; the Daily Report now imports
+ * lib/rag.ts's DUE_SOON_DAYS instead of hardcoding its own, so this spec now
+ * verifies alignment instead of divergence — including a direct regression
+ * check that a KLOE just past the (now shared) window is genuinely omitted
+ * from the report, the exact case that used to wrongly appear.
  *
  * Also verifies the report's other real classification rules: overdue
  * items appear under "Overdue" with the right "N days overdue" context;
@@ -49,21 +51,23 @@ async function rateKloe(
   await expect(page.getByText('KLOE updated and saved to your audit trail.')).toBeVisible()
 }
 
-test('Daily Review Report: overdue, the 30-day amber window that RAG green misses, never-assessed, and omits long-safe KLOEs', async ({ page }) => {
+test('Daily Review Report: overdue, the 14-day amber window agreeing with RAG, never-assessed, and omits safe KLOEs', async ({ page }) => {
   const account = loadTestAccount()
   const admin = getAdminClient()
 
-  // Four fifth-through-eighth KLOEs — untouched by every earlier spec in
-  // this suite (kloe-rating, kloe-evidence-upload, kloe-timeline, and
-  // readiness-dashboard each already claim indices 0-3).
+  // Five KLOEs at indices 12-16 -- untouched by every other spec in this
+  // suite (see each spec's own .range()/.limit() picks: 0 kloe-rating &
+  // peoples-voice, 1 kloe-evidence-upload, 2 kloe-timeline, 3
+  // readiness-dashboard, 8 inspection-pack, 9-10 kloe-assignment, 11
+  // visitor-login).
   const { data: kloItems, error: kloErr } = await admin
     .from('klo_items')
     .select('id, title')
     .order('display_order')
-    .range(4, 7)
+    .range(12, 16)
   expect(kloErr).toBeNull()
-  expect(kloItems?.length).toBe(4)
-  const [kloOverdue, kloAmberOnly, kloUntouched, kloSafeGreen] = kloItems!
+  expect(kloItems?.length).toBe(5)
+  const [kloOverdue, kloDueSoon, kloJustOutside, kloUntouched, kloSafeGreen] = kloItems!
 
   await login(page, account)
   await page.waitForURL('**/dashboard')
@@ -71,11 +75,18 @@ test('Daily Review Report: overdue, the 30-day amber window that RAG green misse
   // ── Overdue: 40 days ago, monthly -> 10 days overdue ────────────────────
   await rateKloe(page, kloOverdue.id, { status: 'completed', date: daysAgo(40), frequency: '30' })
 
-  // ── The 30-day-vs-14-day divergence: reviewed today, monthly frequency
-  // -> next review due in exactly 30 days. calculateRAG would call this
-  // green (well past its own 14-day window); the Daily Report's wider
-  // 30-day window puts it under "Due within 30 days" regardless. ─────────
-  await rateKloe(page, kloAmberOnly.id, { status: 'completed', date: daysAgo(0), frequency: '30' })
+  // ── Due soon, agreeing everywhere: reviewed 20 days ago, monthly ->
+  // next review due in 10 days, inside both the report's and calculateRAG's
+  // (now shared) 14-day window. Should be amber both in the report and on
+  // its own page. ──────────────────────────────────────────────────────────
+  await rateKloe(page, kloDueSoon.id, { status: 'completed', date: daysAgo(20), frequency: '30' })
+
+  // ── Just outside the window, agreeing everywhere: reviewed today,
+  // monthly -> next review due in exactly 30 days. Under the report's old,
+  // divergent 30-day window this wrongly showed up here despite being RAG
+  // green everywhere else -- the exact bug that was fixed. Now it should be
+  // green on its own page AND correctly absent from the report entirely. ──
+  await rateKloe(page, kloJustOutside.id, { status: 'completed', date: daysAgo(0), frequency: '30' })
 
   // ── Genuinely safe: reviewed today, quarterly -> due in 90 days. Green
   // by any measure, and should be OMITTED from the report entirely. ──────
@@ -96,20 +107,26 @@ test('Daily Review Report: overdue, the 30-day amber window that RAG green misse
   // correct, so either one confirms the text is genuinely there.
   await expect(overdueRow.getByText('10 days overdue').first()).toBeVisible()
 
-  // ── Due within 30 days: the KLOE RAG would call green ───────────────────
-  const dueSoonSection = page.locator('section', { has: page.getByRole('heading', { name: /Due within 30 days/ }) })
-  const dueSoonRow = dueSoonSection.locator('tr', { hasText: kloAmberOnly.title })
+  // ── Due within 14 days: agrees with RAG, not a wider report-only window ──
+  const dueSoonSection = page.locator('section', { has: page.getByRole('heading', { name: /Due within 14 days/ }) })
+  const dueSoonRow = dueSoonSection.locator('tr', { hasText: kloDueSoon.title })
   await expect(dueSoonRow).toBeVisible()
-  await expect(dueSoonRow.getByText('Due in 30 days').first()).toBeVisible()
+  await expect(dueSoonRow.getByText('Due in 10 days').first()).toBeVisible()
 
-  // Confirm the divergence directly: this same KLOE's own page shows RAG
-  // green, not amber, even though it's sitting in the report's amber list.
-  await page.goto(`/dashboard/kloes/${kloAmberOnly.id}`)
+  // Confirm agreement directly: this KLOE's own page also shows RAG amber,
+  // the same status the report gave it.
+  await page.goto(`/dashboard/kloes/${kloDueSoon.id}`)
+  await expect(page.locator('[aria-label="RAG status: Due Soon"]')).toBeVisible()
+
+  // ── Regression: a KLOE due in exactly 30 days used to wrongly appear in
+  // the report's old, wider window despite being RAG green. Confirm it's
+  // green on its own page AND correctly absent from the report now. ───────
+  await page.goto(`/dashboard/kloes/${kloJustOutside.id}`)
   await expect(page.locator('[aria-label="RAG status: Up to Date"]')).toBeVisible()
-  await expect(page.locator('[aria-label="RAG status: Due Soon"]')).not.toBeVisible()
+  await page.goto('/dashboard/daily-report')
+  await expect(page.locator('tr', { hasText: kloJustOutside.title })).toHaveCount(0)
 
   // ── Never assessed ────────────────────────────────────────────────────────
-  await page.goto('/dashboard/daily-report')
   const unassessedSection = page.locator('section', { has: page.getByRole('heading', { name: /Never assessed/ }) })
   await expect(unassessedSection.locator('tr', { hasText: kloUntouched.title })).toBeVisible()
 

@@ -13,7 +13,7 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | Dashboard (home) | `app/dashboard/` (`page.tsx`) | Readiness overview, CQC rating card, analytics, getting started wizard |
 | KLOE Compliance Tracker | `app/dashboard/kloes/` | 24 KLOEs with RAG status, review dates, priority, notes, evidence checklists, audit trail |
 | My KLOEs | `app/dashboard/my-kloes/` | Staff view — only shows KLOEs assigned to the logged-in user |
-| Daily Report | `app/dashboard/daily-report/` | KLOEs overdue or due within 30 days; what to focus on today |
+| Daily Report | `app/dashboard/daily-report/` | KLOEs overdue or due within 14 days (shares lib/rag.ts's DUE_SOON_DAYS); what to focus on today |
 | People's Voice | `app/dashboard/peoples-voice/` | 19 CQC "I" statements with confidence ratings, evidence notes, action items, evidence file uploads |
 | Mock Inspections | `app/dashboard/mock-inspections/` | Self-assessment tool: full or partial inspection, rate I statements and KLOEs, generates prioritised action plan |
 | Post-Inspection | `app/dashboard/post-inspection/` | Log real CQC inspection outcomes, track FAC deadline (10 working days), log FAC items, record outcomes, staff briefing, link to improvement programme |
