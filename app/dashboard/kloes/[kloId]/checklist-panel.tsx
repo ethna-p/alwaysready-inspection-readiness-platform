@@ -51,10 +51,20 @@ const SPECIALIST_COLOURS: Record<string, {
   'Epilepsy':              { border: 'border-fuchsia-200',header: 'text-fuchsia-700',dot: 'bg-fuchsia-400', badge: 'bg-fuchsia-100 text-fuchsia-700' },
 }
 
+// BUG FOUND (Playwright walkthrough, item 16): 'Dementia' was missing from
+// this list despite SPECIALIST_COLOURS already having a full, correctly
+// themed entry for it, and 48 real klo_checklist_items rows already existing
+// with sub_service='Dementia' — every other piece was already in place, just
+// not this one. Confirmed directly: those 48 items have item_type='Core',
+// not the separate legacy 'Dementia Care' item_type (which is a different,
+// non-overlapping set of 10 items handled below), so they matched neither
+// `coreItems` nor `specialistItems` nor `dementiaItems` — completely
+// unrendered anywhere. Toggling "Dementia care" on in Sub-services had zero
+// visible effect for any organisation, ever.
 const SPECIALIST_SUB_SERVICES = [
   'Autism', 'Learning Disabilities', 'Mental Health', 'End of Life',
   'Acquired Brain Injury', 'Physical Disabilities', 'Bariatric Care',
-  'Sensory Impairment', 'Epilepsy',
+  'Sensory Impairment', 'Epilepsy', 'Dementia',
 ]
 
 function RefBadge({ displayOrder, itemType, subService }: {
