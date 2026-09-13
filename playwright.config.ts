@@ -79,6 +79,12 @@ export default defineConfig({
       // posts) rather than skip that code path entirely — not a production
       // secret, see .env.local's own comment on this key.
       INBOUND_EMAIL_SECRET: env.INBOUND_EMAIL_SECRET ?? '',
+      // Stripe TEST MODE only (sk_test_...) — for e2e/cancel-subscription.spec.ts
+      // and e2e/subscribe.spec.ts to drive real Stripe test-mode API calls.
+      STRIPE_SECRET_KEY: env.STRIPE_SECRET_KEY ?? '',
+      STRIPE_PRICE_ID: env.STRIPE_PRICE_ID ?? '',
+      STRIPE_BETA_PRICE_ID: env.STRIPE_BETA_PRICE_ID ?? '',
+      STRIPE_CHARITY_PRICE_ID: env.STRIPE_CHARITY_PRICE_ID ?? '',
     },
   },
 })
