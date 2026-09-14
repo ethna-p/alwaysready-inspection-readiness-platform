@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { type PostInspectionReview } from './page'
 import { type CqcRating, type ReviewStatus } from './post-inspection-actions'
-import { RATING_LABEL, RATING_COLOURS, RATING_STRIP } from './rating-utils'
+import { RATING_LABEL, RATING_COLOURS, RATING_STRIP, facDaysRemaining } from './rating-utils'
 
 const STATUS_LABEL: Record<ReviewStatus, string> = {
   draft_received:     'Draft received',
@@ -27,14 +27,6 @@ const CQC_RATINGS: CqcRating[] = ['outstanding', 'good', 'requires_improvement',
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return '—'
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-/** Days remaining in the 10-working-day FAC window (calendar days approximation: 14 days) */
-function facDaysRemaining(draftReceived: string): number {
-  const deadline = new Date(draftReceived)
-  deadline.setDate(deadline.getDate() + 14) // 10 working days ≈ 14 calendar days
-  const now = new Date()
-  return Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
 // ── New review form ───────────────────────────────────────────────────────────

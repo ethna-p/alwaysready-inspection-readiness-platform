@@ -4,6 +4,16 @@
  * Shows the full inspection record: ratings by key question, FAC deadline
  * countdown, all FAC items with their dispute type and status, key findings,
  * and the staff briefing section. Admins can edit all fields and manage FAC items.
+ *
+ * The five action props below are passed straight through, unwrapped --
+ * never `(fd) => updateReview(review.id, fd)`. This page used to bind
+ * review.id into a closure for every one of them before handing it to
+ * PostInspectionDetailClient, which crashed the entire page outright with
+ * "Functions cannot be passed directly to Client Components...": a locally
+ * -defined arrow function isn't a serialisable Server Action reference,
+ * even when it only ever calls one internally. See that component's own
+ * doc comment for where the id actually gets bound instead (client-side,
+ * at each real call site, an ordinary closure with no boundary to cross).
  */
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -139,11 +149,11 @@ export default async function PostInspectionDetailPage({
         review={review}
         facItems={facItems}
         isAdmin={profile.role === 'admin'}
-        updateReview={(fd) => updateReview(review.id, fd)}
-        deleteReview={() => deleteReview(review.id)}
-        createFacItem={(fd) => createFacItem(review.id, fd)}
-        updateFacItem={(id, fd) => updateFacItem(id, review.id, fd)}
-        deleteFacItem={(id) => deleteFacItem(id, review.id)}
+        updateReview={updateReview}
+        deleteReview={deleteReview}
+        createFacItem={createFacItem}
+        updateFacItem={updateFacItem}
+        deleteFacItem={deleteFacItem}
       />
     </div>
   )

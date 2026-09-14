@@ -1,10 +1,26 @@
 'use client'
 
+/**
+ * This component receives the review/FAC-item server actions RAW, never
+ * pre-bound to this review's id by its parent Server Component -- e.g.
+ * `updateReview={updateReview}`, never `updateReview={(fd) => updateReview(review.id, fd)}`.
+ * The latter used to be exactly what page.tsx did for every action here,
+ * and it crashed this entire page outright: "Functions cannot be passed
+ * directly to Client Components unless you explicitly expose it by
+ * marking it with 'use server'." An anonymous arrow function closing over
+ * a server action isn't itself a serialisable Server Action reference,
+ * even though the function it calls is a real one -- only the exported
+ * action itself, passed unwrapped, survives the server/client boundary.
+ * Binding review.id happens here instead, client-side, at each call site
+ * below, which is fine -- that's an ordinary JS closure with no
+ * serialisation boundary to cross.
+ */
+
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { type ReviewDetail, type FacItem } from './page'
-import { RATING_LABEL, RATING_COLOURS, RATING_STRIP } from '../rating-utils'
+import { RATING_LABEL, RATING_COLOURS, RATING_STRIP, facDaysRemaining } from '../rating-utils'
 import { type CqcRating, type ReviewStatus, type FacDisputeType, type FacStatus } from '../post-inspection-actions'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -46,13 +62,6 @@ function formatDate(iso: string | null | undefined): string {
 
 function toInputDate(iso: string): string {
   return iso.split('T')[0]
-}
-
-function facDaysRemaining(draftReceived: string): number {
-  const deadline = new Date(draftReceived)
-  deadline.setDate(deadline.getDate() + 14)
-  const now = new Date()
-  return Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
 function RatingSelect({ name, defaultValue }: { name: string; defaultValue?: CqcRating }) {
@@ -389,11 +398,16 @@ export default function PostInspectionDetailClient({
   review: ReviewDetail
   facItems: FacItem[]
   isAdmin: boolean
-  updateReview: (fd: FormData) => Promise<{ error?: string }>
-  deleteReview: () => Promise<{ error?: string }>
-  createFacItem: (fd: FormData) => Promise<{ error?: string }>
-  updateFacItem: (id: string, fd: FormData) => Promise<{ error?: string }>
-  deleteFacItem: (id: string) => Promise<{ error?: string }>
+  // Raw server actions, not pre-bound to this review's id -- see the file
+  // doc comment (and post-inspection/[id]/page.tsx's own) for why. This
+  // component already has review.id from its own `review` prop, so it
+  // supplies it itself at each call site below; that closure happens
+  // entirely client-side, unlike binding it in the Server Component.
+  updateReview: (id: string, fd: FormData) => Promise<{ error?: string }>
+  deleteReview: (id: string) => Promise<{ error?: string }>
+  createFacItem: (reviewId: string, fd: FormData) => Promise<{ error?: string }>
+  updateFacItem: (id: string, reviewId: string, fd: FormData) => Promise<{ error?: string }>
+  deleteFacItem: (id: string, reviewId: string) => Promise<{ error?: string }>
 }) {
   const [editing, setEditing]         = useState(false)
   const [showDelete, setShowDelete]   = useState(false)
@@ -508,7 +522,7 @@ export default function PostInspectionDetailClient({
                   <div className="flex gap-3">
                     <button
                       onClick={() => startTransition(async () => {
-                        const res = await deleteReview()
+                        const res = await deleteReview(review.id)
                         if (!res.error) router.push('/dashboard/post-inspection')
                       })}
                       disabled={pending}
@@ -526,7 +540,7 @@ export default function PostInspectionDetailClient({
           ) : (
             <EditReviewForm
               review={review}
-              onSubmit={updateReview}
+              onSubmit={(fd) => updateReview(review.id, fd)}
               onCancel={() => setEditing(false)}
             />
           )}
@@ -570,7 +584,7 @@ export default function PostInspectionDetailClient({
             <div className="bg-fill-dim border border-line rounded-lg p-4">
               <h3 className="text-sm font-semibold text-brand mb-3">New FAC item</h3>
               <FacItemForm
-                onSubmit={createFacItem}
+                onSubmit={(fd) => createFacItem(review.id, fd)}
                 onCancel={() => setShowFacForm(false)}
                 submitLabel="Save FAC item"
               />
@@ -598,8 +612,8 @@ export default function PostInspectionDetailClient({
                         key={item.id}
                         item={item}
                         isAdmin={isAdmin}
-                        onUpdate={(fd) => updateFacItem(item.id, fd)}
-                        onDelete={() => deleteFacItem(item.id)}
+                        onUpdate={(fd) => updateFacItem(item.id, review.id, fd)}
+                        onDelete={() => deleteFacItem(item.id, review.id)}
                       />
                     ))}
                   </div>
