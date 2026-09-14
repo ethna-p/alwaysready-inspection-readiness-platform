@@ -40,7 +40,7 @@ export async function saveMockFinding(
   mockInspectionId: string,
   kloItemId: string,
   rating: MockInspectionRating,
-  notes: string,
+  notes: string | null | undefined,
 ): Promise<{ success: true } | { error: string }> {
   const profile = await requireUser()
   if (!profile) return { error: 'Not authenticated' }
@@ -63,7 +63,8 @@ export async function saveMockFinding(
         mock_inspection_id: mockInspectionId,
         klo_item_id: kloItemId,
         rating,
-        notes: notes.trim() || null,
+        // Defensive, same reasoning as saveMockChecklistResponse's note field.
+        notes: (notes ?? '').trim() || null,
         updated_at: new Date().toISOString(),
       },
       { onConflict: 'mock_inspection_id,klo_item_id' },
@@ -81,7 +82,7 @@ export async function saveMockChecklistResponse(
   mockInspectionId: string,
   checklistItemId: string,
   response: MockChecklistResponse,
-  note: string,
+  note: string | null | undefined,
 ): Promise<{ success: true } | { error: string }> {
   const profile = await requireUser()
   if (!profile) return { error: 'Not authenticated' }
@@ -104,7 +105,12 @@ export async function saveMockChecklistResponse(
         mock_inspection_id: mockInspectionId,
         checklist_item_id: checklistItemId,
         response,
-        note: note.trim() || null,
+        // Defensive: a client-side state bug (stale/missing entry after
+        // navigating between KLOEs, since fixed by the key= prop on
+        // MockInspectionSession) previously sent undefined here and crashed
+        // this action outright. This action shouldn't trust the client to
+        // always send a well-formed string regardless of that fix.
+        note: (note ?? '').trim() || null,
         updated_at: new Date().toISOString(),
       },
       { onConflict: 'mock_inspection_id,checklist_item_id' },

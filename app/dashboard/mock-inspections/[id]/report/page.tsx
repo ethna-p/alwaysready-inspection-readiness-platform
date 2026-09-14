@@ -163,19 +163,26 @@ export default async function MockInspectionReportPage({ params }: { params: Pro
         rating,
       })
     } else if (rating === 'good') {
-      const partialGaps = gaps.filter((g: ResponseWithItem) => g.response === 'partial')
-      if (partialGaps.length > 0 || !gaps.length) {
+      // A "good" overall rating with any recorded gap -- whether "partial" or
+      // the more serious "not met" -- still needs attention before it's
+      // truly safe, so it belongs in "Strengthen", not "Maintain". The
+      // previous condition here (partialGaps.length > 0 || !gaps.length)
+      // was inverted for two real cases: a KLOE with only "not met" gaps
+      // (zero "partial" ones) fell through to "Maintain" -- telling the
+      // provider a KLOE with an unaddressed evidence gap was "performing
+      // well" -- while a KLOE with zero gaps at all landed in "Strengthen"
+      // instead. Only a genuine zero-gap KLOE should ever reach "Maintain".
+      if (gaps.length > 0) {
         strengthen.push({
           kloItemId: kloId,
           findingId: f.id,
           title,
-          action: partialGaps.length > 0
-            ? partialGaps.map((g: ResponseWithItem) => {
-                const ref = g.klo_checklist_items?.ref ?? ''
-                const item = g.klo_checklist_items?.checklist_item ?? ''
-                return `Strengthen evidence for ${ref} ${item}`
-              }).join('; ')
-            : 'Continue building and documenting evidence to maintain this rating.',
+          action: gaps.map((g: ResponseWithItem) => {
+            const ref = g.klo_checklist_items?.ref ?? ''
+            const item = g.klo_checklist_items?.checklist_item ?? ''
+            const verb = g.response === 'partial' ? 'Strengthen evidence for' : 'Address'
+            return `${verb} ${ref} ${item}`
+          }).join('; '),
           rating,
         })
       } else {

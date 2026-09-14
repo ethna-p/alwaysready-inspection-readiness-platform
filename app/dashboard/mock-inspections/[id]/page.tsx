@@ -112,6 +112,20 @@ export default async function MockInspectionSessionPage({
 
   return (
     <MockInspectionSession
+      // Forces a full remount whenever the current KLOE changes. Without
+      // this, navigating between KLOEs via the ?kloe= param is a soft
+      // client-side transition -- React sees the same component type in
+      // the same tree position and keeps its existing instance, so
+      // MockInspectionSession's rating/notes/responses useState (each only
+      // ever initialised once, on first mount) silently carries over the
+      // PREVIOUS KLOE's state instead of resetting to the new one's. For
+      // checklist responses specifically, the carried-over object has no
+      // entry at all for the new KLOE's checklist item ids, so recording a
+      // new response there spreads `undefined` and leaves `note` genuinely
+      // undefined -- which crashed saveMockChecklistResponse's note.trim()
+      // outright. Even without the crash, a stale carried-over rating/notes
+      // selection could silently be submitted against the wrong KLOE.
+      key={klos[currentKloeIndex].id}
       inspectionId={id}
       inspectionType={inspection.type}
       keyQuestionName={inspection.key_questions?.name ?? null}
