@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { requireAdmin, requireUser } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import type { MockInspectionRating, MockChecklistResponse } from '@/lib/types'
 
 // ── Start a new mock inspection ─────────────────────────────────────────────
@@ -42,8 +42,16 @@ export async function saveMockFinding(
   rating: MockInspectionRating,
   notes: string | null | undefined,
 ): Promise<{ success: true } | { error: string }> {
-  const profile = await requireUser()
-  if (!profile) return { error: 'Not authenticated' }
+  // Matches this table's own RLS policy ("Admins can insert/update
+  // findings") -- RLS was already the real enforcement here (confirmed:
+  // a non-admin's write is correctly rejected at the DB layer regardless
+  // of this check), but relying on that alone means a non-admin gets a
+  // raw Postgrest RLS-violation error instead of a clean message, and
+  // diverges from every other sensitive action in this app (including
+  // this file's own startMockInspection), which all add this same
+  // app-layer check on top of RLS rather than depending on it alone.
+  const profile = await requireAdmin()
+  if (!profile) return { error: 'Only admins can record mock inspection findings' }
 
   const supabase = await createClient()
 
@@ -84,8 +92,9 @@ export async function saveMockChecklistResponse(
   response: MockChecklistResponse,
   note: string | null | undefined,
 ): Promise<{ success: true } | { error: string }> {
-  const profile = await requireUser()
-  if (!profile) return { error: 'Not authenticated' }
+  // Matches this table's own RLS policy -- see saveMockFinding's comment above.
+  const profile = await requireAdmin()
+  if (!profile) return { error: 'Only admins can record mock inspection checklist responses' }
 
   const supabase = await createClient()
 
@@ -125,8 +134,10 @@ export async function saveMockChecklistResponse(
 export async function completeMockInspection(
   mockInspectionId: string,
 ): Promise<{ success: true } | { error: string }> {
-  const profile = await requireUser()
-  if (!profile) return { error: 'Not authenticated' }
+  // Matches this table's own RLS policy ("Admins can update own mock
+  // inspections") -- see saveMockFinding's comment above.
+  const profile = await requireAdmin()
+  if (!profile) return { error: 'Only admins can complete a mock inspection' }
 
   const supabase = await createClient()
 
