@@ -20,6 +20,35 @@
  * Dementia to, so it isn't separately re-tested here — this spec exercises
  * that shared mechanism via the one sub-service that was actually broken.
  *
+ * This spec's own "disable" step was intermittently flaky for a while,
+ * previously (mis)diagnosed as Supabase eventual-consistency lag and
+ * "fixed" by bumping the DB poll below from the suite's default 10s
+ * timeout to 20s. That was treating a symptom, not the cause: a direct
+ * script that signs in as the real admin user and performs the exact same
+ * RLS-scoped delete confirms it's instant and fully consistent every time
+ * -- there was never a real consistency gap to wait out.
+ *
+ * The actual cause, root-caused by temporarily logging inside
+ * SubServicesForm's handleChange itself: clicking the checkbox immediately
+ * after this second page.goto() -- a page rendering ten checkboxes plus
+ * the Getting Started widget and HelpWidget, all needing to hydrate --
+ * could land in the gap between the browser's native DOM behaviour (a
+ * checkbox always visually toggles on click, hydrated or not) and React
+ * actually attaching its onChange handler. When that happened, handleChange
+ * never ran at all -- no confirm(), no server action, the underlying row
+ * never touched -- yet the checkbox still visibly flipped to unchecked, so
+ * every assertion up to the DB poll passed regardless. Fixed with a brief
+ * settling wait before this specific click (see the comment there).
+ *
+ * A second, real, and independently-reachable bug turned up investigating
+ * this, unrelated to the hydration race: SubServicesForm's handleChange
+ * showed the checkbox as unchecked even when the user declined the "are
+ * you sure?" confirmation -- a native checkbox toggles on click regardless
+ * of React, and returning early from a declined confirmation never
+ * corrected it back. Any real user who clicks disable then changes their
+ * mind would see the same wrong, unchecked state despite nothing having
+ * actually changed. Fixed directly in SubServicesForm.tsx.
+ *
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.
  */
 import { test, expect } from '@playwright/test'
@@ -48,6 +77,12 @@ test('toggling a sub-service on shows its checklist items on the relevant KLOE, 
     .eq('id', checklistItem!.klo_item_id)
     .single()
   expect(kloErr).toBeNull()
+
+  // Registered once, permanently, well before any click that could trigger
+  // a confirm() -- see the file doc comment for why a page.once('dialog', ...)
+  // registered right before the specific click can lose a timing race
+  // against the dialog actually opening.
+  page.on('dialog', dialog => dialog.accept())
 
   await login(page, account)
   await page.waitForURL('**/dashboard')
@@ -108,22 +143,24 @@ test('toggling a sub-service on shows its checklist items on the relevant KLOE, 
 
   // ── Disable the sub-service again (accepting the confirm dialog) ────────
   await page.goto('/dashboard/account?tab=organisation')
-  page.once('dialog', dialog => dialog.accept())
+  // This page renders ten checkboxes plus the Getting Started widget and
+  // HelpWidget, all needing to hydrate -- clicking immediately after
+  // page.goto()'s own load-event wait can land between the browser's
+  // native DOM (which always toggles a checkbox on click, hydrated or not)
+  // and React actually attaching its onChange handler. Confirmed directly:
+  // without this wait, the checkbox visibly flips to unchecked but
+  // handleChange never runs at all (added temporary logging inside it to
+  // check) -- so no confirm() fires, no server action runs, and the
+  // underlying row is never touched, yet the checkbox looks like the
+  // toggle worked. A quick script performing the exact same delete while
+  // signed in as this real admin confirmed the delete itself is instant
+  // and fully consistent -- this has nothing to do with database timing.
+  await page.waitForTimeout(1500)
   await dementiaCheckbox.click()
   await expect(dementiaCheckbox).not.toBeChecked()
 
-  // The checkbox's unchecked state is driven entirely by fresh server data
-  // (SubServicesForm's `checked` is bound straight to a prop -- no local
-  // optimistic state), so it can only render unchecked once the page has
-  // re-fetched post-revalidatePath(). That normally means the underlying
-  // delete has already landed by the time this runs -- but a real gap was
-  // observed directly: the checkbox showed unchecked while this exact query
-  // still found the row. Poll rather than assume instant consistency, same
-  // reasoning as the klo_checklist_completions poll above. A first version
-  // of this poll used the suite's default 10s expect timeout and still
-  // timed out for real under this suite's own heavier load (many specs, a
-  // real Stripe/Supabase round trip each) -- 20s gives real headroom
-  // without masking a genuinely broken delete.
+  // Poll rather than assume the delete has landed the instant the checkbox
+  // re-renders -- same reasoning as the klo_checklist_completions poll above.
   await expect.poll(async () => {
     const { data } = await admin
       .from('organisation_sub_services')
@@ -131,7 +168,7 @@ test('toggling a sub-service on shows its checklist items on the relevant KLOE, 
       .eq('organisation_id', account.orgId)
       .eq('sub_service', 'Dementia')
     return data?.length ?? null
-  }, { timeout: 20_000 }).toBe(0)
+  }).toBe(0)
 
   // ── The item is hidden again, but its completion + evidence survive ─────
   await page.goto(`/dashboard/kloes/${kloItem!.id}`)
@@ -150,6 +187,7 @@ test('toggling a sub-service on shows its checklist items on the relevant KLOE, 
 
   // ── Re-enabling shows the same item still complete, evidence intact ─────
   await page.goto('/dashboard/account?tab=organisation')
+  await page.waitForTimeout(1500) // same hydration-race reasoning as the disable click above
   await dementiaCheckbox.click()
   await expect(dementiaCheckbox).toBeChecked()
 

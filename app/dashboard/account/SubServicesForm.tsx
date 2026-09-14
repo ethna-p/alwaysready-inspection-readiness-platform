@@ -63,13 +63,26 @@ interface Props {
 export default function SubServicesForm({ enabledSubServices }: Props) {
   const [isPending, startTransition] = useTransition()
 
-  function handleChange(subService: string, label: string, checked: boolean) {
+  function handleChange(subService: string, label: string, e: React.ChangeEvent<HTMLInputElement>) {
+    const checked = e.target.checked
+
     // Confirm before disabling to reassure the user their data is safe
     if (!checked) {
       const confirmed = window.confirm(
         `Unticking "${label}" will hide these checklist items from your KLOEs.\n\nNo data will be deleted — tick it again at any time to restore everything.\n\nAre you sure?`
       )
-      if (!confirmed) return
+      if (!confirmed) {
+        // A native checkbox flips its own DOM `checked` state on click
+        // regardless of React -- this component's `checked` prop is fully
+        // server-driven with no local state, so nothing else here triggers
+        // a re-render that would put it back. Without this, declining the
+        // confirmation left the checkbox showing unchecked (unticked) even
+        // though the sub-service was still genuinely enabled -- a real,
+        // reachable bug for any user who clicks disable then changes their
+        // mind, not just a test artifact.
+        e.target.checked = true
+        return
+      }
     }
 
     startTransition(async () => {
@@ -94,7 +107,7 @@ export default function SubServicesForm({ enabledSubServices }: Props) {
               type="checkbox"
               className="mt-0.5 h-4 w-4 rounded border-line text-brand focus:ring-[#00b8a6]"
               checked={isEnabled}
-              onChange={e => handleChange(ss.value, ss.label, e.target.checked)}
+              onChange={e => handleChange(ss.value, ss.label, e)}
               disabled={isPending}
               aria-label={ss.label}
             />
