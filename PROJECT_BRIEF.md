@@ -78,7 +78,7 @@ The following modules and features are fully built and deployed:
 - Demo leads capture with marketing consent
 - Trial email sequence (Days 3, 5, 7, 9, 11, 13) via Resend
 - Unsubscribe system (HMAC tokens, /unsubscribe page, marketing_opt_out flag)
-- Superadmin provisioning tool (provision Beta users, impersonate orgs)
+- Superadmin provisioning tool (provision Beta users, manage orgs)
 - Superadmin broadcast messaging
 - Support ticket system (user and superadmin views, including external/website enquiries)
 - /api/contact-inbound webhook for marketing site contact form
@@ -251,9 +251,9 @@ Multiple admins supported. All changes attributed to the individual who made the
 
 ## Customer Support Protocol
 
-All customer support is conducted via screen share (Teams or Google Meet). AJ joins the call, observes the customer's screen, diagnoses the issue, then makes any required changes through Claude — not directly in the customer's session.
+All customer support is conducted via screen share (Teams or Google Meet) or the customer's own screenshots. AJ observes what the customer sees, diagnoses the issue, then makes any required changes through Claude — never directly in the customer's session.
 
-Never make changes to a customer's data while impersonating their admin account. Use `/superadmin/organisations` to verify what their dashboard looks like. Data corrections go through Claude (tested, version-controlled) or directly via the Supabase dashboard with a clear note.
+There is no "log in as the customer" tool. `/superadmin/organisations` was previously able to impersonate an org's admin account; this was removed deliberately (2026-09-14) — every real bug found in this app has been a pure code bug, reproducible on any seeded test org, so a live customer session was never actually needed to diagnose one. Data corrections go through Claude (tested, version-controlled) or directly via the Supabase dashboard with a clear note.
 
 ---
 

@@ -1,17 +1,17 @@
 /**
- * /superadmin/organisations — list of all provisioned orgs with impersonation.
+ * /superadmin/organisations — list of all provisioned orgs.
  *
  * Protected by middleware.ts: only SUPERADMIN_EMAIL may access this route.
  * Uses the service-role admin client to bypass RLS.
  *
- * "View as admin →" generates a one-time magic link for the org's admin user
- * and opens it in a new tab, leaving your superadmin session intact.
+ * Used to also offer "View as admin" (log in as the org's admin via a
+ * Supabase magic link) -- removed deliberately, not because it was broken.
+ * See app/superadmin/organisations/actions.ts's own doc comment.
  */
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
-import ImpersonateButton from './ImpersonateButton'
 import CharityToggleButton from './CharityToggleButton'
 import TesterToggleButton from './TesterToggleButton'
 import DeleteOrgButton from './DeleteOrgButton'
@@ -115,8 +115,7 @@ export default async function OrganisationsPage({
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-ink mb-1">Organisations</h1>
         <p className="text-sm text-ink-muted">
-          All provisioned organisations.{' '}
-          <span className="font-medium">&quot;View as admin&quot;</span> opens their dashboard in a new tab — your superadmin session stays open here.
+          All provisioned organisations.
         </p>
       </div>
 
@@ -236,14 +235,6 @@ export default async function OrganisationsPage({
                       orgId={org.id}
                       isCharity={org.is_charity === true}
                     />
-                    {admin ? (
-                      <ImpersonateButton
-                        adminEmail={admin.email}
-                        adminName={admin.full_name}
-                      />
-                    ) : (
-                      <span className="text-xs text-ink-muted">—</span>
-                    )}
                     <DeleteOrgButton orgId={org.id} orgName={org.name} />
                   </div>
                 </div>

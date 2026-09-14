@@ -6,8 +6,8 @@
  * even if called directly rather than via the superadmin UI.
  *
  * Identity alone isn't enough here: this gates the single most destructive
- * account on the platform (impersonate any customer, permanently delete any
- * organisation and all its data). Every other sensitive server action in
+ * account on the platform (e.g. permanently delete any organisation and all
+ * its data). Every other sensitive server action in
  * this app gets AAL2 enforcement via getCurrentUserProfile() -> isAAL2Satisfied()
  * (see lib/session.ts's own doc comment on exactly this "independent of
  * middleware" reasoning) -- this function's own stated purpose was the same,

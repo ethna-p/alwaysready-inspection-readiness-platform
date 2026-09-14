@@ -3,74 +3,29 @@
 /**
  * Superadmin org actions.
  *
- * generateImpersonationLink — generates a one-time Supabase magic link for
- *   any org's admin user so you can log in as them without knowing their password.
- *
  * setCharityStatus — toggles is_charity on an org, which controls whether the
  *   20% charity discount is applied automatically at Stripe checkout.
  *
  * Uses the service-role admin client — server-side only.
+ *
+ * This file used to also have generateImpersonationLink ("View as admin"),
+ * which logged the superadmin into any org's admin account via a Supabase
+ * magic link. Removed deliberately, not because it was broken (it had been,
+ * twice over -- see git history around commits 9596ee7, a7e027c -- but was
+ * genuinely fixed): AJ concluded the platform doesn't actually need it.
+ * Every real bug found in this app has been a pure code bug, reproducible
+ * on any seeded test org -- none needed a real customer's actual data to
+ * diagnose. Support is conducted by screen share or the customer's own
+ * screenshots; any genuine data correction goes through a tested,
+ * version-controlled change or a direct, deliberate Supabase query -- never
+ * an unaudited "log in as them" session with full write access and (as
+ * found while this existed) no trail of what was done while impersonating.
+ * See PROJECT_BRIEF.md's Customer Support Protocol.
  */
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 import { deleteStoragePrefix } from '@/lib/utils/storage-cleanup'
-
-export type ImpersonationResult =
-  | { url: string }
-  | { error: string }
-
-export async function generateImpersonationLink(
-  adminEmail: string
-): Promise<ImpersonationResult> {
-  await assertSuperadmin()
-
-  if (!adminEmail) {
-    return { error: 'No admin email provided.' }
-  }
-
-  const supabase = createAdminClient()
-
-  // Resolve the site URL for the post-login redirect.
-  // NEXT_PUBLIC_SITE_URL should be set in Vercel env vars.
-  // VERCEL_URL is auto-set by Vercel (no https:// prefix) — use as fallback.
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'https://alwaysready-inspection-readiness-pl-three.vercel.app')
-
-  // Route through /auth/callback, not straight to /dashboard. A magic link
-  // is the implicit flow (no code_verifier exists for a link minted on
-  // someone else's behalf) -- Supabase delivers the session as a URL
-  // fragment (#access_token=...), which only /auth/callback (via
-  // /auth/callback/complete) knows how to parse and exchange into a real
-  // session. Pointed straight at /dashboard, that fragment token was never
-  // read by anything: the new tab silently kept whatever session the
-  // browser already had (the superadmin's own, since window.open shares
-  // the same cookie jar) instead of ever becoming the target admin --
-  // "View as admin" looked like it worked (a new tab opened) but never
-  // actually impersonated anyone. Same category of bug already found and
-  // fixed for staff invites (see inviteUserByEmail / commit 9596ee7).
-  const { data, error } = await supabase.auth.admin.generateLink({
-    type: 'magiclink',
-    email: adminEmail,
-    options: {
-      redirectTo: `${siteUrl}/auth/callback?next=/dashboard`,
-    },
-  })
-
-  if (error) {
-    return { error: error.message }
-  }
-
-  const actionLink = data?.properties?.action_link
-  if (!actionLink) {
-    return { error: 'Supabase did not return a login link. Try again.' }
-  }
-
-  return { url: actionLink }
-}
 
 // ── Delete organisation ────────────────────────────────────────────────────
 
@@ -94,7 +49,7 @@ export async function deleteOrganisation(orgId: string): Promise<DeleteOrgResult
   // from the server" error, taking the whole page down with it -- including
   // making the org's own card disappear, which looked like the delete had
   // succeeded even though the org row was never actually removed. Every
-  // other action in this file (setCharityStatus, generateImpersonationLink)
+  // other action in this file (setCharityStatus, setTesterStatus)
   // already honours the DeleteOrgResult-style { error } contract for every
   // failure path; this one didn't for this one step. Fixed at the function
   // level rather than just around that one call, since any future step here
