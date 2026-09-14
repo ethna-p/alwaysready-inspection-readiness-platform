@@ -71,20 +71,18 @@ test('Post-Inspection: log an inspection, correct FAC deadline math, FAC item li
   await login(page, account)
   await page.waitForURL('**/dashboard')
 
-  // The GettingStartedWizard's fixed bottom-right panel (open by default on
-  // a fresh account) genuinely overlaps and blocks this page's own controls
-  // -- confirmed directly, not a test artifact (Playwright's own
-  // actionability check reports the panel's subtree intercepting pointer
-  // events on "+ Log inspection"). It's already excluded from
-  // /dashboard/welcome for the identical reason; not from this page. A
-  // real new admin hits the same block, and would need to dismiss it the
-  // same way. Flagged separately as its own task rather than fixed here,
-  // since the real fix is a general one across the dashboard layout, not
-  // specific to Post-Inspection.
-  await page.getByRole('button', { name: 'Collapse getting started guide' }).click()
-
   // ── Log a new inspection ──────────────────────────────────────────────────
+  // GettingStartedWizard now defaults to collapsed here -- its fixed
+  // bottom-right panel used to auto-open full size on every dashboard
+  // page's first visit, genuinely blocking this page's own "+ Log
+  // inspection" button (confirmed directly: Playwright's own actionability
+  // check reported the panel's subtree intercepting pointer events on it).
+  // Fixed in components/GettingStartedWizard.tsx to only auto-open on
+  // /dashboard itself; see that file's own comment. Asserted directly
+  // (collapsed, not just "happens not to block the click this time") --
+  // this is the actual regression proof for that fix.
   await page.goto('/dashboard/post-inspection')
+  await expect(page.getByRole('button', { name: 'Expand getting started guide' })).toBeVisible()
   await page.getByRole('button', { name: '+ Log inspection' }).click()
 
   await page.locator('input[name="inspection_date"]').fill(draftReceivedInput)

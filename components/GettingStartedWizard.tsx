@@ -111,9 +111,38 @@ export default function GettingStartedWizard() {
   useEffect(() => {
     const isDismissed = ls(LS_DISMISSED) === '1'
     setDismissed(isDismissed)
-    setOpen(!isDismissed && ls(LS_OPEN) !== '0')
+
+    // Once the user has explicitly opened or collapsed the panel, that
+    // choice applies everywhere (ar_wizard_open is a single, page-independent
+    // preference) -- but until they have, this now only auto-opens fully
+    // expanded on the user's own dashboard home page, defaulting to
+    // collapsed (just the small header bar) everywhere else. This used to
+    // auto-open full size the very first time a fresh account landed on
+    // *any* dashboard page, not just the home page it's actually about --
+    // confirmed directly to genuinely block real page content: on
+    // /dashboard/post-inspection, Playwright's own actionability check
+    // reported this panel's fixed bottom-right subtree intercepting
+    // pointer events on that page's own "+ Log inspection" button. A
+    // collapsed header (~52px tall) is far less likely to cover a
+    // meaningful control than the full four-step panel (300px+), so this
+    // addresses the general risk on any page, not just the one instance
+    // found -- rather than excluding pages one at a time, the way
+    // /dashboard/welcome already had to be (see the early-return below).
+    //
+    // "Home" means either /dashboard (app/dashboard/page.tsx, for admin
+    // and viewer) or /dashboard/my-kloes (that same page's own role-based
+    // redirect target for role 'user') -- an admin-only first attempt at
+    // this (just /dashboard) broke staff-invite.spec.ts outright: a
+    // newly-invited staff member's real landing page is /dashboard/my-kloes,
+    // never /dashboard itself, so they'd never have seen the panel open at
+    // all under that narrower check.
+    const explicitOpenPref = ls(LS_OPEN)
+    const defaultOpen = pathname === '/dashboard' || pathname === '/dashboard/my-kloes'
+    setOpen(!isDismissed && (explicitOpenPref !== null ? explicitOpenPref !== '0' : defaultOpen))
+
     openConfettiFired.current = ls(LS_CONFETTI) === '1'
     setMounted(true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // ── Fetch wizard status ────────────────────────────────────────────────────
