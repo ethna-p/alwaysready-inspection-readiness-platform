@@ -292,11 +292,12 @@ function TopicView({ topic, openFaqs, onToggle }: {
 
 // ── Search results ────────────────────────────────────────────────────────────
 
-function SearchResults({ query, allFaqs, openFaqs, onToggle }: {
+function SearchResults({ query, allFaqs, openFaqs, onToggle, onSearchChange }: {
   query: string
   allFaqs: { key: string; topicLabel: string; faq: FAQItem }[]
   openFaqs: Set<string>
   onToggle: (key: string) => void
+  onSearchChange: (v: string) => void
 }) {
   const q = query.toLowerCase()
   const results = allFaqs.filter(
@@ -305,6 +306,40 @@ function SearchResults({ query, allFaqs, openFaqs, onToggle }: {
 
   return (
     <div className="px-8 py-10">
+      {/* Search box -- this view is the only one shown once a query is
+          non-empty (see isSearching below), so without its own input here
+          there was no way to edit or clear a search once results appeared;
+          the "Clear search" (x) button in HomeView's own input can only
+          ever be reached with a whitespace-only query, since a real query
+          unmounts HomeView entirely in favour of this component. */}
+      <div className="relative flex items-center max-w-[560px] mb-6">
+        <span className="absolute left-4 text-ink-muted pointer-events-none">
+          <IconSearch />
+        </span>
+        <input
+          type="search"
+          value={query}
+          onChange={e => onSearchChange(e.target.value)}
+          placeholder="Search all questions…"
+          autoComplete="off"
+          aria-label="Search questions"
+          className="
+            w-full py-[0.875rem] pl-11 pr-10 text-base
+            border-2 border-line rounded-xl
+            bg-card text-ink
+            focus:outline-none focus:border-[#014D4E]
+            placeholder:text-ink-muted
+            transition-colors
+          "
+        />
+        <button
+          onClick={() => onSearchChange('')}
+          aria-label="Clear search"
+          className="absolute right-3 text-ink-muted hover:text-ink transition-colors text-sm"
+        >
+          ✕
+        </button>
+      </div>
       <p className="text-sm text-ink-dim mb-6">
         {results.length === 0
           ? `No results for "${query}"`
@@ -618,6 +653,7 @@ export function HelpCentre() {
             allFaqs={allFaqs}
             openFaqs={openFaqs}
             onToggle={toggleFaq}
+            onSearchChange={setSearch}
           />
         ) : activeTopic ? (
           <TopicView
