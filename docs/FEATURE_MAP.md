@@ -26,7 +26,6 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | Help | `app/dashboard/help/` | Role-specific Help Centre |
 | Support | `app/dashboard/support/` | In-platform support ticket submission |
 | Account | `app/dashboard/account/` | Organisation settings, team management, billing, logo upload, data export |
-| Admin | `app/dashboard/admin/` | Admin-only settings |
 | Welcome | `app/dashboard/welcome/` | Getting started wizard for new organisations |
 
 ---
@@ -56,6 +55,12 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | `support/` | Support ticket desk with AI draft replies |
 | `test-emails/` | Send test emails for all email groups |
 | `account/` | Superadmin MFA settings |
+| `broadcast/` | Send a one-off email broadcast (blog-post-announcement style) to blog subscribers, with live recipient count and preview |
+| `campaigns/` | Direct marketing campaign management — create/track campaigns, contacted leads, opt-out suppression list |
+| `email-log/` | Per-organisation view of which scheduled trial/onboarding emails have been sent (from `notification_log`) |
+| `infrastructure/` | Free-tier usage monitor across Resend, Supabase, Upstash, Sentry, Vercel, and Cloudflare, with a static fallback card per service when its API keys are absent |
+| `metrics/` | Operational health dashboard — org growth/conversion, evidence/KLOE coverage, notification stats, HR compliance (DBS, training) |
+| `provision/` | Manually provision a new organisation + admin user (service-role, bypasses RLS, seeds 24 compliance records) — for demos/onboarding outside the self-serve trial flow |
 
 ---
 
