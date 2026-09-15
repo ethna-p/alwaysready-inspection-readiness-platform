@@ -87,14 +87,30 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // ── 0. Validate CQC Location ID ─────────────────────────────────────────────
   // Fetch now so we can (a) hard-block non-registered IDs and (b) reuse the
   // data for enrichment in step 5, avoiding a second API call.
+  //
+  // This is also the platform's England-only gate: CQC regulates health and
+  // social care exclusively in England -- Scotland, Wales, and Northern
+  // Ireland have their own regulators (Care Inspectorate, CIW, RQIA) and
+  // none of their locations exist on CQC's register. A location ID that
+  // isn't a genuine, current English CQC registration can never resolve
+  // here, so 'not_found' already means "not a CQC-registered English
+  // provider" -- no separate address field or check is needed. The message
+  // says so explicitly rather than just "check the ID and try again", so a
+  // genuinely out-of-scope provider understands why, instead of assuming
+  // they mistyped something.
   const cqcResult = await fetchCqcLocation(cqcLocationId.trim())
   if (cqcResult.status === 'not_found') {
     return {
       success: false,
-      error: 'Your CQC Location ID could not be found on the CQC register. Please check it and try again.',
+      error: 'We could not find this CQC Location ID on the CQC register. AlwaysReady is only available to CQC-registered providers — CQC regulates health and social care services in England only. If you believe this is an error, please check your Location ID and try again, or contact support@alwaysready.uk.',
     }
   }
-  // status === 'unavailable' → CQC API is temporarily down; allow signup to proceed
+  // status === 'unavailable' → CQC API is temporarily down; allow signup to
+  // proceed (see this file's step 9 and app/superadmin/organisations/page.tsx's
+  // "CQC unverified" badge -- the org is flagged for manual review rather
+  // than silently trusted, which covers this same England-only concern for
+  // the rare case where CQC's outage coincides with a genuinely out-of-scope
+  // signup attempt).
 
   // ── 1. Resolve service_type_id ───────────────────────────────────────────────
   const { data: serviceTypeRow, error: stError } = await supabase
