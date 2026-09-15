@@ -147,16 +147,30 @@ function AccountContent() {
 
   // ── Session timeout preference ────────────────────────────────────────
   const STORAGE_KEY = 'superadmin_idle_timeout'
-  const [timeoutMins, setTimeoutMins] = useState<number>(() => {
+  // A useState lazy initializer here (reading localStorage directly) looked
+  // correct and DID compute the right value -- confirmed directly, React's
+  // own state genuinely held 30 after selecting "30 min" and reloading --
+  // but the actually-committed DOM kept rendering the SSR-only default (15)
+  // as the active button regardless, a real, reproducible hydration
+  // mismatch: this page reads useSearchParams() inside a Suspense boundary,
+  // so its first commit is governed by hydration's reconciliation of the
+  // server-rendered shell (window is undefined there, always 15) rather
+  // than a plain client-only initial render. useState initializers aren't
+  // guaranteed to repaint the already-committed hydrated DOM correctly in
+  // that situation. A useEffect always runs strictly after hydration
+  // completes, as an ordinary post-mount state update with no such
+  // ambiguity -- the standard fix for this exact class of bug.
+  const [timeoutMins, setTimeoutMins] = useState<number>(15)
+  useEffect(() => {
     try {
-      const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
+      const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const mins = parseInt(stored, 10)
-        if ([15, 30, 60].includes(mins)) return mins
+        if ([15, 30, 60].includes(mins)) setTimeoutMins(mins)
       }
     } catch { /* ignore */ }
-    return 15
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [timeoutSaved, setTimeoutSaved] = useState(false)
 
   function handleTimeoutChange(mins: number) {
