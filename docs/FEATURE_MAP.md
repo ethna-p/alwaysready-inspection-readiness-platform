@@ -18,7 +18,7 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | Mock Inspections | `app/dashboard/mock-inspections/` | Self-assessment tool: full or partial inspection, rate I statements and KLOEs, generates prioritised action plan |
 | Post-Inspection | `app/dashboard/post-inspection/` | Log real CQC inspection outcomes, track FAC deadline (10 working days), log FAC items, record outcomes, staff briefing, link to improvement programme |
 | Inspection Pack | `app/dashboard/inspection-pack/` | Exportable PDF compliance snapshot for inspectors or boards |
-| Reports | `app/dashboard/reports/` | Report Builder: 6 pre-built report types, section/key-question filters, progress snapshots (deltas vs the last previous day's snapshot), print/PDF. `app/api/report-views/` (save/load a custom view) is a fully-built backend with no UI wired to it anywhere — not reachable by a real user right now. |
+| Reports | `app/dashboard/reports/` | Report Builder: 6 pre-built report types, section/key-question filters, save/load/delete custom views, progress snapshots (deltas vs the last previous day's snapshot), print/PDF. |
 | HR | `app/dashboard/hr/` | Staff records, DBS, Right to Work, supervision, appraisal, training records, certificate uploads, holiday tracking, absence records, Bradford Factor |
 | Incidents | `app/dashboard/incidents/` | Incident recording and tracking |
 | Governance | `app/dashboard/governance/` | Governance alerts panel |
