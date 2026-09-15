@@ -87,6 +87,13 @@ export default defineConfig({
       SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_PREVIEW_SERVICE_ROLE_KEY ?? '',
       NEXT_PUBLIC_SITE_URL: BASE_URL,
       SUPERADMIN_EMAIL: env.SUPERADMIN_EMAIL ?? '',
+      // Not set in .env.local at all -- verifyCronSecret() (lib/utils/cron.ts)
+      // rejects every request unconditionally when this is unset, so the six
+      // /api/cron/* routes' real "correct secret" path was previously
+      // untestable here, only ever hitting the always-401 branch. A fixed
+      // literal is fine: this is an app-internal shared bearer token this
+      // app itself defines, not a third-party credential.
+      CRON_SECRET: 'e2e-test-cron-secret-2f8a4c1d',
       // Only needed so e2e/support-tickets.spec.ts can genuinely exercise
       // /api/inbound-email (simulating what the real Cloudflare Email Worker
       // posts) rather than skip that code path entirely — not a production

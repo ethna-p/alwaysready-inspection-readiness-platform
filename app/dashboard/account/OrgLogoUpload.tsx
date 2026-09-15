@@ -3,7 +3,12 @@
 /**
  * OrgLogoUpload — logo upload control for the Organisation settings tab.
  *
- * Accepts PNG, JPG, WebP, GIF, SVG up to 2 MB.
+ * Accepts PNG, JPG, WebP, GIF up to 2 MB. SVG is deliberately NOT accepted
+ * here or by POST /api/org-logo — SVGs can embed scripts, an XSS risk if
+ * ever served with Content-Type: image/svg+xml (see that route's own
+ * comment). This file used to still list SVG in both the file picker's
+ * `accept` and this help text, so choosing one here always ended in
+ * "File type not allowed" — confirmed live via Playwright before fixing.
  * Uploads via POST /api/org-logo (multipart form data).
  * Displays a live preview; shows the current logo if one is already set.
  */
@@ -125,7 +130,7 @@ export default function OrgLogoUpload({ currentLogoUrl }: Props) {
           id="org-logo-input"
           ref={inputRef}
           type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+          accept="image/png,image/jpeg,image/webp,image/gif"
           onChange={handleFileChange}
           className="
             text-sm text-ink file:mr-3 file:py-1.5 file:px-3
@@ -149,7 +154,7 @@ export default function OrgLogoUpload({ currentLogoUrl }: Props) {
         </button>
       </div>
 
-      <p className="text-xs text-ink-muted">PNG, JPG, WebP, GIF, or SVG · Max 2 MB · Recommended height: 48–64 px</p>
+      <p className="text-xs text-ink-muted">PNG, JPG, WebP, or GIF · Max 2 MB · Recommended height: 48–64 px</p>
 
       {error   && <p role="alert" className="text-sm text-red-600">{error}</p>}
       {success && <p role="status" className="text-sm text-green-700">{success}</p>}
