@@ -254,10 +254,27 @@ async function middlewareFn(request: NextRequest) {
 
   // ── Redirect authenticated users away from /login ──────────────────────
   // Superadmin goes to /superadmin; everyone else goes to /dashboard.
+  //
+  // BUT only once their session is actually done authenticating. This used
+  // to fire for ANY session, including one that's only aal1 (password
+  // verified, MFA not yet completed) -- which meant the MFA page's own
+  // "Sign in with a different account" link (-> /login) walked straight
+  // into a redirect loop: /login sent them to /dashboard (a session
+  // exists), the MFA guard immediately sent them right back to
+  // /login/mfa (that session isn't aal2 yet). No hard refresh, new tab, or
+  // click could ever reach a real sign-in form again -- the only way out
+  // was clearing cookies by hand, since Sign Out itself lives inside the
+  // dashboard this loop never let them reach. Confirmed live (AJ got
+  // trapped on /login/mfa for real, in production).
   if (user && pathname === '/login') {
-    const url = request.nextUrl.clone()
-    url.pathname = user.email === superadminEmail ? '/superadmin' : '/dashboard'
-    return NextResponse.redirect(url)
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+    const mfaStillPending = aal?.nextLevel === 'aal2' && aal.currentLevel !== 'aal2'
+
+    if (!mfaStillPending) {
+      const url = request.nextUrl.clone()
+      url.pathname = user.email === superadminEmail ? '/superadmin' : '/dashboard'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse
