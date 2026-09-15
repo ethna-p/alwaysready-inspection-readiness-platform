@@ -69,7 +69,13 @@ export async function sendBulkLaunchEmail(
     if (!emailContent) continue
 
     try {
-      await sendEmail({
+      // sendEmail() never throws for a send that didn't go out (missing API
+      // key, opt-out, a Resend API error) -- it returns { sent: false, ... }
+      // normally in every one of those cases. This loop used to only check
+      // for a thrown exception, so it counted every one of those as a
+      // success -- confirmed live: with no RESEND_API_KEY configured, this
+      // reported "Sent to 1 subscriber" for a send that never happened.
+      const result = await sendEmail({
         to:              lead.email,
         subject:         emailContent.subject,
         type:            'marketing',
@@ -77,7 +83,13 @@ export async function sendBulkLaunchEmail(
         footerNote:      'You are receiving this because you joined the AlwaysReady waitlist.',
         bodyHtml:        emailContent.bodyHtml,
       })
-      sent++
+      if (result.sent) {
+        sent++
+      } else {
+        console.error(`[sendBulkLaunchEmail] Not sent for ${lead.email}:`, result.skipped ?? result.error)
+        failed++
+        errors.push(lead.email)
+      }
     } catch (err) {
       console.error(`[sendBulkLaunchEmail] Failed for ${lead.email}:`, err)
       failed++
