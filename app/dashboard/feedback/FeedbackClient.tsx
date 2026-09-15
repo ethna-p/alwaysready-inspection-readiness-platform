@@ -377,7 +377,11 @@ function FeedbackCard({
           <FeedbackForm
             defaults={record}
             isAdmin={isAdmin}
-            onSubmit={fd => updateFeedback(record.id, fd)}
+            onSubmit={async fd => {
+              const result = await updateFeedback(record.id, fd)
+              if (!result.error) setEditing(false)
+              return result
+            }}
             onCancel={() => setEditing(false)}
             submitLabel="Save changes"
           />

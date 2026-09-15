@@ -22,6 +22,7 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | HR | `app/dashboard/hr/` | Staff records, DBS, Right to Work, supervision, appraisal, training records, certificate uploads, holiday tracking, absence records, Bradford Factor |
 | Incidents | `app/dashboard/incidents/` | Incident recording and tracking |
 | Governance | `app/dashboard/governance/` | Governance meeting log: record QA/oversight meetings, agenda, key decisions, actions arising, admin sign-off, status filtering |
+| Feedback | `app/dashboard/feedback/` | Complaints/compliments/suggestions/concerns log for the Caring and Responsive key questions: source, summary, action taken, outcome, optional key-question tag, CQC-reported flag, admin-only status changes (open/actioned/closed), type/status filtering |
 | Help | `app/dashboard/help/` | Role-specific Help Centre |
 | Support | `app/dashboard/support/` | In-platform support ticket submission |
 | Account | `app/dashboard/account/` | Organisation settings, team management, billing, logo upload, data export |
