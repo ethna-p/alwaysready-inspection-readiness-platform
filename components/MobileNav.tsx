@@ -11,13 +11,13 @@ import Link from 'next/link'
 type Props = {
   isAdmin: boolean
   hasUnread: boolean
-  isStaff?: boolean
+  isUser?: boolean
   userId?: string
 }
 
 const NAV_LINK = 'block text-base font-medium text-brand py-3 border-b border-line hover:text-[#00b8a6] transition-colors'
 
-export default function MobileNav({ isAdmin, hasUnread, isStaff, userId }: Props) {
+export default function MobileNav({ isAdmin, hasUnread, isUser, userId }: Props) {
   const [open, setOpen] = useState(false)
 
   // Close on route change / escape key
@@ -71,7 +71,7 @@ export default function MobileNav({ isAdmin, hasUnread, isStaff, userId }: Props
                 HR
               </Link>
             )}
-            {isStaff && userId && (
+            {isUser && userId && (
               <Link href={`/dashboard/hr/${userId}`} className={NAV_LINK} onClick={() => setOpen(false)}>
                 My Profile
               </Link>

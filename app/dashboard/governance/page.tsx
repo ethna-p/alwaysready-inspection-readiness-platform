@@ -2,8 +2,8 @@
  * /dashboard/governance — Governance meeting log.
  *
  * Records quality assurance and governance meetings that CQC inspectors
- * ask to see as evidence of effective Well-led oversight. All staff roles
- * can view; admins and staff can record meetings; only admins can sign off.
+ * ask to see as evidence of effective Well-led oversight. All roles can
+ * view; admins and users can record meetings; only admins can sign off.
  */
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'

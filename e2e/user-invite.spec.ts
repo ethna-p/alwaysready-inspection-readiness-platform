@@ -1,5 +1,5 @@
 /**
- * Admin creates a staff account (real email invite) -> staff sets a
+ * Admin creates a user account (real email invite) -> the invited user sets a
  * password, completes mandatory MFA enrolment, and logs in.
  *
  * This is item 10 of the platform walkthrough -- paused for most of this
@@ -37,67 +37,67 @@ import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 
-test('admin invites a staff member by real email; they set up and log in', async ({ page, browser, baseURL }) => {
+test('admin invites a team member by real email; they set up and log in', async ({ page, browser, baseURL }) => {
   test.setTimeout(90_000)
   const account = loadTestAccount()
   const admin = getAdminClient()
 
-  const staffEmail = `e2e-invited-staff-${Date.now()}@example.org`
-  const staffName = 'E2E Invited Staff'
-  const staffPassword = 'E2E-invited-staff-pw-6q1z!'
+  const inviteeEmail = `e2e-invited-user-${Date.now()}@example.org`
+  const inviteeName = 'E2E Invited User'
+  const inviteePassword = 'E2E-invited-user-pw-6q1z!'
 
   await login(page, account)
   await page.waitForURL('**/dashboard')
   await page.goto('/dashboard/account?tab=team')
 
-  await page.locator('#full_name').fill(staffName)
-  await page.locator('#email').fill(staffEmail)
-  // Role left at its default ("User") -- matches most real staff invites.
+  await page.locator('#full_name').fill(inviteeName)
+  await page.locator('#email').fill(inviteeEmail)
+  // Role left at its default ("User") -- matches most real team invites.
   await page.getByRole('button', { name: 'Send invite' }).click()
 
   await expect(page.getByText('Invitation sent', { exact: true })).toBeVisible()
-  await expect(page.getByText(`Invitation sent to ${staffEmail}.`, { exact: false })).toBeVisible()
+  await expect(page.getByText(`Invitation sent to ${inviteeEmail}.`, { exact: false })).toBeVisible()
 
-  const { data: staffRow, error: staffRowErr } = await admin
+  const { data: inviteeRow, error: inviteeRowErr } = await admin
     .from('users')
     .select('id, organisation_id, role, onboarding_complete, full_name')
-    .eq('email', staffEmail)
+    .eq('email', inviteeEmail)
     .single()
-  expect(staffRowErr).toBeNull()
-  expect(staffRow!.organisation_id).toBe(account.orgId)
-  expect(staffRow!.role).toBe('user')
-  expect(staffRow!.onboarding_complete).toBe(true)
-  expect(staffRow!.full_name).toBe(staffName)
+  expect(inviteeRowErr).toBeNull()
+  expect(inviteeRow!.organisation_id).toBe(account.orgId)
+  expect(inviteeRow!.role).toBe('user')
+  expect(inviteeRow!.onboarding_complete).toBe(true)
+  expect(inviteeRow!.full_name).toBe(inviteeName)
 
-  // ── Stand-in for "the invited staff member opens the real email and
+  // ── Stand-in for "the invited team member opens the real email and
   // clicks the link" -- see the file doc comment for why this, not the
   // real email's own link, is used here.
   const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
     type: 'magiclink',
-    email: staffEmail,
+    email: inviteeEmail,
     options: { redirectTo: `${baseURL}/auth/callback?next=/account/setup` },
   })
   expect(linkErr).toBeNull()
   const actionLink = linkData?.properties?.action_link
   expect(actionLink).toBeTruthy()
 
-  const staffContext = await browser.newContext()
-  const staffPage = await staffContext.newPage()
+  const inviteeContext = await browser.newContext()
+  const inviteePage = await inviteeContext.newPage()
 
-  await staffPage.goto(actionLink!)
-  await staffPage.waitForURL('**/account/setup')
-  await expect(staffPage.getByRole('heading', { name: 'Welcome to AlwaysReady' })).toBeVisible()
+  await inviteePage.goto(actionLink!)
+  await inviteePage.waitForURL('**/account/setup')
+  await expect(inviteePage.getByRole('heading', { name: 'Welcome to AlwaysReady' })).toBeVisible()
 
-  await staffPage.locator('#password').fill(staffPassword)
-  await staffPage.locator('#confirm').fill(staffPassword)
-  await staffPage.getByRole('button', { name: 'Set password and continue' }).click()
+  await inviteePage.locator('#password').fill(inviteePassword)
+  await inviteePage.locator('#confirm').fill(inviteePassword)
+  await inviteePage.getByRole('button', { name: 'Set password and continue' }).click()
 
-  await expect(staffPage.getByText('Password set')).toBeVisible()
+  await expect(inviteePage.getByText('Password set')).toBeVisible()
 
   // ── Mandatory MFA enrolment (role 'user', no factor yet) ─────────────────
-  const staffTotpSecret = await completeMandatoryMfaSetup(staffPage)
-  await staffPage.goto('/dashboard')
-  await expect(staffPage.getByRole('button', { name: `User menu for ${staffName}` })).toBeVisible()
+  const inviteeTotpSecret = await completeMandatoryMfaSetup(inviteePage)
+  await inviteePage.goto('/dashboard')
+  await expect(inviteePage.getByRole('button', { name: `User menu for ${inviteeName}` })).toBeVisible()
 
   // ── Sign out, then log back in as a genuinely separate session ──────────
   // The floating "Getting started" widget (GettingStartedWizard, rendered by
@@ -107,7 +107,7 @@ test('admin invites a staff member by real email; they set up and log in', async
   // Stripe checkout's own overlay elsewhere in this suite, this is a
   // genuinely unrelated widget, so a forced click at those coordinates can
   // land on IT instead of the button we actually want).
-  await staffPage.getByRole('button', { name: 'Collapse getting started guide' }).click()
+  await inviteePage.getByRole('button', { name: 'Collapse getting started guide' }).click()
 
   // This is a plain open/closed toggle (onClick={() => setOpen(v => !v)}) --
   // retrying the click itself on failure would just flip it shut again, so
@@ -115,16 +115,16 @@ test('admin invites a staff member by real email; they set up and log in', async
   // The "Sign out" element is a <button>, but explicitly role="menuitem" in
   // the JSX (UserMenu.tsx) -- that overrides its implicit button role, so
   // getByRole('button', ...) never matches it.
-  const userMenuButton = staffPage.getByRole('button', { name: `User menu for ${staffName}` })
-  const signOutButton = staffPage.getByRole('menuitem', { name: 'Sign out' })
+  const userMenuButton = inviteePage.getByRole('button', { name: `User menu for ${inviteeName}` })
+  const signOutButton = inviteePage.getByRole('menuitem', { name: 'Sign out' })
   await userMenuButton.click()
   await expect(signOutButton).toBeVisible({ timeout: 10_000 })
   await signOutButton.click()
-  await staffPage.waitForURL('**/login')
+  await inviteePage.waitForURL('**/login')
 
-  await login(staffPage, { email: staffEmail, password: staffPassword, totpSecret: staffTotpSecret })
-  await staffPage.waitForURL(url => !url.pathname.includes('/login'))
-  await expect(staffPage.getByRole('button', { name: `User menu for ${staffName}` })).toBeVisible()
+  await login(inviteePage, { email: inviteeEmail, password: inviteePassword, totpSecret: inviteeTotpSecret })
+  await inviteePage.waitForURL(url => !url.pathname.includes('/login'))
+  await expect(inviteePage.getByRole('button', { name: `User menu for ${inviteeName}` })).toBeVisible()
 
-  await staffContext.close()
+  await inviteeContext.close()
 })

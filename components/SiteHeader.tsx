@@ -13,12 +13,7 @@ export default async function SiteHeader() {
   const supabase = await createClient()
   const profile = await getCurrentUserProfile()
   const isAdmin = profile?.role === 'admin'
-  // The non-admin/non-viewer team-member role is 'user' (see
-  // supabase/migrations/20260715000002_roles_and_assignment.sql) — 'staff'
-  // was never a real, assignable role (no invite/creation flow ever sets
-  // it), so this previously matched nothing, and the "My Profile" HR
-  // self-service link below never rendered for anyone.
-  const isStaff = profile?.role === 'user'
+  const isUser = profile?.role === 'user'
 
   // Count unread staff replies for this org (RLS scopes this automatically)
   const { count: unreadCount } = await supabase
@@ -95,7 +90,7 @@ export default async function SiteHeader() {
               HR
             </Link>
           )}
-          {isStaff && profile?.id && (
+          {isUser && profile?.id && (
             <Link
               href={`/dashboard/hr/${profile.id}`}
               className="text-sm font-semibold text-ink hover:text-brand focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2 rounded"
@@ -160,7 +155,7 @@ export default async function SiteHeader() {
           <div className="hidden sm:flex items-center gap-3">
             <UserMenu fullName={profile?.full_name ?? null} hasUnread={hasUnread} />
           </div>
-          <MobileNav isAdmin={isAdmin} hasUnread={hasUnread} isStaff={isStaff} userId={profile?.id} />
+          <MobileNav isAdmin={isAdmin} hasUnread={hasUnread} isUser={isUser} userId={profile?.id} />
         </div>
       </div>
     </header>

@@ -132,8 +132,8 @@ export default function GettingStartedWizard() {
     // "Home" means either /dashboard (app/dashboard/page.tsx, for admin
     // and viewer) or /dashboard/my-kloes (that same page's own role-based
     // redirect target for role 'user') -- an admin-only first attempt at
-    // this (just /dashboard) broke staff-invite.spec.ts outright: a
-    // newly-invited staff member's real landing page is /dashboard/my-kloes,
+    // this (just /dashboard) broke user-invite.spec.ts outright: a
+    // newly-invited user-role team member's real landing page is /dashboard/my-kloes,
     // never /dashboard itself, so they'd never have seen the panel open at
     // all under that narrower check.
     const explicitOpenPref = ls(LS_OPEN)

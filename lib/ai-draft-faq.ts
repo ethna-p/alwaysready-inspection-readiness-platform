@@ -27,7 +27,7 @@ Every KLOE is given an automatic RAG status:
 RAG status is calculated automatically — users do not set it manually.
 
 Readiness Dashboard
-Shows overall inspection readiness as a percentage, broken down by each of the five key question areas. Also shows a team workload overview with assigned KLOEs and overdue items per staff member. The dashboard also shows the organisation's live CQC rating pulled from the public CQC register, the registered service name as held by CQC, the date of the last CQC inspection, and a direct link to the service's CQC web page. CQC data refreshes every 24 hours automatically.
+Shows overall inspection readiness as a percentage, broken down by each of the five key question areas. Also shows a team workload overview with assigned KLOEs and overdue items per team member. The dashboard also shows the organisation's live CQC rating pulled from the public CQC register, the registered service name as held by CQC, the date of the last CQC inspection, and a direct link to the service's CQC web page. CQC data refreshes every 24 hours automatically.
 
 Daily Review Report
 A single screen showing everything that needs attention — overdue KLOEs first, then those due soon, sorted by priority. Designed to be scanned in under five minutes.
@@ -42,7 +42,7 @@ Inspection Pack
 A one-click printable summary of the full compliance position, showing current RAG status, review dates, priority, and evidence location for every KLOE. Designed to be handed to an inspector or presented to a board.
 
 Team Management
-Roles: Admin (full access — edit all KLOEs, manage team, assign tasks, run mock inspections, maintain HR records, create visitor logins); Staff/User (can view all KLOEs, can update the ones assigned to them, lands on My KLOEs when they log in); Viewer (read-only). Multiple Admins are supported with no limit.
+Roles: Admin (full access — edit all KLOEs, manage team, assign tasks, run mock inspections, maintain HR records, create visitor logins); User (can view all KLOEs, can update the ones assigned to them, lands on My KLOEs when they log in); Viewer (read-only). Multiple Admins are supported with no limit.
 
 To invite a team member: go to Team in the navigation bar, scroll to Invite team member, enter the person's full name, email address, and role, then click Send invite. They receive an email with a link to set their own password.
 
@@ -56,10 +56,10 @@ Accessed from HR in the navigation bar. Contains: employment details (job title,
 Absence reason categories: Musculoskeletal, Respiratory / Cold / Flu, Mental health / Stress / Anxiety, Gastrointestinal, Injury, Other.
 Absence types: sick, other. Bradford Factor formula: S² × D (S = number of separate sickness absences in rolling 52 weeks, D = total sick days in same period). Bands: Low (0–50), Medium (51–450), High (451+).
 
-Staff members appear in HR automatically once added via the Team page — no separate HR setup is needed.
+Team members appear in HR automatically once added via the Team page — no separate HR setup is needed.
 
 Account and security
-Two-factor authentication (2FA) is required for all Admin and Staff accounts. It is set up on first login using an authenticator app (Google Authenticator, Authy, Microsoft Authenticator, or a browser extension). Visitor accounts do not require 2FA. Each organisation's data is fully isolated.
+Two-factor authentication (2FA) is required for all Admin and User accounts. It is set up on first login using an authenticator app (Google Authenticator, Authy, Microsoft Authenticator, or a browser extension). Visitor accounts do not require 2FA. Each organisation's data is fully isolated.
 
 Support
 In-platform support tickets are submitted via Support in the navigation bar. Email support is available at support@alwaysready.uk.
@@ -244,7 +244,7 @@ A: We recommend that only the Registered Manager holds the admin role. Admin use
 Q44b: Can the Registered Manager grant their deputy Admin access?
 A: Yes. The platform allows the admin role to be assigned to any team member. Registered Managers can add admin users on the Team page in Account settings. This should be a deliberate decision, given the level of access it grants, including full visibility of all HR records.
 
-Q45: How do staff members obtain access?
+Q45: How do team members obtain access?
 A: Admins add team members to the platform via the Team section. Enter the team member's name, email address, and role, then click Send Invite. The team member receives login details by email and sets their password and MFA on first login.
 
 Q46: Can I grant a CQC inspector read-only access during a visit?
@@ -340,7 +340,7 @@ Q78: Which authenticator apps are compatible with AlwaysReady?
 A: AlwaysReady works with any TOTP-compatible authenticator app, including Google Authenticator, Authy, and Microsoft Authenticator. If you do not have a smartphone, you can also use a browser-based authenticator extension for Chrome or Firefox, or the Authy desktop app for Windows and Mac.
 
 Q79: Do visitor accounts require two-factor authentication?
-A: No. Two-factor authentication is required only for Admin and Staff accounts. Visitor accounts, which are read-only and time-limited, are not subject to 2FA.
+A: No. Two-factor authentication is required only for Admin and User accounts. Visitor accounts, which are read-only and time-limited, are not subject to 2FA.
 
 Q80: What if I lose access to my authenticator app?
 A: You can add another authenticator app at any time via the Account section of your dashboard.

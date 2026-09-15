@@ -7,7 +7,7 @@
  * request carries neither a `code` nor a `token_hash` — which is exactly
  * what happens for any link minted via the Admin API (auth.admin.generateLink,
  * and auth.admin.inviteUserByEmail — the real mechanism behind
- * inviteTeamMember's staff invites). Those links never carry a PKCE code
+ * inviteTeamMember's team member invites). Those links never carry a PKCE code
  * (there's no browser-side code_verifier to tie one to when an admin, not
  * the recipient's own browser, triggered the link), and instead deliver the
  * session directly in the URL fragment: #access_token=...&refresh_token=...

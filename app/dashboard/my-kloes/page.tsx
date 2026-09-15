@@ -1,5 +1,5 @@
 /**
- * /dashboard/my-kloes — Personal KLOE view for user-role staff.
+ * /dashboard/my-kloes — Personal KLOE view for users with the `user` role.
  *
  * Shows only the KLOEs assigned to the current user.
  * Admins are redirected to /dashboard (they see the full view).

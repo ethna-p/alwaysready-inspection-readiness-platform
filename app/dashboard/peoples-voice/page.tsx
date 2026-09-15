@@ -2,9 +2,9 @@
  * /dashboard/peoples-voice
  *
  * Displays the 19 authentic TLAP "I" statements published by CQC as part
- * of the draft 2026 assessment framework. Staff record evidence against
- * each statement, rate evidence quality, set review dates, and manage
- * action plans for gaps.
+ * of the draft 2026 assessment framework. Team members record evidence
+ * against each statement, rate evidence quality, set review dates, and
+ * manage action plans for gaps.
  *
  * CQC gathers this evidence directly from people using services, their
  * families, and carers during inspections. This module helps teams

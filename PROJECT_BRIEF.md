@@ -63,8 +63,8 @@ The following modules and features are fully built and deployed:
 - Mobile-responsive layout
 
 **Team management**
-- Admin can create staff accounts (no real email required — auto-generated placeholder)
-- Username-based login for staff
+- Admin can create user accounts (no real email required — auto-generated placeholder)
+- Username-based login for user-role accounts
 - KLOE assignment (one assignee per KLOE)
 - "My KLOEs" landing page for `user` role
 - Inspector/visitor login creation (time-limited `viewer` accounts, configurable duration)
@@ -220,7 +220,7 @@ Our tools are designed to support providers in preparing for CQC inspection. The
 | Repo | GitHub — authoritative backup |
 | Access model | 14-day free trial → paid monthly subscription. No separate demo environment. |
 | Multi-service-type support | Single Supabase project handles all 11 service types |
-| Staff login | Username-based, no real email required for `user` role accounts |
+| User login | Username-based, no real email required for `user` role accounts |
 | Support protocol | Screen share (Teams / Google Meet) — AJ observes, changes go through Claude |
 
 ---

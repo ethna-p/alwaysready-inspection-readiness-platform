@@ -61,10 +61,10 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     body: (firstName) => `
       <p>Hi ${firstName},</p>
       <p>This week is about getting your team set up on the platform ⭐</p>
-      <p>Go to the <strong>Team</strong> section in the main navigation to invite staff members. Once they're in,
+      <p>Go to the <strong>Team</strong> section in the main navigation to invite team members. Once they're in,
       you can assign them specific KLOEs to manage, so evidence is added steadily throughout the year by the people
       closest to the work.</p>
-      <p>Staff can also update their own profile in the <strong>My Profile</strong> section, including their
+      <p>Team members can also update their own profile in the <strong>My Profile</strong> section, including their
       emergency contact details. This keeps HR records current without creating additional admin for you.</p>
       <p>As your team takes ownership of their KLOEs, they build familiarity with compliance expectations and
       become more confident discussing the work they do. That confidence matters whenever an inspector arrives.</p>
@@ -396,7 +396,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       something that only gets attention when an inspector is in the building.</p>
       <p><strong>A few things worth thinking about:</strong></p>
       <p>Have your team members logged in and reviewed the KLOEs they are responsible for recently? Are
-      there staff who have never used the platform, or who are unsure what they are supposed to do in it?
+      there team members who have never used the platform, or who are unsure what they are supposed to do in it?
       Has your team discussed what an inspection looks like and how they should respond to an inspector's
       questions?</p>
       <p>If staff engagement is something you would like to improve, hit reply. It is one of the most

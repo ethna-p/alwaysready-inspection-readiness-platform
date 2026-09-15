@@ -230,7 +230,7 @@ test('trial signup: real form, real org, real email, through to a working dashbo
     // on this particular page it overlaps the "Get started" button below.
     // A real first-time visitor hits the exact same thing; dismiss it the
     // same way they would, same reasoning as collapsing the unrelated
-    // "Getting started" widget in staff-invite.spec.ts.
+    // "Getting started" widget in user-invite.spec.ts.
     await page.getByRole('button', { name: 'OK, got it' }).click()
 
     await page.getByRole('button', { name: 'Get started →' }).click()

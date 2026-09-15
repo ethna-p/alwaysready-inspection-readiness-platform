@@ -1,7 +1,7 @@
 /**
  * /dashboard/incidents — Incident log.
  *
- * All staff roles can view and log incidents.
+ * All roles can view incidents; Admins and Users can log them.
  * Admins can move incidents through review → closed and record learning outcomes.
  */
 import { createClient } from '@/lib/supabase/server'

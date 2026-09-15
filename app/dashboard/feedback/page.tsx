@@ -68,7 +68,7 @@ export default async function FeedbackPage() {
         seeks and acts on feedback as part of the <strong>Caring</strong> and{' '}
         <strong>Responsive</strong> key questions. Logging feedback here — alongside the action
         taken and outcome — provides direct evidence that your service listens, learns, and
-        improves. All staff can log feedback; admins can update status and close records.
+        improves. All users can log feedback; admins can update status and close records.
       </div>
 
       <FeedbackClient

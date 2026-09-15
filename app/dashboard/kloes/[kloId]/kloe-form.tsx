@@ -149,7 +149,7 @@ export default function KloeForm({ kloItemId, currentRecord, isAdmin }: Props) {
             <label htmlFor="priority" className="block text-sm font-medium text-ink mb-1">
               Priority
               <span className="ml-1 text-xs text-ink-dim font-normal">(how serious if non-compliant)</span>
-              <Tooltip text="How serious would it be if this KLOE was found non-compliant during an inspection? Priority 1 means the consequences are most severe (e.g. a safeguarding failure). Priority 5 means the risk is minimal. Set by the manager — staff cannot change this." />
+              <Tooltip text="How serious would it be if this KLOE was found non-compliant during an inspection? Priority 1 means the consequences are most severe (e.g. a safeguarding failure). Priority 5 means the risk is minimal. Set by the manager — non-admin users cannot change this." />
             </label>
             <select
               id="priority"

@@ -325,12 +325,12 @@ export default async function AccountPage({
                   features: [
                     {
                       name: 'Team Management',
-                      desc: 'Invite colleagues by email. Assign roles — Admin (full access), Staff (edit assigned KLOEs), Viewer (read-only). We recommend that only the Registered Manager holds Admin access.',
+                      desc: 'Invite colleagues by email. Assign roles — Admin (full access), User (edit assigned KLOEs), Viewer (read-only). We recommend that only the Registered Manager holds Admin access.',
                       href: '/dashboard/account?tab=team',
                     },
                     {
                       name: 'KLOE Assignment',
-                      desc: 'Assign individual KLOEs to specific team members. Staff see their personal "My KLOEs" list on login and receive email notification when a new KLOE is assigned to them.',
+                      desc: 'Assign individual KLOEs to specific team members. Users see their personal "My KLOEs" list on login and receive email notification when a new KLOE is assigned to them.',
                       href: '/dashboard/account?tab=team',
                     },
                     {
@@ -355,7 +355,7 @@ export default async function AccountPage({
                     },
                     {
                       name: 'Security & Two-Factor Authentication',
-                      desc: 'MFA required for all Admin and Staff accounts. Row-level data isolation ensures no organisation can access another\'s records. All data encrypted at rest and in transit.',
+                      desc: 'MFA required for all Admin and User accounts. Row-level data isolation ensures no organisation can access another\'s records. All data encrypted at rest and in transit.',
                       href: '/dashboard/account?tab=security',
                     },
                     {

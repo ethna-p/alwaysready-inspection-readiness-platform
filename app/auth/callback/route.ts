@@ -14,7 +14,7 @@
  *
  * A THIRD format exists and is NOT handled here at all: any link minted via
  * the Admin API (auth.admin.generateLink, auth.admin.inviteUserByEmail — the
- * latter is exactly how inviteTeamMember sends real staff invites) never
+ * latter is exactly how inviteTeamMember sends real team member invites) never
  * carries a `code`, because PKCE needs a code_verifier that only ever exists
  * in the browser that initiated the request — an admin-triggered link has no
  * such browser. Those links deliver the session as a URL FRAGMENT instead

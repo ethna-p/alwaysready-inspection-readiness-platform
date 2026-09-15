@@ -31,14 +31,10 @@ export default async function HrStaffDetailPage({
   const profile = await getCurrentUserProfile()
   if (!profile) redirect('/dashboard')
 
-  // 'user' is the non-admin/non-viewer team-member role — see the matching
-  // fix/comment in components/SiteHeader.tsx. This previously checked for
-  // 'staff', a role no user can ever actually have, so no team member could
-  // ever reach their own HR record via this self-service path.
   const isSelf = profile.role === 'user' && userId === profile.id
   const isViewer = profile.role === 'viewer'
 
-  // Staff may only view their own profile; all other non-admin/viewer roles are blocked
+  // Users may only view their own profile; all other non-admin/viewer roles are blocked
   if (!isSelf && profile.role !== 'admin' && profile.role !== 'viewer') redirect('/dashboard')
 
   const supabase = await createClient()

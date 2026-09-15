@@ -36,7 +36,7 @@ const FEATURES = [
   ['Audit trail', 'Every change recorded — who made it and when'],
   ['Inspection Pack', 'One-click printable summary for inspectors and boards'],
   ['HR module', 'Staff records, training, DBS, supervision, and appraisals'],
-  ['Team access', 'Add staff and reviewer logins with role-based permissions'],
+  ['Team access', 'Add user and reviewer logins with role-based permissions'],
 ]
 
 export default function TrialPage() {
