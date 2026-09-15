@@ -12,7 +12,7 @@ Things to action before onboarding paying customers.
 
 ## API Keys & External Services
 
-- [ ] **Anthropic API key** — ensure `ANTHROPIC_API_KEY` in Vercel environment variables is set to a valid, active key from console.anthropic.com. The newsletter drafting tool and AI support ticket drafts both depend on this. A bad or missing key causes a silent 401 error for users.
+- [ ] **Anthropic API key** — ensure `ANTHROPIC_API_KEY` in Vercel environment variables is set to a valid, active key from console.anthropic.com. AI support ticket drafts depend on this. A bad or missing key causes a silent 401 error for users.
 - [ ] **Resend** — free tier covers 3,000 emails/month (100/day). Monitor usage as the customer base grows; upgrade if approaching limits.
 - [ ] **Supabase** — free tier covers 500MB database and 1GB file storage. Adequate for early customers; review as evidence file uploads grow.
 
@@ -25,7 +25,7 @@ Things to action before onboarding paying customers.
 | Vercel | Entire platform offline for all customers |
 | Supabase | Platform loads but cannot read or write any data |
 | Resend | Emails stop (invites, password resets, support notifications) |
-| Anthropic | Newsletter drafting tool and AI support drafts fail; everything else keeps working |
+| Anthropic | AI support drafts fail; everything else keeps working |
 | Stripe | Customer billing fails; platform itself keeps running |
 
 ---
