@@ -30,7 +30,20 @@ export default defineConfig({
   // Force one worker so specs run strictly one after another.
   workers: 1,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // One retry everywhere, not just in CI. The known "unoptimized next dev
+  // server under sustained load" class of flake documented throughout this
+  // file (see the expect/test timeout comments below) doesn't only show up
+  // in CI -- a full local suite run is the same 35+ specs against the same
+  // long-lived dev server for 6-7 minutes straight. Confirmed directly:
+  // three different, otherwise-solid specs (self-service-password-reset,
+  // trial-signup, kloe-evidence-upload) each failed exactly once with a
+  // navigation timeout during a full local run, then passed cleanly and
+  // quickly every time they were re-run alone -- a different spec each
+  // time, not the same one repeating, which is the signature of transient
+  // load rather than a real bug in any of them. CI already gets a retry for
+  // this; a local full-suite run deserves the same safety net instead of
+  // reporting a false failure for a spec that was never actually broken.
+  retries: 1,
   reporter: process.env.CI ? 'github' : 'list',
 
   use: {
