@@ -211,7 +211,7 @@ function LoginForm() {
                   </button>
 
                   <p className="mt-4 text-xs text-ink-dim text-center leading-relaxed">
-                    🔒 For security, you will be automatically signed out when you close this tab.
+                    🔒 For security, you&apos;ll be automatically signed out after 15 minutes of inactivity.
                   </p>
                 </form>
               </>
