@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import {
   createIncident,
+  updateIncident,
   updateIncidentStatus,
   deleteIncident,
   type IncidentType,
@@ -242,6 +243,104 @@ function CloseIncidentForm({
   )
 }
 
+// ── Edit form (reporter, own incident, while open/under_review) ──────────────
+
+function EditIncidentForm({ incident, onDone }: { incident: Incident; onDone: () => void }) {
+  const [pending, startTransition] = useTransition()
+  const [error, setError]          = useState<string | null>(null)
+  const [reportedExternally, setReportedExternally] = useState(incident.reported_externally)
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError(null)
+    const fd = new FormData(e.currentTarget)
+    fd.set('reported_externally', reportedExternally ? 'true' : 'false')
+    startTransition(async () => {
+      const result = await updateIncident(incident.id, fd)
+      if (result.error) { setError(result.error); return }
+      onDone()
+    })
+  }
+
+  const input = 'w-full border border-line rounded-lg px-3 py-2 text-sm text-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand'
+  const label = 'block text-xs font-semibold text-ink-dim mb-1'
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-3 space-y-4 border-t border-line pt-3">
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">{error}</div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="sm:col-span-2">
+          <label className={label}>Incident title *</label>
+          <input name="title" required defaultValue={incident.title} className={input} />
+        </div>
+
+        <div>
+          <label className={label}>Type *</label>
+          <select name="incident_type" required defaultValue={incident.incident_type} className={input}>
+            {(Object.entries(TYPE_LABELS) as [IncidentType, string][]).map(([v, l]) => (
+              <option key={v} value={v}>{l}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className={label}>Date of incident *</label>
+          <input name="date_of_incident" type="date" required defaultValue={incident.date_of_incident} className={input}
+            max={new Date().toISOString().split('T')[0]} />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className={label}>Description *</label>
+          <textarea name="description" required rows={4} defaultValue={incident.description} className={input} />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className={label}>Immediate action taken</label>
+          <textarea name="immediate_action" rows={2} defaultValue={incident.immediate_action ?? ''} className={input} />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className={label}>People involved</label>
+          <input name="people_involved" defaultValue={incident.people_involved ?? ''} className={input} />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={reportedExternally}
+              onChange={e => setReportedExternally(e.target.checked)}
+              className="h-4 w-4 rounded border-line text-brand"
+            />
+            <span className="text-sm text-ink">Reported externally (CQC / local authority / other)</span>
+          </label>
+        </div>
+
+        {reportedExternally && (
+          <div className="sm:col-span-2">
+            <label className={label}>External reference number</label>
+            <input name="external_ref" defaultValue={incident.external_ref ?? ''} className={input} />
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-3 pt-1">
+        <button type="submit" disabled={pending}
+          className="px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          {pending ? 'Saving…' : 'Save changes'}
+        </button>
+        <button type="button" onClick={onDone}
+          className="px-3 py-1.5 text-xs font-medium text-ink-dim border border-line rounded-lg hover:bg-fill-dim">
+          Cancel
+        </button>
+      </div>
+    </form>
+  )
+}
+
 // ── Incident card ─────────────────────────────────────────────────────────────
 
 function IncidentCard({
@@ -369,6 +468,10 @@ function IncidentCard({
               currentStatus={incident.status}
               onDone={() => setShowClose(false)}
             />
+          )}
+
+          {showClose && !isAdmin && (
+            <EditIncidentForm incident={incident} onDone={() => setShowClose(false)} />
           )}
 
           {showDelete && (
