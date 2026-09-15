@@ -166,10 +166,17 @@ function AccountContent() {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const mins = parseInt(stored, 10)
+        // react-hooks/set-state-in-effect normally flags this pattern
+        // (derived state that could just be computed during render) -- but
+        // that's not what this is: it's a one-time correction of SSR's
+        // window-less default against a client-only source of truth
+        // (localStorage), which by definition cannot be read during the
+        // render that has to match the server's output. This IS the fix
+        // for that mismatch, not the bug the rule exists to catch.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if ([15, 30, 60].includes(mins)) setTimeoutMins(mins)
       }
     } catch { /* ignore */ }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const [timeoutSaved, setTimeoutSaved] = useState(false)
 

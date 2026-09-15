@@ -35,11 +35,9 @@ test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports 
   const leadEmail = `e2e-leads-bulk-send-${Date.now()}@example.org`
   const zeegEmail = `e2e-leads-zeeg-${Date.now()}@example.org`
 
-  const { data: lead, error: leadErr } = await admin
+  const { error: leadErr } = await admin
     .from('waitlist_leads')
     .insert({ first_name: 'E2E Bulk Send', email: leadEmail, nurture_opt_in: true })
-    .select('id')
-    .single()
   expect(leadErr).toBeNull()
 
   try {
