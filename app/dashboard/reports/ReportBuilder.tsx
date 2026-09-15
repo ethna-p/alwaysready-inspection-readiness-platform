@@ -15,6 +15,7 @@ import {
   type MockInspectionYear, type SnapshotData,
   GAP_RAG_ORDER,
 } from './report-types'
+import type { SavedReportView, ReportViewConfig } from '@/lib/types'
 import ReportFilterPanel from './ReportFilterPanel'
 import ReportOutput from './ReportOutput'
 
@@ -59,11 +60,31 @@ export default function ReportBuilder({
     setKloeSortDir(newDir)
   }
 
+  // Section toggles double as "diverge from the loaded custom view" signals —
+  // otherwise the saved-view button would stay highlighted after its config
+  // no longer matches what's on screen.
+  function updateShowKloes(v: boolean)        { setShowKloes(v); setActiveCustomViewId(null) }
+  function updateShowActions(v: boolean)      { setShowActions(v); setActiveCustomViewId(null) }
+  function updateShowHr(v: boolean)           { setShowHr(v); setActiveCustomViewId(null) }
+  function updateShowAnnualReview(v: boolean) { setShowAnnualReview(v); setActiveCustomViewId(null) }
+
   // ── Progress vs last run ──────────────────────────────────────────────────
   const [previousSnapshot, setPreviousSnapshot] = useState<SnapshotData | null>(null)
 
+  // ── Custom saved views ──────────────────────────────────────────────────
+  const [savedViews, setSavedViews]             = useState<SavedReportView[]>([])
+  const [activeCustomViewId, setActiveCustomViewId] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/report-views')
+      .then(r => r.ok ? r.json() as Promise<SavedReportView[]> : Promise.resolve([]))
+      .then(views => setSavedViews(views.filter(v => !v.is_system)))
+      .catch(() => { /* non-critical */ })
+  }, [])
+
   function selectView(key: ViewKey) {
     setActiveView(key)
+    setActiveCustomViewId(null)
     setSelectedKQs(new Set(keyQuestions))
     setPreviousSnapshot(null)
 
@@ -100,7 +121,7 @@ export default function ReportBuilder({
     }
   }
 
-  function clearView() { setActiveView(null) }
+  function clearView() { setActiveView(null); setActiveCustomViewId(null) }
 
   function toggleKQ(name: string, checked: boolean) {
     setSelectedKQs(prev => {
@@ -109,11 +130,50 @@ export default function ReportBuilder({
       return next
     })
     setActiveView(null)
+    setActiveCustomViewId(null)
   }
 
   function toggleAllKQs(checked: boolean) {
     setSelectedKQs(checked ? new Set(keyQuestions) : new Set())
     setActiveView(null)
+    setActiveCustomViewId(null)
+  }
+
+  function selectCustomView(view: SavedReportView) {
+    const cfg = view.config
+    setActiveView(null)
+    setActiveCustomViewId(view.id)
+    setPreviousSnapshot(null)
+    setSelectedKQs(cfg.selectedKQs === 'all' ? new Set(keyQuestions) : new Set(cfg.selectedKQs))
+    setShowKloes(cfg.showKloes)
+    setShowActions(cfg.showActions)
+    setShowHr(cfg.showHr)
+    setShowAnnualReview(cfg.showAnnualReview)
+    setActionStatus(cfg.actionStatus)
+  }
+
+  async function saveCurrentView(name: string) {
+    const config: ReportViewConfig = {
+      selectedKQs: allKQsSelected ? 'all' : [...selectedKQs],
+      showKloes, showActions, showHr, showAnnualReview, actionStatus,
+    }
+    const res = await fetch('/api/report-views', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name, config }),
+    })
+    if (!res.ok) return
+    const saved = await res.json() as SavedReportView
+    setSavedViews(prev => [...prev, saved])
+    setActiveView(null)
+    setActiveCustomViewId(saved.id)
+  }
+
+  async function deleteCustomView(id: string) {
+    const res = await fetch(`/api/report-views?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+    if (!res.ok) return
+    setSavedViews(prev => prev.filter(v => v.id !== id))
+    if (activeCustomViewId === id) setActiveCustomViewId(null)
   }
 
   // ── Filtered data ───────────────────────────────────────────────────────────
@@ -260,14 +320,19 @@ export default function ReportBuilder({
         activeView={activeView}
         onSelectView={selectView}
         onClearView={clearView}
+        savedViews={savedViews}
+        activeCustomViewId={activeCustomViewId}
+        onSelectCustomView={selectCustomView}
+        onSaveCurrentView={saveCurrentView}
+        onDeleteCustomView={deleteCustomView}
         showKloes={showKloes}
-        setShowKloes={setShowKloes}
+        setShowKloes={updateShowKloes}
         showActions={showActions}
-        setShowActions={setShowActions}
+        setShowActions={updateShowActions}
         showHr={showHr}
-        setShowHr={setShowHr}
+        setShowHr={updateShowHr}
         showAnnualReview={showAnnualReview}
-        setShowAnnualReview={setShowAnnualReview}
+        setShowAnnualReview={updateShowAnnualReview}
         selectedKQs={selectedKQs}
         allKQsSelected={allKQsSelected}
         onToggleKQ={toggleKQ}

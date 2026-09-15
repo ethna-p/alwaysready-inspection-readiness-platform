@@ -1,18 +1,19 @@
 /**
  * Report Builder: pre-built view selection (RAG + action-status filtering),
- * key-question filtering, the Evidence Gaps view, and the "progress vs
- * last run" snapshot/delta comparison.
+ * key-question filtering, the Evidence Gaps view, the "progress vs last run"
+ * snapshot/delta comparison, and saving/loading a custom view.
  *
- * docs/FEATURE_MAP.md previously claimed this feature had "saved views"
- * and an "AI narrative summary". Neither exists for a real user to reach:
- * grepped the whole app for both -- the narrative summary has zero
- * references anywhere (confirmed with AJ: deliberately removed over API
- * cost concerns, properly deleted, not an oversight), and while
- * app/api/report-views/route.ts (save/load a custom view) is a real,
- * correctly-built backend, no UI anywhere ever calls it -- the only views
- * a user can actually select are the six hardcoded SYSTEM_VIEWS in
- * report-types.ts. Corrected FEATURE_MAP.md to describe what's actually
- * reachable rather than testing something that doesn't exist.
+ * docs/FEATURE_MAP.md previously claimed this feature had "saved views" and
+ * an "AI narrative summary". Neither existed for a real user to reach at the
+ * time: grepped the whole app for both -- the narrative summary had zero
+ * references anywhere (confirmed with AJ: deliberately removed over API cost
+ * concerns, properly deleted, not an oversight -- FEATURE_MAP.md was
+ * corrected to omit it rather than describe something that doesn't exist),
+ * and while app/api/report-views/route.ts (save/load a custom view) was a
+ * real, correctly-built backend, no UI anywhere called it. AJ asked for that
+ * UI to be built -- ReportFilterPanel.tsx's "Your saved views" section now
+ * wires it up (save the current filter/section state as a named view, apply
+ * one, delete one), covered by the second test below.
  *
  * Uses four KLOEs at indices 17-20 (Safe, Well-led, Well-led, Safe
  * respectively -- untouched by any other spec's own .range() picks) with
@@ -201,4 +202,59 @@ test('Report Builder: view filtering (RAG + action status), evidence gaps, key-q
   await admin.from('action_items').delete().in('id', [openAction!.id])
   await admin.from('action_items').delete().eq('organisation_id', account.orgId).eq('title', 'E2E: already resolved item')
   await admin.from('kloe_evidence').delete().eq('organisation_id', account.orgId).eq('klo_item_id', kloWithEvidence.id)
+})
+
+test('Report Builder: save, apply, and delete a custom saved view', async ({ page }) => {
+  test.setTimeout(60_000)
+  const account = loadTestAccount()
+  const admin = getAdminClient()
+  const viewName = 'E2E: Safeguarding focus'
+
+  // A previous failed run may have left this behind -- start from a known
+  // state rather than assuming a clean org (other specs in this suite share
+  // the same seeded fixture, and saved_report_views has no per-spec index
+  // reservation the way klo_items rows do).
+  await admin.from('saved_report_views').delete().eq('org_id', account.orgId).eq('name', viewName)
+
+  await login(page, account)
+  await page.waitForURL('**/dashboard')
+  await page.goto('/dashboard/reports')
+
+  await expect(page.getByText('No saved views yet.')).toBeVisible()
+
+  // ── Save the current (manually configured) filters as a named view ───────
+  await page.getByRole('button', { name: 'Attention Needed' }).click()
+  await page.getByRole('button', { name: '+ Save current filters' }).click()
+  await page.getByPlaceholder(/Name this view/).fill(viewName)
+  await page.getByRole('button', { name: 'Save', exact: true }).click()
+
+  const viewButton   = page.getByRole('button', { name: viewName, exact: true })
+  const deleteButton = page.getByRole('button', { name: `Delete ${viewName}` })
+  await expect(viewButton).toBeVisible()
+
+  // The "Action status" select is visible whenever showActions is true,
+  // regardless of which view (if any) is active -- a reliable signal that
+  // the saved config actually reapplied, not just that the button
+  // highlighted. Attention Needed's own config sets actionStatus: 'open'.
+  const actionStatusSelect = page.getByText('Action status', { exact: true }).locator('xpath=following-sibling::select')
+  await expect(actionStatusSelect).toHaveValue('open')
+
+  // ── Switching to a system view and back re-applies the saved config ──────
+  await page.getByRole('button', { name: 'Governance Summary' }).click()
+  await expect(actionStatusSelect).toHaveValue('all')
+  await viewButton.click()
+  await expect(actionStatusSelect).toHaveValue('open')
+
+  // ── Persists across a reload -- it's coming from the API, not local state ─
+  await page.reload()
+  await expect(viewButton).toBeVisible()
+
+  // ── Delete removes it ─────────────────────────────────────────────────────
+  page.once('dialog', d => d.accept())
+  await deleteButton.click()
+  await expect(viewButton).not.toBeVisible()
+  await expect(page.getByText('No saved views yet.')).toBeVisible()
+
+  // ── Cleanup: guard against a failure leaving the row behind ──────────────
+  await admin.from('saved_report_views').delete().eq('org_id', account.orgId).eq('name', viewName)
 })

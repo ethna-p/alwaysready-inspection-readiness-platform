@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import type { ViewKey } from './report-types'
 import { SYSTEM_VIEWS } from './report-types'
+import type { SavedReportView } from '@/lib/types'
 
 // ─── Filter toggle ────────────────────────────────────────────────────────────
 
@@ -33,6 +35,12 @@ interface Props {
   activeView: ViewKey | null
   onSelectView: (key: ViewKey) => void
   onClearView: () => void
+  // custom saved views
+  savedViews: SavedReportView[]
+  activeCustomViewId: string | null
+  onSelectCustomView: (view: SavedReportView) => void
+  onSaveCurrentView: (name: string) => void
+  onDeleteCustomView: (id: string) => void
   // section visibility
   showKloes: boolean
   setShowKloes: (v: boolean) => void
@@ -63,6 +71,7 @@ interface Props {
 export default function ReportFilterPanel({
   isAdmin, keyQuestions, hrStaff, mockInspections,
   activeView, onSelectView, onClearView,
+  savedViews, activeCustomViewId, onSelectCustomView, onSaveCurrentView, onDeleteCustomView,
   showKloes, setShowKloes, showActions, setShowActions,
   showHr, setShowHr, showAnnualReview, setShowAnnualReview,
   selectedKQs, allKQsSelected, onToggleKQ, onToggleAllKQs,
@@ -70,6 +79,9 @@ export default function ReportFilterPanel({
   reviewYear, setReviewYear, availableYears,
   onPrint,
 }: Props) {
+  const [showSaveForm, setShowSaveForm] = useState(false)
+  const [newViewName, setNewViewName]   = useState('')
+
   const inputClass = `
     border border-line rounded-lg px-3 py-2 text-sm text-ink bg-card w-full
     focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:border-transparent
@@ -115,6 +127,97 @@ export default function ReportFilterPanel({
               </p>
             </button>
           ))}
+        </div>
+
+        {/* ── Custom saved views ────────────────────────────────────────── */}
+        <div className="mt-4 pt-4 border-t border-line">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-sm font-semibold text-ink">Your saved views</p>
+            {!showSaveForm && (
+              <button
+                type="button"
+                onClick={() => setShowSaveForm(true)}
+                className="text-xs font-medium text-brand hover:underline focus:outline-none"
+              >
+                + Save current filters
+              </button>
+            )}
+          </div>
+
+          {savedViews.length === 0 && !showSaveForm && (
+            <p className="text-sm text-ink-muted">
+              No saved views yet. Set up the sections and filters below, then save them here to reuse next time.
+            </p>
+          )}
+
+          {savedViews.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {savedViews.map(v => (
+                <div
+                  key={v.id}
+                  className={`
+                    flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 rounded-lg border text-sm transition-colors
+                    ${activeCustomViewId === v.id
+                      ? 'bg-[#014D4E] text-white border-[#014D4E]'
+                      : 'bg-fill text-ink border-line hover:border-brand'}
+                  `}
+                >
+                  <button type="button" onClick={() => onSelectCustomView(v)} className="font-medium focus:outline-none">
+                    {v.name}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm(`Delete saved view "${v.name}"? This cannot be undone.`)) onDeleteCustomView(v.id)
+                    }}
+                    aria-label={`Delete ${v.name}`}
+                    className={`
+                      w-5 h-5 flex items-center justify-center rounded focus:outline-none leading-none
+                      ${activeCustomViewId === v.id ? 'hover:bg-white/20' : 'hover:bg-line'}
+                    `}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showSaveForm && (
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                const trimmed = newViewName.trim()
+                if (!trimmed) return
+                onSaveCurrentView(trimmed)
+                setNewViewName('')
+                setShowSaveForm(false)
+              }}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <input
+                type="text"
+                value={newViewName}
+                onChange={e => setNewViewName(e.target.value)}
+                placeholder='Name this view, e.g. "Safeguarding focus"'
+                autoFocus
+                className={`${inputClass} max-w-xs`}
+              />
+              <button
+                type="submit"
+                className="px-3 py-2 rounded-lg bg-[#014D4E] text-white text-sm font-semibold hover:bg-[#013636] focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:ring-offset-2"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowSaveForm(false); setNewViewName('') }}
+                className="px-3 py-2 rounded-lg text-sm text-ink-muted hover:text-ink focus:outline-none"
+              >
+                Cancel
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
