@@ -20,8 +20,6 @@ function makeProfile(overrides: Partial<UserProfile> = {}): UserProfile {
     role: 'user',
     organisation_id: 'org-456',
     viewer_expires_at: null,
-    personal_email: null,
-    mobile_number: null,
     ...overrides,
   }
 }

@@ -32,7 +32,7 @@ export async function isAAL2Satisfied(supabase: SupabaseClient): Promise<boolean
   return !(aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2')
 }
 
-export type UserProfile = Pick<User, 'id' | 'email' | 'full_name' | 'username' | 'role' | 'organisation_id' | 'viewer_expires_at' | 'personal_email' | 'mobile_number'>
+export type UserProfile = Pick<User, 'id' | 'email' | 'full_name' | 'username' | 'role' | 'organisation_id' | 'viewer_expires_at'>
 
 export async function getCurrentUserProfile(): Promise<UserProfile | null> {
   const supabase = await createClient()
@@ -46,7 +46,7 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
 
   const { data, error } = await supabase
     .from('users')
-    .select('id, email, full_name, username, role, organisation_id, viewer_expires_at, personal_email, mobile_number')
+    .select('id, email, full_name, username, role, organisation_id, viewer_expires_at')
     .eq('id', user.id)
     .single()
 

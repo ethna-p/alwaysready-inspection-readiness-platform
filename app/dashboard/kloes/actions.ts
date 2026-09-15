@@ -200,11 +200,11 @@ export async function assignKloe(
   // notification to) a user in a different organisation entirely. Fetches
   // the fields the notification email needs too, in this same query, rather
   // than re-querying the same user row again further down.
-  let assignee: { full_name: string | null; email: string; personal_email: string | null } | null = null
+  let assignee: { full_name: string | null; email: string } | null = null
   if (assignToId) {
     const { data } = await supabase
       .from('users')
-      .select('full_name, email, personal_email')
+      .select('full_name, email')
       .eq('id', assignToId)
       .eq('organisation_id', profile.organisation_id)
       .single()
@@ -247,7 +247,7 @@ export async function assignKloe(
         .single()
 
       if (assignee && klo) {
-        const recipientEmail = assignee.personal_email || assignee.email
+        const recipientEmail = assignee.email
         const firstName = escapeHtml(getFirstName(assignee.full_name))
         const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
         const kloUrl = `${baseUrl}/dashboard/kloes/${kloItemId}`

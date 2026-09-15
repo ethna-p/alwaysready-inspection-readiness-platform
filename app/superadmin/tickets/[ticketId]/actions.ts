@@ -272,11 +272,11 @@ export async function updateTicketStatus(ticketId: string, status: string) {
         const { data: authUser } = await supabase.auth.admin.getUserById(ticket.submitted_by)
         const { data: profile } = await supabase
           .from('users')
-          .select('full_name, personal_email')
+          .select('full_name')
           .eq('id', ticket.submitted_by)
           .single()
 
-        recipientEmail = authUser?.user?.email ?? profile?.personal_email ?? null
+        recipientEmail = authUser?.user?.email ?? null
         firstName = escapeHtml(getFirstName(profile?.full_name))
       }
 

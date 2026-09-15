@@ -33,7 +33,7 @@ export async function submitTicket(
 
   const { data: profileDetails } = await supabase
     .from('users')
-    .select('full_name, personal_email')
+    .select('full_name')
     .eq('id', profile.id)
     .single()
 
@@ -41,8 +41,6 @@ export async function submitTicket(
   // user replies by email. Without this, any sender knowing the ticket reference
   // could inject replies into platform-created tickets (null external_email bypasses
   // the sender-match check in /api/inbound-email).
-  const recipientEmailForTicket = profile.email ?? profileDetails?.personal_email ?? null
-
   const { data: ticket, error } = await supabase
     .from('support_tickets')
     .insert({
@@ -50,7 +48,7 @@ export async function submitTicket(
       submitted_by: profile.id,
       subject,
       message,
-      external_email: recipientEmailForTicket,
+      external_email: profile.email,
     })
     .select('id, reference')
     .single()
@@ -59,34 +57,31 @@ export async function submitTicket(
     return { status: 'error', message: 'Failed to submit ticket: ' + (error?.message ?? 'unknown error') }
   }
 
-  // Send auto-responder to the submitter (if we have an email address for them)
-  const recipientEmail = profile.email ?? profileDetails?.personal_email ?? null
-  if (recipientEmail) {
-    const firstName = getFirstName(profileDetails?.full_name)
-    await sendEmail({
-      to:      recipientEmail,
-      subject: `We've received your support request — ${ticket.reference}`,
-      type:    'transactional',
-      bodyHtml: `
-        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
+  // Send auto-responder to the submitter
+  const firstName = getFirstName(profileDetails?.full_name)
+  await sendEmail({
+    to:      profile.email,
+    subject: `We've received your support request — ${ticket.reference}`,
+    type:    'transactional',
+    bodyHtml: `
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
 
-        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          Thank you for getting in touch. We've received your support request and will get back to you as soon as possible.
-        </p>
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Thank you for getting in touch. We've received your support request and will get back to you as soon as possible.
+      </p>
 
-        <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
-          <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.05em">Your request</p>
-          <p style="margin:0 0 4px;font-size:13px;color:#888;font-family:monospace">${ticket.reference}</p>
-          <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${escapeHtml(subject)}</p>
-        </div>
+      <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
+        <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.05em">Your request</p>
+        <p style="margin:0 0 4px;font-size:13px;color:#888;font-family:monospace">${ticket.reference}</p>
+        <p style="margin:0;font-size:15px;font-weight:600;color:#1a1a1a">${escapeHtml(subject)}</p>
+      </div>
 
-        <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-          You can reply to this email directly, or visit the <strong>Support</strong> section
-          inside AlwaysReady to view your request and any replies.
-        </p>
-      `,
-    })
-  }
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        You can reply to this email directly, or visit the <strong>Support</strong> section
+        inside AlwaysReady to view your request and any replies.
+      </p>
+    `,
+  })
 
   // Notify AJ of new platform support ticket
   const superadminEmail = process.env.SUPERADMIN_EMAIL

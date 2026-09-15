@@ -253,8 +253,6 @@ export type Database = {
           marketing_consent: boolean | null
           marketing_consent_at: string | null
           onboarding_complete: boolean
-          personal_email: string | null
-          mobile_number: string | null
           marketing_opt_out: boolean
           must_change_password: boolean
           created_at: string
@@ -270,8 +268,6 @@ export type Database = {
           marketing_consent?: boolean | null
           marketing_consent_at?: string | null
           onboarding_complete?: boolean
-          personal_email?: string | null
-          mobile_number?: string | null
           marketing_opt_out?: boolean
           must_change_password?: boolean
           created_at?: string
@@ -287,8 +283,6 @@ export type Database = {
           marketing_consent?: boolean | null
           marketing_consent_at?: string | null
           onboarding_complete?: boolean
-          personal_email?: string | null
-          mobile_number?: string | null
           marketing_opt_out?: boolean
           must_change_password?: boolean
           created_at?: string

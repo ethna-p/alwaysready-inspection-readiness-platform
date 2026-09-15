@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser, requireAdmin } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter } from '@/lib/rate-limit'
 
@@ -52,36 +52,6 @@ export async function toggleSubService(
 export type ChangePasswordResult =
   | { success: true }
   | { success: false; error: string }
-
-export type UpdateContactResult =
-  | { success: true }
-  | { success: false; error: string }
-
-export async function updatePersonalContact(
-  _prev: UpdateContactResult | null,
-  formData: FormData
-): Promise<UpdateContactResult> {
-  const profile = await requireUser()
-  if (!profile) return { success: false, error: 'Not authenticated.' }
-
-  const supabase = await createClient()
-
-  const personalEmail = (formData.get('personal_email') as string | null)?.trim() || null
-  const mobileNumber  = (formData.get('mobile_number') as string | null)?.trim() || null
-
-  const { error } = await supabase
-    .from('users')
-    .update({ personal_email: personalEmail, mobile_number: mobileNumber })
-    .eq('id', profile.id)
-
-  if (error) {
-    console.error('[updatePersonalContact]', error)
-    return { success: false, error: 'Failed to save. Please try again.' }
-  }
-
-  revalidatePath('/dashboard/account')
-  return { success: true }
-}
 
 export async function changePassword(
   currentPassword: string,
@@ -140,38 +110,47 @@ export async function changePassword(
     return { success: false, error: 'Unable to update password. Please try again.' }
   }
 
-  // Send notification email (non-fatal — don't fail the password change if email fails)
+  // Changing the password via the admin client invalidates the session
+  // that was just re-authenticated a few lines up (Supabase revokes
+  // outstanding sessions on a password change) -- without this, the next
+  // request finds no valid session, middleware clears the cookies, and the
+  // user is redirected straight to /login before ever seeing the success
+  // message below, even though the password change itself worked.
+  // Re-authenticating with the NEW password re-establishes a genuinely
+  // valid session (and writes fresh cookies via this same server client —
+  // see lib/supabase/server.ts) so the user stays seamlessly signed in.
+  const { error: reauthError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: newPassword,
+  })
+  if (reauthError) {
+    // The password itself was changed successfully -- only the follow-up
+    // session refresh failed. Don't report this as a failed password
+    // change; the user will simply need to sign in again with their new
+    // password, which they now know.
+    console.error('[changePassword] post-change re-authentication failed:', reauthError.message)
+  }
+
+  // Send notification email (non-fatal — don't fail the password change if email fails).
+  // Every team member has a real work email (email-based invite is the only
+  // onboarding path — see team-actions.ts's own doc comment), so it's always
+  // the right address to notify.
   try {
-    // Determine who to notify:
-    // 1. personal_email if set (works for staff who have no real work inbox)
-    // 2. work email if it's a real address (not a generated @staff.alwaysready.uk one)
-    // 3. Otherwise skip
-    const { data: userRow } = await (await createClient())
-      .from('users')
-      .select('personal_email')
-      .eq('id', user.id)
-      .single()
+    const now = new Date().toLocaleString('en-GB', {
+      dateStyle: 'long',
+      timeStyle: 'short',
+      timeZone: 'Europe/London',
+    })
 
-    const isStaffEmail = user.email?.endsWith('@staff.alwaysready.uk')
-    const notifyEmail  = userRow?.personal_email || (!isStaffEmail ? user.email : null)
-
-    if (notifyEmail) {
-      const now = new Date().toLocaleString('en-GB', {
-        dateStyle: 'long',
-        timeStyle: 'short',
-        timeZone: 'Europe/London',
-      })
-
-      await sendEmail({
-        to: notifyEmail,
-        subject: 'Your AlwaysReady password has been changed',
-        bodyHtml: `
-          <p>Your AlwaysReady password was successfully changed on <strong>${now}</strong>.</p>
-          <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
-        `,
-        type: 'transactional',
-      })
-    }
+    await sendEmail({
+      to: user.email,
+      subject: 'Your AlwaysReady password has been changed',
+      bodyHtml: `
+        <p>Your AlwaysReady password was successfully changed on <strong>${now}</strong>.</p>
+        <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
+      `,
+      type: 'transactional',
+    })
   } catch (emailError) {
     // Log but don't surface to the user — password was changed successfully
     console.error('[changePassword] email notification failed:', emailError)
