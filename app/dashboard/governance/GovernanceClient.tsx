@@ -299,7 +299,11 @@ function MeetingCard({
         <div className="px-5 pb-5 border-t border-line pt-4">
           <MeetingForm
             defaults={meeting}
-            onSubmit={fd => updateMeeting(meeting.id, fd)}
+            onSubmit={async fd => {
+              const result = await updateMeeting(meeting.id, fd)
+              if (!result.error) setEditing(false)
+              return result
+            }}
             onCancel={() => setEditing(false)}
             submitLabel="Save changes"
           />

@@ -21,7 +21,7 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | Reports | `app/dashboard/reports/` | Report Builder: 6 pre-built report types, section/key-question filters, save/load/delete custom views, progress snapshots (deltas vs the last previous day's snapshot), print/PDF. |
 | HR | `app/dashboard/hr/` | Staff records, DBS, Right to Work, supervision, appraisal, training records, certificate uploads, holiday tracking, absence records, Bradford Factor |
 | Incidents | `app/dashboard/incidents/` | Incident recording and tracking |
-| Governance | `app/dashboard/governance/` | Governance alerts panel |
+| Governance | `app/dashboard/governance/` | Governance meeting log: record QA/oversight meetings, agenda, key decisions, actions arising, admin sign-off, status filtering |
 | Newsletter | `app/dashboard/newsletter/` | AI-powered newsletter drafting for staff, families, or both |
 | Help | `app/dashboard/help/` | Role-specific Help Centre |
 | Support | `app/dashboard/support/` | In-platform support ticket submission |
