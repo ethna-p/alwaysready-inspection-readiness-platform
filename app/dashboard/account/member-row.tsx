@@ -5,7 +5,7 @@
  */
 
 import { useActionState } from 'react'
-import { resetTeamMemberPassword, changeTeamMemberRole } from './team-actions'
+import { resetTeamMemberPassword, resetTeamMemberMfa, changeTeamMemberRole } from './team-actions'
 import type { TeamActionState } from './team-actions'
 
 const ROLE_LABELS: Record<string, string> = {
@@ -31,6 +31,10 @@ export default function MemberRow({ member, isSelf }: Props) {
   )
   const [roleState, roleAction, rolePending] = useActionState<TeamActionState, FormData>(
     changeTeamMemberRole,
+    null
+  )
+  const [mfaState, mfaAction, mfaPending] = useActionState<TeamActionState, FormData>(
+    resetTeamMemberMfa,
     null
   )
 
@@ -114,6 +118,33 @@ export default function MemberRow({ member, isSelf }: Props) {
             )}
             {resetState && !resetState.success && (
               <p className="text-xs text-red-600 mt-1">{resetState.error}</p>
+            )}
+          </>
+        )}
+      </td>
+
+      {/* MFA reset — recovery path for a teammate locked out of a lost
+          authenticator device; see team-actions.ts's own doc comment. */}
+      <td className="px-4 py-4">
+        {isSelf ? (
+          <span className="text-xs text-ink-dim">—</span>
+        ) : (
+          <>
+            <form action={mfaAction}>
+              <input type="hidden" name="user_id" value={member.id} />
+              <input type="hidden" name="full_name" value={displayName} />
+              <button
+                type="submit"
+                disabled={mfaPending}
+                className="text-xs text-brand font-medium hover:underline disabled:opacity-50"
+              >
+                {mfaPending ? 'Resetting…' : 'Reset MFA'}
+              </button>
+            </form>
+            {mfaState && (
+              <p className={`text-xs mt-1 ${mfaState.success ? 'text-green-700' : 'text-red-600'}`}>
+                {mfaState.success ? mfaState.message : mfaState.error}
+              </p>
             )}
           </>
         )}

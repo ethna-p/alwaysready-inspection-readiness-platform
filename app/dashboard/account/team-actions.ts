@@ -166,6 +166,81 @@ export async function resetTeamMemberPassword(
 }
 
 
+// ── Reset MFA ────────────────────────────────────────────────────────────────
+//
+// Recovery path for a teammate who's lost their authenticator device.
+// Before this action existed, the ONLY way to remove a factor was
+// self-service (MfaSection.tsx's "Remove", which requires already being
+// logged in with a working factor) -- circular for someone actually locked
+// out, and admins had no way to help a teammate in that position at all.
+// Mirrors resetTeamMemberPassword's exact shape and org-scoping check.
+// Doesn't cover a SOLE admin locking themselves out (no one else to do this
+// for them) -- that still needs direct Supabase intervention.
+
+export async function resetTeamMemberMfa(
+  _prevState: TeamActionState,
+  formData: FormData
+): Promise<TeamActionState> {
+  const adminSupabase = createAdminClient()
+
+  const profile = await getCurrentUserProfile()
+  if (!profile || profile.role !== 'admin') {
+    return { success: false, error: 'Only admins can reset MFA.' }
+  }
+
+  const userId   = formData.get('user_id') as string
+  const fullName = formData.get('full_name') as string
+
+  if (!userId) return { success: false, error: 'Missing user ID.' }
+
+  // Use the self-service "Remove" in Account -> Security instead, which
+  // works fine for a still-logged-in admin — this action exists for
+  // resetting a TEAMMATE who's actually locked out.
+  if (userId === profile.id) {
+    return { success: false, error: "You can't reset your own MFA here — use Remove in your own Account settings instead." }
+  }
+
+  // Same tenant-isolation check as resetTeamMemberPassword — without this an
+  // admin could supply any user_id and strip MFA from a user in a different
+  // organisation via the admin auth client.
+  const { data: targetUser } = await adminSupabase
+    .from('users')
+    .select('organisation_id')
+    .eq('id', userId)
+    .single()
+
+  if (!targetUser || targetUser.organisation_id !== profile.organisation_id) {
+    return { success: false, error: 'User not found in your organisation.' }
+  }
+
+  const { data: factorsData, error: listError } = await adminSupabase.auth.admin.mfa.listFactors({ userId })
+  if (listError) {
+    console.error('resetTeamMemberMfa: listFactors error:', listError)
+    return { success: false, error: 'Failed to reset MFA. Please try again.' }
+  }
+
+  const factors = factorsData?.factors ?? []
+  if (factors.length === 0) {
+    return { success: true, message: `${fullName} has no MFA factor enrolled — nothing to reset.` }
+  }
+
+  for (const factor of factors) {
+    const { error } = await adminSupabase.auth.admin.mfa.deleteFactor({ id: factor.id, userId })
+    if (error) {
+      console.error('resetTeamMemberMfa: deleteFactor error:', error)
+      return { success: false, error: 'Failed to reset MFA. Please try again.' }
+    }
+  }
+
+  revalidatePath('/dashboard/account')
+
+  return {
+    success: true,
+    message: `MFA reset for ${fullName}. They'll be prompted to set up two-factor authentication again on their next login.`,
+  }
+}
+
+
 // ── Create visitor login ────────────────────────────────────────────────────
 
 export async function createVisitorLogin(

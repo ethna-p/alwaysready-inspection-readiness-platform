@@ -479,6 +479,7 @@ export default async function AccountPage({
                       <th scope="col" className="text-left px-4 py-3 font-medium">Name</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Role</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Password</th>
+                      <th scope="col" className="text-left px-4 py-3 font-medium">MFA</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
