@@ -244,20 +244,39 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   const expiry    = trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
   // ── 9. Notify AJ of new trial signup ────────────────────────────────────────
+  // cqcResult (fetched in step 0) tells us whether this org's Location ID was
+  // actually confirmed against the CQC register or just accepted on trust
+  // because CQC's API was unavailable at the time (see step 0's comment — a
+  // CQC outage must never block a legitimate signup, but that means an
+  // unverified ID needs a human to check it, not silence).
+  const cqcUnverified = cqcResult.status === 'unavailable'
   const superadminEmail = process.env.SUPERADMIN_EMAIL
   if (superadminEmail) {
     await sendEmail({
       to:      superadminEmail,
-      subject: `New trial started: ${serviceName.trim()}`,
+      subject: cqcUnverified
+        ? `⚠️ New trial started (CQC unverified): ${serviceName.trim()}`
+        : `New trial started: ${serviceName.trim()}`,
       type:    'transactional',
       bodyHtml: `
         <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new trial has started.</p>
+        ${cqcUnverified ? `
+        <p style="margin:0 0 18px;padding:12px 16px;background:#fffbeb;border:1px solid #fcd34d;border-radius:6px;font-size:14px;color:#92400e">
+          <strong>CQC could not be reached to verify this Location ID at signup.</strong>
+          The trial was allowed to proceed (a CQC outage must never block a legitimate
+          signup), but this ID hasn't been confirmed against the CQC register yet —
+          worth a manual check.
+        </p>
+        ` : ''}
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
           <tr><td style="padding:4px 16px 4px 0;color:#555">Service</td><td style="padding:4px 0"><strong>${escapeHtml(serviceName.trim())}</strong></td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">Manager</td><td style="padding:4px 0">${escapeHtml(managerName.trim())}</td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">Email</td><td style="padding:4px 0">${escapeHtml(managerEmail.trim())}</td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">Service type</td><td style="padding:4px 0">${escapeHtml(serviceType)}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">CQC Location ID</td><td style="padding:4px 0">${escapeHtml(cqcLocationId.trim())}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">CQC Location ID</td><td style="padding:4px 0">
+            ${escapeHtml(cqcLocationId.trim())}
+            ${cqcUnverified ? ` — <a href="https://www.cqc.org.uk/location/${encodeURIComponent(cqcLocationId.trim())}" style="color:#014D4E">check on CQC's site</a>` : ''}
+          </td></tr>
           ${charityNumber ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Charity no.</td><td style="padding:4px 0"><strong style="color:#b45309">${escapeHtml(charityNumber)} — verify document before enabling discount</strong></td></tr>` : ''}
           <tr><td style="padding:4px 16px 4px 0;color:#555">Trial expires</td><td style="padding:4px 0">${trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</td></tr>
         </table>

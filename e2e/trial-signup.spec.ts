@@ -23,17 +23,29 @@
  *     CQC's own Syndication API docs) rather than a made-up one. As of
  *     writing, that live call returns 403 Forbidden from this specific
  *     environment (confirmed directly, independent of this app, via a
- *     plain fetch/curl) -- flagged to AJ separately as worth checking
- *     whether production sees the same thing, since a silent 403 there
- *     would mean CQC verification is currently non-functional for real
- *     signups too. Whatever the cause, fetchCqcLocation() already treats
- *     any non-404 failure as 'unavailable' and fails OPEN by design (a
- *     CQC outage must never block a legitimate signup) -- so this spec
- *     genuinely exercises that real fail-open path, live, rather than
- *     mocking a "CQC is down" scenario. The one thing this environment's
- *     current CQC access genuinely prevents testing is the 'found'
- *     enrichment path (real rating/inspection-date populated on signup)
- *     and the 'not_found' hard-block path (a real 404 for a genuinely
+ *     plain fetch/curl) -- worth checking whether production sees the same
+ *     thing, since a silent 403 there would mean CQC verification is
+ *     currently non-functional for real signups too. Whatever the cause,
+ *     fetchCqcLocation() already treats any non-404 failure as
+ *     'unavailable' and fails OPEN by design (a CQC outage must never
+ *     block a legitimate signup) -- so this spec genuinely exercises that
+ *     real fail-open path, live, rather than mocking a "CQC is down"
+ *     scenario. AJ raised the security/data-quality concern this trade-off
+ *     creates (an org can end up live without CQC ever having confirmed
+ *     its Location ID); the agreed fix was to keep signup fail-open but
+ *     surface it for manual review rather than block trials during a CQC
+ *     outage -- app/superadmin/organisations/page.tsx now shows a
+ *     "CQC unverified" badge for any org whose cqc_rating_fetched_at is
+ *     still null, checked below via a genuine superadmin login, live,
+ *     using this same unavailable-CQC environment rather than a mocked
+ *     one. The "new trial" notification email to AJ also flags it (subject
+ *     line + a direct link to CQC's page for that Location ID) but isn't
+ *     asserted here -- RESEND_API_KEY isn't set for this test env (every
+ *     spec in this suite skips real sends the same way), so there's no
+ *     inbox to check content against. The one thing this environment's current
+ *     CQC access genuinely prevents testing is the 'found' enrichment path
+ *     (real rating/inspection-date populated on signup, badge absent) and
+ *     the 'not_found' hard-block path (a real 404 for a genuinely
  *     unregistered ID) -- both would need CQC access restored to verify.
  *
  * Requires no seeded fixture (this creates its own fresh organisation from
@@ -43,15 +55,17 @@
  */
 import { test, expect } from '@playwright/test'
 import { completeMandatoryMfaSetup, login } from './support/actions'
+import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 
 // A real, publicly-documented example CQC Location ID (CQC's own Syndication
 // API docs use this exact ID for their GET /locations/{id} example).
 const REAL_CQC_LOCATION_ID = '1-545611283'
 
-test('trial signup: real form, real org, real email, through to a working dashboard', async ({ page, baseURL }) => {
+test('trial signup: real form, real org, real email, through to a working dashboard', async ({ page, baseURL, browser }) => {
   test.setTimeout(90_000)
   const admin = getAdminClient()
+  const account = loadTestAccount()
 
   const serviceName = `E2E Trial Care Home ${Date.now()}`
   const managerName = 'E2E Trial Manager'
@@ -111,7 +125,7 @@ test('trial signup: real form, real org, real email, through to a working dashbo
     // ── Real organisation + admin profile, genuinely provisioned ────────────
     const { data: org, error: orgErr } = await admin
       .from('organisations')
-      .select('id, name, subscription_tier, trial_expires_at, terms_accepted_at, terms_version, cqc_location_id, cqc_location_name, cqc_rating')
+      .select('id, name, subscription_tier, trial_expires_at, terms_accepted_at, terms_version, cqc_location_id, cqc_location_name, cqc_rating, cqc_rating_fetched_at')
       .eq('name', serviceName)
       .single()
     expect(orgErr).toBeNull()
@@ -121,9 +135,33 @@ test('trial signup: real form, real org, real email, through to a working dashbo
     expect(org!.cqc_location_id).toBe(REAL_CQC_LOCATION_ID)
     // CQC currently unavailable from this environment (see file doc comment)
     // -- enrichment genuinely wasn't populated, matching the real fail-open
-    // behaviour rather than assuming the happy path.
+    // behaviour rather than assuming the happy path. cqc_rating_fetched_at
+    // staying null is exactly the signal the superadmin "CQC unverified"
+    // badge (checked below) keys off.
     expect(org!.cqc_location_name).toBeNull()
     expect(org!.cqc_rating).toBeNull()
+    expect(org!.cqc_rating_fetched_at).toBeNull()
+
+    // ── Superadmin: an unverified CQC signup is flagged for manual review ───
+    // A CQC outage must never block a legitimate signup (see step 0's
+    // comment in app/trial/actions.ts), but silently trusting an
+    // unconfirmed Location ID forever isn't right either -- the org list
+    // flags it so a human can check. Separate browser context: this is a
+    // genuinely different actor, not the trial admin the rest of this test
+    // continues as.
+    const superadminContext = await browser.newContext()
+    const superadminPage = await superadminContext.newPage()
+    await login(superadminPage, {
+      email:      account.superadmin.email,
+      password:   account.superadmin.password,
+      totpSecret: account.superadmin.totpSecret,
+    })
+    await superadminPage.waitForURL('**/superadmin/provision')
+    await superadminPage.goto('/superadmin/organisations')
+    const orgCard = superadminPage.locator('.bg-card').filter({ hasText: serviceName })
+    await expect(orgCard).toBeVisible()
+    await expect(orgCard.getByText('CQC unverified')).toBeVisible()
+    await superadminContext.close()
 
     const daysUntilExpiry = (new Date(org!.trial_expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     expect(daysUntilExpiry).toBeGreaterThan(13)

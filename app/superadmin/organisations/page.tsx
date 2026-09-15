@@ -20,6 +20,7 @@ type OrgListItem = {
   id: string; name: string; subscription_tier: string
   trial_expires_at: string | null; created_at: string
   is_beta: boolean; is_charity: boolean; is_tester: boolean; charity_number: string | null
+  cqc_location_id: string | null; cqc_rating_fetched_at: string | null
   service_types: { name: string } | null
 }
 
@@ -62,6 +63,7 @@ export default async function OrganisationsPage({
     .from('organisations')
     .select(`
       id, name, subscription_tier, trial_expires_at, created_at, is_beta, is_charity, is_tester, charity_number,
+      cqc_location_id, cqc_rating_fetched_at,
       service_types ( name )
     `)
     .order('created_at', { ascending: false })
@@ -188,6 +190,14 @@ export default async function OrganisationsPage({
                       {org.is_charity && (
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
                           Charity 20% off
+                        </span>
+                      )}
+                      {org.cqc_location_id && !org.cqc_rating_fetched_at && (
+                        <span
+                          title="CQC could not verify this Location ID at signup (their API was unavailable) and hasn't confirmed it since — signup was allowed to proceed regardless (a CQC outage must never block a legitimate signup), but this org's own first dashboard visit will keep retrying automatically. Worth a manual check if it's been a while."
+                          className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700"
+                        >
+                          CQC unverified
                         </span>
                       )}
                       {trial && (
