@@ -57,6 +57,9 @@ export default function SuperadminLayout({
           <Link href="/superadmin/test-emails" className="hover:text-brand transition-colors">
             Test emails
           </Link>
+          <Link href="/superadmin/email-templates" className="hover:text-brand transition-colors">
+            Email templates
+          </Link>
           <Link href="/superadmin/notification-feedback" className="hover:text-brand transition-colors">
             Notification feedback
           </Link>

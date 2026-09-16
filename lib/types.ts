@@ -331,6 +331,31 @@ export type Database = {
         Relationships: []
       }
 
+      email_template_versions: {
+        Row: {
+          id: string
+          template_id: string
+          html: string
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          template_id: string
+          html: string
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          template_id?: string
+          html?: string
+          created_by?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       notification_feedback: {
         Row: {
           id: string

@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 import { getFirstName } from '@/lib/utils/name'
@@ -45,11 +46,7 @@ export async function staffReply(
   // If this is a website enquiry, email the reply to the external sender
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
     const firstName = escapeHtml(getFirstName(ticket.external_name))
-    await sendEmail({
-      to:      ticket.external_email,
-      subject: `Re: ${ticket.subject} [${ticket.reference}]`,
-      type:    'transactional',
-      bodyHtml: `
+    const defaultTicketReplyHtml = `
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
 
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -62,7 +59,13 @@ export async function staffReply(
           If you have any further questions, please reply to this email or visit
           <a href="https://www.alwaysready.uk" style="color:#014D4E">www.alwaysready.uk</a>.
         </p>
-      `,
+      `
+
+    await sendEmail({
+      to:      ticket.external_email,
+      subject: `Re: ${ticket.subject} [${ticket.reference}]`,
+      type:    'transactional',
+      bodyHtml: await renderTemplate('support_ticket_reply', { firstName, message }, defaultTicketReplyHtml),
     })
   }
 
@@ -281,11 +284,15 @@ export async function updateTicketStatus(ticketId: string, status: string) {
       }
 
       if (recipientEmail) {
-        await sendEmail({
-          to:      recipientEmail,
-          subject: `Your support request has been resolved [${ticket.reference}]`,
-          type:    'transactional',
-          bodyHtml: `
+        // followUpText varies by ticket source (website enquiry vs platform
+        // user); baked into the default before it's exposed as one
+        // {{followUpText}} token, since an override is static and can't
+        // replicate that branching.
+        const followUpText = ticket.source === 'website_contact' || ticket.source === 'website'
+          ? `If your issue has not been fully resolved or you have a follow-up question, please get in touch via <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a> and we'll be happy to help.`
+          : `If your issue has not been fully resolved or you have a follow-up question, please open a new support ticket from the <strong>Support</strong> section inside the platform and we'll be happy to help.`
+
+        const defaultTicketResolvedHtml = `
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
 
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -299,16 +306,23 @@ export async function updateTicketStatus(ticketId: string, status: string) {
             </div>
 
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-              ${ticket.source === 'website_contact' || ticket.source === 'website'
-                ? `If your issue has not been fully resolved or you have a follow-up question, please get in touch via <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a> and we'll be happy to help.`
-                : `If your issue has not been fully resolved or you have a follow-up question, please open a new support ticket from the <strong>Support</strong> section inside the platform and we'll be happy to help.`
-              }
+              ${followUpText}
             </p>
 
             <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
               Thank you for using AlwaysReady. We hope we were able to help.
             </p>
-          `,
+          `
+
+        await sendEmail({
+          to:      recipientEmail,
+          subject: `Your support request has been resolved [${ticket.reference}]`,
+          type:    'transactional',
+          bodyHtml: await renderTemplate(
+            'support_ticket_resolved',
+            { firstName, reference: ticket.reference, subject: escapeHtml(ticket.subject), followUpText },
+            defaultTicketResolvedHtml,
+          ),
         })
       }
     }

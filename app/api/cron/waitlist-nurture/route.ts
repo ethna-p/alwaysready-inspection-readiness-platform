@@ -22,6 +22,7 @@ import { createAdminClient }             from '@/lib/supabase/admin'
 import { sendEmail }                     from '@/lib/email'
 import { getWaitlistNurtureEmail }       from '@/lib/waitlist-nurture'
 import { verifyCronSecret } from '@/lib/utils/cron'
+import { renderTemplate } from '@/lib/email-templates'
 
 export async function GET(request: Request) {
   if (!verifyCronSecret(request)) {
@@ -61,13 +62,19 @@ export async function GET(request: Request) {
     }
 
     try {
+      const bodyHtml = await renderTemplate(
+        `waitlist_nurture_${nextEmailNum}`,
+        { firstName: lead.first_name || 'there' },
+        emailContent.bodyHtml,
+      )
+
       await sendEmail({
         to:              lead.email,
         subject:         emailContent.subject,
         type:            'marketing',
         subscriberEmail: lead.email,
         footerNote:      'You are receiving this because you joined the AlwaysReady waitlist.',
-        bodyHtml:        emailContent.bodyHtml,
+        bodyHtml,
       })
 
       const { error: updateError } = await supabase

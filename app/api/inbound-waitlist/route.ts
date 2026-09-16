@@ -23,6 +23,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
+import { renderTemplate } from '@/lib/email-templates'
 import { fetchCqcLocation } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
@@ -224,7 +225,7 @@ export async function POST(req: NextRequest) {
           subject: email1.subject,
           type: 'marketing',
           subscriberEmail: email,
-          bodyHtml: email1.bodyHtml,
+          bodyHtml: await renderTemplate('waitlist_nurture_1', { firstName: displayName }, email1.bodyHtml),
         })
         await supabase
           .from('waitlist_leads')
@@ -236,12 +237,7 @@ export async function POST(req: NextRequest) {
       }
     } else {
       // Simple auto-responder for non-nurture leads
-      await sendEmail({
-        to: email,
-        subject: "You're on the AlwaysReady waitlist",
-        type: 'marketing',
-        subscriberEmail: email,
-        bodyHtml: `
+      const defaultWaitlistSignupHtml = `
           <p>Hi ${escapeHtml(displayName)},</p>
           <p>Thank you for joining the AlwaysReady waitlist. You're in good company.</p>
           <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
@@ -250,24 +246,33 @@ export async function POST(req: NextRequest) {
           <p>In the meantime, if you have any questions about the platform, feel free to reply
              to this email or visit
              <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
-        `,
+        `
+
+      await sendEmail({
+        to: email,
+        subject: "You're on the AlwaysReady waitlist",
+        type: 'marketing',
+        subscriberEmail: email,
+        bodyHtml: await renderTemplate('waitlist_signup_confirmation', { displayName: escapeHtml(displayName) }, defaultWaitlistSignupHtml),
       })
     }
   }
 
   // ── Send blog subscription confirmation ───────────────────────────────────
   if (subscribedToBlog) {
+    const defaultBlogSubscribeWaitlistHtml = `
+        <p>Hi ${escapeHtml(displayName)},</p>
+        <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
+           sector updates, and inspection-readiness guidance, straight to your inbox.</p>
+        <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
+      `
+
     await sendEmail({
       to: email,
       subject: "You're subscribed to the AlwaysReady blog",
       type: 'marketing',
       subscriberEmail: email,
-      bodyHtml: `
-        <p>Hi ${escapeHtml(displayName)},</p>
-        <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
-           sector updates, and inspection-readiness guidance, straight to your inbox.</p>
-        <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
-      `,
+      bodyHtml: await renderTemplate('blog_subscribe_confirmation_waitlist', { displayName: escapeHtml(displayName) }, defaultBlogSubscribeWaitlistHtml),
     })
   }
 

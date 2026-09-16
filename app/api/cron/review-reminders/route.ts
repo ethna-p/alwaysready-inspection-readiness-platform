@@ -21,6 +21,7 @@ import { NextResponse }    from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
 import { escapeHtml }        from '@/lib/utils/escape'
+import { renderTemplate }    from '@/lib/email-templates'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -306,7 +307,11 @@ export async function GET(request: Request) {
           const result = await sendEmail({
             to:       recipientEmail,
             subject:  `KLOE review due in ${days} day${days === 1 ? '' : 's'}: ${kloeTitle}`,
-            bodyHtml: kloeDueSoonHtml(kloeTitle, record.next_review_due, days),
+            bodyHtml: await renderTemplate(
+              'kloe_review_due_soon',
+              { kloeTitle, dueDate: formatDate(record.next_review_due), daysLeft: String(days) },
+              kloeDueSoonHtml(kloeTitle, record.next_review_due, days),
+            ),
             type:     'transactional',
           })
 
@@ -325,7 +330,11 @@ export async function GET(request: Request) {
           const result = await sendEmail({
             to:       recipientEmail,
             subject:  `Overdue KLOE review: ${kloeTitle}`,
-            bodyHtml: kloeOverdueHtml(kloeTitle, record.next_review_due),
+            bodyHtml: await renderTemplate(
+              'kloe_review_overdue',
+              { kloeTitle, dueDate: formatDate(record.next_review_due) },
+              kloeOverdueHtml(kloeTitle, record.next_review_due),
+            ),
             type:     'transactional',
           })
 
@@ -391,7 +400,11 @@ export async function GET(request: Request) {
             const result = await sendEmail({
               to:       adminEmail,
               subject:  `${staffName}: ${field.label} due in ${days} day${days === 1 ? '' : 's'}`,
-              bodyHtml: hrDueSoonHtml(staffName, field.label, field.dueDate, days),
+              bodyHtml: await renderTemplate(
+                'hr_field_due_soon',
+                { staffName: escapeHtml(staffName), fieldLabel: escapeHtml(field.label), dueDate: formatDate(field.dueDate), daysLeft: String(days) },
+                hrDueSoonHtml(staffName, field.label, field.dueDate, days),
+              ),
               type:     'transactional',
             })
 
@@ -409,7 +422,11 @@ export async function GET(request: Request) {
             const result = await sendEmail({
               to:       adminEmail,
               subject:  `${staffName}: ${field.label} is overdue`,
-              bodyHtml: hrOverdueHtml(staffName, field.label, field.dueDate),
+              bodyHtml: await renderTemplate(
+                'hr_field_overdue',
+                { staffName: escapeHtml(staffName), fieldLabel: escapeHtml(field.label), dueDate: formatDate(field.dueDate) },
+                hrOverdueHtml(staffName, field.label, field.dueDate),
+              ),
               type:     'transactional',
             })
 

@@ -5,6 +5,7 @@ import { sendEmail } from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 import { TRIAL_EMAILS, USER_EMAILS } from '@/lib/trial-emails'
 import { ONBOARDING_EMAILS, buildHtml } from '@/lib/onboarding-emails'
+import { renderTemplate } from '@/lib/email-templates'
 import { PLATFORM_URL } from '@/lib/config'
 const FIRST_NAME   = 'Sarah'
 const ORG_NAME     = 'Sunrise Care Home'
@@ -133,14 +134,20 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
 
   // Trial sequence (days 1-13) and user team emails: from lib/trial-emails.ts
   for (const email of TRIAL_EMAILS) {
-    results.push(await send(
-      email.subject,
+    const bodyHtml = await renderTemplate(
+      `trial_${email.dayKey}`,
+      { firstName: FIRST_NAME, expiryDate: EXPIRY_DATE, price: '£75' },
       email.bodyHtml(FIRST_NAME, EXPIRY_DATE, '£75'),
-      email.isMarketing ? 'marketing' : 'transactional',
-    ))
+    )
+    results.push(await send(email.subject, bodyHtml, email.isMarketing ? 'marketing' : 'transactional'))
   }
   for (const email of USER_EMAILS) {
-    results.push(await send(email.subject, email.bodyHtml(FIRST_NAME, ORG_NAME)))
+    const bodyHtml = await renderTemplate(
+      `user_${email.dayKey}`,
+      { firstName: FIRST_NAME, orgName: ORG_NAME },
+      email.bodyHtml(FIRST_NAME, ORG_NAME),
+    )
+    results.push(await send(email.subject, bodyHtml))
   }
 
   return results
@@ -149,9 +156,12 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
 async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
   const results: TestEmailResult[] = []
 
-  // Onboarding sequence (18 emails): from lib/onboarding-emails.ts
+  // Onboarding sequence (18 emails): from lib/onboarding-emails.ts. Routed
+  // through renderTemplate so a test send reflects any superadmin edit, the
+  // same way the real nightly cron does.
   for (const email of ONBOARDING_EMAILS) {
-    results.push(await send(email.subject, buildHtml(email.body(FIRST_NAME)), 'marketing'))
+    const bodyInner = await renderTemplate(`onboarding_${email.weekId}`, { firstName: FIRST_NAME }, email.body(FIRST_NAME))
+    results.push(await send(email.subject, buildHtml(bodyInner), 'marketing'))
     // Avoid Resend rate limits when sending many emails in quick succession during testing
     await new Promise(resolve => setTimeout(resolve, 1000))
   }
@@ -315,7 +325,8 @@ async function sendWaitlist(send: Awaited<ReturnType<typeof makeSender>>) {
   for (let i = 1; i <= 8; i++) {
     const email = getWaitlistNurtureEmail(i, FIRST_NAME)
     if (email) {
-      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing', 'You are receiving this because you joined the AlwaysReady waitlist.'))
+      const bodyHtml = await renderTemplate(`waitlist_nurture_${i}`, { firstName: FIRST_NAME }, email.bodyHtml)
+      results.push(await send(`[Waitlist ${i}] ${email.subject}`, bodyHtml, 'marketing', 'You are receiving this because you joined the AlwaysReady waitlist.'))
       await new Promise(resolve => setTimeout(resolve, 500))
     }
   }
@@ -333,7 +344,8 @@ async function sendWaitlistLaunch(send: Awaited<ReturnType<typeof makeSender>>) 
   for (const i of [9, 10] as const) {
     const email = getWaitlistNurtureEmail(i, FIRST_NAME)
     if (email) {
-      results.push(await send(`[Waitlist ${i}] ${email.subject}`, email.bodyHtml, 'marketing', 'You are receiving this because you joined the AlwaysReady waitlist.'))
+      const bodyHtml = await renderTemplate(`waitlist_nurture_${i}`, { firstName: FIRST_NAME }, email.bodyHtml)
+      results.push(await send(`[Waitlist ${i}] ${email.subject}`, bodyHtml, 'marketing', 'You are receiving this because you joined the AlwaysReady waitlist.'))
       await new Promise(resolve => setTimeout(resolve, 500))
     }
   }

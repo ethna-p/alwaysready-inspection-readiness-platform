@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { requireUser } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 
@@ -59,11 +60,7 @@ export async function submitTicket(
 
   // Send auto-responder to the submitter
   const firstName = getFirstName(profileDetails?.full_name)
-  await sendEmail({
-    to:      profile.email,
-    subject: `We've received your support request: ${ticket.reference}`,
-    type:    'transactional',
-    bodyHtml: `
+  const defaultTicketReceivedHtml = `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
 
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -80,7 +77,17 @@ export async function submitTicket(
         You can reply to this email directly, or visit the <strong>Support</strong> section
         inside AlwaysReady to view your request and any replies.
       </p>
-    `,
+    `
+
+  await sendEmail({
+    to:      profile.email,
+    subject: `We've received your support request: ${ticket.reference}`,
+    type:    'transactional',
+    bodyHtml: await renderTemplate(
+      'support_ticket_received',
+      { firstName: escapeHtml(firstName), reference: ticket.reference, subject: escapeHtml(subject) },
+      defaultTicketReceivedHtml,
+    ),
   })
 
   // Notify AJ of new platform support ticket

@@ -8,6 +8,7 @@ import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
+import { renderTemplate } from '@/lib/email-templates'
 
 // 3 trial signups per IP per hour: generous for legitimate use,
 // prevents automated provisioning of many orgs from one address.
@@ -301,12 +302,9 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   }
 
   // ── 10. Send branded welcome email ────────────────────────────────────────────
-  await sendEmail({
-    to:      managerEmail.trim(),
-    subject: 'Your AlwaysReady trial is ready: set your password to get started',
-    type:    'transactional',
-    bodyHtml: `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${escapeHtml(firstName)},</p>
+  const trialWelcomeParams = { firstName: escapeHtml(firstName), serviceName: escapeHtml(serviceName.trim()), expiry, setupLink }
+  const defaultTrialWelcomeHtml = `
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${trialWelcomeParams.firstName},</p>
 
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your 14-day free trial of AlwaysReady is ready. Click the button below to
@@ -314,7 +312,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       </p>
 
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        <strong style="color:#014D4E">${escapeHtml(serviceName.trim())}</strong> has been configured
+        <strong style="color:#014D4E">${trialWelcomeParams.serviceName}</strong> has been configured
         to your service type using the CQC Adult Social Care Assessment Framework. You can
         start recording your compliance position, uploading evidence, and building your
         inspection readiness straight away.
@@ -339,7 +337,13 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
         If the button above does not work, copy and paste this link into your browser:<br>
         <a href="${setupLink}" style="color:#014D4E;word-break:break-all">${setupLink}</a>
       </p>
-    `,
+    `
+
+  await sendEmail({
+    to:      managerEmail.trim(),
+    subject: 'Your AlwaysReady trial is ready: set your password to get started',
+    type:    'transactional',
+    bodyHtml: await renderTemplate('trial_signup_welcome', trialWelcomeParams, defaultTrialWelcomeHtml),
   })
 
   return { success: true, email: managerEmail.trim() }

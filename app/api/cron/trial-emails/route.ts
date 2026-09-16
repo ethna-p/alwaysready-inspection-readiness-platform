@@ -38,6 +38,7 @@ import {
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { claimNotification, releaseNotificationClaim } from '@/lib/notification-log'
+import { renderTemplate } from '@/lib/email-templates'
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
@@ -129,7 +130,15 @@ export async function GET(request: Request) {
         }
       }
 
-      const bodyHtml = emailDef.bodyHtml(firstName, expiryDate, price, wizard)
+      // wizard drives conditional sections in the default HTML (which of the
+      // getting-started steps to nudge on) -- an override, being static, can't
+      // replicate that branching, so it isn't exposed as a {{token}}; the
+      // default (unedited) email keeps varying per org as before.
+      const bodyHtml = await renderTemplate(
+        `trial_${emailDef.dayKey}`,
+        { firstName, expiryDate, price },
+        emailDef.bodyHtml(firstName, expiryDate, price, wizard),
+      )
 
       const result = await sendEmail({
         to:       admin.email,
@@ -206,11 +215,7 @@ export async function GET(request: Request) {
       const deletionDate = formatDate(trialDeletionDue.toISOString())
       const upgradeUrl   = `${PLATFORM_URL}/upgrade`
 
-      const result = await sendEmail({
-        to:      admin.email,
-        subject: 'Your AlwaysReady trial has ended',
-        type:    'transactional',
-        bodyHtml: `
+      const defaultLapsedHtml = `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             Your AlwaysReady trial ended on ${expiryDate}. The KLOEs you rated, evidence you
@@ -234,7 +239,13 @@ export async function GET(request: Request) {
             you, just reply to this email. Whatever you decide, thank you for taking the time
             to try AlwaysReady.
           </p>
-        `,
+        `
+
+      const result = await sendEmail({
+        to:      admin.email,
+        subject: 'Your AlwaysReady trial has ended',
+        type:    'transactional',
+        bodyHtml: await renderTemplate('trial_lapsed', { firstName, expiryDate, deletionDate, upgradeUrl }, defaultLapsedHtml),
       })
 
       if (result.sent) {
@@ -297,7 +308,7 @@ export async function GET(request: Request) {
     const result = await sendEmail({
       to:       usr.email,
       subject:  emailDef.subject,
-      bodyHtml: emailDef.bodyHtml(firstName, orgName),
+      bodyHtml: await renderTemplate(`user_${emailDef.dayKey}`, { firstName, orgName }, emailDef.bodyHtml(firstName, orgName)),
       type:     'transactional',
     })
 

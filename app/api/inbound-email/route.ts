@@ -29,6 +29,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
@@ -305,11 +306,7 @@ export async function POST(req: NextRequest) {
 
   // Auto-responder for new tickets
   const firstName = getFirstName(fromName)
-  await sendEmail({
-    to:      from,
-    subject: "We've received your message",
-    type:    'transactional',
-    bodyHtml: `
+  const defaultAutoResponderHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch. We have received your message and will get back to you shortly.
@@ -320,7 +317,13 @@ export async function POST(req: NextRequest) {
         If you prefer to ask a question in your own words, our AI platform assistant is available
         on every page in the bottom-right corner of most pages on the AlwaysReady website.
       </p>
-    `,
+    `
+
+  await sendEmail({
+    to:      from,
+    subject: "We've received your message",
+    type:    'transactional',
+    bodyHtml: await renderTemplate('contact_auto_responder', { name: escapeHtml(firstName) }, defaultAutoResponderHtml),
   })
 
   return NextResponse.json({ action: 'created', ticketId: newTicket.id }, { status: 200 })

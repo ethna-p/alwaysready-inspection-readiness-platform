@@ -49,7 +49,7 @@ export interface SendEmailResult {
   error?: string
 }
 
-function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: string, footerNote?: string): string {
+export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: string, footerNote?: string): string {
   // Always shown -- every email now explains why the recipient is getting
   // it, not just marketing ones. footerNote (per-call override) takes
   // priority; otherwise fall back to a type-appropriate default.

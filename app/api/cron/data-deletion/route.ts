@@ -22,6 +22,7 @@ import 'server-only'
 import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
+import { renderTemplate }    from '@/lib/email-templates'
 import { getFirstName }  from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
@@ -95,11 +96,7 @@ export async function GET(request: Request) {
       })
       const firstName = escapeHtml(getFirstName(admin.full_name))
 
-      const result = await sendEmail({
-        to:      admin.email,
-        subject: 'Reminder: your AlwaysReady data will be deleted in 3 days',
-        type:    'transactional',
-        bodyHtml: `
+      const defaultDeletionReminderHtml = `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             This is a reminder that the data for <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
@@ -120,7 +117,17 @@ export async function GET(request: Request) {
             If you have any questions, email us at
             <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
           </p>
-        `,
+        `
+
+      const result = await sendEmail({
+        to:      admin.email,
+        subject: 'Reminder: your AlwaysReady data will be deleted in 3 days',
+        type:    'transactional',
+        bodyHtml: await renderTemplate(
+          'data_deletion_reminder',
+          { firstName, orgName: escapeHtml(org.name), deletionDate },
+          defaultDeletionReminderHtml,
+        ),
       })
 
       if (result.sent) {
@@ -207,11 +214,7 @@ export async function GET(request: Request) {
     for (const admin of admins ?? []) {
       if (!admin.email) continue
       const firstName = escapeHtml(getFirstName(admin.full_name))
-      await sendEmail({
-        to:      admin.email,
-        subject: 'Your AlwaysReady data has been deleted',
-        type:    'transactional',
-        bodyHtml: `
+      const defaultDeletionCompletedHtml = `
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             As notified, all data associated with <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
@@ -224,7 +227,13 @@ export async function GET(request: Request) {
             If you have any questions about this deletion, please contact
             <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
           </p>
-        `,
+        `
+
+      await sendEmail({
+        to:      admin.email,
+        subject: 'Your AlwaysReady data has been deleted',
+        type:    'transactional',
+        bodyHtml: await renderTemplate('data_deletion_completed', { firstName, orgName: escapeHtml(org.name) }, defaultDeletionCompletedHtml),
       }).catch(err => console.error('[data-deletion] confirmation email failed:', err))
     }
   }

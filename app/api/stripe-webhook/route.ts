@@ -18,6 +18,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { stripeStatusToTier } from '@/lib/stripe-utils'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
@@ -114,11 +115,7 @@ export async function POST(req: NextRequest) {
           if (!claim.claimed) continue // already sent for this event, or claim failed (logged inside)
 
           const firstName = escapeHtml(getFirstName(admin.full_name))
-          await sendEmail({
-            to:      admin.email,
-            subject: 'Your AlwaysReady subscription is now active',
-            type:    'transactional',
-            bodyHtml: `
+          const defaultSubscriptionActiveHtml = `
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
                 Thank you. Your subscription is now active and your account will continue without interruption.
@@ -133,7 +130,13 @@ export async function POST(req: NextRequest) {
                   Go to your dashboard &rarr;
                 </a>
               </p>
-            `,
+            `
+
+          await sendEmail({
+            to:      admin.email,
+            subject: 'Your AlwaysReady subscription is now active',
+            type:    'transactional',
+            bodyHtml: await renderTemplate('subscription_active', { firstName }, defaultSubscriptionActiveHtml),
           })
         }
       }
@@ -229,11 +232,7 @@ export async function POST(req: NextRequest) {
             }, 'stripe-webhook deletion notice')
             if (!claim.claimed) return // already sent for this event, or claim failed (logged inside)
 
-            await sendEmail({
-              to:      email,
-              subject: 'Your AlwaysReady subscription has ended: download your data',
-              type:    'transactional',
-              bodyHtml: `
+            const defaultSubscriptionEndedHtml = `
                 <p>Your AlwaysReady subscription for <strong>${escapeHtml(org.name)}</strong> has ended.</p>
                 <p>Your data is safe and available to download until <strong>${deletionDateStr}</strong>.
                 After that date, it will be permanently deleted.</p>
@@ -241,7 +240,13 @@ export async function POST(req: NextRequest) {
                 <a href="https://portal.alwaysready.uk/login" style="color:#014D4E">portal.alwaysready.uk</a>
                 and use the download buttons on the page shown.</p>
                 <p>If you'd like to resubscribe and keep your data, you can do so from the same page.</p>
-              `,
+              `
+
+            await sendEmail({
+              to:      email,
+              subject: 'Your AlwaysReady subscription has ended: download your data',
+              type:    'transactional',
+              bodyHtml: await renderTemplate('subscription_ended', { orgName: escapeHtml(org.name), deletionDate: deletionDateStr }, defaultSubscriptionEndedHtml),
             }).catch(err => console.error('[stripe-webhook] deletion notice email failed:', err))
           }))
         }

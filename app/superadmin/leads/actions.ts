@@ -5,6 +5,7 @@ import { revalidatePath }          from 'next/cache'
 import { assertSuperadmin }        from '@/lib/assert-superadmin'
 import { sendEmail }               from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
+import { renderTemplate } from '@/lib/email-templates'
 
 export async function deleteLead(id: string) {
   await assertSuperadmin()
@@ -75,13 +76,19 @@ export async function sendBulkLaunchEmail(
       // for a thrown exception, so it counted every one of those as a
       // success -- confirmed live: with no RESEND_API_KEY configured, this
       // reported "Sent to 1 subscriber" for a send that never happened.
+      const bodyHtml = await renderTemplate(
+        `waitlist_nurture_${emailNum}`,
+        { firstName: lead.first_name || 'there' },
+        emailContent.bodyHtml,
+      )
+
       const result = await sendEmail({
         to:              lead.email,
         subject:         emailContent.subject,
         type:            'marketing',
         subscriberEmail: lead.email,
         footerNote:      'You are receiving this because you joined the AlwaysReady waitlist.',
-        bodyHtml:        emailContent.bodyHtml,
+        bodyHtml,
       })
       if (result.sent) {
         sent++

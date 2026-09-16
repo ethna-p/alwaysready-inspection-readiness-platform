@@ -20,6 +20,7 @@ import 'server-only'
 import { NextResponse }      from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail }         from '@/lib/email'
+import { renderTemplate }    from '@/lib/email-templates'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { PLATFORM_URL }     from '@/lib/config'
 import { escapeHtml }       from '@/lib/utils/escape'
@@ -273,21 +274,33 @@ export async function GET(request: Request) {
     const reportDate   = formatDate(today.toISOString())
 
     // ── Send to each admin ────────────────────────────────────────────────
+    // digestHtml's per-org numbers (readiness %, overdue counts, etc.) are
+    // computed fresh every send, so a saved override is a static report
+    // shell only -- useful for restyling wording/layout, not the figures
+    // themselves. The generated default is passed straight through as the
+    // fallback, and orgName/readinessPct/reportDate are exposed as tokens
+    // for an override that wants to reference them.
+    const defaultDigestHtml = digestHtml({
+      orgName:           org.name,
+      readinessPct,
+      totalKlos,
+      compliantKlos,
+      overdueUnassigned,
+      neverStarted,
+      openIncidents:     openIncidents ?? 0,
+      overdueActions:    overdueActions ?? 0,
+      reportDate,
+    })
+
     for (const adminEmail of adminEmails) {
       const result = await sendEmail({
         to:       adminEmail,
         subject:  `Weekly governance digest: ${org.name} (${readinessPct}% ready)`,
-        bodyHtml: digestHtml({
-          orgName:           org.name,
-          readinessPct,
-          totalKlos,
-          compliantKlos,
-          overdueUnassigned,
-          neverStarted,
-          openIncidents:     openIncidents ?? 0,
-          overdueActions:    overdueActions ?? 0,
-          reportDate,
-        }),
+        bodyHtml: await renderTemplate(
+          'governance_digest',
+          { orgName: org.name, readinessPct: String(readinessPct), reportDate },
+          defaultDigestHtml,
+        ),
         type: 'transactional',
       })
 

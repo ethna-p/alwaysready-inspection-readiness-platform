@@ -19,23 +19,20 @@ import 'server-only'
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
 
 const RECONFIRM_AFTER_DAYS = 35 // midpoint of the 4-6 week window
 
-function reconfirmationHtml(reviewReminders: boolean, governanceDigest: boolean): string {
-  const items: string[] = []
-  if (reviewReminders) items.push('KLOE &amp; HR review reminders')
-  if (governanceDigest) items.push('Weekly governance digest')
-
+function reconfirmationHtml(notificationsList: string): string {
   return `
     <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       You're currently receiving these AlwaysReady email notifications:
     </p>
     <ul style="margin:0 0 24px;padding-left:20px">
-      ${items.map(i => `<li style="margin:0 0 4px">${i}</li>`).join('')}
+      ${notificationsList}
     </ul>
     <p style="margin:0 0 24px">
       Still want these? You can turn any of them off, or back on, from your account settings.
@@ -79,10 +76,15 @@ export async function GET(request: Request) {
   for (const user of users ?? []) {
     if (!user.email) continue
 
+    const items: string[] = []
+    if (user.notify_review_reminders) items.push('KLOE &amp; HR review reminders')
+    if (user.notify_governance_digest) items.push('Weekly governance digest')
+    const notificationsList = items.map(i => `<li style="margin:0 0 4px">${i}</li>`).join('')
+
     const result = await sendEmail({
       to:       user.email,
       subject:  'Still want these AlwaysReady notifications?',
-      bodyHtml: reconfirmationHtml(user.notify_review_reminders, user.notify_governance_digest),
+      bodyHtml: await renderTemplate('notification_reconfirmation', { notificationsList }, reconfirmationHtml(notificationsList)),
       type:     'transactional',
     })
 

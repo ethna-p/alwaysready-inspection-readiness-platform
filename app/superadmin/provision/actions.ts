@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 
 export type ProvisionResult =
@@ -137,11 +138,19 @@ export async function provisionOrganisation(
       day: 'numeric', month: 'long', year: 'numeric',
     })
 
-    await sendEmail({
-      to: adminEmail,
-      subject: 'Welcome to AlwaysReady: your login details',
-      type: 'transactional',
-      bodyHtml: `
+    // charityNote is conditional (isCharity), pre-computed and exposed as
+    // one {{charityNote}} token (empty string when not applicable) since a
+    // static override can't replicate that branching.
+    const charityNote = isCharity ? `
+        <p style="margin:0 0 16px;background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 16px;border-radius:4px;font-size:14px">
+          <strong>Your 20% charity discount is already applied to your account.</strong>
+          When you subscribe, you will be taken to a page showing the standard price;
+          your discount will be applied automatically during the checkout process before
+          any payment is taken.
+        </p>
+        ` : ''
+
+    const defaultProvisionWelcomeHtml = `
         <p style="margin:0 0 16px">Hi ${adminName},</p>
 
         <p style="margin:0 0 16px">
@@ -175,14 +184,7 @@ export async function provisionOrganisation(
           your phone or authenticator app.
         </p>
 
-        ${isCharity ? `
-        <p style="margin:0 0 16px;background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 16px;border-radius:4px;font-size:14px">
-          <strong>Your 20% charity discount is already applied to your account.</strong>
-          When you subscribe, you will be taken to a page showing the standard price;
-          your discount will be applied automatically during the checkout process before
-          any payment is taken.
-        </p>
-        ` : ''}
+        ${charityNote}
         <p style="margin:0 0 16px">
           As the account admin, you can add your team, assign KLOEs, and start
           building your inspection readiness from day one. If you have any
@@ -202,7 +204,17 @@ export async function provisionOrganisation(
           AJ Parker<br>
           <span style="color:#888;font-size:13px">AlwaysReady · support@alwaysready.uk</span>
         </p>
-      `,
+      `
+
+    await sendEmail({
+      to: adminEmail,
+      subject: 'Welcome to AlwaysReady: your login details',
+      type: 'transactional',
+      bodyHtml: await renderTemplate(
+        'provision_welcome',
+        { adminName, orgName, loginUrl: `${platformUrl}/login`, adminEmail, adminPassword, trialExpiry: trialExpiryFormatted, charityNote },
+        defaultProvisionWelcomeHtml,
+      ),
     })
 
     // ── 7. Notify superadmin ────────────────────────────────────────────

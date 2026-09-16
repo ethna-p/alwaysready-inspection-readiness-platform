@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { createRateLimiter } from '@/lib/rate-limit'
 
 // changePassword re-authenticates with a client-supplied "current password":
@@ -142,13 +143,15 @@ export async function changePassword(
       timeZone: 'Europe/London',
     })
 
+    const defaultPasswordChangedHtml = `
+        <p>Your AlwaysReady password was successfully changed on <strong>${now}</strong>.</p>
+        <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
+      `
+
     await sendEmail({
       to: user.email,
       subject: 'Your AlwaysReady password has been changed',
-      bodyHtml: `
-        <p>Your AlwaysReady password was successfully changed on <strong>${now}</strong>.</p>
-        <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
-      `,
+      bodyHtml: await renderTemplate('password_changed', { when: now }, defaultPasswordChangedHtml),
       type: 'transactional',
     })
   } catch (emailError) {

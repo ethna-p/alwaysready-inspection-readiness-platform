@@ -21,6 +21,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
@@ -194,11 +195,7 @@ export async function POST(req: NextRequest) {
     if (subError) {
       console.error('[inbound-contact] blog subscriber upsert error:', subError.message)
     } else {
-      await sendEmail({
-        to:      email,
-        subject: "You're subscribed to the AlwaysReady blog",
-        type:    'transactional',
-        bodyHtml: `
+      const defaultBlogSubscribeHtml = `
           <p>Hi ${displayName},</p>
           <p>
             Thanks for subscribing to the AlwaysReady blog. We cover CQC inspection readiness,
@@ -208,7 +205,13 @@ export async function POST(req: NextRequest) {
             You can browse everything we've published so far at
             <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
           </p>
-        `,
+        `
+
+      await sendEmail({
+        to:      email,
+        subject: "You're subscribed to the AlwaysReady blog",
+        type:    'transactional',
+        bodyHtml: await renderTemplate('blog_subscribe_confirmation', { displayName }, defaultBlogSubscribeHtml),
       }).catch(err => {
         console.error('[inbound-contact] blog welcome email failed:', err)
       })
@@ -236,11 +239,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Send auto-responder ───────────────────────────────────────────────────
-  await sendEmail({
-    to: email,
-    subject: "We've received your message",
-    type: 'transactional',
-    bodyHtml: `
+  const defaultAutoResponderHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${displayName},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch. We have received your message and will get back to you shortly.
@@ -251,7 +250,13 @@ export async function POST(req: NextRequest) {
         If you prefer to ask a question in your own words, our AI platform assistant is available
         on every page in the bottom-right corner of most pages on the AlwaysReady website.
       </p>
-    `,
+    `
+
+  await sendEmail({
+    to: email,
+    subject: "We've received your message",
+    type: 'transactional',
+    bodyHtml: await renderTemplate('contact_auto_responder', { name: displayName }, defaultAutoResponderHtml),
   })
 
   return NextResponse.json({ received: true }, { status: 200, headers: CORS_HEADERS })

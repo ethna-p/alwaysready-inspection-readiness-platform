@@ -21,6 +21,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin, requireRole } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import type { ComplianceStatus } from '@/lib/types'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
@@ -252,12 +253,7 @@ export async function assignKloe(
         const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.alwaysready.uk').replace(/\/$/, '')
         const kloUrl = `${baseUrl}/dashboard/kloes/${kloItemId}`
 
-        await sendEmail({
-          to: recipientEmail,
-          subject: `You've been assigned a KLOE: ${klo.title}`,
-          type: 'transactional',
-          userId: assignToId,
-          bodyHtml: `
+        const defaultKloeAssignedHtml = `
             <p style="margin:0 0 16px">Hi ${firstName},</p>
             <p style="margin:0 0 16px">
               You've been assigned a KLOE that needs your attention:
@@ -277,7 +273,14 @@ export async function assignKloe(
             <p style="margin:0;font-size:13px;color:#666">
               If you have any questions about what's needed, speak to your admin.
             </p>
-          `,
+          `
+
+        await sendEmail({
+          to: recipientEmail,
+          subject: `You've been assigned a KLOE: ${klo.title}`,
+          type: 'transactional',
+          userId: assignToId,
+          bodyHtml: await renderTemplate('kloe_assigned', { firstName, kloeTitle: klo.title, kloUrl }, defaultKloeAssignedHtml),
         })
       }
     } catch (emailErr) {

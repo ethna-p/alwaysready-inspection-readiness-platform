@@ -44,6 +44,7 @@ import { sendEmail } from '@/lib/email'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { ONBOARDING_EMAILS, buildHtml } from '@/lib/onboarding-emails'
+import { renderTemplate } from '@/lib/email-templates'
 
 // ── Route handler ──────────────────────────────────────────────────────────────
 
@@ -108,12 +109,14 @@ export async function GET(req: NextRequest) {
         if (!admin.email) continue
         const firstName = escapeHtml(getFirstName(admin.full_name))
 
+        const bodyInner = await renderTemplate(`onboarding_${email.weekId}`, { firstName }, email.body(firstName))
+
         const result = await sendEmail({
           to:       admin.email,
           subject:  email.subject,
           type:     'marketing',
           userId:   admin.id,
-          bodyHtml: buildHtml(email.body(firstName)),
+          bodyHtml: buildHtml(bodyInner),
         })
 
         if (result.sent) {

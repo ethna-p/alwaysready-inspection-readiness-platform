@@ -13,6 +13,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
+import { renderTemplate } from '@/lib/email-templates'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
@@ -100,11 +101,7 @@ export async function POST(req: NextRequest) {
     const displayName = escapeHtml(name || 'there')
 
     // ── Welcome email to subscriber ─────────────────────────────────────────
-    await sendEmail({
-      to:      email,
-      subject: "You're subscribed to the AlwaysReady blog",
-      type:    'transactional',
-      bodyHtml: `
+    const defaultBlogSubscribeHtml = `
         <p>Hi ${displayName},</p>
 
         <p>
@@ -116,7 +113,13 @@ export async function POST(req: NextRequest) {
           You can browse everything we've published so far at
           <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
         </p>
-      `,
+      `
+
+    await sendEmail({
+      to:      email,
+      subject: "You're subscribed to the AlwaysReady blog",
+      type:    'transactional',
+      bodyHtml: await renderTemplate('blog_subscribe_confirmation', { displayName }, defaultBlogSubscribeHtml),
     }).catch(err => {
       console.error('[blog-subscribe] welcome email failed:', err)
     })
