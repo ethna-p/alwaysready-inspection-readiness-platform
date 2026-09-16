@@ -24,7 +24,9 @@ This repo has a living audit schedule tracked in [Issue #23](https://github.com/
 2. When an audit flags a new bug, issue, or concern, do not just log it as a new GitHub issue and move on. Finish the item currently in progress, then come straight back and fix the newly found one in the same session.
 3. After isolating and fixing a new issue, re-run that specific fix three times to confirm it's stable, then run the full e2e suite once to confirm nothing else was destabilised.
 4. If a system or codebase anomaly turns up that doesn't fit anything already understood, don't ignore it: flag it, finish the item in progress, then come back and fix the anomaly too.
-5. Whenever a fix can be verified by AJ logging in as superadmin, admin, user, or viewer, say so explicitly, so she can confirm it from the user's own perspective.
+5. Whenever a fix can be verified by AJ logging in as superadmin, admin, user, or viewer, say so explicitly, so she can confirm it from that perspective herself.
+
+**Recognize fixture drift before chasing a false regression.** Most e2e specs share ONE fixture org and user set (from `npm run test:e2e:seed`) rather than each getting a fresh isolated org. Any spec that mutates shared state (subscription tier, sub-service toggles, KLOE ratings, etc.) and then fails or gets interrupted before its own cleanup step leaves that drift behind for the next spec to trip over. This is not a code bug: it's inherent to the shared-fixture design. Tell: a cluster of unrelated-looking specs failing together, rather than one focused failure, especially right after running the same mutating spec multiple times in a row (e.g. for a stability check) or interrupting a test mid-run. Fix: re-seed (`npm run test:e2e:seed`, which deliberately wipes and recreates rather than trying to patch partial state) before spending time chasing individual failures as if they were real regressions.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
