@@ -1,15 +1,17 @@
+import { randomUUID } from 'crypto'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { buildUnsubscribeUrl, buildSubscriberUnsubscribeUrl } from '@/lib/unsubscribe-token'
+import { PLATFORM_URL } from '@/lib/config'
 
 /**
  * Email types.
  *
- * 'transactional' — billing notices, security alerts, account changes.
+ * 'transactional': billing notices, security alerts, account changes.
  *   Never gated by marketing_opt_out. No unsubscribe footer.
  *   Examples: password changed, trial ending, subscription confirmed, account suspended.
  *
- * 'marketing' — feature tips, onboarding sequence, check-ins.
+ * 'marketing': feature tips, onboarding sequence, check-ins.
  *   Gated by marketing_opt_out. Includes unsubscribe footer and List-Unsubscribe header.
  *   Examples: trial day 1/3/5/7/9, all 12 onboarding weeks.
  */
@@ -18,13 +20,13 @@ export type EmailType = 'transactional' | 'marketing'
 export interface SendEmailOptions {
   to: string
   subject: string
-  /** Body content as HTML — do NOT include the outer wrapper; this function adds it. */
+  /** Body content as HTML. Do NOT include the outer wrapper; this function adds it. */
   bodyHtml: string
   type: EmailType
   /**
    * The Supabase user ID of the recipient.
    * Required for marketing emails to platform users (checks marketing_opt_out).
-   * Not used for blog subscriber emails — use subscriberEmail instead.
+   * Not used for blog subscriber emails; use subscriberEmail instead.
    */
   userId?: string
   /**
@@ -47,14 +49,19 @@ export interface SendEmailResult {
   error?: string
 }
 
-function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: string): string {
-  const note = footerNote ?? 'You are receiving this email because you have an active AlwaysReady account.'
-  const unsubscribeFooter = unsubscribeUrl
-    ? `<p style="margin:12px 0 0;font-size:12px;color:rgba(255,255,255,0.6)">
+function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: string, footerNote?: string): string {
+  // Always shown -- every email now explains why the recipient is getting
+  // it, not just marketing ones. footerNote (per-call override) takes
+  // priority; otherwise fall back to a type-appropriate default.
+  const note = footerNote
+    ?? (unsubscribeUrl
+      ? 'You are receiving this email because you have an active AlwaysReady account.'
+      : 'You are receiving this email because of activity on your AlwaysReady account that requires your attention.')
+
+  const reasonFooter = `<p style="margin:12px 0 0;font-size:12px;color:rgba(255,255,255,0.6)">
          ${note}
-         <a href="${unsubscribeUrl}" style="color:#ffffff;text-decoration:underline">Unsubscribe</a> from non-essential emails.
+         ${unsubscribeUrl ? `<a href="${unsubscribeUrl}" style="color:#ffffff;text-decoration:underline">Unsubscribe</a> from non-essential emails.` : ''}
        </p>`
-    : ''
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -95,7 +102,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
 
           <!-- Signature -->
           <tr>
-            <td style="padding:24px 40px 32px">
+            <td style="padding:24px 40px 64px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td style="padding-bottom:12px;border-bottom:2px solid #014D4E">
@@ -161,9 +168,9 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
 
           <!-- Legal footer -->
           <tr>
-            <td style="background-color:#014D4E;padding:20px 40px 24px;text-align:center">
-              <!-- Social icons — hosted PNGs at 72px displayed at 36px for retina sharpness -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 12px auto">
+            <td style="background-color:#014D4E;padding:32px 40px 36px;text-align:center">
+              <!-- Social icons: hosted PNGs at 72px displayed at 36px for retina sharpness -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 16px auto">
                 <tr>
                   <td style="padding:0 6px">
                     <a href="https://www.facebook.com/profile.php?id=61592724841446" style="text-decoration:none">
@@ -186,7 +193,14 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
                 &copy; 2026 AlwaysReady is a brand of Parker Digital &amp; Print Services<br>
                 82A James Carter Road, Mildenhall, IP28 7DE
               </p>
-              ${unsubscribeFooter}
+              <p style="margin:16px 0 0;font-size:12px;color:rgba(255,255,255,0.85)">
+                <a href="${viewInBrowserUrl}" style="color:#ffffff;text-decoration:underline">View in browser</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://alwaysready.uk/helpcentre" style="color:#ffffff;text-decoration:underline">Help Centre</a>
+                &nbsp;&middot;&nbsp;
+                <a href="https://alwaysready.uk/legal#privacy" style="color:#ffffff;text-decoration:underline">Privacy Policy</a>
+              </p>
+              ${reasonFooter}
             </td>
           </tr>
 
@@ -208,7 +222,7 @@ function buildHtml(bodyHtml: string, unsubscribeUrl?: string, footerNote?: strin
  */
 export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult> {
   if (!process.env.RESEND_API_KEY) {
-    console.warn('[email] RESEND_API_KEY not set — skipping send.')
+    console.warn('[email] RESEND_API_KEY not set, skipping send.')
     return { sent: false, skipped: 'no_api_key' }
   }
 
@@ -218,7 +232,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
       // Blog subscriber path: caller already filtered by unsubscribed_at IS NULL,
       // so no further opt-out check needed here.
     } else if (!opts.userId) {
-      console.warn('[email] marketing email sent without userId or subscriberEmail — cannot check opt-out. Skipping.')
+      console.warn('[email] marketing email sent without userId or subscriberEmail, cannot check opt-out. Skipping.')
       return { sent: false, skipped: 'opted_out' }
     } else {
       // Platform user path: check marketing_opt_out in users table
@@ -235,7 +249,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
         }
       } catch (err) {
         console.error('[email] opt-out check failed:', err)
-        // Fail safe — do not send if we cannot confirm opt-out status
+        // Fail safe: do not send if we cannot confirm opt-out status
         return { sent: false, error: 'Opt-out check failed.' }
       }
     }
@@ -243,7 +257,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
 
   // --- Build HTML ---
   let unsubscribeUrl: string | undefined
-  let footerNote: string | undefined
+  let footerNote: string | undefined = opts.footerNote
 
   if (opts.type === 'marketing') {
     if (opts.subscriberEmail) {
@@ -255,7 +269,22 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
     }
   }
 
-  const html = buildHtml(opts.bodyHtml, unsubscribeUrl, footerNote)
+  // "View in Browser": the archive id doubles as the access token (see
+  // email_archive's own migration comment). Generated up front so it can be
+  // embedded in the footer link before the row that backs it exists yet.
+  const archiveId = randomUUID()
+  const viewInBrowserUrl = `${PLATFORM_URL}/email/view/${archiveId}`
+
+  const html = buildHtml(opts.bodyHtml, viewInBrowserUrl, unsubscribeUrl, footerNote)
+
+  // Archive is best-effort: a failure here shouldn't stop the actual send,
+  // it just means that one email's "View in Browser" link 404s.
+  try {
+    const archiveSupabase = createAdminClient()
+    await archiveSupabase.from('email_archive').insert({ id: archiveId, subject: opts.subject, body_html: html })
+  } catch (err) {
+    console.error('[email] failed to archive for "View in Browser":', err)
+  }
 
   // --- Build headers ---
   const headers: Record<string, string> = {}

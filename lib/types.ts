@@ -309,6 +309,28 @@ export type Database = {
 
       // ── Notification feedback ──────────────────────────────────────
 
+      email_archive: {
+        Row: {
+          id: string
+          subject: string
+          body_html: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          subject: string
+          body_html: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          subject?: string
+          body_html?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       notification_feedback: {
         Row: {
           id: string
