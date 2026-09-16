@@ -17,11 +17,24 @@
  * it's what this test targets.
  *
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.
+ *
+ * Review reminders are opt-in (Issue #31) -- the seeded teammate defaults
+ * to opted out, so this test explicitly opts them in first. Its own opt-in
+ * gating is covered separately in notification-preferences.spec.ts; this
+ * file stays focused on the due-date detection logic it was written for.
+ *
+ * Also seeds compliance_records explicitly (support/compliance.ts) -- this
+ * spec only ever calls request.get(), never page, so it never triggers the
+ * app's own lazy seed-on-dashboard-load self-heal the way most specs do
+ * incidentally. Running this file (or any other pure-API cron spec) without
+ * a page-navigating spec having run first in the same suite invocation
+ * silently no-ops every compliance_records UPDATE below otherwise.
  */
 import { test, expect } from '@playwright/test'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { CRON_SECRET } from './support/cron'
+import { ensureComplianceRecordsSeeded } from './support/compliance'
 
 function daysFromNow(n: number): string {
   const d = new Date()
@@ -33,6 +46,8 @@ test('review-reminders: detects a due-soon KLOE and an overdue one, leaves a saf
   test.setTimeout(60_000)
   const account = loadTestAccount()
   const admin = getAdminClient()
+
+  await ensureComplianceRecordsSeeded(admin, account.orgId)
 
   // Three KLOEs untouched by any other spec's own .range() picks.
   const { data: kloItems, error: kloErr } = await admin
@@ -58,6 +73,8 @@ test('review-reminders: detects a due-soon KLOE and an overdue one, leaves a saf
     expect(error).toBeNull()
   }
 
+  await admin.from('users').update({ notify_review_reminders: true }).eq('id', account.teammate.userId)
+
   try {
     const response = await request.get('/api/cron/review-reminders', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
@@ -76,5 +93,6 @@ test('review-reminders: detects a due-soon KLOE and an overdue one, leaves a saf
       .update({ assigned_to: null, next_review_due: null })
       .eq('organisation_id', account.orgId)
       .in('klo_item_id', [dueSoonKlo.id, overdueKlo.id, safeKlo.id])
+    await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId)
   }
 })

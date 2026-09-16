@@ -1,5 +1,5 @@
 /**
- * The six /api/cron/* routes' shared auth gate (lib/utils/cron.ts's
+ * The seven /api/cron/* routes' shared auth gate (lib/utils/cron.ts's
  * verifyCronSecret -- the same helper every one of them is supposed to
  * call first, per this repo's own Chunk 4 debugging-schedule check).
  *
@@ -26,6 +26,7 @@ const CRON_ROUTES = [
   '/api/cron/data-deletion',
   '/api/cron/governance-digest',
   '/api/cron/onboarding-emails',
+  '/api/cron/notification-reconfirmation',
   '/api/cron/review-reminders',
   '/api/cron/trial-emails',
   '/api/cron/waitlist-nurture',

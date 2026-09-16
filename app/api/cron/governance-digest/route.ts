@@ -199,12 +199,14 @@ export async function GET(request: Request) {
 
     if (alreadySent) { emailsSkipped++; continue }
 
-    // Fetch admins
+    // Fetch admins -- opt-in only (Issue #31): an admin who hasn't turned
+    // the digest on gets none.
     const { data: admins } = await supabase
       .from('users')
       .select('id, email')
       .eq('organisation_id', org.id)
       .eq('role', 'admin')
+      .eq('notify_governance_digest', true)
 
     const adminEmails = (admins ?? []).map(a => a.email).filter(Boolean) as string[]
     if (adminEmails.length === 0) continue

@@ -255,6 +255,9 @@ export type Database = {
           onboarding_complete: boolean
           marketing_opt_out: boolean
           must_change_password: boolean
+          notify_review_reminders: boolean
+          notify_governance_digest: boolean
+          notification_prefs_confirmed_at: string | null
           created_at: string
         }
         Insert: {
@@ -270,6 +273,9 @@ export type Database = {
           onboarding_complete?: boolean
           marketing_opt_out?: boolean
           must_change_password?: boolean
+          notify_review_reminders?: boolean
+          notify_governance_digest?: boolean
+          notification_prefs_confirmed_at?: string | null
           created_at?: string
         }
         Update: {
@@ -285,6 +291,9 @@ export type Database = {
           onboarding_complete?: boolean
           marketing_opt_out?: boolean
           must_change_password?: boolean
+          notify_review_reminders?: boolean
+          notify_governance_digest?: boolean
+          notification_prefs_confirmed_at?: string | null
           created_at?: string
         }
         Relationships: [
@@ -296,6 +305,36 @@ export type Database = {
             referencedColumns: ['id']
           }
         ]
+      }
+
+      // ── Notification feedback ──────────────────────────────────────
+
+      notification_feedback: {
+        Row: {
+          id: string
+          user_id: string
+          organisation_id: string
+          usefulness: 'very_useful' | 'somewhat_useful' | 'not_useful'
+          suggestion: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          organisation_id: string
+          usefulness: 'very_useful' | 'somewhat_useful' | 'not_useful'
+          suggestion?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          organisation_id?: string
+          usefulness?: 'very_useful' | 'somewhat_useful' | 'not_useful'
+          suggestion?: string | null
+          created_at?: string
+        }
+        Relationships: []
       }
 
       // ── Compliance sub-checklist tables ───────────────────────────────

@@ -15,6 +15,7 @@ import MemberRow from './member-row'
 import AddVisitorForm from './add-visitor-form'
 import VisitorRow from './visitor-row'
 import AccountTabNav from './AccountTabNav'
+import NotificationsSection from './NotificationsSection'
 import Link from 'next/link'
 
 export const metadata = { title: 'Account Settings — AlwaysReady' }
@@ -36,10 +37,24 @@ export default async function AccountPage({
     ...(isAdmin ? [{ id: 'organisation', label: 'Organisation' }] : []),
     { id: 'security',      label: 'Security' },
     ...(isAdmin ? [{ id: 'team',         label: 'Team' }] : []),
+    { id: 'notifications', label: 'Notifications' },
     { id: 'features',      label: 'Platform Features' },
   ]
   const defaultTab = tabs[0].id
   const activeTab  = tab ?? defaultTab
+
+  // Notification preferences (all roles)
+  let notifyReviewReminders = false
+  let notifyGovernanceDigest = false
+  if (activeTab === 'notifications' && profile) {
+    const { data: notifPrefs } = await supabase
+      .from('users')
+      .select('notify_review_reminders, notify_governance_digest')
+      .eq('id', profile.id)
+      .single()
+    notifyReviewReminders = notifPrefs?.notify_review_reminders ?? false
+    notifyGovernanceDigest = notifPrefs?.notify_governance_digest ?? false
+  }
 
   // Fetch admin-only data
   let enabledSubServices: string[] = []
@@ -454,6 +469,14 @@ export default async function AccountPage({
           </div>
 
         </div>
+      )}
+
+      {/* ══ NOTIFICATIONS tab ═════════════════════════════════════════════ */}
+      {activeTab === 'notifications' && (
+        <NotificationsSection
+          initialReviewReminders={notifyReviewReminders}
+          initialGovernanceDigest={notifyGovernanceDigest}
+        />
       )}
 
       {/* ══ TEAM tab ══════════════════════════════════════════════════════ */}

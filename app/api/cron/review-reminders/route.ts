@@ -244,11 +244,14 @@ export async function GET(request: Request) {
   for (const org of orgs) {
 
     // ── Fetch org admins ────────────────────────────────────────────────────
+    // Opt-in only (Issue #31): an admin who hasn't turned review reminders on
+    // gets none, regardless of what's due.
     const { data: admins } = await supabase
       .from('users')
       .select('id, email, full_name')
       .eq('organisation_id', org.id)
       .eq('role', 'admin')
+      .eq('notify_review_reminders', true)
 
     const adminEmails = (admins ?? []).map(a => a.email).filter(Boolean) as string[]
 
@@ -272,12 +275,15 @@ export async function GET(request: Request) {
 
       const kloTitleById = new Map((kloItems ?? []).map(k => [k.id, k.title]))
 
-      // Get assigned user emails
+      // Get assigned user emails -- opt-in only (Issue #31), same as admins
+      // above: the assignee may be any role, and it's their own preference
+      // that gates their own reminder, not their role.
       const assignedUserIds = [...new Set(records.map(r => r.assigned_to!))]
       const { data: assignedUsers } = await supabase
         .from('users')
         .select('id, email, full_name')
         .in('id', assignedUserIds)
+        .eq('notify_review_reminders', true)
 
       const userById = new Map((assignedUsers ?? []).map(u => [u.id, u]))
 
