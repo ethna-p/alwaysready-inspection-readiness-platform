@@ -435,14 +435,16 @@ export default async function InspectionPackPage({
               {/* KLOE table */}
               <div className="overflow-x-auto print:overflow-visible">
               <table className="w-full text-sm table-fixed border border-line print:border-line">
+                {/* Column widths: Code 56px, KLOE 288px, Status 128px, RAG 144px,
+                    Priority 80px, Last Review 128px, Next Due 128px */}
                 <colgroup>
-                  <col className="w-14" />                                   {/* Code      56px */}
-                  <col className="w-72" />                                   {/* KLOE     288px */}
-                  <col className="w-32" />                                   {/* Status   128px */}
-                  <col className="w-36" />                                   {/* RAG      144px */}
-                  <col className="w-20" />                                   {/* Priority  80px */}
-                  <col className="hidden sm:table-column w-32 print:table-column" />  {/* Last Review 128px */}
-                  <col className="hidden sm:table-column w-32 print:table-column" />  {/* Next Due    128px */}
+                  <col className="w-14" />
+                  <col className="w-72" />
+                  <col className="w-32" />
+                  <col className="w-36" />
+                  <col className="w-20" />
+                  <col className="hidden sm:table-column w-32 print:table-column" />
+                  <col className="hidden sm:table-column w-32 print:table-column" />
                 </colgroup>
                 {/* Suspense needed: useSearchParams() inside KloeTableHeader requires a client boundary */}
                 <Suspense fallback={

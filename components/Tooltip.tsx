@@ -11,7 +11,7 @@
  * - Uses role="tooltip" + aria-describedby for screen readers
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 interface TooltipProps {
   text: string
@@ -22,7 +22,12 @@ interface TooltipProps {
 export default function Tooltip({ text, label = 'More information' }: TooltipProps) {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLSpanElement>(null)
-  const tooltipId = useRef(`tooltip-${Math.random().toString(36).slice(2)}`)
+  // useId(), not Math.random() -- a random value computed during SSR and
+  // again during the client's first render before hydration reconciles the
+  // ref are two different strings, so the server-rendered aria-controls
+  // never matches what the client expects. useId() is deterministic across
+  // server and client for exactly this reason.
+  const tooltipId = `tooltip-${useId()}`
 
   // Close on Escape key
   useEffect(() => {
@@ -52,7 +57,7 @@ export default function Tooltip({ text, label = 'More information' }: TooltipPro
         type="button"
         aria-label={label}
         aria-expanded={open}
-        aria-controls={tooltipId.current}
+        aria-controls={tooltipId}
         onClick={() => setOpen(v => !v)}
         className="
           inline-flex items-center justify-center
@@ -70,7 +75,7 @@ export default function Tooltip({ text, label = 'More information' }: TooltipPro
 
       {open && (
         <span
-          id={tooltipId.current}
+          id={tooltipId}
           role="tooltip"
           className="
             absolute left-6 top-1/2 -translate-y-1/2 z-50
