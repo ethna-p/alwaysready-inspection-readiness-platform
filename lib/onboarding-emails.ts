@@ -41,8 +41,19 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
     threshold: 1,
     subject:   'Welcome to AlwaysReady: we\'re delighted to have you on board ⭐',
     body: (firstName) => `
-      <p>Hi ${firstName},</p>
-      <p>Welcome to AlwaysReady: we're delighted to have you on board ⭐</p>
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Getting started with your inspection readiness</h1>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 28px">
+        <tr>
+          <td style="vertical-align:middle;padding-right:12px">
+            <img src="${PLATFORM_URL}/icons/headshot-ethna-parker.jpg" width="48" height="48" alt="Ethna Parker" style="display:block;border-radius:50%;border:0">
+          </td>
+          <td style="vertical-align:middle">
+            <p style="margin:0;font-size:14px;font-weight:700;color:#111111">Ethna Parker PhD</p>
+            <p style="margin:0;font-size:13px;color:#6b7280">Founder, AlwaysReady</p>
+          </td>
+        </tr>
+      </table>
+      <p>We're delighted to welcome you on board, ${firstName} ⭐</p>
       <p>This week, we encourage you to begin building your evidence base straight away. A great first step
       is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
       next steps. You can add notes, upload documents, and start recording your actions as you go.</p>

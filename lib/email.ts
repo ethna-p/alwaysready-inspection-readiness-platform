@@ -72,10 +72,13 @@ function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: 
       <td align="center" style="padding:40px 20px">
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(1,77,78,0.12)">
 
-          <!-- Header -->
+          <!-- Header: simple icon + wordmark on white, Cloudflare-style. The
+               ring and tick are white by design, sitting against the gold
+               circle fill, not the page background, so they read correctly
+               on white exactly as they did on the old dark teal banner. -->
           <tr>
-            <td style="background-color:#014D4E;padding:32px 40px;text-align:center">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto 8px auto">
+            <td style="background-color:#ffffff;padding:32px 40px 8px;text-align:left">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td style="vertical-align:middle;padding-right:10px">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="40" height="40" role="img" aria-hidden="true" style="display:inline-block;vertical-align:middle">
@@ -85,17 +88,16 @@ function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: 
                     </svg>
                   </td>
                   <td style="vertical-align:middle">
-                    <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff">AlwaysReady</span>
+                    <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#014D4E">AlwaysReady</span>
                   </td>
                 </tr>
               </table>
-              <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.15em;text-transform:uppercase">Inspection Readiness Platform</div>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:40px 40px 0;color:#111111;font-size:16px;line-height:1.7">
+            <td style="padding:16px 40px 0;color:#111111;font-size:16px;line-height:1.7">
               ${bodyHtml}
             </td>
           </tr>
