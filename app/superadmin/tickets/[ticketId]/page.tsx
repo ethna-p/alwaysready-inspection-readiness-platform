@@ -173,37 +173,13 @@ export default async function SuperadminTicketPage({ params }: Props) {
         ticketCategory={category}
       />
 
-      {/* Conversation — newest first, like an inbox thread. Replies are
-          reversed; the original ticket message, always the oldest entry,
-          renders last. */}
+      {/* Conversation — the original message (why this ticket exists) always
+          leads, fully expanded. Replies follow underneath in chronological
+          order, collapsed by default (<details>, no JS needed) so a long
+          thread stays scannable; each expands individually on click. */}
       <div>
         <p className="text-xs text-ink-muted uppercase tracking-wide mb-3">Conversation</p>
         <div className="space-y-4">
-          {[...(replies ?? [])].reverse().map(reply => {
-            const isStaff = reply.is_staff_reply
-            const replyAt = new Date(reply.created_at).toLocaleString('en-GB', {
-              day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
-            })
-            return (
-              <div
-                key={reply.id}
-                className={`rounded-xl p-4 ${
-                  isStaff
-                    ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30'
-                    : 'bg-fill border border-line'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#00b8a6]' : 'text-ink-muted'}`}>
-                    {isStaff ? 'You (AlwaysReady)' : 'Customer'}
-                  </span>
-                  <span className="text-xs text-ink-muted">{replyAt}</span>
-                </div>
-                <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{reply.message}</p>
-              </div>
-            )
-          })}
-
           <div className={`rounded-xl p-4 ${
             t.staff_initiated
               ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30'
@@ -217,6 +193,33 @@ export default async function SuperadminTicketPage({ params }: Props) {
             </div>
             <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{ticket.message}</p>
           </div>
+
+          {(replies ?? []).map(reply => {
+            const isStaff = reply.is_staff_reply
+            const replyAt = new Date(reply.created_at).toLocaleString('en-GB', {
+              day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+            })
+            const preview = reply.message.length > 100 ? reply.message.slice(0, 100).trimEnd() + '…' : reply.message
+            return (
+              <details
+                key={reply.id}
+                className={`rounded-xl p-4 ${
+                  isStaff
+                    ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30'
+                    : 'bg-fill border border-line'
+                }`}
+              >
+                <summary className="flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <span className={`text-xs font-semibold ${isStaff ? 'text-[#00b8a6]' : 'text-ink-muted'}`}>
+                    {isStaff ? 'You (AlwaysReady)' : 'Customer'}
+                  </span>
+                  <span className="text-xs text-ink-muted">{replyAt}</span>
+                  <span className="text-sm text-ink-muted truncate">— {preview}</span>
+                </summary>
+                <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap mt-2">{reply.message}</p>
+              </details>
+            )
+          })}
         </div>
       </div>
 

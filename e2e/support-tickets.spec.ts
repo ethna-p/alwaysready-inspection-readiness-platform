@@ -93,8 +93,12 @@ test('support tickets: customer submits, staff replies, customer replies by emai
   await superadminPage.getByRole('button', { name: 'Send reply' }).click()
 
   await superadminPage.waitForURL(`**/superadmin/tickets/${ticket!.id}`)
-  await expect(superadminPage.getByText(staffReplyText)).toBeVisible()
+  // Replies collapse by default (<details>) on the superadmin conversation
+  // view -- expand it, same as a real staff member clicking it open, before
+  // checking its full text.
   await expect(superadminPage.getByText('You (AlwaysReady)')).toBeVisible()
+  await superadminPage.locator('details').last().locator('summary').click()
+  await expect(superadminPage.getByText(staffReplyText)).toBeVisible()
 
   const { data: staffReplyRow, error: staffReplyErr } = await admin
     .from('support_ticket_replies')
@@ -140,8 +144,14 @@ test('support tickets: customer submits, staff replies, customer replies by emai
   await page.reload()
   await expect(page.getByText('does the scan status ever change', { exact: false })).toBeVisible()
   await superadminPage.reload()
-  await expect(superadminPage.getByText('does the scan status ever change', { exact: false })).toBeVisible()
+  // Superadmin's conversation view leads with the original message expanded
+  // and collapses replies (<details>) by default -- expand this one, same
+  // as a real staff member clicking it open, before checking its full text.
   await expect(superadminPage.getByText('Customer', { exact: true })).toBeVisible()
+  // The customer's reply is the most recently added -- last <details> in
+  // DOM order (original message, then replies chronologically).
+  await superadminPage.locator('details').last().locator('summary').click()
+  await expect(superadminPage.getByText('does the scan status ever change', { exact: false })).toBeVisible()
 
   // ── Staff marks the ticket resolved ──────────────────────────────────────
   // Not waitForURL here — updateTicketStatus redirects back to this exact
