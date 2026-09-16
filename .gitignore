@@ -58,3 +58,11 @@ share-certificate-parker-digital.docx
 /playwright-report/
 /test-results/
 /e2e/.fixtures/
+
+# Working documents — not app code, kept locally only
+/AlwaysReady-OutreachLetter-Template.docx
+/alwaysready-user-testing-brief.docx
+/email-footer-mockup.html
+/docs/supabase-email-password-changed.html
+/docs/supabase-email-reset-password.html
+/scripts/create-security-issues.sh
