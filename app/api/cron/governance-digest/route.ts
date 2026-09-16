@@ -166,9 +166,17 @@ export async function GET(request: Request) {
   }
 
   const supabase  = createAdminClient()
+  // todayStr must be the UTC calendar date, computed independently of the
+  // process's local timezone: today.setHours() zeroes LOCAL midnight, and
+  // toISOString() on that then converts back to UTC, which lands on the
+  // previous day whenever the local offset is positive (e.g. BST). That
+  // shift makes the notification_log idempotency key disagree with what
+  // "today" means anywhere reading due_date in UTC (including e2e tests),
+  // so a digest already logged under the wrong day looks unsent forever
+  // and silently never re-fires until a manual cleanup.
+  const todayStr  = new Date().toISOString().split('T')[0]
   const today     = new Date()
   today.setHours(0, 0, 0, 0)
-  const todayStr  = today.toISOString().split('T')[0]
 
   let emailsSent    = 0
   let emailsSkipped = 0
