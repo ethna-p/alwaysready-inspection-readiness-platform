@@ -18,6 +18,14 @@
 
 This repo has a living audit schedule tracked in [Issue #23](https://github.com/ethna-p/alwaysready-inspection-readiness-platform/issues/23): a 7-chunk checklist (auth/session, data flow, uploads, cron, RLS, security, schema drift) plus a standing recommendation to periodically run an open-ended `/code-review` alongside it, since the chunks only catch patterns already seen once before. Read that issue before a scheduled audit pass, and amend it (new chunk, new check, dated update note) whenever a pass finds a category of bug the existing chunks didn't cover.
 
+### Standing discipline for Playwright walkthroughs and general audit work
+
+1. Finish all work before moving to new work.
+2. When an audit flags a new bug, issue, or concern, do not just log it as a new GitHub issue and move on. Finish the item currently in progress, then come straight back and fix the newly found one in the same session.
+3. After isolating and fixing a new issue, re-run that specific fix three times to confirm it's stable, then run the full e2e suite once to confirm nothing else was destabilised.
+4. If a system or codebase anomaly turns up that doesn't fit anything already understood, don't ignore it: flag it, finish the item in progress, then come back and fix the anomaly too.
+5. Whenever a fix can be verified by AJ logging in as superadmin, admin, user, or viewer, say so explicitly, so she can confirm it from the user's own perspective.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
