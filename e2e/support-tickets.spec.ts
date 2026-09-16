@@ -82,7 +82,11 @@ test('support tickets: customer submits, staff replies, customer replies by emai
   await superadminPage.waitForURL(`**/superadmin/tickets/${ticket!.id}`)
 
   await expect(superadminPage.getByRole('heading', { name: subject })).toBeVisible()
-  await expect(superadminPage.getByText('E2E Test Admin')).toBeVisible() // submitted-by name
+  // Scoped to the header's own "Submitted by" field -- the submitter's name
+  // now also appears as the original message's author label in the
+  // newest-first conversation thread further down the page, which a bare
+  // page-wide getByText would match twice.
+  await expect(superadminPage.getByRole('definition').filter({ hasText: 'E2E Test Admin' })).toBeVisible()
 
   const staffReplyText = 'Thanks for flagging this — certificates can take a moment to appear. Could you try refreshing the training record section?'
   await superadminPage.getByPlaceholder('Type your reply here…').fill(staffReplyText)

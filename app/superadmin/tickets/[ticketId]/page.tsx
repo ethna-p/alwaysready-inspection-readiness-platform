@@ -89,6 +89,14 @@ export default async function SuperadminTicketPage({ params }: Props) {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   })
 
+  // Label for the original ticket message when it's shown inline in the
+  // conversation thread below, matching how a reply's own author is labelled.
+  const originalAuthorLabel = t.staff_initiated
+    ? 'You (AlwaysReady)'
+    : isExternal
+      ? (t.external_name ?? 'Customer')
+      : (submitter?.full_name ?? submitter?.email ?? 'Customer')
+
   return (
     <div className="max-w-6xl">
       {/* Back */}
@@ -100,11 +108,11 @@ export default async function SuperadminTicketPage({ params }: Props) {
       </Link>
 
       <div className="flex flex-col gap-6">
-      {/* ── Ticket + thread ── */}
-      <div>
 
-      {/* Header */}
-      <div className="bg-card border border-line rounded-xl p-6 mb-6">
+      {/* Header — identifying details only; the original message itself
+          moves into the conversation thread below, so it reads in the same
+          newest-first order as replies rather than sitting apart from them. */}
+      <div className="bg-card border border-line rounded-xl p-6">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
             <p className="text-xs text-ink-muted font-mono mb-1">{ticket.reference}</p>
@@ -115,7 +123,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
           </span>
         </div>
 
-        <dl className="text-xs text-ink-muted space-y-1 mb-4">
+        <dl className="text-xs text-ink-muted space-y-1">
           {isExternal ? (
             <>
               <div className="flex gap-2">
@@ -152,20 +160,26 @@ export default async function SuperadminTicketPage({ params }: Props) {
           )}
           <div className="flex gap-2"><dt className="text-ink-muted">Submitted</dt><dd>{created}</dd></div>
         </dl>
-
-        <div className={`rounded-lg p-4 text-sm leading-relaxed whitespace-pre-wrap ${
-          t.staff_initiated
-            ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30 text-ink'
-            : 'bg-fill border border-line text-ink'
-        }`}>
-          {ticket.message}
-        </div>
       </div>
 
-      {/* Replies */}
-      {replies && replies.length > 0 && (
+      {/* ── Reply form + status — placed right after the header, above the
+          thread, so it's reachable without scrolling past a long
+          conversation (a real usability issue: a long original message plus
+          a template-length reply pushed these below the fold). ── */}
+      <StaffReplyForm
+        ticketId={ticketId}
+        currentStatus={status}
+        draftReply={category === 'general' ? (ticket as unknown as { draft_reply: string | null }).draft_reply : null}
+        ticketCategory={category}
+      />
+
+      {/* Conversation — newest first, like an inbox thread. Replies are
+          reversed; the original ticket message, always the oldest entry,
+          renders last. */}
+      <div>
+        <p className="text-xs text-ink-muted uppercase tracking-wide mb-3">Conversation</p>
         <div className="space-y-4">
-          {replies.map(reply => {
+          {[...(replies ?? [])].reverse().map(reply => {
             const isStaff = reply.is_staff_reply
             const replyAt = new Date(reply.created_at).toLocaleString('en-GB', {
               day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
@@ -189,22 +203,24 @@ export default async function SuperadminTicketPage({ params }: Props) {
               </div>
             )
           })}
+
+          <div className={`rounded-xl p-4 ${
+            t.staff_initiated
+              ? 'bg-[#014D4E]/10 border border-[#00b8a6]/30'
+              : 'bg-fill border border-line'
+          }`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`text-xs font-semibold ${t.staff_initiated ? 'text-[#00b8a6]' : 'text-ink-muted'}`}>
+                {originalAuthorLabel}
+              </span>
+              <span className="text-xs text-ink-muted">{created}</span>
+            </div>
+            <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{ticket.message}</p>
+          </div>
         </div>
-      )}
-
-      </div>{/* end left column */}
-
-      {/* ── Reply form + status ── */}
-      <div>
-        <StaffReplyForm
-          ticketId={ticketId}
-          currentStatus={status}
-          draftReply={category === 'general' ? (ticket as unknown as { draft_reply: string | null }).draft_reply : null}
-          ticketCategory={category}
-        />
       </div>
 
-      </div>{/* end grid */}
+      </div>
     </div>
   )
 }
