@@ -1,20 +1,20 @@
 /**
  * POST /api/inbound-optout
  *
- * Receives opt-out form submissions from alwaysready.uk/optout — two
+ * Receives opt-out form submissions from alwaysready.uk/optout: two
  * distinct audiences, both landing here:
  *
  *   - Blog/newsletter subscribers unsubscribing by email (the original,
- *     legitimate use of this route — a real email checked against
+ *     legitimate use of this route, a real email checked against
  *     blog_subscribers elsewhere, or just logged here for the record).
  *   - Cold-outreach letter recipients who never subscribed to anything and
- *     have no email on file at all — identified only by the short
+ *     have no email on file at all, identified only by the short
  *     `optout_code` printed on their letter (see
  *     campaign_contacts.optout_code, migration 20260912000002).
  *
  * A `token` (the long-form UUID, for a clickable email link) or `code` (the
- * short form, for typing off a letter) both verify identity the same way —
- * a real proof the requester holds a specific piece of correspondence — and
+ * short form, for typing off a letter) both verify identity the same way:
+ * a real proof the requester holds a specific piece of correspondence, and
  * both auto-suppress the matching campaign_contacts row. Neither postcode
  * nor a self-reported business name is ever proof of identity (both are
  * public CQC-register data), so a submission with no token or code is
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
   const optoutCode    = (body.code          ?? '').trim().toUpperCase() || null
   const hasVerifiedIdentity = !!(optoutToken || optoutCode)
 
-  // Without a token or code, we have no proof of identity — fall back to the
+  // Without a token or code, we have no proof of identity: fall back to the
   // original email-based path (blog/newsletter subscribers), which still
   // needs a business name and an email to log against.
   if (!hasVerifiedIdentity) {
@@ -112,10 +112,10 @@ export async function POST(req: NextRequest) {
     locationName = matchedContact.location_name
   } else if (hasVerifiedIdentity && !locationName) {
     // A code/token was given but didn't match anything (typo, or already
-    // processed) — still need *something* for the log and AJ's email.
+    // processed), still need *something* for the log and AJ's email.
     locationName = optoutCode ? `Unrecognised code: ${optoutCode}` : 'Unrecognised opt-out link'
   }
-  if (hasVerifiedIdentity && !email) email = null // letter recipients have none — fine, marketing_suppressions.email is nullable
+  if (hasVerifiedIdentity && !email) email = null // letter recipients have none, fine, marketing_suppressions.email is nullable
 
   // ── Create suppression record ──────────────────────────────────────────────
   const { data: suppression, error: suppressionError } = await supabase
@@ -151,17 +151,17 @@ export async function POST(req: NextRequest) {
   const reviewBanner = codeOrTokenNotRecognised
     ? `<p style="margin:0 0 12px;font-size:13px;color:#92400e;background:#fef3c7;padding:8px 12px;border-radius:4px">
          ⚠️ <strong>Needs manual review.</strong> A ${optoutCode ? 'code' : 'link'} was provided but didn't match any
-         contact — likely mistyped, or this contact was already suppressed. Check the ${optoutCode ? `code ${escapeHtml(optoutCode)}` : 'link'}
+         contact, likely mistyped, or this contact was already suppressed. Check the ${optoutCode ? `code ${escapeHtml(optoutCode)}` : 'link'}
          against the campaigns page yourself.
        </p>`
     : needsManualReview
     ? `<p style="margin:0 0 12px;font-size:13px;color:#92400e;background:#fef3c7;padding:8px 12px;border-radius:4px">
          ⚠️ <strong>Needs manual review.</strong> No opt-out code or token was provided, so nothing was automatically
-         suppressed — postcode and business name alone are public information and aren't proof this request is
+         suppressed: postcode and business name alone are public information and aren't proof this request is
          genuine. Confirm the match yourself in the campaigns page, then suppress it there.
        </p>`
     : `<p style="margin:0 0 12px;font-size:13px;color:#065f46;background:#d1fae5;padding:8px 12px;border-radius:4px">
-         ✅ Verified via opt-out ${optoutCode ? 'code' : 'token'} — automatically suppressed, no action needed.
+         ✅ Verified via opt-out ${optoutCode ? 'code' : 'token'}: automatically suppressed, no action needed.
        </p>`
   await sendEmail({
     to: ajEmail,

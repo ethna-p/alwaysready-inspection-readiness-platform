@@ -9,7 +9,7 @@
  * All child rows (users, KLOE records, evidence, HR data, etc.) are removed
  * via ON DELETE CASCADE on their foreign keys to organisations(id).
  *
- * The deletion is intentionally hard — there is no soft-delete. Once run,
+ * The deletion is intentionally hard: there is no soft-delete. Once run,
  * data is gone. This is required for GDPR compliance.
  *
  * A pre-deletion warning email is sent when data_deletion_due_at is exactly
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
   const warnTo0   = new Date(warnFrom)
   warnTo0.setHours(23, 59, 59, 999)
 
-  // Defence-in-depth: never warn/delete an active (or past_due — still in a
+  // Defence-in-depth: never warn/delete an active (or past_due, still in a
   // payment retry grace period) org, even if data_deletion_due_at is stale.
   // The real fix is that checkout.session.completed now clears
   // data_deletion_due_at when a subscription activates, but this table is
@@ -77,7 +77,7 @@ export async function GET(request: Request) {
     for (const admin of admins ?? []) {
       if (!admin.email) continue
 
-      // Idempotency — only send once
+      // Idempotency: only send once
       const { data: existing } = await supabase
         .from('notification_log')
         .select('id')
@@ -103,7 +103,7 @@ export async function GET(request: Request) {
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             This is a reminder that the data for <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
-            will be permanently deleted on <strong>${deletionDate}</strong> — in 3 days.
+            will be permanently deleted on <strong>${deletionDate}</strong>, in 3 days.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             You can download your data now by logging in and using the download buttons
@@ -144,7 +144,7 @@ export async function GET(request: Request) {
   // Delete any organisation where data_deletion_due_at < now().
   // Child rows are removed by ON DELETE CASCADE.
   //
-  // Defence-in-depth: never delete an active (or past_due) org — see the
+  // Defence-in-depth: never delete an active (or past_due) org, see the
   // matching comment on the warning query above. This is the actual
   // destructive step, so this guard matters most here.
 

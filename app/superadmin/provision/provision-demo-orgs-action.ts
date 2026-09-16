@@ -151,12 +151,12 @@ export async function provisionDemoOrgs(): Promise<DemoOrgResult[]> {
 
   await sendEmail({
     to: process.env.SUPERADMIN_EMAIL ?? 'support@alwaysready.uk',
-    subject: '[AlwaysReady] Demo orgs provisioned — credentials',
+    subject: '[AlwaysReady] Demo orgs provisioned: credentials',
     type: 'transactional',
     bodyHtml: `
       <p style="margin:0 0 16px">
         ${results.filter(r => r.success).length} of 11 demo organisations were provisioned successfully.
-        Save these credentials — the passwords are not stored elsewhere.
+        Save these credentials. The passwords are not stored elsewhere.
       </p>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0"
         style="width:100%;border-collapse:collapse;font-size:13px">

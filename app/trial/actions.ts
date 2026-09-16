@@ -9,7 +9,7 @@ import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
 
-// 3 trial signups per IP per hour — generous for legitimate use,
+// 3 trial signups per IP per hour: generous for legitimate use,
 // prevents automated provisioning of many orgs from one address.
 const trialSignupLimiter = createRateLimiter({ name: 'trial-signup', windowMs: 60 * 60_000, max: 3 })
 
@@ -28,7 +28,7 @@ const ACTIVE_SERVICE_TYPES = [
   'Community Drug and Alcohol Service',
 ] as const
 
-// Current T&Cs version — bump this string whenever T&Cs are materially updated
+// Current T&Cs version: bump this string whenever T&Cs are materially updated
 // so the platform can identify which version each org accepted.
 const TERMS_VERSION = 'v1.0'
 
@@ -57,7 +57,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     return { success: false, error: tsResult.error }
   }
 
-  // ── Rate limit — per IP, to prevent mass trial provisioning ────────────────
+  // ── Rate limit: per IP, to prevent mass trial provisioning ────────────────
   const headersList = await headers()
   const ip =
     headersList.get('x-forwarded-for')?.split(',')[0].trim() ??
@@ -102,7 +102,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   if (cqcResult.status === 'not_found') {
     return {
       success: false,
-      error: 'We could not find this CQC Location ID on the CQC register. AlwaysReady is only available to CQC-registered providers — CQC regulates health and social care services in England only. If you believe this is an error, please check your Location ID and try again, or contact support@alwaysready.uk.',
+      error: 'We could not find this CQC Location ID on the CQC register. AlwaysReady is only available to CQC-registered providers. CQC regulates health and social care services in England only. If you believe this is an error, please check your Location ID and try again, or contact support@alwaysready.uk.',
     }
   }
   // status === 'unavailable' → CQC API is temporarily down; allow signup to
@@ -164,7 +164,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     return { success: false, error: 'Could not create your account. Please try again.' }
   }
 
-  // ── 3. Create auth user (no password — set via email link) ───────────────────
+  // ── 3. Create auth user (no password, set via email link) ───────────────────
   const { data: authData, error: authError } = await supabase.auth.admin.createUser({
     email:         managerEmail.trim(),
     email_confirm: true,
@@ -206,7 +206,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
 
   // ── 5. Enrich org with CQC data ─────────────────────────────────────────────
   // cqcResult was fetched in step 0. If it came back as 'found', persist the
-  // data now. If 'unavailable', skip — the dashboard stale-refresh will pick
+  // data now. If 'unavailable', skip: the dashboard stale-refresh will pick
   // it up on first login.
   if (cqcResult.status === 'found') {
     try {
@@ -227,11 +227,11 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // ── 7. Seed compliance_records (one per KLO item) ────────────────────────────
   const { data: klos } = await supabase.from('klo_items').select('id')
   if (!klos || klos.length === 0) {
-    // klo_items is empty — this is an infrastructure problem, not a transient error.
+    // klo_items is empty: this is an infrastructure problem, not a transient error.
     // Roll back and fail hard; the dashboard self-heal cannot fix a missing reference table.
     await supabase.auth.admin.deleteUser(authUserId)
     await supabase.from('organisations').delete().eq('id', org.id)
-    console.error('[trial-signup] klo_items table is empty — cannot seed compliance records')
+    console.error('[trial-signup] klo_items table is empty, cannot seed compliance records')
     return { success: false, error: 'Could not set up your account. Please try again.' }
   }
 
@@ -239,7 +239,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     klos.map(klo => ({ organisation_id: org.id, klo_item_id: klo.id }))
   )
   if (crError) {
-    // Transient insert error — log and continue. The dashboard layout will self-heal
+    // Transient insert error: log and continue. The dashboard layout will self-heal
     // by re-seeding on the user's first login via lib/seed-compliance.ts.
     console.error('[trial-signup] compliance_records seed error (will self-heal on login):', crError.message)
   }
@@ -262,7 +262,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // ── 9. Notify AJ of new trial signup ────────────────────────────────────────
   // cqcResult (fetched in step 0) tells us whether this org's Location ID was
   // actually confirmed against the CQC register or just accepted on trust
-  // because CQC's API was unavailable at the time (see step 0's comment — a
+  // because CQC's API was unavailable at the time (see step 0's comment: a
   // CQC outage must never block a legitimate signup, but that means an
   // unverified ID needs a human to check it, not silence).
   const cqcUnverified = cqcResult.status === 'unavailable'
@@ -280,7 +280,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
         <p style="margin:0 0 18px;padding:12px 16px;background:#fffbeb;border:1px solid #fcd34d;border-radius:6px;font-size:14px;color:#92400e">
           <strong>CQC could not be reached to verify this Location ID at signup.</strong>
           The trial was allowed to proceed (a CQC outage must never block a legitimate
-          signup), but this ID hasn't been confirmed against the CQC register yet —
+          signup), but this ID hasn't been confirmed against the CQC register yet:
           worth a manual check.
         </p>
         ` : ''}
@@ -291,9 +291,9 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
           <tr><td style="padding:4px 16px 4px 0;color:#555">Service type</td><td style="padding:4px 0">${escapeHtml(serviceType)}</td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">CQC Location ID</td><td style="padding:4px 0">
             ${escapeHtml(cqcLocationId.trim())}
-            ${cqcUnverified ? ` — <a href="https://www.cqc.org.uk/location/${encodeURIComponent(cqcLocationId.trim())}" style="color:#014D4E">check on CQC's site</a>` : ''}
+            ${cqcUnverified ? ` : <a href="https://www.cqc.org.uk/location/${encodeURIComponent(cqcLocationId.trim())}" style="color:#014D4E">check on CQC's site</a>` : ''}
           </td></tr>
-          ${charityNumber ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Charity no.</td><td style="padding:4px 0"><strong style="color:#b45309">${escapeHtml(charityNumber)} — verify document before enabling discount</strong></td></tr>` : ''}
+          ${charityNumber ? `<tr><td style="padding:4px 16px 4px 0;color:#555">Charity no.</td><td style="padding:4px 0"><strong style="color:#b45309">${escapeHtml(charityNumber)}: verify document before enabling discount</strong></td></tr>` : ''}
           <tr><td style="padding:4px 16px 4px 0;color:#555">Trial expires</td><td style="padding:4px 0">${trialExpiresAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</td></tr>
         </table>
       `,
@@ -303,7 +303,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // ── 10. Send branded welcome email ────────────────────────────────────────────
   await sendEmail({
     to:      managerEmail.trim(),
-    subject: 'Your AlwaysReady trial is ready — set your password to get started',
+    subject: 'Your AlwaysReady trial is ready: set your password to get started',
     type:    'transactional',
     bodyHtml: `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${escapeHtml(firstName)},</p>

@@ -5,8 +5,8 @@
  * Verified via the Token header set when the subscription was created.
  *
  * Events handled:
- *   invitee.scheduled  — new booking or reschedule
- *   invitee.cancelled  — booking cancelled
+ *   invitee.scheduled  : new booking or reschedule
+ *   invitee.cancelled  : booking cancelled
  *
  * On invitee.scheduled:
  *   1. Upserts into zeeg_bookings (invitee_uuid is the unique key)
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient()
 
-    // Upsert — handles reschedules where invitee_uuid stays the same
+    // Upsert: handles reschedules where invitee_uuid stays the same
     const { error: upsertError } = await supabase
       .from('zeeg_bookings')
       .upsert(
@@ -95,14 +95,14 @@ export async function POST(req: NextRequest) {
     const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
     await sendEmail({
       to: ajEmail,
-      subject: `Demo booked — ${name ?? email}`,
+      subject: `Demo booked: ${name ?? email}`,
       type: 'transactional',
       bodyHtml: `
         <p>A demo has been booked via Zeeg.</p>
         <table style="border-collapse:collapse;font-size:14px;margin-top:12px;">
           <tr>
             <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Name</td>
-            <td style="padding:6px 0;">${name ? escapeHtml(name) : '—'}</td>
+            <td style="padding:6px 0;">${name ? escapeHtml(name) : '-'}</td>
           </tr>
           <tr>
             <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Email</td>

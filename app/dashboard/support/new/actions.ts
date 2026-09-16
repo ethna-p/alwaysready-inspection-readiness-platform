@@ -61,7 +61,7 @@ export async function submitTicket(
   const firstName = getFirstName(profileDetails?.full_name)
   await sendEmail({
     to:      profile.email,
-    subject: `We've received your support request — ${ticket.reference}`,
+    subject: `We've received your support request: ${ticket.reference}`,
     type:    'transactional',
     bodyHtml: `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
@@ -100,8 +100,8 @@ export async function submitTicket(
         <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A new support ticket has been submitted via the platform.</p>
         <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
           <tr><td style="padding:4px 16px 4px 0;color:#555">Reference</td><td style="padding:4px 0;font-family:monospace">${ticket.reference}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Organisation</td><td style="padding:4px 0">${escapeHtml(org?.name ?? '—')}</td></tr>
-          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${escapeHtml(profileDetails?.full_name ?? profile.email ?? '—')}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Organisation</td><td style="padding:4px 0">${escapeHtml(org?.name ?? '-')}</td></tr>
+          <tr><td style="padding:4px 16px 4px 0;color:#555">Submitted by</td><td style="padding:4px 0">${escapeHtml(profileDetails?.full_name ?? profile.email ?? '-')}</td></tr>
           <tr><td style="padding:4px 16px 4px 0;color:#555">Subject</td><td style="padding:4px 0"><strong>${escapeHtml(subject)}</strong></td></tr>
         </table>
         <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${escapeHtml(message)}</p>

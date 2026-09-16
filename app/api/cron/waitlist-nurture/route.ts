@@ -4,8 +4,8 @@
  * Daily cron (10:00 UTC) that sends the waitlist nurture sequence.
  *
  * Email schedule:
- *   Email 1 — sent immediately on signup (inbound-waitlist route)
- *   Emails 2–8 — sent weekly, one per week, by this cron
+ *   Email 1: sent immediately on signup (inbound-waitlist route)
+ *   Emails 2-8: sent weekly, one per week, by this cron
  *
  * Eligibility query:
  *   nurture_opt_in = true
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
   for (const lead of leads) {
     const nextEmailNum = lead.nurture_emails_sent + 1
 
-    // getWaitlistNurtureEmail() escapes firstName internally — don't escape here too.
+    // getWaitlistNurtureEmail() escapes firstName internally, don't escape here too.
     const emailContent = getWaitlistNurtureEmail(nextEmailNum, lead.first_name || 'there')
     if (!emailContent) {
       emailsSkipped++

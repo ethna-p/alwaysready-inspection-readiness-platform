@@ -9,7 +9,7 @@ import { PLATFORM_URL } from '@/lib/config'
 const FIRST_NAME   = 'Sarah'
 const ORG_NAME     = 'Sunrise Care Home'
 const STAFF_NAME   = 'James Mitchell'
-const KLOE_TITLE   = 'Safe — Safeguarding Systems, Processes and Practices'
+const KLOE_TITLE   = 'Safe: Safeguarding Systems, Processes and Practices'
 const EXPIRY_DATE  = '14 September 2025'
 const REF          = 'AR-0042'
 
@@ -102,9 +102,9 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
 async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
   const results: TestEmailResult[] = []
 
-  // Day 0 — password setup email (sent by Stripe webhook; not in TRIAL_EMAILS)
+  // Day 0: password setup email (sent by Stripe webhook; not in TRIAL_EMAILS)
   results.push(await send(
-    "[Day 0] Your AlwaysReady trial is ready — set your password to get started",
+    "[Day 0] Your AlwaysReady trial is ready: set your password to get started",
     `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -131,7 +131,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
     `,
   ))
 
-  // Trial sequence (days 1–13) and user team emails — from lib/trial-emails.ts
+  // Trial sequence (days 1-13) and user team emails: from lib/trial-emails.ts
   for (const email of TRIAL_EMAILS) {
     results.push(await send(
       email.subject,
@@ -149,7 +149,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
 async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
   const results: TestEmailResult[] = []
 
-  // Onboarding sequence (18 emails) — from lib/onboarding-emails.ts
+  // Onboarding sequence (18 emails): from lib/onboarding-emails.ts
   for (const email of ONBOARDING_EMAILS) {
     results.push(await send(email.subject, buildHtml(email.body(FIRST_NAME)), 'marketing'))
     // Avoid Resend rate limits when sending many emails in quick succession during testing
@@ -161,7 +161,7 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
 
 async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
   return Promise.all([
-    send(`We've received your support request — ${REF}`, `
+    send(`We've received your support request: ${REF}`, `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch. We've received your support request and will get back to you as soon as possible.
@@ -207,7 +207,7 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
 
 async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
   return Promise.all([
-    send(`You've been assigned a KLOE — ${KLOE_TITLE}`, `
+    send(`You've been assigned a KLOE: ${KLOE_TITLE}`, `
       <p style="margin:0 0 16px">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px">You've been assigned a KLOE that needs your attention:</p>
       <p style="margin:0 0 24px;padding:16px 20px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px;font-weight:600;color:#014D4E">
@@ -221,7 +221,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send(`KLOE review due in 7 days — ${KLOE_TITLE}`, `
+    send(`KLOE review due in 7 days: ${KLOE_TITLE}`, `
       <p style="margin:0 0 16px">Hi,</p>
       <p style="margin:0 0 16px">This is a reminder that your KLOE review is due in <strong>7 days</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
@@ -239,7 +239,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send(`Overdue KLOE review — ${KLOE_TITLE}`, `
+    send(`Overdue KLOE review: ${KLOE_TITLE}`, `
       <p style="margin:0 0 16px">Hi,</p>
       <p style="margin:0 0 16px">A KLOE review is now <strong style="color:#dc2626">overdue</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
@@ -266,7 +266,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
 
 async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
   return Promise.all([
-    send(`${STAFF_NAME} — DBS Check due in 30 days`, `
+    send(`${STAFF_NAME}: DBS Check due in 30 days`, `
       <p style="margin:0 0 16px">Hi,</p>
       <p style="margin:0 0 16px"><strong>${STAFF_NAME}</strong>'s <strong>DBS Check</strong> is due in <strong>30 days</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
@@ -274,7 +274,7 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
           <td style="padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px">
             <p style="margin:0 0 4px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em">Staff member</p>
             <p style="margin:0;font-weight:600;color:#1a1a1a">${STAFF_NAME}</p>
-            <p style="margin:4px 0 0;font-size:13px;color:#4b5563">DBS Check — due 14 September 2025</p>
+            <p style="margin:4px 0 0;font-size:13px;color:#4b5563">DBS Check: due 14 September 2025</p>
           </td>
         </tr>
       </table>
@@ -284,7 +284,7 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send(`${STAFF_NAME} — DBS Check is overdue`, `
+    send(`${STAFF_NAME}: DBS Check is overdue`, `
       <p style="margin:0 0 16px">Hi,</p>
       <p style="margin:0 0 16px">An HR review is now <strong style="color:#dc2626">overdue</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
@@ -292,7 +292,7 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
           <td style="padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px">
             <p style="margin:0 0 4px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em">Staff member</p>
             <p style="margin:0;font-weight:600;color:#1a1a1a">${STAFF_NAME}</p>
-            <p style="margin:4px 0 0;font-size:13px;color:#dc2626">DBS Check — was due 1 August 2025</p>
+            <p style="margin:4px 0 0;font-size:13px;color:#dc2626">DBS Check: was due 1 August 2025</p>
           </td>
         </tr>
       </table>
@@ -342,9 +342,9 @@ async function sendWaitlistLaunch(send: Awaited<ReturnType<typeof makeSender>>) 
 
 async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
   // Note: password reset and password-changed emails are managed as Supabase Auth
-  // templates in the Supabase dashboard — they are not sent by platform code.
+  // templates in the Supabase dashboard; they are not sent by platform code.
   return Promise.all([
-    send('Welcome to AlwaysReady — your login details', `
+    send('Welcome to AlwaysReady: your login details', `
       <p style="margin:0 0 16px">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px">
         Welcome to AlwaysReady. Your account for <strong>${ORG_NAME}</strong> is ready.
@@ -366,9 +366,9 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
         AlwaysReady holds your service's compliance records, evidence documents, and staff data.
         This is sensitive information, and we take the security of your account seriously.<br><br>
         Before you do anything else, please complete these two steps:<br><br>
-        1. <strong>Change your password</strong> — replace the temporary password above with one
+        1. <strong>Change your password</strong>: replace the temporary password above with one
         that is unique to you. Go to <strong>Account &rarr; Security &rarr; Change password</strong>.<br>
-        2. <strong>Set up two-factor authentication (MFA)</strong> — the platform will prompt you
+        2. <strong>Set up two-factor authentication (MFA)</strong>: the platform will prompt you
         to do this automatically when you first log in. MFA means that even if your password were
         ever compromised, your account cannot be accessed without a second verification step on
         your phone or authenticator app.
@@ -385,9 +385,9 @@ async function sendDataDeletion(
   const deletionDate = '23 September 2026'
   return Promise.all([
 
-    // 1. Request received — identity verification (user-initiated)
+    // 1. Request received: identity verification (user-initiated)
     send(
-      'We have received your data deletion request — AlwaysReady',
+      'We have received your data deletion request: AlwaysReady',
       `
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -425,14 +425,14 @@ async function sendDataDeletion(
       `,
     ),
 
-    // 2. 3-day warning (automated — scheduled account deletion)
+    // 2. 3-day warning (automated, scheduled account deletion)
     send(
       'Reminder: your AlwaysReady data will be deleted in 3 days',
       `
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           This is a reminder that the data for <strong>${ORG_NAME}</strong> on AlwaysReady
-          will be permanently deleted on <strong>${deletionDate}</strong> — in 3 days.
+          will be permanently deleted on <strong>${deletionDate}</strong>, in 3 days.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           You can download your data now by logging in and using the download buttons on the Account page.
@@ -486,9 +486,9 @@ async function sendSubjectAccessRequest(
 
   return Promise.all([
 
-    // 1. Acknowledgement — identity verification required
+    // 1. Acknowledgement: identity verification required
     send(
-      'We have received your subject access request — AlwaysReady',
+      'We have received your subject access request: AlwaysReady',
       `
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -523,9 +523,9 @@ async function sendSubjectAccessRequest(
       `,
     ),
 
-    // 2. SAR fulfilled — data pack provided
+    // 2. SAR fulfilled: data pack provided
     send(
-      'Your AlwaysReady data — subject access request fulfilled',
+      'Your AlwaysReady data: subject access request fulfilled',
       `
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -568,9 +568,9 @@ async function sendSubjectAccessRequest(
       `,
     ),
 
-    // 3. SAR declined — unable to verify identity
+    // 3. SAR declined: unable to verify identity
     send(
-      'Your subject access request — AlwaysReady',
+      'Your subject access request: AlwaysReady',
       `
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">

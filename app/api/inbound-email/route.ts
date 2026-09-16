@@ -33,7 +33,7 @@ import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 
-// 10 inbound emails per sender per hour — generous for a support inbox,
+// 10 inbound emails per sender per hour: generous for a support inbox,
 // but prevents a single address flooding ticket creation and AI draft calls.
 const inboundLimiter = createRateLimiter({ name: 'inbound-email', windowMs: 60 * 60_000, max: 10 })
 
@@ -167,14 +167,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing from address' }, { status: 400 })
   }
 
-  // Rate limit per sender — prevents a single address flooding ticket creation
+  // Rate limit per sender: prevents a single address flooding ticket creation
   // and triggering unbounded AI draft calls.
   if (!(await inboundLimiter.check(`inbound-email:${from.toLowerCase()}`))) {
     console.warn(`[inbound-email] Rate limit hit for sender: ${from}`)
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
-  // Drop automated/transactional emails silently — no ticket, no auto-reply
+  // Drop automated/transactional emails silently: no ticket, no auto-reply
   if (isAutomatedSender(from)) {
     console.log(`[inbound-email] Dropped automated sender: ${from}`)
     return NextResponse.json({ action: 'ignored', reason: 'automated sender' }, { status: 200 })
@@ -197,14 +197,14 @@ export async function POST(req: NextRequest) {
       // Without this check, anyone who knows (or guesses) a ticket reference
       // can inject replies, reopen resolved tickets, and corrupt the AI draft.
       // If external_email is set (email-sourced tickets), it must match `from`.
-      // Web-form tickets may have no external_email — we allow those through
+      // Web-form tickets may have no external_email; we allow those through
       // since there's no address to compare against.
       const ticketEmail = (ticket.external_email as string | null)?.toLowerCase()
       const senderMismatch = !!(ticketEmail && ticketEmail !== from.toLowerCase())
 
       if (senderMismatch) {
         console.warn(
-          `[inbound-email] Sender ${from} does not match ticket ${reference} (${ticketEmail}) — threading with warning`
+          `[inbound-email] Sender ${from} does not match ticket ${reference} (${ticketEmail}), threading with warning`
         )
       }
 
@@ -218,11 +218,11 @@ export async function POST(req: NextRequest) {
 
       // If sender email didn't match, prepend a visible warning so AJ can
       // see the discrepancy inline and make a judgement call. We still thread
-      // the reply — the ticket reference in the subject is proof the sender
+      // the reply: the ticket reference in the subject is proof the sender
       // received the original email, and blocking mismatches silently caused
       // identity verification replies to disappear from the support desk.
       const messageBody = senderMismatch
-        ? `[Note: reply from ${from} — original ticket email was ${ticketEmail ?? 'not set'}]\n\n${cleanBody}`
+        ? `[Note: reply from ${from}, original ticket email was ${ticketEmail ?? 'not set'}]\n\n${cleanBody}`
         : cleanBody
 
       // Append reply
@@ -250,7 +250,7 @@ export async function POST(req: NextRequest) {
             <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a">A customer has replied to an existing support ticket.</p>
             ${mismatchNote}
             <table style="border-collapse:collapse;font-size:14px;color:#1a1a1a">
-              <tr><td style="padding:4px 16px 4px 0;color:#555">Ticket</td><td style="padding:4px 0"><strong>${escapeHtml(reference)}</strong> — ${escapeHtml(ticket.subject)}</td></tr>
+              <tr><td style="padding:4px 16px 4px 0;color:#555">Ticket</td><td style="padding:4px 0"><strong>${escapeHtml(reference)}</strong>: ${escapeHtml(ticket.subject)}</td></tr>
               <tr><td style="padding:4px 16px 4px 0;color:#555">From</td><td style="padding:4px 0">${escapeHtml(senderDisplay)}</td></tr>
             </table>
             <p style="margin:16px 0 0;font-size:14px;color:#555;white-space:pre-wrap">${escapeHtml(cleanBody.slice(0, 500))}${cleanBody.length > 500 ? '…' : ''}</p>
@@ -260,7 +260,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ action: 'threaded', ticketId: ticket.id }, { status: 200 })
     }
-    // Reference not found or sender mismatch — fall through to create new ticket
+    // Reference not found or sender mismatch: fall through to create new ticket
   }
 
   // ── Route: create new ticket ──────────────────────────────────────────────

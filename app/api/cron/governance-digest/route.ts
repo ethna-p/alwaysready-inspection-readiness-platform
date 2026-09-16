@@ -6,9 +6,9 @@
  * reminders:
  *
  *   • Overall readiness % (compliant KLOEs vs total)
- *   • Overdue KLOEs with no assignee — the existing nightly cron only
+ *   • Overdue KLOEs with no assignee: the existing nightly cron only
  *     emails assigned users, so unassigned overdue KLOEs get no nudge.
- *   • KLOEs never started (grey — no review date ever set)
+ *   • KLOEs never started (grey, no review date ever set)
  *   • Open/under-review incidents
  *   • Overdue action items (no existing reminder covers these)
  *
@@ -71,7 +71,7 @@ function digestHtml({
           ${ragBadgeHtml('Overdue', '#dc2626')}
         </td>
         <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb">
-          <strong>${overdueUnassigned}</strong> overdue KLOE${overdueUnassigned !== 1 ? 's' : ''} with no assignee —
+          <strong>${overdueUnassigned}</strong> overdue KLOE${overdueUnassigned !== 1 ? 's' : ''} with no assignee:
           nobody is receiving individual reminders for these.
         </td>
         <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;white-space:nowrap">
@@ -119,7 +119,7 @@ function digestHtml({
   return `
     <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
-      Here is your weekly governance summary for <strong>${orgName}</strong> — ${reportDate}.
+      Here is your weekly governance summary for <strong>${orgName}</strong>: ${reportDate}.
     </p>
 
     <!-- Readiness score -->
@@ -185,7 +185,7 @@ export async function GET(request: Request) {
   }
 
   for (const org of orgs) {
-    // Check idempotency — one digest per org per week (keyed on Monday's date)
+    // Check idempotency: one digest per org per week (keyed on Monday's date)
 
     const { data: alreadySent } = await supabase
       .from('notification_log')
@@ -268,7 +268,7 @@ export async function GET(request: Request) {
     for (const adminEmail of adminEmails) {
       const result = await sendEmail({
         to:       adminEmail,
-        subject:  `Weekly governance digest — ${org.name} (${readinessPct}% ready)`,
+        subject:  `Weekly governance digest: ${org.name} (${readinessPct}% ready)`,
         bodyHtml: digestHtml({
           orgName:           org.name,
           readinessPct,

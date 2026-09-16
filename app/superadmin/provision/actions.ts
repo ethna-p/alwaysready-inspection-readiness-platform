@@ -110,7 +110,7 @@ export async function provisionOrganisation(
       .order('title')
 
     if (kloError || !klos || klos.length === 0) {
-      // Non-fatal — records can be created later, but log it
+      // Non-fatal: records can be created later, but log it
       console.error('Could not fetch KLO items for compliance record seeding:', kloError?.message)
     } else {
       const records = klos.map(klo => ({
@@ -125,7 +125,7 @@ export async function provisionOrganisation(
 
       if (crError) {
         console.error('Compliance record seeding failed:', crError.message)
-        // Non-fatal — don't roll back, the org and user are usable
+        // Non-fatal: don't roll back, the org and user are usable
       }
     }
 
@@ -139,14 +139,14 @@ export async function provisionOrganisation(
 
     await sendEmail({
       to: adminEmail,
-      subject: 'Welcome to AlwaysReady — your login details',
+      subject: 'Welcome to AlwaysReady: your login details',
       type: 'transactional',
       bodyHtml: `
         <p style="margin:0 0 16px">Hi ${adminName},</p>
 
         <p style="margin:0 0 16px">
           Welcome to AlwaysReady. Your account for
-          <strong>${orgName}</strong> is ready — you can log in right now.
+          <strong>${orgName}</strong> is ready. You can log in right now.
         </p>
 
         <table role="presentation" cellspacing="0" cellpadding="0" border="0"
@@ -167,9 +167,9 @@ export async function provisionOrganisation(
           AlwaysReady holds your service's compliance records, evidence documents, and staff data.
           This is sensitive information, and we take the security of your account seriously.<br><br>
           Before you do anything else, please complete these two steps:<br><br>
-          1. <strong>Change your password</strong> — replace the temporary password above with one
+          1. <strong>Change your password</strong>: replace the temporary password above with one
           that is unique to you. Go to <strong>Account → Security → Change password</strong>.<br>
-          2. <strong>Set up two-factor authentication (MFA)</strong> — the platform will prompt you
+          2. <strong>Set up two-factor authentication (MFA)</strong>: the platform will prompt you
           to do this automatically when you first log in. MFA means that even if your password were
           ever compromised, your account cannot be accessed without a second verification step on
           your phone or authenticator app.
@@ -178,7 +178,7 @@ export async function provisionOrganisation(
         ${isCharity ? `
         <p style="margin:0 0 16px;background:#f0fdf4;border-left:4px solid #16a34a;padding:12px 16px;border-radius:4px;font-size:14px">
           <strong>Your 20% charity discount is already applied to your account.</strong>
-          When you subscribe, you will be taken to a page showing the standard price —
+          When you subscribe, you will be taken to a page showing the standard price;
           your discount will be applied automatically during the checkout process before
           any payment is taken.
         </p>
@@ -213,7 +213,7 @@ export async function provisionOrganisation(
 
     await sendEmail({
       to: process.env.SUPERADMIN_EMAIL ?? 'support@alwaysready.uk',
-      subject: `[AlwaysReady] New org provisioned — ${orgName}`,
+      subject: `[AlwaysReady] New org provisioned: ${orgName}`,
       type: 'transactional',
       bodyHtml: `
         <p style="margin:0 0 16px">A new organisation has been provisioned via the superadmin panel.</p>
@@ -241,7 +241,7 @@ export async function provisionOrganisation(
         </p>
       `,
     }).catch(err => {
-      // Non-fatal — provisioning succeeded; just log the notification failure
+      // Non-fatal: provisioning succeeded; just log the notification failure
       console.error('[provision] Superadmin notification email failed:', err)
     })
 

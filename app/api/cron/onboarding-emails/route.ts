@@ -11,7 +11,7 @@
  *   - Deduplication via notification_log (prevents re-sends on retries)
  *
  * Week thresholds:
- *   week_01 → days_elapsed >= 1   (day after subscribing — welcome email)
+ *   week_01 → days_elapsed >= 1   (day after subscribing: welcome email)
  *   week_02 → days_elapsed >= 7
  *   week_03 → days_elapsed >= 14
  *   week_04 → days_elapsed >= 21
@@ -27,10 +27,10 @@
  * Monthly check-ins (post-sequence):
  *   week_16 → days_elapsed >= 112  (~4 months)
  *   week_20 → days_elapsed >= 140  (~5 months)
- *   week_25 → days_elapsed >= 175  (~6 months — six-month check-in)
+ *   week_25 → days_elapsed >= 175  (~6 months, six-month check-in)
  *   week_30 → days_elapsed >= 210  (~7 months)
  *   week_38 → days_elapsed >= 266  (~9 months)
- *   week_52 → days_elapsed >= 365  (~12 months — annual)
+ *   week_52 → days_elapsed >= 365  (~12 months, annual)
  *
  * Email definitions live in lib/onboarding-emails.ts.
  *
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
 
     const sentWeekIds = new Set((existingLogs ?? []).map((r: { entity_id: string }) => r.entity_id))
 
-    // Fetch admins for this org — exclude anyone who has opted out of marketing emails
+    // Fetch admins for this org: exclude anyone who has opted out of marketing emails
     const { data: admins } = await supabase
       .from('users')
       .select('id, email, full_name, marketing_opt_out')
@@ -117,7 +117,7 @@ export async function GET(req: NextRequest) {
         })
 
         if (result.sent) {
-          // Log it — deduplication anchor is subscribed_at date
+          // Log it: deduplication anchor is subscribed_at date
           await supabase
             .from('notification_log')
             .upsert(

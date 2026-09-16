@@ -18,7 +18,7 @@ import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 
 
-// 10 requests per IP per hour — generous for a signup form
+// 10 requests per IP per hour: generous for a signup form
 const limiter = createRateLimiter({ name: 'inbound-blog-signup', windowMs: 60 * 60_000, max: 10 })
 
 export async function POST(req: NextRequest) {
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
   // ── Guard: do not re-subscribe a previously unsubscribed email ────────────
   // If the email exists with unsubscribed_at set, someone has opted out.
   // Clearing that via the public form would reverse consent without the
-  // subscriber's knowledge. Return 200 silently — no DB write, no email.
+  // subscriber's knowledge. Return 200 silently: no DB write, no email.
   const { data: existing } = await supabase
     .from('blog_subscribers')
     .select('unsubscribed_at')
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
 
   if (dbError) {
     console.error('[inbound-blog-signup] Supabase error:', dbError.message)
-    // Still return 200 to prevent retries — log and move on
+    // Still return 200 to prevent retries: log and move on
   }
 
   // ── Send welcome email to subscriber ─────────────────────────────────────

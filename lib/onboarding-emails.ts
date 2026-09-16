@@ -17,7 +17,7 @@ export interface OnboardingEmail {
 }
 
 // ── Email body wrapper ────────────────────────────────────────────────────────
-// Returns the inner body only — no header, no footer, no unsubscribe link.
+// Returns the inner body only: no header, no footer, no unsubscribe link.
 // sendEmail() in lib/email.ts wraps this in the full branded template and
 // appends the unsubscribe footer automatically for type: 'marketing'.
 
@@ -39,14 +39,14 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
   {
     weekId:    'week_01',
     threshold: 1,
-    subject:   'Welcome to AlwaysReady — we\'re delighted to have you on board ⭐',
+    subject:   'Welcome to AlwaysReady: we\'re delighted to have you on board ⭐',
     body: (firstName) => `
       <p>Hi ${firstName},</p>
-      <p>Welcome to AlwaysReady — we're delighted to have you on board ⭐</p>
+      <p>Welcome to AlwaysReady: we're delighted to have you on board ⭐</p>
       <p>This week, we encourage you to begin building your evidence base straight away. A great first step
       is to identify the KLOEs you feel least confident with. Choose one KLOE to focus on and outline your
       next steps. You can add notes, upload documents, and start recording your actions as you go.</p>
-      <p>This early activity matters — it shows CQC that you've recognised an area for improvement and
+      <p>This early activity matters: it shows CQC that you've recognised an area for improvement and
       taken clear steps to address it.</p>
       <p>We also publish regular articles on CQC compliance, inspection preparation, and care sector best practice
       on our blog at <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
@@ -68,7 +68,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       emergency contact details. This keeps HR records current without creating additional admin for you.</p>
       <p>As your team takes ownership of their KLOEs, they build familiarity with compliance expectations and
       become more confident discussing the work they do. That confidence matters whenever an inspector arrives.</p>
-      <p>If you have any questions, hit reply — we read everything.</p>
+      <p>If you have any questions, hit reply. We read everything.</p>
     `,
   },
   {
@@ -91,8 +91,8 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       than concrete, dated examples. Be as specific as you can when adding notes or uploading documents.</p>
       <p><strong>Update little and often</strong><br>
       Small, regular updates keep you inspection-ready all year round. You do not need to set aside large blocks
-      of time — even five minutes a day makes a real difference over weeks and months.</p>
-      <p>We're here whenever you need us — just reply to this email or use the <strong>Support</strong> tab.</p>
+      of time. Even five minutes a day makes a real difference over weeks and months.</p>
+      <p>We're here whenever you need us: just reply to this email or use the <strong>Support</strong> tab.</p>
     `,
   },
   {
@@ -121,7 +121,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       Whenever you upload evidence, include a short note explaining what happened, when it happened, and what the
       outcome was. This helps inspectors follow the journey from issue to action to improvement. It also shows that
       your governance processes are active, not passive.</p>
-      <p>What area of evidence feels hardest to keep up with? Reply and let us know — it helps us understand what
+      <p>What area of evidence feels hardest to keep up with? Reply and let us know: it helps us understand what
       to focus on and what to build next.</p>
     `,
   },
@@ -202,7 +202,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p><strong>Easy to set up</strong><br>
       To create a visitor login, go to the <strong>Team</strong> section in the main navigation. Set the access
       period, send the login, and revoke it whenever you choose.</p>
-      <p>The <strong>Support</strong> tab is there if you need a hand — or just reply to this email.</p>
+      <p>The <strong>Support</strong> tab is there if you need a hand, or just reply to this email.</p>
     `,
   },
   {
@@ -239,7 +239,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>Hi ${firstName},</p>
       <p>This week we are focusing on your HR module ⭐</p>
       <p><strong>Keep essential staff records organised</strong><br>
-      The HR module stores all key workforce documents in one place — DBS checks, right-to-work evidence,
+      The HR module stores all key workforce documents in one place: DBS checks, right-to-work evidence,
       training records, supervision and appraisal history, and employment status. Centralising these records
       makes it easier to monitor compliance and respond quickly to inspectors or commissioners.</p>
       <p><strong>Check every record is complete</strong><br>
@@ -268,7 +268,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       <p>Hi ${firstName},</p>
       <p>This week, something a little different ⭐</p>
       <p>Most registered managers we speak to are aiming for Good. A smaller number are aiming for Outstanding.
-      The gap between the two is real — but it is not as wide as it might seem.</p>
+      The gap between the two is real, but it is not as wide as it might seem.</p>
       <p><strong>Outstanding is not about perfection</strong><br>
       CQC does not expect Outstanding services to be without challenges. What they look for is how a service
       responds to challenges. Outstanding services identify problems early, act on them quickly, and record what
@@ -280,7 +280,7 @@ export const ONBOARDING_EMAILS: OnboardingEmail[] = [
       deliberately on making a positive difference to outcomes. None of these are policy changes. They are
       ways of working.</p>
       <p><strong>People who use services can feel the difference</strong><br>
-      In the research, people who used Outstanding services described feeling genuinely known by staff — not
+      In the research, people who used Outstanding services described feeling genuinely known by staff, not
       as a set of needs, but as a whole person. They said they had real influence over decisions. That level
       of experience does not happen by accident. It is the result of leadership that takes person-centred care
       seriously at every level.</p>

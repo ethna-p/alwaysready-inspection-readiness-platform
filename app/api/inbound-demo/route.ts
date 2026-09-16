@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 
   if (insertError) {
     console.error('[inbound-demo] insert error:', insertError.message)
-    // Don't block the user — still redirect them to Zeeg
+    // Don't block the user; still redirect them to Zeeg
   }
 
   // ── Notify AJ ─────────────────────────────────────────────────────────────
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
   const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
   await sendEmail({
     to: ajEmail,
-    subject: `New demo booking — ${escapeHtml(serviceType)}`,
+    subject: `New demo booking: ${escapeHtml(serviceType)}`,
     type: 'transactional',
     bodyHtml: `
       <p>Someone just booked a demo via alwaysready.uk/demo.</p>

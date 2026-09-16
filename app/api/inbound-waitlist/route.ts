@@ -14,7 +14,7 @@
  * }
  *
  * On receipt:
- *   1. Saves the lead to waitlist_leads (upsert — no duplicates)
+ *   1. Saves the lead to waitlist_leads (upsert, no duplicates)
  *   2. If marketing opt-in, also adds to blog_subscribers
  *   3. Sends auto-responder email (skipped if already on the waitlist)
  */
@@ -29,7 +29,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
 
 
-// 10 requests per IP per hour — generous for a waitlist signup
+// 10 requests per IP per hour: generous for a waitlist signup
 const limiter = createRateLimiter({ name: 'inbound-waitlist', windowMs: 60 * 60_000, max: 10 })
 
 const CORS_HEADERS = {
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: Record<string, any> = payload.data ?? {}
 
-  // Field names — check top-level JSON fields, data sub-object,
+  // Field names: check top-level JSON fields, data sub-object,
   // and direct URL-encoded keys (all dash/underscore/camel variants)
   const firstName =
     (payload.first_name  as string | undefined)?.trim() ||
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
     ''
 
   if (!email) {
-    console.error('[inbound-waitlist] missing email — full payload:', JSON.stringify(payload))
+    console.error('[inbound-waitlist] missing email, full payload:', JSON.stringify(payload))
     return NextResponse.json({ error: 'Missing email' }, { status: 400, headers: CORS_HEADERS })
   }
 
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
       cqcLocationName = cqcResult.data.locationName ?? null
       cqcRating       = cqcResult.data.overallRating ?? null
     }
-    // 'unavailable' — CQC API is down, soft-pass and continue
+    // 'unavailable': CQC API is down, soft-pass and continue
   }
 
   const displayName = firstName || 'there'
@@ -216,7 +216,7 @@ export async function POST(req: NextRequest) {
   if (isNew) {
     if (nurtureOptIn) {
       // Send nurture Email 1 and record that it has been sent
-      // getWaitlistNurtureEmail() escapes firstName internally — don't escape here too.
+      // getWaitlistNurtureEmail() escapes firstName internally, don't escape here too.
       const email1 = getWaitlistNurtureEmail(1, displayName)
       if (email1) {
         await sendEmail({
@@ -243,7 +243,7 @@ export async function POST(req: NextRequest) {
         subscriberEmail: email,
         bodyHtml: `
           <p>Hi ${escapeHtml(displayName)},</p>
-          <p>Thank you for joining the AlwaysReady waitlist — you're in good company.</p>
+          <p>Thank you for joining the AlwaysReady waitlist. You're in good company.</p>
           <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
              and we'll open to new customers as soon as the framework is published.
              When that happens, you'll be the first to know.</p>
@@ -265,7 +265,7 @@ export async function POST(req: NextRequest) {
       bodyHtml: `
         <p>Hi ${escapeHtml(displayName)},</p>
         <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
-           sector updates, and inspection-readiness guidance — straight to your inbox.</p>
+           sector updates, and inspection-readiness guidance, straight to your inbox.</p>
         <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
       `,
     })

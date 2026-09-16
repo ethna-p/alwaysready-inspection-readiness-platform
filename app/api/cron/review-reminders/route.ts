@@ -4,10 +4,10 @@
  * Nightly cron (08:00 UTC daily) that scans all active organisations and
  * sends review-reminder emails for:
  *
- *   KLOEs       — to the assigned user when their KLOE is due in 1–7 days
+ *   KLOEs       : to the assigned user when their KLOE is due in 1-7 days
  *                 or has gone overdue (one email per event per due-date cycle)
  *
- *   HR fields   — DBS, supervision, appraisal, and training records —
+ *   HR fields   : DBS, supervision, appraisal, and training records,
  *                 to all admins of the org (one email per event per due-date cycle)
  *
  * Protected by CRON_SECRET (Vercel sends this automatically for registered crons).
@@ -108,7 +108,7 @@ function kloeOverdueHtml(kloeTitle: string, dueDate: string): string {
 
 function hrDueSoonHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: string, daysLeft: number): string {
   // staffName is a team member's name and fieldLabel can be an
-  // admin-defined training type name — both user-supplied, shown to a
+  // admin-defined training type name, both user-supplied, shown to a
   // different person (the recipient admin), not self-directed like most
   // other email templates in this codebase.
   const staffName  = escapeHtml(staffNameRaw)
@@ -123,7 +123,7 @@ function hrDueSoonHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: str
         <td style="padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px">
           <p style="margin:0 0 4px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em">Staff member</p>
           <p style="margin:0;font-weight:600;color:#1a1a1a">${staffName}</p>
-          <p style="margin:4px 0 0;font-size:13px;color:#4b5563">${fieldLabel} — due ${formatDate(dueDate)}</p>
+          <p style="margin:4px 0 0;font-size:13px;color:#4b5563">${fieldLabel}: due ${formatDate(dueDate)}</p>
         </td>
       </tr>
     </table>
@@ -151,7 +151,7 @@ function hrOverdueHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: str
         <td style="padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px">
           <p style="margin:0 0 4px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em">Staff member</p>
           <p style="margin:0;font-weight:600;color:#1a1a1a">${staffName}</p>
-          <p style="margin:4px 0 0;font-size:13px;color:#dc2626">${fieldLabel} — was due ${formatDate(dueDate)}</p>
+          <p style="margin:4px 0 0;font-size:13px;color:#dc2626">${fieldLabel}: was due ${formatDate(dueDate)}</p>
         </td>
       </tr>
     </table>
@@ -305,7 +305,7 @@ export async function GET(request: Request) {
 
           const result = await sendEmail({
             to:       recipientEmail,
-            subject:  `KLOE review due in ${days} day${days === 1 ? '' : 's'} — ${kloeTitle}`,
+            subject:  `KLOE review due in ${days} day${days === 1 ? '' : 's'}: ${kloeTitle}`,
             bodyHtml: kloeDueSoonHtml(kloeTitle, record.next_review_due, days),
             type:     'transactional',
           })
@@ -324,7 +324,7 @@ export async function GET(request: Request) {
 
           const result = await sendEmail({
             to:       recipientEmail,
-            subject:  `Overdue KLOE review — ${kloeTitle}`,
+            subject:  `Overdue KLOE review: ${kloeTitle}`,
             bodyHtml: kloeOverdueHtml(kloeTitle, record.next_review_due),
             type:     'transactional',
           })
@@ -390,7 +390,7 @@ export async function GET(request: Request) {
 
             const result = await sendEmail({
               to:       adminEmail,
-              subject:  `${staffName} — ${field.label} due in ${days} day${days === 1 ? '' : 's'}`,
+              subject:  `${staffName}: ${field.label} due in ${days} day${days === 1 ? '' : 's'}`,
               bodyHtml: hrDueSoonHtml(staffName, field.label, field.dueDate, days),
               type:     'transactional',
             })
@@ -408,7 +408,7 @@ export async function GET(request: Request) {
 
             const result = await sendEmail({
               to:       adminEmail,
-              subject:  `${staffName} — ${field.label} is overdue`,
+              subject:  `${staffName}: ${field.label} is overdue`,
               bodyHtml: hrOverdueHtml(staffName, field.label, field.dueDate),
               type:     'transactional',
             })
@@ -470,7 +470,7 @@ export async function GET(request: Request) {
 
           const result = await sendEmail({
             to:       adminEmail,
-            subject:  `${staffName} — ${label} due in ${days} day${days === 1 ? '' : 's'}`,
+            subject:  `${staffName}: ${label} due in ${days} day${days === 1 ? '' : 's'}`,
             bodyHtml: hrDueSoonHtml(staffName, label, rec.next_due, days),
             type:     'transactional',
           })
@@ -488,7 +488,7 @@ export async function GET(request: Request) {
 
           const result = await sendEmail({
             to:       adminEmail,
-            subject:  `${staffName} — ${label} is overdue`,
+            subject:  `${staffName}: ${label} is overdue`,
             bodyHtml: hrOverdueHtml(staffName, label, rec.next_due),
             type:     'transactional',
           })

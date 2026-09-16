@@ -13,7 +13,7 @@ export interface BroadcastResult {
 
 /**
  * Returns the total number of eligible broadcast recipients.
- * Broadcasts are blog post notifications — audience is blog subscribers only.
+ * Broadcasts are blog post notifications: audience is blog subscribers only.
  * Platform users are excluded: their marketing consent covers platform
  * communications, not a separate blog newsletter (UK GDPR purpose limitation).
  */

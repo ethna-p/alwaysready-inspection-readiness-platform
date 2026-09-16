@@ -5,18 +5,18 @@
  * to every active trial organisation.
  *
  * Email schedule (keyed by days elapsed since trial start):
- *   Day  1 — Welcome to AlwaysReady
- *   Day  3 — Three things worth exploring
- *   Day  5 — How are you getting on?
- *   Day  7 — Halfway through your trial
- *   Day  9 — A few things you might not have tried yet
- *   Day 11 — Your trial ends in 3 days
- *   Day 13 — Your trial ends tomorrow
+ *   Day  1 : Welcome to AlwaysReady
+ *   Day  3 : Three things worth exploring
+ *   Day  5 : How are you getting on?
+ *   Day  7 : Halfway through your trial
+ *   Day  9 : A few things you might not have tried yet
+ *   Day 11 : Your trial ends in 3 days
+ *   Day 13 : Your trial ends tomorrow
  *
  * Day 14a (converted) and 14b (lapsed) are triggered by Stripe webhooks, not here.
  *
  * Protected by CRON_SECRET (Vercel sends this automatically for registered crons).
- * Uses notification_log for idempotency — each email fires at most once per
+ * Uses notification_log for idempotency: each email fires at most once per
  * organisation per day-key per trial_expires_at anchor.
  *
  * Email definitions live in lib/trial-emails.ts.
@@ -96,7 +96,7 @@ export async function GET(request: Request) {
 
       const firstName = escapeHtml(getFirstName(admin.full_name))
 
-      // Claim the slot atomically — the unique index prevents a second
+      // Claim the slot atomically: the unique index prevents a second
       // concurrent cron run from also sending.
       const claimKey = {
         organisationId:   org.id,
@@ -143,14 +143,14 @@ export async function GET(request: Request) {
         emailsSent++
         console.log(`[trial-emails] Sent ${emailDef.dayKey} to ${admin.email} (${org.name})`)
       } else {
-        // Sending failed — release the claim so the next cron run can retry
+        // Sending failed: release the claim so the next cron run can retry
         await releaseNotificationClaim(supabase, claimKey)
         errors.push(`${emailDef.dayKey} → ${admin.email}: ${result.error ?? result.skipped}`)
       }
     }
   }
 
-  // ── Day 14b — trial lapsed ────────────────────────────────────────────────
+  // ── Day 14b: trial lapsed ────────────────────────────────────────────────
   // Find orgs whose trial expired yesterday and who never subscribed.
   // (If they subscribed, subscription_tier would have been set to 'active' by
   // the Stripe webhook; if it's still 'trial' they quietly lapsed.)
@@ -168,7 +168,7 @@ export async function GET(request: Request) {
     .lt('trial_expires_at',  `${yesterdayStr}T23:59:59.999Z`)
 
   for (const org of lapsedOrgs ?? []) {
-    // Set data_deletion_due_at (idempotent — only if not already set)
+    // Set data_deletion_due_at (idempotent, only if not already set)
     const trialDeletionDue = new Date()
     trialDeletionDue.setDate(trialDeletionDue.getDate() + 30)
     await supabase
@@ -186,7 +186,7 @@ export async function GET(request: Request) {
     for (const admin of admins ?? []) {
       if (!admin.email) continue
 
-      // Claim atomically — send only if the claim succeeds
+      // Claim atomically: send only if the claim succeeds
       const claimKey14b = {
         organisationId:   org.id,
         notificationType: 'trial_day',
@@ -214,13 +214,13 @@ export async function GET(request: Request) {
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             Your AlwaysReady trial ended on ${expiryDate}. The KLOEs you rated, evidence you
-            uploaded, and any HR records or team settings you created are all still there —
+            uploaded, and any HR records or team settings you created are all still there,
             exactly as you left them.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             Your data is available to download until <strong>${deletionDate}</strong>, after
             which it will be permanently deleted. If you'd like to keep access and continue
-            building your inspection readiness, subscribing takes less than two minutes —
+            building your inspection readiness, subscribing takes less than two minutes;
             everything carries over immediately.
           </p>
           <p style="margin:0 0 32px">
@@ -231,7 +231,7 @@ export async function GET(request: Request) {
           </p>
           <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
             If there's anything we could have done better, we'd genuinely welcome hearing from
-            you — just reply to this email. Whatever you decide, thank you for taking the time
+            you, just reply to this email. Whatever you decide, thank you for taking the time
             to try AlwaysReady.
           </p>
         `,
@@ -279,7 +279,7 @@ export async function GET(request: Request) {
     const orgName    = escapeHtml(org?.name ?? 'your organisation')
     const dueDateKey = today.toISOString().split('T')[0]
 
-    // Claim atomically — send only if the claim succeeds
+    // Claim atomically: send only if the claim succeeds
     const claimKeyUser = {
       organisationId:   usr.organisation_id,
       notificationType: 'user_onboarding',

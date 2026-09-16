@@ -38,7 +38,7 @@ function reconfirmationHtml(reviewReminders: boolean, governanceDigest: boolean)
       ${items.map(i => `<li style="margin:0 0 4px">${i}</li>`).join('')}
     </ul>
     <p style="margin:0 0 24px">
-      Still want these? You can turn any of them off — or back on — from your account settings.
+      Still want these? You can turn any of them off, or back on, from your account settings.
     </p>
     <p style="margin:0 0 24px">
       <a href="${PLATFORM_URL}/dashboard/account?tab=notifications" style="display:inline-block;background:#014D4E;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;font-size:14px">
@@ -46,7 +46,7 @@ function reconfirmationHtml(reviewReminders: boolean, governanceDigest: boolean)
       </a>
     </p>
     <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
-      While you're there, we'd appreciate a quick word on how useful they've been — there's a short optional
+      While you're there, we'd appreciate a quick word on how useful they've been. There's a short optional
       feedback box on the same page.
     </p>
   `

@@ -22,7 +22,7 @@ export function getWaitlistNurtureEmail(
   firstNameRaw: string,
 ): NurtureEmail | null {
   // firstName is user-supplied (the waitlist signup form) and every template
-  // below interpolates it directly into HTML — escape once here rather than
+  // below interpolates it directly into HTML: escape once here rather than
   // at each of the ~10 call sites below.
   const firstName = escapeHtml(firstNameRaw)
 
@@ -38,7 +38,7 @@ export function getWaitlistNurtureEmail(
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         AlwaysReady is a governance platform for adult social care providers. It gives Registered
         Managers a single, structured space to track compliance, organise evidence, and maintain
-        workforce records — all aligned to CQC's Adult Social Care Assessment Framework.
+        workforce records, all aligned to CQC's Adult Social Care Assessment Framework.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Over the next eight weeks, we'll send you a short series of updates. Each one covers a
@@ -48,7 +48,7 @@ export function getWaitlistNurtureEmail(
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         One thing before we go: what is the part of CQC compliance that takes up the most of your
-        time right now? Just hit reply — we read every response, and it helps us make sure the
+        time right now? Just hit reply; we read every response, and it helps us make sure the
         updates we send are genuinely useful to you.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
@@ -87,7 +87,7 @@ export function getWaitlistNurtureEmail(
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         One question before the next update: what does your current compliance record look like?
-        Organised and up to date, or scattered across different systems? Just hit reply — we read
+        Organised and up to date, or scattered across different systems? Just hit reply; we read
         every response.
       </p>
     `,
@@ -103,7 +103,7 @@ export function getWaitlistNurtureEmail(
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The services that find this most stressful are the ones whose records don't reflect the
-        quality of care they're actually providing. Staff are doing good work — but the documentation
+        quality of care they're actually providing. Staff are doing good work, but the documentation
         tells a different story. Policies are out of date. Review dates have lapsed. Evidence is
         scattered across shared drives and paper files.
       </p>
@@ -118,12 +118,12 @@ export function getWaitlistNurtureEmail(
         overall readiness position and shows you at a glance what needs attention.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        The goal is simple: on any day of the year — including the one when you get that call —
+        The goal is simple: on any day of the year, including the one when you get that call,
         your records reflect your actual practice.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         One question: when an inspector walks through your door, which area of your service feels
-        least ready right now? Hit reply — we read every response.
+        least ready right now? Hit reply. We read every response.
       </p>
     `,
       }
@@ -172,7 +172,7 @@ export function getWaitlistNurtureEmail(
         directly with what CQC assesses.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        Which of these five areas is your biggest challenge right now? Hit reply and let us know —
+        Which of these five areas is your biggest challenge right now? Hit reply and let us know:
         it helps us understand what to cover in future updates.
       </p>
     `,
@@ -184,7 +184,7 @@ export function getWaitlistNurtureEmail(
         bodyHtml: `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        A care service can have exactly the right staff in post — experienced, trained, DBS-checked —
+        A care service can have exactly the right staff in post (experienced, trained, DBS-checked)
         and still receive a finding on safe staffing.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
@@ -202,12 +202,12 @@ export function getWaitlistNurtureEmail(
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         AlwaysReady's HR module keeps every workforce record in one place. For each team member, you
         can record DBS checks, training completion, supervision sessions, appraisal history, and
-        absence episodes. The platform sends automatic reminders when a renewal is approaching — so
+        absence episodes. The platform sends automatic reminders when a renewal is approaching, so
         the record stays current without you having to track it manually.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         Is safe staffing something you feel confident evidencing right now, or is it an area with
-        gaps? Hit reply — it helps us understand what to cover next.
+        gaps? Hit reply; it helps us understand what to cover next.
       </p>
     `,
       }
@@ -224,23 +224,23 @@ export function getWaitlistNurtureEmail(
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         In most cases, it was not the care. It was the evidence. Outstanding services build a trail
         that is dated, specific, and directly linked to outcomes. Inspectors can follow it step by
-        step — seeing how decisions were made, what happened as a result, and what the service learned.
+        step: seeing how decisions were made, what happened as a result, and what the service learned.
         They do not need to ask for an explanation. The record explains itself.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Outstanding services also record their learning, not just their activity. An incident report
-        is a record. The learning cycle — what happened, what changed, what difference it made — is
+        is a record. The learning cycle (what happened, what changed, what difference it made) is
         what Outstanding looks like. Inspectors want to see that reflection is happening, that it is
         documented, and that it leads somewhere.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The other thing Outstanding services have in common is that they do not prepare for
         inspections. They stay prepared. Their compliance record is current, organised, and
-        accessible every day of the year — not just in the weeks before a visit.
+        accessible every day of the year, not just in the weeks before a visit.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
         Is Outstanding a realistic goal for your service, or are you focused on maintaining Good?
-        Either is a valid answer — hit reply and let us know where you are.
+        Either is a valid answer; hit reply and let us know where you are.
       </p>
     `,
       }
@@ -265,7 +265,7 @@ export function getWaitlistNurtureEmail(
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Showing practice means having a dated, specific, accessible record. It means an inspector
         can open a KLOE and see when it was last reviewed, what evidence supports it, and what
-        changed as a result. They don't need to ask you to explain — the record explains itself.
+        changed as a result. They don't need to ask you to explain; the record explains itself.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         In AlwaysReady, every change to a KLOE is automatically logged: who made it, when, and
@@ -274,7 +274,7 @@ export function getWaitlistNurtureEmail(
         is always there.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        When an inspector reviews your compliance record, what do you think they would see —
+        When an inspector reviews your compliance record, what do you think they would see,
         and how confident are you in that record right now? Hit reply.
       </p>
     `,
@@ -282,7 +282,7 @@ export function getWaitlistNurtureEmail(
 
     case 8:
       return {
-        subject: "Beta Partner places — if you'd like to get started now",
+        subject: "Beta Partner places: if you'd like to get started now",
         bodyHtml: `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
@@ -306,17 +306,17 @@ export function getWaitlistNurtureEmail(
         <strong style="color:#014D4E;font-size:15px">In return, Beta Partners receive:</strong><br><br>
         <ul style="margin:8px 0 0;padding-left:20px;font-size:16px;line-height:1.9;color:#111111">
           <li>A reduced subscription rate, locked in for life</li>
-          <li>Input into new features — shaping what gets built next</li>
+          <li>Input into new features, shaping what gets built next</li>
           <li>Early access to new features ahead of the wider market</li>
         </ul>
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         You don't need to do anything right now. When you start your free trial and reach the
-        subscription step, the Beta Partner offer will be waiting — automatically unlocked and
+        subscription step, the Beta Partner offer will be waiting, automatically unlocked and
         ready to claim.
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        Beta Partner places are limited. This is the best time to join — the new framework is
+        Beta Partner places are limited. This is the best time to join: the new framework is
         coming, and the services that build their evidence base now will be the ones best placed
         when an inspector arrives.
       </p>
@@ -334,25 +334,25 @@ export function getWaitlistNurtureEmail(
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         CQC has now published the new Adult Social Care Assessment Framework, and it's worth
-        understanding what changes — and what doesn't.
+        understanding what changes, and what doesn't.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The five key questions are unchanged. Safe, Effective, Caring, Responsive, and Well-led
         remain the structure you're familiar with. What has shifted is what CQC expects to see as
         evidence. The new framework places greater emphasis on continuous, documented governance
-        activity — not periodic reviews, but an ongoing record of how your service is managed.
+        activity, not periodic reviews, but an ongoing record of how your service is managed.
         Services with consistent, structured evidence are better placed under the new framework
         from day one.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         AlwaysReady maps directly to the new framework. Every KLOE reflects the updated structure,
         so from the moment you log in, your compliance tracker is aligned to what CQC will be looking
-        for. We're also publishing a detailed breakdown on our blog — practical guidance on what the
+        for. We're also publishing a detailed breakdown on our blog: practical guidance on what the
         new framework means for each key question. We'll send you the link when it's live.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         AlwaysReady is launching very soon. Before it does, I wanted to let you know that waitlist
-        members will have the chance to join as a Beta Partner — a small group of services who get
+        members will have the chance to join as a Beta Partner, a small group of services who get
         a deep discount in exchange for sharing feedback as the platform grows. I'll share the
         details when we launch.
       </p>
@@ -365,11 +365,11 @@ export function getWaitlistNurtureEmail(
 
     case 10:
       return {
-        subject: 'AlwaysReady is open — your access is ready',
+        subject: 'AlwaysReady is open: your access is ready',
         bodyHtml: `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        AlwaysReady is now open. As a waitlist member, you have priority access — your 14-day
+        AlwaysReady is now open. As a waitlist member, you have priority access: your 14-day
         free trial is available right now, and no payment is required until your trial ends.
       </p>
       <p style="margin:0 0 8px;font-size:16px;line-height:1.7;color:#111111">Your trial gives you full access to everything:</p>

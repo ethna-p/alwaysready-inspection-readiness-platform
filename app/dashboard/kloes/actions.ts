@@ -7,7 +7,7 @@
  *   App INSERTs into compliance_record_history.
  *   The database trigger (sync_compliance_record_from_history) UPSERTs
  *   compliance_records automatically. We never write to compliance_records
- *   directly from app code — except for the assigned_to field (assignKloe).
+ *   directly from app code, except for the assigned_to field (assignKloe).
  *
  * Role rules (enforced here AND at the RLS layer):
  *   admin  → can update all fields including priority, frequency, and assignment
@@ -119,7 +119,7 @@ export async function updateKloCompliance(
     return { success: false, error: 'Failed to save. Please try again.' }
   }
 
-  // ── Audit: priority changed? (admin only — users can't change it) ────
+  // ── Audit: priority changed? (admin only, users can't change it) ────
   if (isAdmin) {
     const oldPriority = currentRecord?.priority ?? null
     if (oldPriority !== priority) {
@@ -174,7 +174,7 @@ export async function updateKloCompliance(
 
 /**
  * Assign (or unassign) a KLOE to a team member.
- * Admin-only action — RLS also enforces this at the DB layer.
+ * Admin-only action. RLS also enforces this at the DB layer.
  */
 export async function assignKloe(
   _prevState: ActionState,
@@ -194,7 +194,7 @@ export async function assignKloe(
     return { success: false, error: 'Missing KLOE identifier.' }
   }
 
-  // assignToId is client-supplied and otherwise unchecked — the UPDATE below
+  // assignToId is client-supplied and otherwise unchecked: the UPDATE below
   // only scopes the compliance_records row being changed, not who it's being
   // assigned to. Without this, an admin could assign (and trigger an email
   // notification to) a user in a different organisation entirely. Fetches
@@ -238,7 +238,7 @@ export async function assignKloe(
     try {
       const adminSupabase = createAdminClient()
 
-      // assignee was already fetched above (during org-membership validation) —
+      // assignee was already fetched above (during org-membership validation),
       // no need to query the same users row again here.
       const { data: klo } = await adminSupabase
         .from('klo_items')
@@ -254,7 +254,7 @@ export async function assignKloe(
 
         await sendEmail({
           to: recipientEmail,
-          subject: `You've been assigned a KLOE — ${klo.title}`,
+          subject: `You've been assigned a KLOE: ${klo.title}`,
           type: 'transactional',
           userId: assignToId,
           bodyHtml: `
@@ -281,7 +281,7 @@ export async function assignKloe(
         })
       }
     } catch (emailErr) {
-      // Log but do not surface — the assignment itself succeeded
+      // Log but do not surface: the assignment itself succeeded
       console.error('[assignKloe] email notification failed:', emailErr)
     }
   }

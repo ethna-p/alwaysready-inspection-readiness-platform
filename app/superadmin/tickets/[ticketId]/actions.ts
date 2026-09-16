@@ -264,11 +264,11 @@ export async function updateTicketStatus(ticketId: string, status: string) {
       let firstName = 'there'
 
       if ((ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
-        // Website enquiry — email the external contact
+        // Website enquiry: email the external contact
         recipientEmail = ticket.external_email
         firstName = escapeHtml(getFirstName(ticket.external_name))
       } else if (ticket.submitted_by) {
-        // Platform user — look up their auth email and profile
+        // Platform user: look up their auth email and profile
         const { data: authUser } = await supabase.auth.admin.getUserById(ticket.submitted_by)
         const { data: profile } = await supabase
           .from('users')

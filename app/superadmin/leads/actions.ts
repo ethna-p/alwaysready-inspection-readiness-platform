@@ -40,7 +40,7 @@ export async function addZeegBooking(formData: FormData) {
  * nurture_opt_in waitlist subscribers. Triggered manually by AJ once CQC
  * publishes the framework date or when AlwaysReady opens.
  *
- * These sit outside the weekly sequence — they go to every nurture subscriber
+ * These sit outside the weekly sequence: they go to every nurture subscriber
  * regardless of where they are in the sequence.
  */
 export async function sendBulkLaunchEmail(
@@ -64,7 +64,7 @@ export async function sendBulkLaunchEmail(
   const errors: string[] = []
 
   for (const lead of leads) {
-    // getWaitlistNurtureEmail() escapes firstName internally — don't escape here too.
+    // getWaitlistNurtureEmail() escapes firstName internally, don't escape here too.
     const emailContent = getWaitlistNurtureEmail(emailNum, lead.first_name || 'there')
     if (!emailContent) continue
 

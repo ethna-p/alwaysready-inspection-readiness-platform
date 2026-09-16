@@ -7,7 +7,7 @@ import { requireAdmin } from '@/lib/auth'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter } from '@/lib/rate-limit'
 
-// changePassword re-authenticates with a client-supplied "current password" —
+// changePassword re-authenticates with a client-supplied "current password":
 // unlike /login (rate-limited per IP in middleware.ts), this had no limit at
 // all. It requires an already-valid session (not an unauthenticated attack
 // surface), but a stolen/shared session cookie without the actual password
@@ -96,7 +96,7 @@ export async function changePassword(
     return { success: false, error: 'Current password is incorrect.' }
   }
 
-  // Update to new password via admin client — avoids session cookie timing
+  // Update to new password via admin client: avoids session cookie timing
   // issues that can cause supabase.auth.updateUser to fail after a
   // signInWithPassword re-authentication in a server action context.
   const adminSupabase = createAdminClient()
@@ -117,7 +117,7 @@ export async function changePassword(
   // user is redirected straight to /login before ever seeing the success
   // message below, even though the password change itself worked.
   // Re-authenticating with the NEW password re-establishes a genuinely
-  // valid session (and writes fresh cookies via this same server client —
+  // valid session (and writes fresh cookies via this same server client,
   // see lib/supabase/server.ts) so the user stays seamlessly signed in.
   const { error: reauthError } = await supabase.auth.signInWithPassword({
     email: user.email,
@@ -131,9 +131,9 @@ export async function changePassword(
     console.error('[changePassword] post-change re-authentication failed:', reauthError.message)
   }
 
-  // Send notification email (non-fatal — don't fail the password change if email fails).
+  // Send notification email (non-fatal, don't fail the password change if email fails).
   // Every team member has a real work email (email-based invite is the only
-  // onboarding path — see team-actions.ts's own doc comment), so it's always
+  // onboarding path, see team-actions.ts's own doc comment), so it's always
   // the right address to notify.
   try {
     const now = new Date().toLocaleString('en-GB', {
@@ -152,7 +152,7 @@ export async function changePassword(
       type: 'transactional',
     })
   } catch (emailError) {
-    // Log but don't surface to the user — password was changed successfully
+    // Log but don't surface to the user: password was changed successfully
     console.error('[changePassword] email notification failed:', emailError)
   }
 

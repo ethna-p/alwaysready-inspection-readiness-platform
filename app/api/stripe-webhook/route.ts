@@ -4,14 +4,14 @@
  * Receives Stripe events and keeps the organisations table in sync.
  *
  * Events handled:
- *   checkout.session.completed       — first payment; activate subscription
- *   customer.subscription.updated    — plan changes, renewals, status changes
- *   customer.subscription.deleted    — cancellation; block access
- *   invoice.payment_succeeded        — renewal succeeded; ensure active
- *   invoice.payment_failed           — payment failed; mark past_due
+ *   checkout.session.completed       : first payment; activate subscription
+ *   customer.subscription.updated    : plan changes, renewals, status changes
+ *   customer.subscription.deleted    : cancellation; block access
+ *   invoice.payment_succeeded        : renewal succeeded; ensure active
+ *   invoice.payment_failed           : payment failed; mark past_due
  *
  * Security: every request is verified against STRIPE_WEBHOOK_SECRET using
- * Stripe's signature verification — unsigned requests are rejected with 401.
+ * Stripe's signature verification: unsigned requests are rejected with 401.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -27,7 +27,7 @@ import { claimNotification } from '@/lib/notification-log'
 // notification_log's unique index is (organisation_id, notification_type,
 // entity_type, entity_id, due_date, recipient_email). For stripe_event rows,
 // entity_id (the Stripe event.id) is already the stable, unique-per-event
-// dedup key — due_date has no real meaning here and must therefore be a
+// dedup key: due_date has no real meaning here and must therefore be a
 // FIXED constant, not "today". Using today's date broke the dedup across a
 // calendar-day boundary: a redelivery of the same event on the next day got
 // a different due_date, didn't collide with the earlier claim (no 23505),
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
           // CRITICAL: clear any pending deletion. A trial that lapsed and
           // then later subscribed would otherwise keep the deletion date
           // set by the trial-lapse cron (data_deletion_due_at is never
-          // cleared anywhere else) — the daily data-deletion cron doesn't
+          // cleared anywhere else), the daily data-deletion cron doesn't
           // check subscription_tier, so an active paying customer's org
           // would be permanently deleted on that stale date.
           data_deletion_due_at:   null,
@@ -89,10 +89,10 @@ export async function POST(req: NextRequest) {
       if (error) {
         console.error('[stripe-webhook] checkout update error:', error.message)
       } else {
-        // Day 14a — send subscription confirmation email to the org admin.
-        // Stripe does not guarantee exactly-once delivery — the same event
-        // can be redelivered (timeouts, manual resends from the dashboard)
-        // — so claim against notification_log first, keyed by the stable
+        // Day 14a: send subscription confirmation email to the org admin.
+        // Stripe does not guarantee exactly-once delivery. The same event
+        // can be redelivered (timeouts, manual resends from the dashboard),
+        // so claim against notification_log first, keyed by the stable
         // event.id, same idempotency idiom used by the cron email jobs.
         const { data: admins } = await supabase
           .from('users')
@@ -164,13 +164,13 @@ export async function POST(req: NextRequest) {
     const deletionDue = new Date()
     deletionDue.setDate(deletionDue.getDate() + 30)
 
-    // Look up the org first, separately from the update — this lets us tell
+    // Look up the org first, separately from the update: this lets us tell
     // "no org has this stripe_subscription_id at all" (a genuine problem:
     // data mismatch, wrong project, deleted org) apart from "this org
     // already has data_deletion_due_at set" (an expected idempotent replay,
     // since Stripe doesn't guarantee exactly-once delivery). Folding both
     // into one query and treating any PGRST116 (no rows matched) as
-    // "already processed" — as a previous version of this handler did —
+    // "already processed" (as a previous version of this handler did)
     // silently swallows the genuine-mismatch case too, with zero logging.
     const { data: existingOrg, error: lookupError } = await supabase
       .from('organisations')
@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
     } else if (!existingOrg) {
       console.error(`[stripe-webhook] subscription delete: no organisation found for stripe_subscription_id ${sub.id}`)
     } else if (existingOrg.data_deletion_due_at) {
-      // Already processed by an earlier delivery of this same event — skip silently.
+      // Already processed by an earlier delivery of this same event: skip silently.
     } else {
       const { data: org, error } = await supabase
         .from('organisations')
@@ -217,7 +217,7 @@ export async function POST(req: NextRequest) {
           })
 
           // Each recipient's claim-then-send is independent (keyed by its own
-          // recipient_email) — run them concurrently rather than serially.
+          // recipient_email), run them concurrently rather than serially.
           await Promise.all(adminEmails.map(async (email) => {
             const claim = await claimNotification(supabase, {
               organisationId:   org.id,
@@ -231,7 +231,7 @@ export async function POST(req: NextRequest) {
 
             await sendEmail({
               to:      email,
-              subject: 'Your AlwaysReady subscription has ended — download your data',
+              subject: 'Your AlwaysReady subscription has ended: download your data',
               type:    'transactional',
               bodyHtml: `
                 <p>Your AlwaysReady subscription for <strong>${escapeHtml(org.name)}</strong> has ended.</p>
@@ -250,7 +250,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── invoice.payment_succeeded ──────────────────────────────────────────
-  // Fired on every successful renewal payment — keep tier as active.
+  // Fired on every successful renewal payment: keep tier as active.
   if (event.type === 'invoice.payment_succeeded') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const invoice = event.data.object as any
@@ -266,7 +266,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── invoice.payment_failed ─────────────────────────────────────────────
-  // Fired when a renewal payment fails. Mark past_due — Stripe retries
+  // Fired when a renewal payment fails. Mark past_due; Stripe retries
   // automatically; if all retries fail, subscription.deleted fires.
   if (event.type === 'invoice.payment_failed') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

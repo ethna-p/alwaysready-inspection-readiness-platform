@@ -68,17 +68,17 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Welcome to AlwaysReady — your 14-day trial is live and your account is ready to go.
+        Welcome to AlwaysReady: your 14-day trial is live and your account is ready to go.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The best first step is usually your KLOE tracker. Adding your current compliance status
-        to a handful of KLOEs — even rough ratings at this stage — will give you an immediate
+        to a handful of KLOEs (even rough ratings at this stage) will give you an immediate
         picture of where your service stands. It takes about ten minutes and makes the rest of
         the platform click into place.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Over the next couple of weeks we'll send a few short emails with things worth exploring.
-        Nothing demanding — just nudges to help you get the most out of your trial.
+        Nothing demanding: just nudges to help you get the most out of your trial.
       </p>
       <p style="margin:0 0 32px">
         <a href="${PLATFORM_URL}/dashboard/kloes"
@@ -87,7 +87,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        If anything isn't working the way you expected, just reply — we're glad to help.
+        If anything isn't working the way you expected, just reply; we're glad to help.
       </p>
     `,
   },
@@ -102,7 +102,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         Now you've had a couple of days to settle in, a few things worth trying.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        The Daily Report is a good place to start each morning — it shows which KLOEs need
+        The Daily Report is a good place to start each morning: it shows which KLOEs need
         attention and which are looking strong, all in one view. The Inspection Pack is worth
         downloading too: one click and you have a printable summary of your compliance position
         across all KLOEs, ready to share with your team. And if you haven't tried attaching
@@ -115,7 +115,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        Which of those three have you tried? Hit reply — we're curious.
+        Which of those three have you tried? Hit reply. We're curious.
       </p>
     `,
   },
@@ -127,7 +127,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Five days in — how's it going?
+        Five days in, how's it going?
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         One thing that's worth doing before the halfway point: invite a colleague. AlwaysReady
@@ -136,7 +136,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
         get added consistently when it's someone's job, not everyone's afterthought.
       </p>
       <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#111111">
-        If you're managing everything yourself for now, that's fine too — but even adding one
+        If you're managing everything yourself for now, that's fine too, but even adding one
         other person usually changes how the platform feels.
       </p>
       <p style="margin:0 0 32px">
@@ -154,14 +154,14 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     dayKey:      'day_07',
     dayIndex:    7,
     isMarketing: false,
-    subject:     'You\'re halfway through your trial — here\'s a quick checklist',
+    subject:     'You\'re halfway through your trial: here\'s a quick checklist',
     bodyHtml: (firstName, _expiryDate, _price, wizard) => {
       const w = wizard ?? { hasKloeRating: false, hasEvidence: false, hasTeamMember: false, hasHrRecord: false }
       const completedCount = [w.hasKloeRating, w.hasEvidence, w.hasTeamMember, w.hasHrRecord].filter(Boolean).length
       const allDone = completedCount === 4
       const nonStarted = completedCount === 0
 
-      // Render one checklist row — ticked if done, linked if not
+      // Render one checklist row: ticked if done, linked if not
       function row(done: boolean, label: string, detail: string, href: string): string {
         if (done) {
           return `
@@ -184,7 +184,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
             </td>
             <td style="padding:10px 0 10px 12px;border-bottom:1px solid #f0f0f0">
               <span style="font-size:16px;font-weight:600;color:#1a1a1a">${label}</span><br>
-              <span style="font-size:13px;color:#6b7280;line-height:1.5">${detail} —
+              <span style="font-size:13px;color:#6b7280;line-height:1.5">${detail}:
                 <a href="${href}" style="color:#014D4E;font-weight:600">Go there now →</a>
               </span>
             </td>
@@ -192,15 +192,15 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
       }
 
       const introText = nonStarted
-        ? `If you haven't had a chance to log in yet, now is a good moment — everything is set up and waiting. The four steps below each take about five minutes and will show you what AlwaysReady can do for your service.`
+        ? `If you haven't had a chance to log in yet, now is a good moment: everything is set up and waiting. The four steps below each take about five minutes and will show you what AlwaysReady can do for your service.`
         : allDone
-          ? `You've already completed all the setup steps — nicely done. Log in to keep building your readiness and make the most of the week you have left.`
-          : `You've already made a start — well done. Here's where things stand and what's still worth exploring before your trial ends.`
+          ? `You've already completed all the setup steps. Nicely done. Log in to keep building your readiness and make the most of the week you have left.`
+          : `You've already made a start. Well done. Here's where things stand and what's still worth exploring before your trial ends.`
 
       return `
         <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-          Halfway through — seven days down, seven to go.
+          Halfway through: seven days down, seven to go.
         </p>
         <p style="margin:0 0 20px;font-size:16px;line-height:1.7;color:#111111">${introText}</p>
         <table style="width:100%;border-collapse:collapse;margin:0 0 28px">
@@ -225,17 +225,17 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     dayKey:      'day_09',
     dayIndex:    9,
     isMarketing: false,
-    subject:     'Five days left — things worth finding before you go',
+    subject:     'Five days left: things worth finding before you go',
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Five days left — a few things that are easy to miss but worth finding before your trial ends.
+        Five days left: a few things that are easy to miss but worth finding before your trial ends.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        The Audit Trail logs every change made to a KLOE — who updated it, when, and what changed.
+        The Audit Trail logs every change made to a KLOE: who updated it, when, and what changed.
         It's useful to know about before an inspection. The Trend Report shows how your readiness
         score has moved over time. And if you haven't looked at the HR module yet, it keeps DBS
-        checks, training records, and supervision logs all in one place — accessible whenever you
+        checks, training records, and supervision logs all in one place, accessible whenever you
         need them.
       </p>
       <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#111111">
@@ -261,7 +261,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Your trial ends in <strong>3 days</strong>, on ${expiryDate}. Before you decide,
-        here are a few things you might not have had time to explore — each one is included
+        here are a few things you might not have had time to explore, each one is included
         in your subscription.
       </p>
 
@@ -276,7 +276,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
             <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
               Walk through every KLOE and rate your evidence as Outstanding, Good, Requires
               Improvement, or Inadequate. The platform generates a mock inspection report
-              showing a self-assessed rating for each of the five CQC key questions — so you
+              showing a self-assessed rating for each of the five CQC key questions, so you
               know exactly where you stand before an inspector walks through the door.
             </p>
             <a href="${PLATFORM_URL}/dashboard/mock-inspection"
@@ -296,7 +296,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
               Evidence Pack
             </p>
             <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
-              One click generates a printable PDF summary of your full compliance position —
+              One click generates a printable PDF summary of your full compliance position:
               RAG status, review dates, priority ratings, and evidence location notes for every
               KLOE. It is designed to be handed to an inspector or presented at a board meeting,
               without you needing to prepare anything in advance.
@@ -319,7 +319,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
             </p>
             <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
               Track DBS checks, supervision sessions, appraisals, mandatory training, and
-              holiday entitlement for every member of staff — all in one place. The HR
+              holiday entitlement for every member of staff, all in one place. The HR
               dashboard shows you which staff members are overdue or due soon at a glance,
               and the platform sends automatic email reminders when a check is approaching.
             </p>
@@ -340,8 +340,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
               Automatic reminders
             </p>
             <p style="margin:0 0 10px;font-size:16px;line-height:1.7;color:#111111">
-              Set a review frequency for each KLOE — monthly, quarterly, annually, or a
-              custom interval — and AlwaysReady handles the rest. The platform emails the
+              Set a review frequency for each KLOE (monthly, quarterly, annually, or a
+              custom interval) and AlwaysReady handles the rest. The platform emails the
               relevant team member when a review is due soon or overdue, so nothing slips
               through the gap between inspections.
             </p>
@@ -354,7 +354,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
       </table>
 
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        All of this — plus everything you have already built during your trial — continues
+        All of this (plus everything you have already built during your trial) continues
         without interruption when you subscribe for <strong>${price}/month</strong>.
         Your KLOEs, evidence, HR records, and team settings stay exactly as they are.
       </p>
@@ -411,25 +411,25 @@ export const USER_EMAILS: UserEmailDef[] = [
   {
     dayKey:   'user_day_01',
     dayIndex: 1,
-    subject:  'Welcome to AlwaysReady — here\'s how to get started',
+    subject:  'Welcome to AlwaysReady: here\'s how to get started',
     bodyHtml: (firstName, orgName) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         You've been added to <strong>${orgName}</strong>'s AlwaysReady account.
         AlwaysReady is an inspection readiness platform that helps adult social care providers
-        prepare for a CQC inspection — and you're now part of the team helping to build
+        prepare for a CQC inspection, and you're now part of the team helping to build
         your service's readiness.
       </p>
       <p style="margin:0 0 8px;font-size:16px;font-weight:600;color:#1a1a1a">Your role on the platform</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         As a team member, you may be assigned specific KLOEs (Key Lines of Enquiry) to manage.
-        These are the areas the CQC inspects against — Safe, Effective, Caring, Responsive,
+        These are the areas the CQC inspects against: Safe, Effective, Caring, Responsive,
         and Well-led. When you're assigned a KLOE, you'll receive an email notification with a
         direct link. From there you can:
       </p>
       <ul style="margin:0 0 24px;padding-left:24px;font-size:16px;line-height:1.9;color:#111111">
         <li>Record your service's current compliance status for that area</li>
-        <li>Upload supporting evidence — policies, audits, certificates, and more</li>
+        <li>Upload supporting evidence: policies, audits, certificates, and more</li>
         <li>Add notes that will be useful during an inspection</li>
       </ul>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
@@ -477,7 +477,7 @@ export const USER_EMAILS: UserEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        If you're not sure what's expected of you, just reply to this email — we're happy to help.
+        If you're not sure what's expected of you, just reply to this email. We're happy to help.
         The <strong>Help</strong> tab also covers the most common questions by role.
       </p>
     `,
