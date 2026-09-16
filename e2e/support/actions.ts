@@ -55,6 +55,13 @@ export async function completeMandatoryMfaSetup(page: Page): Promise<string> {
   await page.locator('#totp-code').fill(currentTotpCode(secret))
   await page.getByRole('button', { name: 'Activate two-factor authentication' }).click()
 
+  // Enrolment now shows a one-time "save your backup codes" screen before
+  // continuing (BackupCodesDisplay, via mfa/setup/page.tsx) — must check the
+  // "I've saved these" box before "Finish setup" is enabled.
+  await page.getByRole('heading', { name: 'Save your backup codes' }).waitFor()
+  await page.getByLabel("I've saved these codes somewhere safe").check()
+  await page.getByRole('button', { name: 'Finish setup' }).click()
+
   // The page's own completion logic always targets /dashboard/account?mfa=
   // enrolled, but middleware then immediately re-redirects on top of that
   // for an account with onboarding_complete still false (a fresh trial

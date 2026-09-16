@@ -15,6 +15,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import CharityToggleButton from './CharityToggleButton'
 import TesterToggleButton from './TesterToggleButton'
 import DeleteOrgButton from './DeleteOrgButton'
+import ResetAdminMfaButton from './ResetAdminMfaButton'
 
 type OrgListItem = {
   id: string; name: string; subscription_tier: string
@@ -245,6 +246,12 @@ export default async function OrganisationsPage({
                       orgId={org.id}
                       isCharity={org.is_charity === true}
                     />
+                    {admin && (
+                      <ResetAdminMfaButton
+                        userId={admin.id}
+                        fullName={admin.full_name ?? admin.email}
+                      />
+                    )}
                     <DeleteOrgButton orgId={org.id} orgName={org.name} />
                   </div>
                 </div>

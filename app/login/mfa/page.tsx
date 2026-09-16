@@ -50,6 +50,17 @@ export default function MfaVerifyPage() {
     window.location.replace(destination)
   }
 
+  async function handleBackupCodeRedeemed() {
+    // The factor was just deleted server-side — no aal2 session to reach
+    // here. Same destination resolution as a normal verify: middleware's
+    // existing "no factor enrolled" guard then routes to mandatory
+    // re-setup (/dashboard/account/mfa/setup, or /superadmin/account for
+    // the superadmin), exactly as it already does after an admin- or
+    // superadmin-initiated MFA reset.
+    const destination = await getPostMfaDestination()
+    window.location.replace(destination)
+  }
+
   return (
     <div className="min-h-screen bg-canvas flex flex-col">
       <header className="px-6 py-4">
@@ -69,6 +80,7 @@ export default function MfaVerifyPage() {
             <MfaVerifyStep
               onVerified={handleVerified}
               onNoFactor={() => router.replace('/login')}
+              onBackupCodeRedeemed={handleBackupCodeRedeemed}
               footer={
                 <div className="mt-4 text-center">
                   <button

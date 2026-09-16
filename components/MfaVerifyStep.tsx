@@ -20,10 +20,15 @@
  * everything about the challenge/verify call itself, error handling, and
  * retry-on-wrong-code lives here once, so a fix to one never silently
  * diverges from the other.
+ *
+ * Also offers "Use a backup code instead" (opt-in via onBackupCodeRedeemed)
+ * for a user who's lost their authenticator device entirely — see
+ * app/login/mfa/actions.ts's redeemBackupCode for what a valid code does.
  */
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { redeemBackupCode } from '@/app/login/mfa/actions'
 
 export interface MfaVerifyStepProps {
   /** Called once the code is verified and the session is genuinely aal2. */
@@ -39,6 +44,15 @@ export interface MfaVerifyStepProps {
   description?: string
   /** Optional content rendered below the form (e.g. a "different account" link). */
   footer?: React.ReactNode
+  /**
+   * When provided, shows a "Lost your device? Use a backup code instead"
+   * link. Called after a valid code is redeemed — the session is still only
+   * aal1 at that point (a backup code resets the factor rather than
+   * verifying one), so this is a distinct outcome from onVerified, not an
+   * alias for it. Omit to hide the option entirely (e.g. the password-reset
+   * recovery flow, which keeps its own MFA step focused on one thing).
+   */
+  onBackupCodeRedeemed?: () => void | Promise<void>
 }
 
 export default function MfaVerifyStep({
@@ -47,6 +61,7 @@ export default function MfaVerifyStep({
   heading = 'Two-step verification',
   description = 'Enter the 6-digit code from your authenticator app.',
   footer,
+  onBackupCodeRedeemed,
 }: MfaVerifyStepProps) {
   const supabase = createClient()
 
@@ -56,6 +71,11 @@ export default function MfaVerifyStep({
   const [error, setError]             = useState<string | null>(null)
   const [loading, setLoading]         = useState(false)
   const [initialising, setInitialising] = useState(true)
+
+  const [useBackupCode, setUseBackupCode] = useState(false)
+  const [backupCode, setBackupCode]       = useState('')
+  const [backupError, setBackupError]     = useState<string | null>(null)
+  const [backupLoading, setBackupLoading] = useState(false)
 
   useEffect(() => {
     async function init() {
@@ -117,6 +137,101 @@ export default function MfaVerifyStep({
     // no caller has to remember to.
     await supabase.auth.refreshSession()
     await onVerified()
+  }
+
+  async function handleRedeemBackupCode(e: React.FormEvent) {
+    e.preventDefault()
+    setBackupError(null)
+    setBackupLoading(true)
+
+    const result = await redeemBackupCode(backupCode)
+    setBackupLoading(false)
+
+    if ('error' in result) {
+      setBackupError(result.error)
+      return
+    }
+
+    await onBackupCodeRedeemed?.()
+  }
+
+  if (useBackupCode) {
+    return (
+      <>
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-[#014D4E]/10 flex items-center justify-center">
+            <svg className="w-6 h-6 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-brand mb-1">Use a backup code</h1>
+          <p className="text-sm text-ink-dim">
+            Enter one of the backup codes you saved when you set up two-factor authentication.
+          </p>
+        </div>
+
+        <form onSubmit={handleRedeemBackupCode} noValidate>
+          {backupError && (
+            <div role="alert" className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+              {backupError}
+            </div>
+          )}
+
+          <div className="mb-4 rounded-lg bg-sky-50 border border-sky-200 px-4 py-3 text-xs text-sky-900">
+            Using a backup code will remove your current authenticator and ask you to set up a new one — along with a
+            fresh set of backup codes — on your next step.
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="backup-code" className="block text-sm font-medium text-ink mb-1">
+              Backup code
+            </label>
+            <input
+              id="backup-code"
+              type="text"
+              autoComplete="off"
+              autoCapitalize="characters"
+              required
+              value={backupCode}
+              onChange={e => setBackupCode(e.target.value)}
+              placeholder="XXXXX-XXXXX"
+              className="
+                w-full rounded-lg border border-line px-3 py-2
+                text-ink text-sm bg-card text-center tracking-widest font-mono
+                focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]
+              "
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={backupLoading || !backupCode.trim()}
+            className="
+              w-full rounded-lg bg-[#014D4E] text-white font-semibold
+              py-2.5 text-sm
+              hover:bg-[#013a3b]
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#014D4E]
+              disabled:opacity-60 disabled:cursor-not-allowed
+              transition-colors
+            "
+          >
+            {backupLoading ? 'Checking…' : 'Use this code'}
+          </button>
+        </form>
+
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={() => { setUseBackupCode(false); setBackupError(null) }}
+            className="text-xs text-ink-muted hover:text-brand hover:underline"
+          >
+            ← Back to authenticator code
+          </button>
+        </div>
+
+        {footer}
+      </>
+    )
   }
 
   return (
@@ -181,6 +296,18 @@ export default function MfaVerifyStep({
               {loading ? 'Verifying…' : 'Verify'}
             </button>
           </form>
+
+          {onBackupCodeRedeemed && (
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setUseBackupCode(true)}
+                className="text-xs text-ink-muted hover:text-brand hover:underline"
+              >
+                Lost your device? Use a backup code instead
+              </button>
+            </div>
+          )}
 
           {footer}
         </>

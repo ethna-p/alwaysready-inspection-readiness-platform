@@ -20,6 +20,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { generateBackupCodesForCurrentUser } from '../actions'
+import BackupCodesDisplay from '@/components/BackupCodesDisplay'
 
 export default function MfaSetupPage() {
   return (
@@ -44,6 +46,7 @@ function MfaSetupForm() {
   const [loading, setLoading]     = useState(false)
   const [initialising, setInitialising] = useState(true)
   const [showSecret, setShowSecret] = useState(false)
+  const [backupCodes, setBackupCodes] = useState<string[] | null>(null)
 
   // Guards the enrol effect against running more than once per mount. Needed
   // for two real reasons, not just React 18/19 Strict Mode's dev-only double-
@@ -124,11 +127,34 @@ function MfaSetupForm() {
       return
     }
 
-    // Enrolment complete — session is now aal2.
+    // Flush the upgraded aal2 session before calling a server action that
+    // reads it from cookies — challengeAndVerify() alone doesn't guarantee
+    // the cookie write has landed yet (same reasoning as MfaVerifyStep's
+    // own refreshSession() call after mfa.verify()).
+    await supabase.auth.refreshSession()
+
+    const codesResult = await generateBackupCodesForCurrentUser()
+    setLoading(false)
+    if ('codes' in codesResult) {
+      setBackupCodes(codesResult.codes)
+      return
+    }
+    // Backup codes are a bonus, not a blocker — if generation somehow fails,
+    // still let enrolment complete rather than stranding the user here.
+    finishSetup()
+  }
+
+  function finishSetup() {
     // Hard-navigate so the middleware reads fresh aal2 cookies rather than the
     // stale aal1 session that a soft router.replace() can race against.
     window.location.replace(fromSuperadmin ? '/superadmin/account?mfa=enrolled' : '/dashboard/account?mfa=enrolled')
   }
+
+  const cardContent = backupCodes ? (
+    <div className="w-full max-w-md bg-card rounded-2xl shadow-sm border border-line p-8">
+      <BackupCodesDisplay codes={backupCodes} onContinue={finishSetup} continueLabel="Finish setup" />
+    </div>
+  ) : null
 
   // Standalone layout (outside dashboard layout) for mandatory setup
   if (isMandatory) {
@@ -138,25 +164,31 @@ function MfaSetupForm() {
           <Image src="/alwaysready-logo.svg" alt="AlwaysReady" width={220} height={48} style={{ height: 'auto' }} priority />
         </header>
         <main className="flex-1 flex items-center justify-center px-4">
-          <SetupCard
-            initialising={initialising}
-            qrCode={qrCode}
-            secret={secret}
-            showSecret={showSecret}
-            setShowSecret={setShowSecret}
-            code={code}
-            setCode={setCode}
-            error={error}
-            loading={loading}
-            onSubmit={handleVerify}
-            mandatory
-          />
+          {cardContent ?? (
+            <SetupCard
+              initialising={initialising}
+              qrCode={qrCode}
+              secret={secret}
+              showSecret={showSecret}
+              setShowSecret={setShowSecret}
+              code={code}
+              setCode={setCode}
+              error={error}
+              loading={loading}
+              onSubmit={handleVerify}
+              mandatory
+            />
+          )}
         </main>
       </div>
     )
   }
 
   // Embedded in dashboard layout
+  if (backupCodes) {
+    return <div className="max-w-lg">{cardContent}</div>
+  }
+
   return (
     <div className="max-w-lg">
       <div className="mb-6">

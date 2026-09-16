@@ -12,6 +12,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import BackupCodesPanel from './BackupCodesPanel'
 
 type Factor = {
   id: string
@@ -74,6 +75,7 @@ export default function MfaSection({ role }: Props) {
   const hasFactor   = factors.length > 0
 
   return (
+    <>
     <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
       <div className="flex items-start justify-between mb-1">
         <h2 className="text-base font-semibold text-brand">Two-factor authentication</h2>
@@ -141,5 +143,8 @@ export default function MfaSection({ role }: Props) {
         </div>
       )}
     </div>
+
+    {hasFactor && <BackupCodesPanel />}
+    </>
   )
 }

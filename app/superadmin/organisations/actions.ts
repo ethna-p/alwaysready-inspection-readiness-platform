@@ -240,3 +240,47 @@ export async function setTesterStatus(
   revalidatePath('/superadmin/organisations')
   return { success: true }
 }
+
+// ── Reset an org admin's MFA (superadmin last resort) ──────────────────────
+
+/**
+ * resetOrgAdminMfa — the last-resort recovery path for a SOLE admin locked
+ * out with no other admin in their org to use resetTeamMemberMfa
+ * (app/dashboard/account/team-actions.ts) and no backup codes left. Before
+ * this existed, the only fix was a superadmin manually deleting the factor
+ * via an ad-hoc script against the production service-role client — this
+ * productizes that exact, narrow action into an audited, repeatable one
+ * instead of a one-off script run every time it happens again.
+ *
+ * Deliberately not "impersonation": it does not log the superadmin in as the
+ * user or grant access to their data, it only removes a stuck auth factor —
+ * the same distinction that led to removing the old "View as admin" feature
+ * (see this file's top-of-file doc comment) doesn't apply here.
+ */
+type ResetOrgAdminMfaResult =
+  | { success: true; message: string }
+  | { error: string }
+
+export async function resetOrgAdminMfa(userId: string): Promise<ResetOrgAdminMfaResult> {
+  await assertSuperadmin()
+
+  if (!userId) return { error: 'No user ID provided.' }
+
+  const supabase = createAdminClient()
+
+  const { data: factorsData, error: listError } = await supabase.auth.admin.mfa.listFactors({ userId })
+  if (listError) return { error: 'Failed to list MFA factors. Please try again.' }
+
+  const factors = factorsData?.factors ?? []
+  if (factors.length === 0) {
+    return { success: true, message: 'No MFA factor enrolled — nothing to reset.' }
+  }
+
+  for (const factor of factors) {
+    const { error } = await supabase.auth.admin.mfa.deleteFactor({ id: factor.id, userId })
+    if (error) return { error: 'Failed to reset MFA. Please try again.' }
+  }
+
+  revalidatePath('/superadmin/organisations')
+  return { success: true, message: 'MFA reset. They’ll be prompted to set up two-factor authentication again on their next login.' }
+}

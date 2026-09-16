@@ -1617,6 +1617,33 @@ export type Database = {
         Relationships: []
       }
 
+      // ── MFA backup codes ────────────────────────────────────────────
+
+      mfa_backup_codes: {
+        Row: {
+          id: string
+          user_id: string
+          code_hash: string
+          used_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          code_hash: string
+          used_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          code_hash?: string
+          used_at?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+
       // ── Governance Meetings ───────────────────────────────────────────
 
       governance_meetings: {
