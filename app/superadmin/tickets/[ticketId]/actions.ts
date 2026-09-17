@@ -43,6 +43,15 @@ export async function staffReply(
 
   if (error) return { status: 'error', message: error.message }
 
+  // Clear the AI draft now that a reply has actually been sent -- otherwise
+  // the stale draft (which may differ from what was just sent, if it was
+  // edited first) keeps reappearing in the reply box, with the "AI
+  // suggested" banner, on every future visit to this ticket.
+  await supabase
+    .from('support_tickets')
+    .update({ draft_reply: null })
+    .eq('id', ticketId)
+
   // If this is a website enquiry, email the reply to the external sender
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
     const firstName = escapeHtml(getFirstName(ticket.external_name))
