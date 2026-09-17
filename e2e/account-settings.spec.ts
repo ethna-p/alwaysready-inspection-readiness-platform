@@ -118,9 +118,12 @@ test('Account: self-service password change, Notifications tab is gone, and admi
   // a generic load-state signal.
   await expect(teammatePage.getByRole('link', { name: 'Dashboard' })).toBeVisible()
 
-  // ── The Notifications tab (PersonalContactForm) no longer exists ────────
-  await teammatePage.goto('/dashboard/account?tab=security')
-  await expect(teammatePage.getByRole('link', { name: 'Notifications' })).not.toBeVisible()
+  // ── The OLD Notifications tab (PersonalContactForm) is gone ─────────────
+  // A tab of the same name now legitimately exists for a different purpose
+  // (Issue #31: opt-in system notification preferences, in
+  // NotificationsSection.tsx, available to every role) -- so this only
+  // checks that the specific old content is gone, not that a "Notifications"
+  // link is absent altogether.
   await teammatePage.goto('/dashboard/account?tab=notifications')
   await expect(teammatePage.getByText('Notification contact details')).not.toBeVisible()
 
