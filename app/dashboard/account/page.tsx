@@ -220,7 +220,7 @@ export default async function AccountPage({
           <div className="bg-card border border-line rounded-xl p-6 shadow-sm">
             <h2 className="text-base font-semibold text-brand mb-1">What&apos;s included in your plan</h2>
             <p className="text-sm text-ink-dim mb-4">
-              Every feature below is included in your AlwaysReady subscription at no extra cost.
+              Your AlwaysReady subscription gives you full access to every feature listed below.
             </p>
             <p className="text-sm text-ink-dim mb-8">
               Missing something you need?{' '}
