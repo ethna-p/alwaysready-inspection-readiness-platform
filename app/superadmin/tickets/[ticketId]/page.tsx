@@ -162,21 +162,12 @@ export default async function SuperadminTicketPage({ params }: Props) {
         </dl>
       </div>
 
-      {/* ── Reply form + status — placed right after the header, above the
-          thread, so it's reachable without scrolling past a long
-          conversation (a real usability issue: a long original message plus
-          a template-length reply pushed these below the fold). ── */}
-      <StaffReplyForm
-        ticketId={ticketId}
-        currentStatus={status}
-        draftReply={category === 'general' ? (ticket as unknown as { draft_reply: string | null }).draft_reply : null}
-        ticketCategory={category}
-      />
-
       {/* Conversation — the original message (why this ticket exists) always
           leads, fully expanded. Replies follow underneath in chronological
           order, collapsed by default (<details>, no JS needed) so a long
-          thread stays scannable; each expands individually on click. */}
+          thread stays scannable; each expands individually on click. Placed
+          above the reply form, inbox-style (message first, reply box
+          underneath), not below it. */}
       <div>
         <p className="text-xs text-ink-muted uppercase tracking-wide mb-3">Conversation</p>
         <div className="space-y-4">
@@ -222,6 +213,13 @@ export default async function SuperadminTicketPage({ params }: Props) {
           })}
         </div>
       </div>
+
+      <StaffReplyForm
+        ticketId={ticketId}
+        currentStatus={status}
+        draftReply={category === 'general' ? (ticket as unknown as { draft_reply: string | null }).draft_reply : null}
+        ticketCategory={category}
+      />
 
       </div>
     </div>
