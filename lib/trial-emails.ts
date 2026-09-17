@@ -66,9 +66,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Welcome to AlwaysReady',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Welcome to AlwaysReady: your 14-day trial is live and your account is ready to go.
+        Welcome to AlwaysReady, ${firstName}: your 14-day trial is live and your account is ready to go.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The best first step is usually your KLOE tracker. Adding your current compliance status
@@ -97,9 +96,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Three things worth trying',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Now you've had a couple of days to settle in, a few things worth trying.
+        Now you've had a couple of days to settle in, ${firstName}, a few things worth trying.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The Daily Report is a good place to start each morning: it shows which KLOEs need
@@ -125,9 +123,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'How are you getting on?',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Five days in, how's it going?
+        Five days in, ${firstName}, how's it going?
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         One thing that's worth doing before the halfway point: invite a colleague. AlwaysReady
@@ -198,9 +195,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
           : `You've already made a start. Well done. Here's where things stand and what's still worth exploring before your trial ends.`
 
       return `
-        <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-          Halfway through: seven days down, seven to go.
+          Halfway through, ${firstName}: seven days down, seven to go.
         </p>
         <p style="margin:0 0 20px;font-size:16px;line-height:1.7;color:#111111">${introText}</p>
         <table style="width:100%;border-collapse:collapse;margin:0 0 28px">
@@ -227,9 +223,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Five days left: things worth finding before you go',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Five days left: a few things that are easy to miss but worth finding before your trial ends.
+        Five days left, ${firstName}: a few things that are easy to miss but worth finding before your trial ends.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The Audit Trail logs every change made to a KLOE: who updated it, when, and what changed.
@@ -258,9 +253,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your AlwaysReady trial ends in 3 days',
     bodyHtml: (firstName, expiryDate, price) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Your trial ends in <strong>3 days</strong>, on ${expiryDate}. Before you decide,
+        ${firstName}, your trial ends in <strong>3 days</strong>, on ${expiryDate}. Before you decide,
         here are a few things you might not have had time to explore, each one is included
         in your subscription.
       </p>
@@ -375,9 +369,8 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your trial ends tomorrow',
     bodyHtml: (firstName, expiryDate, price) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Your AlwaysReady trial ends <strong>tomorrow</strong>, on ${expiryDate}.
+        ${firstName}, your AlwaysReady trial ends <strong>tomorrow</strong>, on ${expiryDate}.
       </p>
       <div style="margin:0 0 16px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
         <p style="margin:0 0 8px;font-size:16px;line-height:1.7;color:#111111">
@@ -413,9 +406,8 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 1,
     subject:  'Welcome to AlwaysReady: here\'s how to get started',
     bodyHtml: (firstName, orgName) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        You've been added to <strong>${orgName}</strong>'s AlwaysReady account.
+        ${firstName}, you've been added to <strong>${orgName}</strong>'s AlwaysReady account.
         AlwaysReady is an inspection readiness platform that helps adult social care providers
         prepare for a CQC inspection, and you're now part of the team helping to build
         your service's readiness.
@@ -453,9 +445,8 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 7,
     subject:  'A quick check-in on your KLOEs',
     bodyHtml: (firstName) => `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        You've been on AlwaysReady for a week. We wanted to check in and make sure
+        ${firstName}, you've been on AlwaysReady for a week. We wanted to check in and make sure
         you've had a chance to get started.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">

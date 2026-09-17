@@ -31,9 +31,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'Welcome to the AlwaysReady waitlist',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Thank you for joining. You're now on the AlwaysReady waitlist.
+        Thank you for joining, ${firstName}. You're now on the AlwaysReady waitlist.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         AlwaysReady is a governance platform for adult social care providers. It gives Registered
@@ -62,9 +61,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'Why we built AlwaysReady',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Registered Managers lead complex services and oversee large, diverse teams. They have direct
+        ${firstName}, Registered Managers lead complex services and oversee large, diverse teams. They have direct
         responsibility for the safety of vulnerable people. The role demands constant focus, sound
         judgement, and calm leadership under pressure. Resources are often limited, increasing strain
         on everyday governance.
@@ -97,9 +95,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'How most services get caught out by CQC',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Most CQC inspections are unannounced. You can receive a call that morning.
+        ${firstName}, most CQC inspections are unannounced. You can receive a call that morning.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         The services that find this most stressful are the ones whose records don't reflect the
@@ -132,9 +129,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: "CQC's five key questions: what they mean in practice",
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        CQC's inspection framework is built around five key questions. These apply to every service
+        ${firstName}, CQC's inspection framework is built around five key questions. These apply to every service
         and shape every line of enquiry an inspector pursues. Understanding what each one means shapes
         how you record and evidence your work throughout the year.
       </p>
@@ -182,9 +178,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'Safe staffing looks different on paper',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        A care service can have exactly the right staff in post (experienced, trained, DBS-checked)
+        ${firstName}, a care service can have exactly the right staff in post (experienced, trained, DBS-checked)
         and still receive a finding on safe staffing.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
@@ -216,9 +211,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'What separates Good from Outstanding',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Two services. Both rated Good. Both providing safe, effective, caring care. One stays Good
+        ${firstName}, two services. Both rated Good. Both providing safe, effective, caring care. One stays Good
         at the next inspection. The other reaches Outstanding. What changed?
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
@@ -249,9 +243,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'What an inspector actually sees when they arrive',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        When a CQC inspector arrives, they're not starting from zero. Before they speak to anyone,
+        ${firstName}, when a CQC inspector arrives, they're not starting from zero. Before they speak to anyone,
         they've already reviewed your last inspection report, looked at your KLOEs, and formed an
         early picture of your service.
       </p>
@@ -284,9 +277,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: "Beta Partner places: if you'd like to get started now",
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        Over the past few weeks, we've covered what CQC inspectors look for, how strong evidence
+        ${firstName}, over the past few weeks, we've covered what CQC inspectors look for, how strong evidence
         gets built, what separates Good from Outstanding, and why the gap between doing good care
         and proving it matters. If any of that felt relevant to where your service is right now,
         this update is for you.
@@ -331,9 +323,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'The new CQC framework: what it means for your service',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        CQC has now published the new Adult Social Care Assessment Framework, and it's worth
+        ${firstName}, CQC has now published the new Adult Social Care Assessment Framework, and it's worth
         understanding what changes, and what doesn't.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
@@ -367,9 +358,8 @@ export function getWaitlistNurtureEmail(
       return {
         subject: 'AlwaysReady is open: your access is ready',
         bodyHtml: `
-      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">Hi ${firstName},</p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        AlwaysReady is now open. As a waitlist member, you have priority access: your 14-day
+        ${firstName}, AlwaysReady is now open. As a waitlist member, you have priority access: your 14-day
         free trial is available right now, and no payment is required until your trial ends.
       </p>
       <p style="margin:0 0 8px;font-size:16px;line-height:1.7;color:#111111">Your trial gives you full access to everything:</p>
