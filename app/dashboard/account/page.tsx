@@ -224,7 +224,7 @@ export default async function AccountPage({
             </p>
             <p className="text-sm text-ink-dim mb-8">
               Missing something you need?{' '}
-              <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
+              <Link href="/dashboard/support/new?type=feature-suggestion" className="text-brand underline hover:text-[#00b8a6] transition-colors">
                 Share a suggestion →
               </Link>
             </p>
@@ -417,7 +417,7 @@ export default async function AccountPage({
             </div>
             <p className="text-sm text-ink-dim mt-8">
               Missing something you need?{' '}
-              <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
+              <Link href="/dashboard/support/new?type=feature-suggestion" className="text-brand underline hover:text-[#00b8a6] transition-colors">
                 Share a suggestion →
               </Link>
             </p>
