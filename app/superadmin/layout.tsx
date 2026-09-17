@@ -15,18 +15,29 @@ export default function SuperadminLayout({
   return (
     <div className="min-h-screen bg-canvas text-ink">
       <IdleTimeout storageKey="superadmin_idle_timeout" />
-      {/* Top bar */}
-      <header className="bg-card border-b border-line px-6 py-3 flex items-center justify-between relative">
-        <div className="flex items-center gap-4">
-          <a href="https://www.alwaysready.uk" target="_blank" rel="noopener noreferrer">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/alwaysready-logo.svg" alt="AlwaysReady" className="h-8 w-auto" />
-          </a>
-          <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase tracking-wide">
-            Superadmin
-          </span>
+      {/* Top bar — identity row (logo, Superadmin badge, sign out) above a
+          full-width nav row. Previously the nav was absolutely centered over
+          the identity row, and once enough links were added its left edge
+          landed under the logo/badge, which sat on top and hid
+          "Organisations" (the first link) behind an opaque background. */}
+      <header className="bg-card border-b border-line">
+        <div className="px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <a href="https://www.alwaysready.uk" target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/alwaysready-logo.svg" alt="AlwaysReady" className="h-8 w-auto" />
+            </a>
+            <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase tracking-wide">
+              Superadmin
+            </span>
+          </div>
+          <form action="/auth/signout" method="POST">
+            <button type="submit" className="text-sm text-ink-muted hover:text-brand transition-colors">
+              Sign out
+            </button>
+          </form>
         </div>
-        <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-6 text-sm text-ink-muted">
+        <nav className="px-6 py-2 border-t border-line flex items-center gap-6 flex-wrap text-sm text-ink-muted">
           <Link href="/superadmin/organisations" className="hover:text-brand transition-colors">
             Organisations
           </Link>
@@ -66,11 +77,6 @@ export default function SuperadminLayout({
           <Link href="/superadmin/account" className="hover:text-brand transition-colors">
             Account
           </Link>
-          <form action="/auth/signout" method="POST">
-            <button type="submit" className="hover:text-brand transition-colors">
-              Sign out
-            </button>
-          </form>
         </nav>
       </header>
 
