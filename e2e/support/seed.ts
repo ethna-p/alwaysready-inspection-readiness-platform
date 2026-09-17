@@ -22,6 +22,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { createClient } from '@supabase/supabase-js'
+import { Redis } from '@upstash/redis'
 import { loadEnvLocal } from './env.ts'
 import { currentTotpCode } from './totp.ts'
 import { deleteStoragePrefix } from '../../lib/utils/storage-cleanup.ts'
@@ -40,6 +41,60 @@ const TEAMMATE_PASSWORD = 'E2E-teammate-initial-pw-2b6e1!'
 // (playwright.config.ts's webServer.env), not a fixed literal like the two
 // above.
 const SUPERADMIN_PASSWORD = 'E2E-superadmin-fixture-pw-9k4m2!'
+
+// Every IP-keyed rate limiter in the app (lib/rate-limit.ts, createRateLimiter
+// call sites) falls back to the literal identifier 'unknown' when neither
+// x-forwarded-for nor x-real-ip is set -- which is every request this local
+// dev server ever receives, since Playwright hits it directly with no
+// reverse proxy in front. That means all of these share one Redis bucket,
+// per limiter name, across every e2e run forever (Redis persists across dev
+// server restarts) -- not just inbound-email's sender-keyed bucket. Names
+// must match each route's own `name:` in its createRateLimiter() call.
+const IP_KEYED_LIMITER_NAMES = [
+  'trial-signup',
+  'cqc-lookup',
+  'inbound-blog-signup',
+  'inbound-contact',
+  'inbound-demo',
+  'inbound-waitlist',
+  'inbound-optout',
+  'support-content',
+]
+
+/**
+ * Clears the Redis rate-limit buckets that accumulate across e2e runs (see
+ * the "rate limiter" trap in CLAUDE.md). Mirrors this function's own
+ * philosophy for the DB fixture: wipe and recreate rather than trying to
+ * detect and patch partial state.
+ *
+ * UPSTASH_REDIS_REST_URL has no preview/production split (unlike
+ * SUPABASE_PREVIEW_DB_URL / SUPABASE_PRODUCTION_DB_URL) -- it's one Redis
+ * instance shared with production, so this only ever targets identifiers a
+ * real customer could never produce: this fixture's own .invalid sender
+ * address, and the literal 'unknown' IP bucket described above. Never a
+ * blanket flush of the rate-limit namespace.
+ */
+async function clearStaleRateLimitKeys(env: Record<string, string>) {
+  const url = env.UPSTASH_REDIS_REST_URL
+  const token = env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) return // Not configured -- the in-memory fallback limiter resets on its own.
+
+  const redis = new Redis({ url, token })
+
+  const patterns = [
+    `ar:rl:inbound-email*${TEST_EMAIL}*`,
+    ...IP_KEYED_LIMITER_NAMES.map(name => `ar:rl:${name}*unknown*`),
+  ]
+
+  for (const pattern of patterns) {
+    let cursor: string | number = 0
+    do {
+      const [nextCursor, keys] = await redis.scan(cursor, { match: pattern, count: 100 })
+      if (keys.length > 0) await redis.del(...keys)
+      cursor = nextCursor
+    } while (cursor !== '0' && cursor !== 0)
+  }
+}
 
 export async function seed() {
   const env = loadEnvLocal()
@@ -60,6 +115,9 @@ export async function seed() {
   }
 
   const admin = createClient(url, serviceRoleKey)
+
+  // ── Clean slate: stale rate-limit buckets from previous e2e runs ────────
+  await clearStaleRateLimitKeys(env)
 
   // ── Clean slate: remove any previous fixture(s) ─────────────────────────
   // Plural deliberately: .maybeSingle() here used to throw PGRST116 on more
