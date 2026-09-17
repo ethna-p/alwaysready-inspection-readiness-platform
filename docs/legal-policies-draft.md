@@ -5,6 +5,8 @@
 > The Cookie Policy, Acceptable Use Policy, Accessibility Policy and Disclaimer also require the updates noted below.
 >
 > **Session updates (July 2026):** sole trader status (removed "registered at"); AI newsletter tool added to Privacy Policy and T&Cs; readiness score / inspection pack self-assessment language added to Disclaimer and T&Cs; T&Cs acceptance logging added to Privacy Policy; Cancellation Policy updated with 30-day data retention window.
+>
+> **Session updates (September 2026):** the AI newsletter drafting tool was removed from the product. Replaced its Privacy Policy and T&Cs passages below with a description of AlwaysReady's actual current AI usage: internal support-desk draft replies (Anthropic's Claude API, used by our team to draft a reply to a support ticket before review and sending — never user-facing, never used to generate content on an organisation's behalf). Matches the update already live on alwaysready.uk/legal.
 
 ---
 
@@ -90,17 +92,14 @@ We use the data above solely to:
 - Enable your team to track and manage CQC compliance
 - Send transactional communications (account confirmations, support replies, subscription notifications)
 - Respond to support requests
-- Generate AI-assisted newsletter draft text when requested by the organisation admin (see below)
 
 We do not use platform data for marketing purposes. We never sell your data.
 
-#### AI newsletter drafting tool
+#### AI-assisted support replies
 
-The platform includes an AI-assisted newsletter drafting tool available to organisation admins. When used, the content of your newsletter prompt (topics, themes and any text you provide) is processed by Anthropic's Claude API to generate a draft. We do not send newsletters on your behalf — the draft is for you to copy, edit and send through your own preferred channel.
+When a support ticket is received, the AlwaysReady support team may use Anthropic's Claude API to generate a draft reply for internal review before sending. This processing uses only the content of the support ticket.
 
-**Important:** do not enter personal details of residents, patients, families or individual staff members into the newsletter tool. The tool is for generating general compliance communications only.
-
-The Anthropic API is used solely to process newsletter drafting requests and is not used to train AI models on your data. See anthropic.com/privacy for Anthropic's privacy policy.
+The Anthropic API is not used to train AI models on your data. See anthropic.com/privacy for Anthropic's privacy policy.
 
 #### Data you enter on behalf of others
 
@@ -120,7 +119,7 @@ We use the following third-party services to deliver our website and platform. E
 | Stripe | Subscription payment processing | US / UK |
 | Resend | Transactional email delivery | US |
 | Cloudflare Pages | Marketing website hosting | US (global edge) |
-| Anthropic | AI processing for newsletter draft generation (admin feature only) | US |
+| Anthropic | AI processing for internal support desk draft replies | US |
 
 All data transfers outside the UK are protected by appropriate safeguards including UK adequacy decisions, standard contractual clauses, or the UK International Data Transfer Agreement (IDTA).
 
@@ -246,16 +245,7 @@ You may export your organisation's compliance data and evidence files at any tim
 
 ### 10. AI-assisted features
 
-The platform includes an AI-assisted newsletter drafting tool available to organisation admins. Drafts are generated using Anthropic's Claude API based on the topics and content you provide.
-
-By using this feature you agree that:
-
-- You will not enter personal details of residents, patients, families or individual staff members into the drafting tool
-- All AI-generated output is a draft only — you are solely responsible for reviewing, editing and approving any content before use
-- AlwaysReady does not send newsletters or communications on your behalf; the output is for your own use
-- AI-generated content may contain inaccuracies and should not be published without review
-
-AlwaysReady is not liable for any losses or claims arising from the use of AI-generated draft content.
+AlwaysReady uses Anthropic's Claude API for internal support operations, including generating draft replies to support tickets for review by our team before sending. This processing is internal only and does not involve user-facing AI content generation.
 
 ### 11. Service availability
 
