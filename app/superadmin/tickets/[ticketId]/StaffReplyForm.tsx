@@ -28,6 +28,7 @@ const STATUS_OPTIONS = [
 // Templates shown per category
 const DELETION_TEMPLATES: { value: GdprTemplateName; label: string }[] = [
   { value: 'data-deletion-acknowledgement', label: 'Acknowledgement + identity check' },
+  { value: 'data-deletion-completed',       label: 'Deletion completed — confirmation' },
 ]
 
 const SAR_TEMPLATES: { value: GdprTemplateName; label: string }[] = [

@@ -128,6 +128,7 @@ export async function regenerateDraft(ticketId: string): Promise<string | null> 
 
 export type GdprTemplateName =
   | 'data-deletion-acknowledgement'
+  | 'data-deletion-completed'
   | 'sar-acknowledgement'
   | 'sar-fulfilled'
   | 'sar-declined'
@@ -182,6 +183,18 @@ To confirm your identity and proceed, please reply to this email with a short me
 Once we have your confirmation, we will process your request within 30 days as required under UK GDPR Article 17. You will receive a separate email when your data has been deleted.
 
 If you did not submit this request, please let us know immediately by replying to this email so we can protect your account.
+
+If you have any questions, contact us at support@alwaysready.uk.
+
+Kind regards,
+AlwaysReady`
+
+    case 'data-deletion-completed':
+      return `Dear ${firstName},
+
+We are writing to confirm that your data deletion request, received on ${today}, has now been completed in accordance with UK GDPR Article 17.
+
+All personal data associated with your account has been permanently deleted from our systems, including your account details, compliance records, uploaded evidence, and email communication history. Where we are required to retain limited records for legal or accounting purposes (for example, invoices), these are kept only for as long as the law requires and are not used for any other purpose.
 
 If you have any questions, contact us at support@alwaysready.uk.
 
