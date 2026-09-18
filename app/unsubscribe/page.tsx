@@ -70,12 +70,14 @@ export default async function UnsubscribePage({ searchParams }: Props) {
     success: {
       heading: 'You have been unsubscribed.',
       body: isBlogSubscriber
-        ? 'You will no longer receive blog updates from AlwaysReady.'
+        ? 'You will no longer receive blog updates from AlwaysReady. We still hold your email address and subscription record; if you would prefer that deleted entirely rather than kept on an unsubscribed list, use the link below.'
         : 'You will no longer receive tips and updates from AlwaysReady. You will still receive important account and billing notices.',
     },
     already: {
       heading: 'You are already unsubscribed.',
-      body: 'Your email address is not receiving any non-essential emails from AlwaysReady.',
+      body: isBlogSubscriber
+        ? 'Your email address is not receiving any non-essential emails from AlwaysReady. We still hold your email address and subscription record; if you would prefer that deleted entirely, use the link below.'
+        : 'Your email address is not receiving any non-essential emails from AlwaysReady.',
     },
     invalid: {
       heading: 'This link is not valid.',
@@ -86,6 +88,9 @@ export default async function UnsubscribePage({ searchParams }: Props) {
   }
 
   const { heading, body } = messages[status]
+  const deleteDataUrl = email && token
+    ? `/unsubscribe/delete?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`
+    : null
 
   return (
     <div style={{
@@ -138,6 +143,17 @@ export default async function UnsubscribePage({ searchParams }: Props) {
           }}>
             {body}
           </p>
+          {isBlogSubscriber && deleteDataUrl && status !== 'invalid' && (
+            <p style={{
+              margin: '0 0 24px',
+              fontSize: 14,
+              lineHeight: 1.7,
+            }}>
+              <a href={deleteDataUrl} style={{ color: '#b91c1c', textDecoration: 'underline' }}>
+                Delete my data completely instead
+              </a>
+            </p>
+          )}
           <a
             href="https://portal.alwaysready.uk/login"
             style={{
