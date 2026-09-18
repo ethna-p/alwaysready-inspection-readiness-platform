@@ -56,6 +56,7 @@ export async function deleteBlogSubscriberData(email: string, token: string): Pr
 
   const firstName = escapeHtml(getFirstName(subscriber.full_name))
   const defaultDeletionCompletedHtml = `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady blog subscriber data has been deleted</h1>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your AlwaysReady blog subscriber data has been permanently deleted, ${firstName}, in accordance
         with your request.

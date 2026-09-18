@@ -196,6 +196,7 @@ export async function POST(req: NextRequest) {
       console.error('[inbound-contact] blog subscriber upsert error:', subError.message)
     } else {
       const defaultBlogSubscribeHtml = `
+          <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">You're subscribed to the AlwaysReady blog</h1>
           <p>
             Thanks for subscribing to the AlwaysReady blog, ${displayName}. We cover CQC inspection readiness,
             compliance, and governance for care providers. New posts will arrive straight to your inbox.
@@ -239,6 +240,7 @@ export async function POST(req: NextRequest) {
 
   // ── Send auto-responder ───────────────────────────────────────────────────
   const defaultAutoResponderHtml = `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">We've received your message</h1>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch, ${displayName}. We have received your message and will get back to you shortly.
       </p>
