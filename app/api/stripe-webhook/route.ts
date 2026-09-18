@@ -116,6 +116,7 @@ export async function POST(req: NextRequest) {
 
           const firstName = escapeHtml(getFirstName(admin.full_name))
           const defaultSubscriptionActiveHtml = `
+              <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady subscription is now active</h1>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
                 Thank you, ${firstName}. Your subscription is now active and your account will continue without interruption.
               </p>
@@ -232,6 +233,7 @@ export async function POST(req: NextRequest) {
             if (!claim.claimed) return // already sent for this event, or claim failed (logged inside)
 
             const defaultSubscriptionEndedHtml = `
+                <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady subscription has ended</h1>
                 <p>Your AlwaysReady subscription for <strong>${escapeHtml(org.name)}</strong> has ended.</p>
                 <p>Your data is safe and available to download until <strong>${deletionDateStr}</strong>.
                 After that date, it will be permanently deleted.</p>
