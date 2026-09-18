@@ -101,12 +101,14 @@ export default function MobileNav({ isAdmin, hasUnread, isUser, userId }: Props)
             <Link href="/dashboard/peoples-voice" className={NAV_LINK} onClick={() => setOpen(false)}>
               People&apos;s Voice
             </Link>
+            {isAdmin && (
             <Link href="/dashboard/support" className={`${NAV_LINK} flex items-center gap-2`} onClick={() => setOpen(false)}>
               Support
               {hasUnread && (
                 <span className="h-2 w-2 rounded-full bg-red-500 shrink-0" aria-label="Unread reply" />
               )}
             </Link>
+            )}
             <Link href="/dashboard/help" className={NAV_LINK} onClick={() => setOpen(false)}>
               Help
             </Link>

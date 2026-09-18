@@ -15,6 +15,7 @@ import ThemeToggle from './ThemeToggle'
 interface UserMenuProps {
   fullName:  string | null
   hasUnread: boolean
+  isAdmin:   boolean
 }
 
 function getInitials(name: string | null): string {
@@ -24,7 +25,7 @@ function getInitials(name: string | null): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
-export default function UserMenu({ fullName, hasUnread }: UserMenuProps) {
+export default function UserMenu({ fullName, hasUnread, isAdmin }: UserMenuProps) {
   const [open, setOpen] = useState(false)
   const ref  = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -114,6 +115,7 @@ export default function UserMenu({ fullName, hasUnread }: UserMenuProps) {
             Account
           </Link>
 
+          {isAdmin && (
           <Link
             href="/dashboard/support"
             role="menuitem"
@@ -128,6 +130,7 @@ export default function UserMenu({ fullName, hasUnread }: UserMenuProps) {
               <span className="ml-auto h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
             )}
           </Link>
+          )}
 
           <Link
             href="/dashboard/help"

@@ -3,6 +3,7 @@
  */
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { getCurrentUserProfile } from '@/lib/session'
 import { redirect } from 'next/navigation'
 
 const STATUS_LABELS: Record<string, { label: string; colour: string }> = {
@@ -17,6 +18,9 @@ export default async function SupportPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const profile = await getCurrentUserProfile()
+  if (profile?.role !== 'admin') redirect('/dashboard')
 
   const { data: tickets } = await supabase
     .from('support_tickets')

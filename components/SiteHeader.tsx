@@ -153,7 +153,7 @@ export default async function SiteHeader() {
         {/* Desktop: user menu | Mobile: hamburger */}
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-3">
-            <UserMenu fullName={profile?.full_name ?? null} hasUnread={hasUnread} />
+            <UserMenu fullName={profile?.full_name ?? null} hasUnread={hasUnread} isAdmin={isAdmin} />
           </div>
           <MobileNav isAdmin={isAdmin} hasUnread={hasUnread} isUser={isUser} userId={profile?.id} />
         </div>

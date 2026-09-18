@@ -443,8 +443,7 @@ export const USER_EMAILS: UserEmailDef[] = [
         </a>
       </p>
       <p style="margin:0;font-size:16px;line-height:1.7;color:#111111">
-        If you have any questions, use the <strong>Help</strong> tab for guidance by role, or
-        the <strong>Support</strong> tab to reach our team directly.
+        If you have any questions, use the <strong>Help</strong> tab or speak to your account admin.
       </p>
     `,
   },
