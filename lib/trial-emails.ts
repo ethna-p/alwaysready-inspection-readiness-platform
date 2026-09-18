@@ -254,7 +254,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     subject:     'Your AlwaysReady trial ends in 3 days',
     bodyHtml: (firstName, expiryDate, price) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        ${firstName}, your trial ends in <strong>3 days</strong>, on ${expiryDate}. Before you decide,
+        Your trial ends in <strong>3 days</strong>, ${firstName}, on ${expiryDate}. Before you decide,
         here are a few things you might not have had time to explore, each one is included
         in your subscription.
       </p>
@@ -370,7 +370,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     subject:     'Your trial ends tomorrow',
     bodyHtml: (firstName, expiryDate, price) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        ${firstName}, your AlwaysReady trial ends <strong>tomorrow</strong>, on ${expiryDate}.
+        Your AlwaysReady trial ends <strong>tomorrow</strong>, ${firstName}, on ${expiryDate}.
       </p>
       <div style="margin:0 0 16px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
         <p style="margin:0 0 8px;font-size:16px;line-height:1.7;color:#111111">
@@ -407,7 +407,7 @@ export const USER_EMAILS: UserEmailDef[] = [
     subject:  'Welcome to AlwaysReady: here\'s how to get started',
     bodyHtml: (firstName, orgName) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        ${firstName}, you've been added to <strong>${orgName}</strong>'s AlwaysReady account.
+        You've been added to <strong>${orgName}</strong>'s AlwaysReady account, ${firstName}.
         AlwaysReady is an inspection readiness platform that helps adult social care providers
         prepare for a CQC inspection, and you're now part of the team helping to build
         your service's readiness.
@@ -446,7 +446,7 @@ export const USER_EMAILS: UserEmailDef[] = [
     subject:  'A quick check-in on your KLOEs',
     bodyHtml: (firstName) => `
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
-        ${firstName}, you've been on AlwaysReady for a week. We wanted to check in and make sure
+        You've been on AlwaysReady for a week, ${firstName}. We wanted to check in and make sure
         you've had a chance to get started.
       </p>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">

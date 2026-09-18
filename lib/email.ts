@@ -95,6 +95,25 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
             </td>
           </tr>
 
+          <!-- From: circular headshot + name/title, shown on every email so
+               this never again drifts per-template or gets lost behind a
+               stale saved override (see lib/email-templates.ts). -->
+          <tr>
+            <td style="padding:16px 40px 0">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="vertical-align:middle;padding-right:12px">
+                    <img src="https://portal.alwaysready.uk/icons/headshot-ethna-parker.jpg" width="48" height="48" alt="Ethna Parker" style="display:block;border-radius:50%;border:0">
+                  </td>
+                  <td style="vertical-align:middle">
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#111111">Ethna Parker PhD</p>
+                    <p style="margin:0;font-size:13px;color:#6b7280">Founder, AlwaysReady</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
           <!-- Body -->
           <tr>
             <td style="padding:16px 40px 0;color:#111111;font-size:16px;line-height:1.7">

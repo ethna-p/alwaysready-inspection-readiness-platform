@@ -129,9 +129,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['displayName'],
     sampleParams: { displayName: S.displayName },
     sampleHtml: `
-        <p>Hi ${S.displayName},</p>
         <p>
-          Thanks for subscribing to the AlwaysReady blog. We cover CQC inspection readiness,
+          Thanks for subscribing to the AlwaysReady blog, ${S.displayName}. We cover CQC inspection readiness,
           compliance, and governance for care providers. New posts will arrive straight to your inbox.
         </p>
         <p>
@@ -148,8 +147,7 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['displayName'],
     sampleParams: { displayName: S.displayName },
     sampleHtml: `
-        <p>Hi ${S.displayName},</p>
-        <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
+        <p>You're now subscribed to the AlwaysReady blog, ${S.displayName}. We'll send you practical tips,
            sector updates, and inspection-readiness guidance, straight to your inbox.</p>
         <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
       `,
@@ -162,9 +160,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['name'],
     sampleParams: { name: S.name },
     sampleHtml: `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${S.name},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you for getting in touch. We have received your message and will get back to you shortly.
+        Thank you for getting in touch, ${S.name}. We have received your message and will get back to you shortly.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         While you wait, you may find the answer you&rsquo;re looking for in our
@@ -182,8 +179,7 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['displayName'],
     sampleParams: { displayName: S.displayName },
     sampleHtml: `
-          <p>Hi ${S.displayName},</p>
-          <p>Thank you for joining the AlwaysReady waitlist. You're in good company.</p>
+          <p>Thank you for joining the AlwaysReady waitlist, ${S.displayName}. You're in good company.</p>
           <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
              and we'll open to new customers as soon as the framework is published.
              When that happens, you'll be the first to know.</p>
@@ -200,10 +196,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'serviceName', 'expiry', 'setupLink'],
     sampleParams: { firstName: S.firstName, serviceName: S.orgName, expiry: S.expiryDate, setupLink: S.setupLink },
     sampleHtml: `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${S.firstName},</p>
-
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your 14-day free trial of AlwaysReady is ready. Click the button below to
+        Your 14-day free trial of AlwaysReady is ready, ${S.firstName}. Click the button below to
         set your password and get straight into your account.
       </p>
 
@@ -243,9 +237,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'expiryDate', 'deletionDate', 'upgradeUrl'],
     sampleParams: { firstName: S.firstName, expiryDate: S.expiryDate, deletionDate: S.deletionDate, upgradeUrl: S.upgradeUrl },
     sampleHtml: `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${S.firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            Your AlwaysReady trial ended on ${S.expiryDate}. The KLOEs you rated, evidence you
+            Your AlwaysReady trial ended on ${S.expiryDate}, ${S.firstName}. The KLOEs you rated, evidence you
             uploaded, and any HR records or team settings you created are all still there,
             exactly as you left them.
           </p>
@@ -276,9 +269,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName'],
     sampleParams: { firstName: S.firstName },
     sampleHtml: `
-              <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${S.firstName},</p>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-                Thank you. Your subscription is now active and your account will continue without interruption.
+                Thank you, ${S.firstName}. Your subscription is now active and your account will continue without interruption.
               </p>
               <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#1a1a1a">
                 We are delighted to have you on board. If there is anything we can do to help you
@@ -329,9 +321,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'kloeTitle', 'kloUrl'],
     sampleParams: { firstName: S.firstName, kloeTitle: S.kloeTitle, kloUrl: S.kloUrl },
     sampleHtml: `
-            <p style="margin:0 0 16px">Hi ${S.firstName},</p>
             <p style="margin:0 0 16px">
-              You've been assigned a KLOE that needs your attention:
+              You've been assigned a KLOE that needs your attention, ${S.firstName}:
             </p>
             <p style="margin:0 0 24px;padding:16px 20px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px;font-weight:600;color:#014D4E">
               ${S.kloeTitle}
@@ -358,7 +349,6 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['kloeTitle', 'dueDate', 'daysLeft'],
     sampleParams: { kloeTitle: S.kloeTitle, dueDate: S.dueDate, daysLeft: S.daysLeft },
     sampleHtml: `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       This is a reminder that your KLOE review is due in <strong>${S.daysLeft} days</strong>.
     </p>
@@ -392,7 +382,6 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['kloeTitle', 'dueDate'],
     sampleParams: { kloeTitle: S.kloeTitle, dueDate: S.dueDate },
     sampleHtml: `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       A KLOE review assigned to you is now <strong style="color:#dc2626">overdue</strong>.
     </p>
@@ -427,7 +416,6 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['staffName', 'fieldLabel', 'dueDate', 'daysLeft'],
     sampleParams: { staffName: S.staffName, fieldLabel: S.fieldLabel, dueDate: S.dueDate, daysLeft: S.daysLeft },
     sampleHtml: `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       <strong>${S.staffName}</strong>'s <strong>${S.fieldLabel}</strong> is due in <strong>${S.daysLeft} days</strong>.
     </p>
@@ -458,7 +446,6 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['staffName', 'fieldLabel', 'dueDate'],
     sampleParams: { staffName: S.staffName, fieldLabel: S.fieldLabel, dueDate: S.dueDate },
     sampleHtml: `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       <strong>${S.staffName}</strong>'s <strong>${S.fieldLabel}</strong> is now <strong style="color:#dc2626">overdue</strong>.
     </p>
@@ -486,10 +473,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'reference', 'subject'],
     sampleParams: { firstName: S.firstName, reference: S.reference, subject: S.subject },
     sampleHtml: `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${S.firstName},</p>
-
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you for getting in touch. We've received your support request and will get back to you as soon as possible.
+        Thank you for getting in touch, ${S.firstName}. We've received your support request and will get back to you as soon as possible.
       </p>
 
       <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
@@ -512,10 +497,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'message'],
     sampleParams: { firstName: S.firstName, message: S.message },
     sampleHtml: `
-        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${S.firstName},</p>
-
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          Thank you for getting in touch. Here is our response to your enquiry:
+          Thank you for getting in touch, ${S.firstName}. Here is our response to your enquiry:
         </p>
 
         <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px;font-size:15px;line-height:1.7;color:#1a1a1a;white-space:pre-wrap">${S.message}</div>
@@ -534,10 +517,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'reference', 'subject', 'followUpText'],
     sampleParams: { firstName: S.firstName, reference: S.reference, subject: S.subject, followUpText: S.followUpText },
     sampleHtml: `
-            <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${S.firstName},</p>
-
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-              Your support request has been resolved.
+              Your support request has been resolved, ${S.firstName}.
             </p>
 
             <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
@@ -566,10 +547,8 @@ export function getRegistry(): RegisteredTemplate[] {
       adminPassword: S.adminPassword, trialExpiry: S.trialExpiry, charityNote: S.charityNote,
     },
     sampleHtml: `
-        <p style="margin:0 0 16px">Hi ${S.adminName},</p>
-
         <p style="margin:0 0 16px">
-          Welcome to AlwaysReady. Your account for
+          Welcome to AlwaysReady, ${S.adminName}. Your account for
           <strong>${S.orgName}</strong> is ready. You can log in right now.
         </p>
 
@@ -629,9 +608,8 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'orgName', 'deletionDate'],
     sampleParams: { firstName: S.firstName, orgName: S.orgName, deletionDate: S.deletionDate },
     sampleHtml: `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${S.firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            This is a reminder that the data for <strong>${S.orgName}</strong> on AlwaysReady
+            This is a reminder, ${S.firstName}, that the data for <strong>${S.orgName}</strong> on AlwaysReady
             will be permanently deleted on <strong>${S.deletionDate}</strong>, in 3 days.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -659,10 +637,16 @@ export function getRegistry(): RegisteredTemplate[] {
     params: ['firstName', 'orgName'],
     sampleParams: { firstName: S.firstName, orgName: S.orgName },
     sampleHtml: `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${S.firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            As notified, all data associated with <strong>${S.orgName}</strong> on AlwaysReady
+            As notified, ${S.firstName}, all data associated with <strong>${S.orgName}</strong> on AlwaysReady
             has now been permanently deleted in accordance with our data retention policy.
+          </p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            One exception: our payment processor, Stripe, is legally required to retain certain billing and
+            transaction records for a period after your subscription ends, as required under UK tax and
+            financial record-keeping law. Stripe holds this independently of AlwaysReady; we do not have
+            access to it once your account is deleted, and it is not used for anything beyond Stripe's own
+            legal obligations.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             If you'd like to start a new account in the future, you're very welcome to do so.
@@ -675,13 +659,38 @@ export function getRegistry(): RegisteredTemplate[] {
   })
 
   entries.push({
+    id: 'blog_subscriber_deletion_completed',
+    label: 'Blog subscriber data deletion completed (self-service)',
+    group: 'Website',
+    params: ['firstName'],
+    sampleParams: { firstName: S.firstName },
+    sampleHtml: `
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        Your AlwaysReady blog subscriber data has been permanently deleted, ${S.firstName}, in accordance
+        with your request.
+      </p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        This includes your email address, name, and subscription record. No copies are retained,
+        and you will not receive any further emails from us unless you subscribe again in future.
+      </p>
+      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If you would like to subscribe again at any point, you are very welcome to do so
+        at <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.
+      </p>
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
+        If you have any questions about this deletion, contact us at
+        <a href="mailto:support@alwaysready.uk" style="color:#014D4E">support@alwaysready.uk</a>.
+      </p>
+    `,
+  })
+
+  entries.push({
     id: 'notification_reconfirmation',
     label: 'Notification re-confirmation check-in',
     group: 'Account',
     params: ['notificationsList'],
     sampleParams: { notificationsList: S.notificationsList },
     sampleHtml: `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       You're currently receiving these AlwaysReady email notifications:
     </p>
