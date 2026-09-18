@@ -151,6 +151,7 @@ export async function provisionOrganisation(
         ` : ''
 
     const defaultProvisionWelcomeHtml = `
+        <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Welcome to AlwaysReady: your login details</h1>
         <p style="margin:0 0 16px">
           Welcome to AlwaysReady, ${adminName}. Your account for
           <strong>${orgName}</strong> is ready. You can log in right now.

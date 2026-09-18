@@ -118,6 +118,7 @@ function digestHtml({
   ].filter(Boolean).join('')
 
   return `
+    <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Weekly governance digest</h1>
     <p style="margin:0 0 16px">
       Here is your weekly governance summary for <strong>${orgName}</strong>: ${reportDate}.
     </p>

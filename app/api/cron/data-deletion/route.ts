@@ -97,6 +97,7 @@ export async function GET(request: Request) {
       const firstName = escapeHtml(getFirstName(admin.full_name))
 
       const defaultDeletionReminderHtml = `
+          <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Reminder: your AlwaysReady data will be deleted in 3 days</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             This is a reminder, ${firstName}, that the data for <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
             will be permanently deleted on <strong>${deletionDate}</strong>, in 3 days.
@@ -214,6 +215,7 @@ export async function GET(request: Request) {
       if (!admin.email) continue
       const firstName = escapeHtml(getFirstName(admin.full_name))
       const defaultDeletionCompletedHtml = `
+          <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady data has been deleted</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             As notified, ${firstName}, all data associated with <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
             has now been permanently deleted in accordance with our data retention policy.

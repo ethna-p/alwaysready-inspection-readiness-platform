@@ -144,6 +144,7 @@ export async function changePassword(
     })
 
     const defaultPasswordChangedHtml = `
+        <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady password has been changed</h1>
         <p>Your AlwaysReady password was successfully changed on <strong>${now}</strong>.</p>
         <p style="color:#555;font-size:14px">If you made this change, there is nothing further for you to do. If it wasn't you, change your password immediately or contact your local admin manager.</p>
       `
