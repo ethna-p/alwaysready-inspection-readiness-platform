@@ -61,6 +61,7 @@ export async function submitTicket(
   // Send auto-responder to the submitter
   const firstName = getFirstName(profileDetails?.full_name)
   const defaultTicketReceivedHtml = `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">We've received your support request</h1>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch, ${escapeHtml(firstName)}. We've received your support request and will get back to you as soon as possible.
       </p>

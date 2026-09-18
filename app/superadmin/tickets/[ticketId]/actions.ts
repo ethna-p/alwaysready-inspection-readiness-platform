@@ -56,6 +56,7 @@ export async function staffReply(
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
     const firstName = escapeHtml(getFirstName(ticket.external_name))
     const defaultTicketReplyHtml = `
+        <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Reply to your support request</h1>
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
           Thank you for getting in touch, ${firstName}. Here is our response to your enquiry:
         </p>
@@ -313,6 +314,7 @@ export async function updateTicketStatus(ticketId: string, status: string) {
           : `If your issue has not been fully resolved or you have a follow-up question, please open a new support ticket from the <strong>Support</strong> section inside the platform and we'll be happy to help.`
 
         const defaultTicketResolvedHtml = `
+            <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your support request has been resolved</h1>
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
               Your support request has been resolved, ${firstName}.
             </p>
