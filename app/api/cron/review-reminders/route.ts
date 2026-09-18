@@ -50,6 +50,7 @@ function formatDate(dateStr: string): string {
 
 function kloeDueSoonHtml(kloeTitle: string, dueDate: string, daysLeft: number): string {
   return `
+    <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">KLOE review due soon</h1>
     <p style="margin:0 0 16px">
       This is a reminder that your KLOE review is due in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong>.
     </p>
@@ -78,6 +79,7 @@ function kloeDueSoonHtml(kloeTitle: string, dueDate: string, daysLeft: number): 
 
 function kloeOverdueHtml(kloeTitle: string, dueDate: string): string {
   return `
+    <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Overdue KLOE review</h1>
     <p style="margin:0 0 16px">
       A KLOE review assigned to you is now <strong style="color:#dc2626">overdue</strong>.
     </p>
@@ -113,6 +115,7 @@ function hrDueSoonHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: str
   const staffName  = escapeHtml(staffNameRaw)
   const fieldLabel = escapeHtml(fieldLabelRaw)
   return `
+    <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">HR record due soon</h1>
     <p style="margin:0 0 16px">
       <strong>${staffName}</strong>'s <strong>${fieldLabel}</strong> is due in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong>.
     </p>
@@ -140,6 +143,7 @@ function hrOverdueHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: str
   const staffName  = escapeHtml(staffNameRaw)
   const fieldLabel = escapeHtml(fieldLabelRaw)
   return `
+    <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">HR record overdue</h1>
     <p style="margin:0 0 16px">
       An HR review is now <strong style="color:#dc2626">overdue</strong>.
     </p>
