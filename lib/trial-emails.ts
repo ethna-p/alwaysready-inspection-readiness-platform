@@ -66,6 +66,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Welcome to AlwaysReady',
     bodyHtml: (firstName) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Welcome to AlwaysReady</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Welcome to AlwaysReady, ${firstName}: your 14-day trial is live and your account is ready to go.
       </p>
@@ -96,6 +97,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Three things worth trying',
     bodyHtml: (firstName) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Three things worth trying</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Now you've had a couple of days to settle in, ${firstName}, a few things worth trying.
       </p>
@@ -123,6 +125,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'How are you getting on?',
     bodyHtml: (firstName) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">How are you getting on?</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Five days in, ${firstName}, how's it going?
       </p>
@@ -195,6 +198,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
           : `You've already made a start. Well done. Here's where things stand and what's still worth exploring before your trial ends.`
 
       return `
+        <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">You're halfway through your trial</h1>
         <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
           Halfway through, ${firstName}: seven days down, seven to go.
         </p>
@@ -223,6 +227,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: false,
     subject:     'Five days left: things worth finding before you go',
     bodyHtml: (firstName) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Five days left: things worth finding before you go</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Five days left, ${firstName}: a few things that are easy to miss but worth finding before your trial ends.
       </p>
@@ -253,6 +258,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your AlwaysReady trial ends in 3 days',
     bodyHtml: (firstName, expiryDate, price) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady trial ends in 3 days</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Your trial ends in <strong>3 days</strong>, ${firstName}, on ${expiryDate}. Before you decide,
         here are a few things you might not have had time to explore, each one is included
@@ -369,6 +375,7 @@ export const TRIAL_EMAILS: TrialEmailDef[] = [
     isMarketing: true,
     subject:     'Your trial ends tomorrow',
     bodyHtml: (firstName, expiryDate, price) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your trial ends tomorrow</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         Your AlwaysReady trial ends <strong>tomorrow</strong>, ${firstName}, on ${expiryDate}.
       </p>
@@ -406,6 +413,7 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 1,
     subject:  'Welcome to AlwaysReady: here\'s how to get started',
     bodyHtml: (firstName, orgName) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Welcome to AlwaysReady: here's how to get started</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         You've been added to <strong>${orgName}</strong>'s AlwaysReady account, ${firstName}.
         AlwaysReady is an inspection readiness platform that helps adult social care providers
@@ -445,6 +453,7 @@ export const USER_EMAILS: UserEmailDef[] = [
     dayIndex: 7,
     subject:  'A quick check-in on your KLOEs',
     bodyHtml: (firstName) => `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">A quick check-in on your KLOEs</h1>
       <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111111">
         You've been on AlwaysReady for a week, ${firstName}. We wanted to check in and make sure
         you've had a chance to get started.
