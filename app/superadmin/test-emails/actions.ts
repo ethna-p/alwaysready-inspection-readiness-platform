@@ -43,6 +43,26 @@ export type EmailGroup =
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+/**
+ * Sends a batch of test emails one at a time, in order, with a short delay
+ * between each. Email delivery has no ordering guarantee for near-simultaneous
+ * sends (each is an independent transmission), so firing a whole group via
+ * Promise.all can land in the recipient's inbox in a different order than
+ * sent. Sequential sends with a gap between them keep the "sent at"
+ * timestamps monotonic, so the inbox order matches the intended sequence.
+ */
+async function sendSequential(
+  thunks: Array<() => Promise<TestEmailResult>>,
+  delayMs = 400,
+): Promise<TestEmailResult[]> {
+  const results: TestEmailResult[] = []
+  for (const thunk of thunks) {
+    results.push(await thunk())
+    await new Promise(resolve => setTimeout(resolve, delayMs))
+  }
+  return results
+}
+
 async function makeSender(to: string) {
   return async function send(
     subject: string,
@@ -68,20 +88,18 @@ async function makeSender(to: string) {
 // ── Group senders ─────────────────────────────────────────────────────────────
 
 async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
-  return Promise.all([
-    send("You're on the AlwaysReady waitlist", `
-      <p>Hi ${FIRST_NAME},</p>
-      <p>Thank you for joining the AlwaysReady waitlist.</p>
+  return sendSequential([
+    () => send("You're on the AlwaysReady waitlist", `
+      <p>Thank you for joining the AlwaysReady waitlist, ${FIRST_NAME}.</p>
       <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
          and we'll open to new customers as soon as the framework is published.
          When that happens, you'll be the first to know.</p>
       <p>If you have any questions in the meantime, you can reach us at
          <a href="https://alwaysready.uk/contact" style="color:#014D4E">alwaysready.uk/contact</a>.</p>
     `),
-    send("We've received your message", `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
+    () => send("We've received your message", `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you for getting in touch. We have received your message and will get back to you shortly.
+        Thank you for getting in touch, ${FIRST_NAME}. We have received your message and will get back to you shortly.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         While you wait, you may find the answer you&rsquo;re looking for in our
@@ -90,9 +108,8 @@ async function sendWebsite(send: Awaited<ReturnType<typeof makeSender>>) {
         on every page in the bottom-right corner of most pages on the AlwaysReady website.
       </p>
     `),
-    send("You're subscribed to the AlwaysReady blog", `
-      <p>Hi ${FIRST_NAME},</p>
-      <p>Thanks for subscribing to the AlwaysReady blog. We cover CQC inspection readiness,
+    () => send("You're subscribed to the AlwaysReady blog", `
+      <p>Thanks for subscribing to the AlwaysReady blog, ${FIRST_NAME}. We cover CQC inspection readiness,
          compliance, and governance for care providers. New posts will arrive straight to your inbox.</p>
       <p>You can browse everything we've published so far at
          <a href="https://alwaysready.uk/blog" style="color:#014D4E">alwaysready.uk/blog</a>.</p>
@@ -107,9 +124,8 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
   results.push(await send(
     "[Day 0] Your AlwaysReady trial is ready: set your password to get started",
     `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your 14-day free trial of AlwaysReady is ready. Click the button below to
+        Your 14-day free trial of AlwaysReady is ready, ${FIRST_NAME}. Click the button below to
         set your password and get straight into your account.
       </p>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -131,6 +147,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       </p>
     `,
   ))
+  await new Promise(resolve => setTimeout(resolve, 400))
 
   // Trial sequence (days 1-13) and user team emails: from lib/trial-emails.ts
   for (const email of TRIAL_EMAILS) {
@@ -140,6 +157,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       email.bodyHtml(FIRST_NAME, EXPIRY_DATE, '£75'),
     )
     results.push(await send(email.subject, bodyHtml, email.isMarketing ? 'marketing' : 'transactional'))
+    await new Promise(resolve => setTimeout(resolve, 400))
   }
   for (const email of USER_EMAILS) {
     const bodyHtml = await renderTemplate(
@@ -148,6 +166,7 @@ async function sendTrial(send: Awaited<ReturnType<typeof makeSender>>) {
       email.bodyHtml(FIRST_NAME, ORG_NAME),
     )
     results.push(await send(email.subject, bodyHtml))
+    await new Promise(resolve => setTimeout(resolve, 400))
   }
 
   return results
@@ -170,9 +189,8 @@ async function sendOnboarding(send: Awaited<ReturnType<typeof makeSender>>) {
 }
 
 async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
-  return Promise.all([
-    send(`We've received your support request: ${REF}`, `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
+  return sendSequential([
+    () => send(`We've received your support request: ${REF}`, `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Thank you for getting in touch. We've received your support request and will get back to you as soon as possible.
       </p>
@@ -186,10 +204,9 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
         inside AlwaysReady to view your request and any replies.
       </p>
     `),
-    send(`Re: Unable to upload evidence documents [${REF}]`, `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
+    () => send(`Re: Unable to upload evidence documents [${REF}]`, `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you for getting in touch. Here is our response to your enquiry:
+        Here is our response to your enquiry, ${FIRST_NAME}:
       </p>
       <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Evidence uploads accept .pdf, .docx, .xlsx, .jpg, .jpeg, and .png files. Please ensure your document
@@ -197,10 +214,9 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
         type you are trying to upload and we will look into it further.
       </div>
     `),
-    send(`Your support request has been resolved [${REF}]`, `
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
+    () => send(`Your support request has been resolved [${REF}]`, `
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Your support request has been resolved.
+        Your support request has been resolved, ${FIRST_NAME}.
       </p>
       <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">
         <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.05em">Resolved request</p>
@@ -216,10 +232,9 @@ async function sendSupport(send: Awaited<ReturnType<typeof makeSender>>) {
 }
 
 async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
-  return Promise.all([
-    send(`You've been assigned a KLOE: ${KLOE_TITLE}`, `
-      <p style="margin:0 0 16px">Hi ${FIRST_NAME},</p>
-      <p style="margin:0 0 16px">You've been assigned a KLOE that needs your attention:</p>
+  return sendSequential([
+    () => send(`You've been assigned a KLOE: ${KLOE_TITLE}`, `
+      <p style="margin:0 0 16px">You've been assigned a KLOE that needs your attention, ${FIRST_NAME}:</p>
       <p style="margin:0 0 24px;padding:16px 20px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px;font-weight:600;color:#014D4E">
         ${KLOE_TITLE}
       </p>
@@ -231,8 +246,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send(`KLOE review due in 7 days: ${KLOE_TITLE}`, `
-      <p style="margin:0 0 16px">Hi,</p>
+    () => send(`KLOE review due in 7 days: ${KLOE_TITLE}`, `
       <p style="margin:0 0 16px">This is a reminder that your KLOE review is due in <strong>7 days</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
         <tr>
@@ -249,8 +263,7 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send(`Overdue KLOE review: ${KLOE_TITLE}`, `
-      <p style="margin:0 0 16px">Hi,</p>
+    () => send(`Overdue KLOE review: ${KLOE_TITLE}`, `
       <p style="margin:0 0 16px">A KLOE review is now <strong style="color:#dc2626">overdue</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
         <tr>
@@ -275,9 +288,8 @@ async function sendKloe(send: Awaited<ReturnType<typeof makeSender>>) {
 }
 
 async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
-  return Promise.all([
-    send(`${STAFF_NAME}: DBS Check due in 30 days`, `
-      <p style="margin:0 0 16px">Hi,</p>
+  return sendSequential([
+    () => send(`${STAFF_NAME}: DBS Check due in 30 days`, `
       <p style="margin:0 0 16px"><strong>${STAFF_NAME}</strong>'s <strong>DBS Check</strong> is due in <strong>30 days</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
         <tr>
@@ -294,8 +306,7 @@ async function sendHr(send: Awaited<ReturnType<typeof makeSender>>) {
         </a>
       </p>
     `),
-    send(`${STAFF_NAME}: DBS Check is overdue`, `
-      <p style="margin:0 0 16px">Hi,</p>
+    () => send(`${STAFF_NAME}: DBS Check is overdue`, `
       <p style="margin:0 0 16px">An HR review is now <strong style="color:#dc2626">overdue</strong>.</p>
       <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
         <tr>
@@ -357,9 +368,8 @@ async function sendAccount(send: Awaited<ReturnType<typeof makeSender>>) {
   // templates in the Supabase dashboard; they are not sent by platform code.
   return Promise.all([
     send('Welcome to AlwaysReady: your login details', `
-      <p style="margin:0 0 16px">Hi ${FIRST_NAME},</p>
       <p style="margin:0 0 16px">
-        Welcome to AlwaysReady. Your account for <strong>${ORG_NAME}</strong> is ready.
+        Welcome to AlwaysReady, ${FIRST_NAME}. Your account for <strong>${ORG_NAME}</strong> is ready.
       </p>
       <table role="presentation" cellspacing="0" cellpadding="0" border="0"
         style="background:#f5f5f0;border-radius:6px;padding:20px 24px;margin:0 0 24px;width:100%">
@@ -395,15 +405,14 @@ async function sendDataDeletion(
   send: Awaited<ReturnType<typeof makeSender>>,
 ): Promise<TestEmailResult[]> {
   const deletionDate = '23 September 2026'
-  return Promise.all([
+  return sendSequential([
 
     // 1. Request received: identity verification (user-initiated)
-    send(
+    () => send(
       'We have received your data deletion request: AlwaysReady',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          Thank you for your data deletion request, received on
+          Thank you for your data deletion request, ${FIRST_NAME}, received on
           <strong>${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>.
           We will process it in accordance with the UK GDPR and our
           <a href="${PLATFORM_URL}/legal#privacy" style="color:#014D4E">Privacy Policy</a>.
@@ -438,12 +447,11 @@ async function sendDataDeletion(
     ),
 
     // 2. 3-day warning (automated, scheduled account deletion)
-    send(
+    () => send(
       'Reminder: your AlwaysReady data will be deleted in 3 days',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          This is a reminder that the data for <strong>${ORG_NAME}</strong> on AlwaysReady
+          This is a reminder, ${FIRST_NAME}, that the data for <strong>${ORG_NAME}</strong> on AlwaysReady
           will be permanently deleted on <strong>${deletionDate}</strong>, in 3 days.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -464,17 +472,23 @@ async function sendDataDeletion(
     ),
 
     // 3. Deletion confirmed
-    send(
+    () => send(
       'Your AlwaysReady data has been deleted',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          All data associated with <strong>${ORG_NAME}</strong> on AlwaysReady
+          All data associated with <strong>${ORG_NAME}</strong> on AlwaysReady, ${FIRST_NAME},
           has now been permanently deleted in accordance with our data retention policy and your request.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           This includes your account, team member profiles, compliance records, evidence files, HR data,
           and all other information held within your workspace. No copies are retained.
+        </p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+          One exception: our payment processor, Stripe, is legally required to retain certain billing and
+          transaction records for a period after your subscription ends, as required under UK tax and
+          financial record-keeping law. Stripe holds this independently of AlwaysReady; we do not have
+          access to it once your account is deleted, and it is not used for anything beyond Stripe's own
+          legal obligations.
         </p>
         <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
           If you would like to start a new account in the future, you are very welcome to do so
@@ -496,15 +510,14 @@ async function sendSubjectAccessRequest(
   const receivedDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
   const deadlineDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  return Promise.all([
+  return sendSequential([
 
     // 1. Acknowledgement: identity verification required
-    send(
+    () => send(
       'We have received your subject access request: AlwaysReady',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          Thank you for your subject access request (SAR), received on <strong>${receivedDate}</strong>.
+          Thank you for your subject access request (SAR), ${FIRST_NAME}, received on <strong>${receivedDate}</strong>.
           Under UK GDPR Article 15, you have the right to receive a copy of the personal data we hold about you.
           We will respond no later than <strong>${deadlineDate}</strong>.
         </p>
@@ -536,12 +549,11 @@ async function sendSubjectAccessRequest(
     ),
 
     // 2. SAR fulfilled: data pack provided
-    send(
+    () => send(
       'Your AlwaysReady data: subject access request fulfilled',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          We have verified your identity and are writing to fulfil your subject access request, received on <strong>${receivedDate}</strong>.
+          We have verified your identity, ${FIRST_NAME}, and are writing to fulfil your subject access request, received on <strong>${receivedDate}</strong>.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           The personal data we hold about you is set out below. You can also download a full copy of your data by logging in to your account and using the <strong>Export my data</strong> button on the Account page.
@@ -581,12 +593,11 @@ async function sendSubjectAccessRequest(
     ),
 
     // 3. SAR declined: unable to verify identity
-    send(
+    () => send(
       'Your subject access request: AlwaysReady',
       `
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${FIRST_NAME},</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          We are writing regarding your subject access request received on <strong>${receivedDate}</strong>.
+          We are writing to you, ${FIRST_NAME}, regarding your subject access request received on <strong>${receivedDate}</strong>.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           Unfortunately, we have been unable to fulfil your request at this time. We are required to verify the identity of anyone making a subject access request before releasing personal data. We did not receive a satisfactory response to our identity verification request.
