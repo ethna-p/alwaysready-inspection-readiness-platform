@@ -97,9 +97,8 @@ export async function GET(request: Request) {
       const firstName = escapeHtml(getFirstName(admin.full_name))
 
       const defaultDeletionReminderHtml = `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            This is a reminder that the data for <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
+            This is a reminder, ${firstName}, that the data for <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
             will be permanently deleted on <strong>${deletionDate}</strong>, in 3 days.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
@@ -215,10 +214,16 @@ export async function GET(request: Request) {
       if (!admin.email) continue
       const firstName = escapeHtml(getFirstName(admin.full_name))
       const defaultDeletionCompletedHtml = `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            As notified, all data associated with <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
+            As notified, ${firstName}, all data associated with <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
             has now been permanently deleted in accordance with our data retention policy.
+          </p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
+            One exception: our payment processor, Stripe, is legally required to retain certain billing and
+            transaction records for a period after your subscription ends, as required under UK tax and
+            financial record-keeping law. Stripe holds this independently of AlwaysReady; we do not have
+            access to it once your account is deleted, and it is not used for anything beyond Stripe's own
+            legal obligations.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             If you'd like to start a new account in the future, you're very welcome to do so.

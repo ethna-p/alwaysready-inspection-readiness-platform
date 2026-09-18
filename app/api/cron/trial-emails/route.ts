@@ -216,9 +216,8 @@ export async function GET(request: Request) {
       const upgradeUrl   = `${PLATFORM_URL}/upgrade`
 
       const defaultLapsedHtml = `
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-            Your AlwaysReady trial ended on ${expiryDate}. The KLOEs you rated, evidence you
+            Your AlwaysReady trial ended on ${expiryDate}, ${firstName}. The KLOEs you rated, evidence you
             uploaded, and any HR records or team settings you created are all still there,
             exactly as you left them.
           </p>

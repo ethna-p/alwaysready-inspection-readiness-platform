@@ -118,7 +118,6 @@ function digestHtml({
   ].filter(Boolean).join('')
 
   return `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       Here is your weekly governance summary for <strong>${orgName}</strong>: ${reportDate}.
     </p>

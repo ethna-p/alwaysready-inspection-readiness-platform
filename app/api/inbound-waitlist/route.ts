@@ -238,8 +238,7 @@ export async function POST(req: NextRequest) {
     } else {
       // Simple auto-responder for non-nurture leads
       const defaultWaitlistSignupHtml = `
-          <p>Hi ${escapeHtml(displayName)},</p>
-          <p>Thank you for joining the AlwaysReady waitlist. You're in good company.</p>
+          <p>Thank you for joining the AlwaysReady waitlist, ${escapeHtml(displayName)}. You're in good company.</p>
           <p>We're building AlwaysReady around the new CQC Adult Social Care Assessment Framework,
              and we'll open to new customers as soon as the framework is published.
              When that happens, you'll be the first to know.</p>
@@ -261,8 +260,7 @@ export async function POST(req: NextRequest) {
   // ── Send blog subscription confirmation ───────────────────────────────────
   if (subscribedToBlog) {
     const defaultBlogSubscribeWaitlistHtml = `
-        <p>Hi ${escapeHtml(displayName)},</p>
-        <p>You're now subscribed to the AlwaysReady blog. We'll send you practical tips,
+        <p>You're now subscribed to the AlwaysReady blog, ${escapeHtml(displayName)}. We'll send you practical tips,
            sector updates, and inspection-readiness guidance, straight to your inbox.</p>
         <p>You can unsubscribe at any time by clicking the unsubscribe link in any of our emails.</p>
       `

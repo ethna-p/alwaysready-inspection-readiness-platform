@@ -307,9 +307,8 @@ export async function POST(req: NextRequest) {
   // Auto-responder for new tickets
   const firstName = getFirstName(fromName)
   const defaultAutoResponderHtml = `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${escapeHtml(firstName)},</p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        Thank you for getting in touch. We have received your message and will get back to you shortly.
+        Thank you for getting in touch, ${escapeHtml(firstName)}. We have received your message and will get back to you shortly.
       </p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#1a1a1a">
         While you wait, you may find the answer you&rsquo;re looking for in our

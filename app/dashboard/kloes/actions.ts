@@ -254,9 +254,8 @@ export async function assignKloe(
         const kloUrl = `${baseUrl}/dashboard/kloes/${kloItemId}`
 
         const defaultKloeAssignedHtml = `
-            <p style="margin:0 0 16px">Hi ${firstName},</p>
             <p style="margin:0 0 16px">
-              You've been assigned a KLOE that needs your attention:
+              You've been assigned a KLOE that needs your attention, ${firstName}:
             </p>
             <p style="margin:0 0 24px;padding:16px 20px;background:#f0fdfb;border-left:4px solid #00b8a6;border-radius:4px;font-weight:600;color:#014D4E">
               ${klo.title}

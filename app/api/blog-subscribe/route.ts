@@ -102,10 +102,8 @@ export async function POST(req: NextRequest) {
 
     // ── Welcome email to subscriber ─────────────────────────────────────────
     const defaultBlogSubscribeHtml = `
-        <p>Hi ${displayName},</p>
-
         <p>
-          Thanks for subscribing to the AlwaysReady blog. We cover CQC inspection readiness,
+          Thanks for subscribing to the AlwaysReady blog, ${displayName}. We cover CQC inspection readiness,
           compliance, and governance for care providers. New posts will arrive straight to your inbox.
         </p>
 

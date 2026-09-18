@@ -56,10 +56,8 @@ export async function staffReply(
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
     const firstName = escapeHtml(getFirstName(ticket.external_name))
     const defaultTicketReplyHtml = `
-        <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Dear ${firstName},</p>
-
         <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-          Thank you for getting in touch. Here is our response to your enquiry:
+          Thank you for getting in touch, ${firstName}. Here is our response to your enquiry:
         </p>
 
         <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px;font-size:15px;line-height:1.7;color:#1a1a1a;white-space:pre-wrap">${message}</div>
@@ -315,10 +313,8 @@ export async function updateTicketStatus(ticketId: string, status: string) {
           : `If your issue has not been fully resolved or you have a follow-up question, please open a new support ticket from the <strong>Support</strong> section inside the platform and we'll be happy to help.`
 
         const defaultTicketResolvedHtml = `
-            <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
-
             <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
-              Your support request has been resolved.
+              Your support request has been resolved, ${firstName}.
             </p>
 
             <div style="margin:0 0 24px;padding:16px 20px;background:#f5f4f1;border-left:4px solid #014D4E;border-radius:4px">

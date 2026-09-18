@@ -116,9 +116,8 @@ export async function POST(req: NextRequest) {
 
           const firstName = escapeHtml(getFirstName(admin.full_name))
           const defaultSubscriptionActiveHtml = `
-              <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">Hi ${firstName},</p>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-                Thank you. Your subscription is now active and your account will continue without interruption.
+                Thank you, ${firstName}. Your subscription is now active and your account will continue without interruption.
               </p>
               <p style="margin:0 0 32px;font-size:15px;line-height:1.7;color:#1a1a1a">
                 We are delighted to have you on board. If there is anything we can do to help you

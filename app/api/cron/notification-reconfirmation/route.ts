@@ -27,7 +27,6 @@ const RECONFIRM_AFTER_DAYS = 35 // midpoint of the 4-6 week window
 
 function reconfirmationHtml(notificationsList: string): string {
   return `
-    <p style="margin:0 0 16px">Hi,</p>
     <p style="margin:0 0 16px">
       You're currently receiving these AlwaysReady email notifications:
     </p>
