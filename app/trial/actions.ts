@@ -304,6 +304,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // ── 10. Send branded welcome email ────────────────────────────────────────────
   const trialWelcomeParams = { firstName: escapeHtml(firstName), serviceName: escapeHtml(serviceName.trim()), expiry, setupLink }
   const defaultTrialWelcomeHtml = `
+      <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady trial is ready</h1>
       <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">
         Your 14-day free trial of AlwaysReady is ready, ${trialWelcomeParams.firstName}. Click the button below to
         set your password and get straight into your account.
