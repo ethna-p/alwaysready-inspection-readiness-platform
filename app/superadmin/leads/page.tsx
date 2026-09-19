@@ -22,13 +22,17 @@ export default async function SuperadminLeadsPage() {
 
   const { data: demoLeads } = await supabase
     .from('demo_leads')
-    .select('id, service_type, cqc_rating, demo_type, created_at')
+    .select('id, service_type, cqc_rating, demo_type, email, created_at')
     .order('created_at', { ascending: false })
 
   const { data: zeegBookings } = await supabase
     .from('zeeg_bookings')
     .select('id, invitee_email, invitee_name, demo_type, booked_at, cancelled, created_at')
     .order('created_at', { ascending: false })
+
+  const bookedEmails = new Set(
+    (zeegBookings ?? []).map(b => b.invitee_email?.toLowerCase()).filter(Boolean)
+  )
 
   const { data: blogSubscribers } = await supabase
     .from('blog_subscribers')
@@ -234,6 +238,7 @@ export default async function SuperadminLeadsPage() {
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Service type</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">CQC rating</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Date</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
                   <th></th>
                 </tr>
               </thead>
@@ -256,6 +261,18 @@ export default async function SuperadminLeadsPage() {
                       <td className="px-5 py-3.5 font-medium text-ink">{lead.service_type}</td>
                       <td className="px-5 py-3.5 text-ink-muted">{lead.cqc_rating ?? '—'}</td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">{date}</td>
+                      <td className="px-5 py-3.5 text-ink-muted text-xs">
+                        {lead.email ? (
+                          <span className="flex items-center gap-2">
+                            {lead.email}
+                            {bookedEmails.has(lead.email.toLowerCase()) && (
+                              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Booked</span>
+                            )}
+                          </span>
+                        ) : (
+                          <span className="text-ink-subtle">—</span>
+                        )}
+                      </td>
                       <td className="px-5 py-3.5 text-right">
                         <DeleteDemoLeadButton id={lead.id} />
                       </td>

@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
   const serviceType = (body.service_type ?? '').trim()
   const cqcRating   = (body.cqc_rating   ?? '').trim() || null
   const demoType    = (body.demo_type    ?? '').trim()
+  const email       = (body.email        ?? '').trim() || null
 
   if (!serviceType || !demoType) {
     return NextResponse.json(
@@ -69,7 +70,7 @@ export async function POST(req: NextRequest) {
   // ── Save to demo_leads ────────────────────────────────────────────────────
   const { error: insertError } = await supabase
     .from('demo_leads')
-    .insert({ service_type: serviceType, cqc_rating: cqcRating, demo_type: demoType })
+    .insert({ service_type: serviceType, cqc_rating: cqcRating, demo_type: demoType, email })
 
   if (insertError) {
     console.error('[inbound-demo] insert error:', insertError.message)
