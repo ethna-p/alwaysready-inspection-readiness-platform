@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400, headers: CORS_HEADERS })
   }
 
+  const name        = (body.name         ?? '').trim() || null
   const serviceType = (body.service_type ?? '').trim()
   const cqcRating   = (body.cqc_rating   ?? '').trim() || null
   const demoType    = (body.demo_type    ?? '').trim()
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
   // ── Save to demo_leads ────────────────────────────────────────────────────
   const { error: insertError } = await supabase
     .from('demo_leads')
-    .insert({ service_type: serviceType, cqc_rating: cqcRating, demo_type: demoType, email })
+    .insert({ service_type: serviceType, cqc_rating: cqcRating, demo_type: demoType, email, name })
 
   if (insertError) {
     console.error('[inbound-demo] insert error:', insertError.message)

@@ -22,7 +22,7 @@ export default async function SuperadminLeadsPage() {
 
   const { data: demoLeads } = await supabase
     .from('demo_leads')
-    .select('id, service_type, cqc_rating, demo_type, email, created_at')
+    .select('id, service_type, cqc_rating, demo_type, email, name, created_at')
     .order('created_at', { ascending: false })
 
   const { data: zeegBookings } = await supabase
@@ -194,7 +194,7 @@ export default async function SuperadminLeadsPage() {
                   return (
                     <tr key={lead.id} className="hover:bg-fill transition-colors">
                       <td className="px-5 py-3.5 font-medium text-ink">
-                        {booking?.invitee_name ?? <span className="text-ink-subtle">—</span>}
+                        {lead.name ?? <span className="text-ink-subtle">—</span>}
                       </td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">
                         {lead.email ?? <span className="text-ink-subtle">—</span>}
