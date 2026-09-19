@@ -8,6 +8,7 @@ import DeleteLeadButton               from './DeleteLeadButton'
 import DeleteSubscriberButton          from './DeleteSubscriberButton'
 import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
 import AddZeegBookingForm             from './AddZeegBookingForm'
+import EditScheduledAtButton          from './EditScheduledAtButton'
 import DeletePipelineRowButton        from './DeletePipelineRowButton'
 
 export const dynamic = 'force-dynamic'
@@ -241,7 +242,15 @@ export default async function SuperadminLeadsPage() {
                       <td className="px-5 py-3.5 text-ink">{row.service_type ?? <span className="text-ink-subtle">—</span>}</td>
                       <td className="px-5 py-3.5 text-ink-muted">{row.cqc_rating ?? <span className="text-ink-subtle">—</span>}</td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">
-                        {scheduledAt ?? <span className="text-ink-subtle">—</span>}
+                        <span className="inline-flex items-center">
+                          {scheduledAt ?? <span className="text-ink-subtle">—</span>}
+                          {row.zeeg_booking_id && (
+                            <EditScheduledAtButton
+                              zeegBookingId={row.zeeg_booking_id}
+                              currentValue={row.scheduled_at}
+                            />
+                          )}
+                        </span>
                       </td>
                       <td className="px-5 py-3.5 text-right">
                         <DeletePipelineRowButton demoLeadId={row.demo_lead_id} zeegBookingId={row.zeeg_booking_id} />

@@ -140,3 +140,13 @@ export async function deletePipelineRow(demoLeadId: string | null, zeegBookingId
   if (zeegBookingId) await supabase.from('zeeg_bookings').delete().eq('id', zeegBookingId)
   revalidatePath('/superadmin/leads')
 }
+
+export async function updateScheduledAt(zeegBookingId: string, scheduledAt: string) {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+  await supabase
+    .from('zeeg_bookings')
+    .update({ scheduled_at: scheduledAt })
+    .eq('id', zeegBookingId)
+  revalidatePath('/superadmin/leads')
+}
