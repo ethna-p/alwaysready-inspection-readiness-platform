@@ -30,8 +30,21 @@ export default async function SuperadminLeadsPage() {
     .select('id, invitee_email, invitee_name, demo_type, booked_at, cancelled, created_at')
     .order('created_at', { ascending: false })
 
-  const bookedEmails = new Set(
-    (zeegBookings ?? []).map(b => b.invitee_email?.toLowerCase()).filter(Boolean)
+  // Join demo leads with zeeg bookings by email
+  const zeegByEmail = new Map(
+    (zeegBookings ?? [])
+      .filter(b => b.invitee_email)
+      .map(b => [b.invitee_email.toLowerCase(), b])
+  )
+  const enrichedLeads = (demoLeads ?? []).map(lead => ({
+    ...lead,
+    zeegBooking: lead.email ? (zeegByEmail.get(lead.email.toLowerCase()) ?? null) : null,
+  }))
+  const demoLeadEmails = new Set(
+    (demoLeads ?? []).map(l => l.email?.toLowerCase()).filter(Boolean)
+  )
+  const directBookings = (zeegBookings ?? []).filter(
+    b => !b.invitee_email || !demoLeadEmails.has(b.invitee_email.toLowerCase())
   )
 
   const { data: blogSubscribers } = await supabase
@@ -141,114 +154,51 @@ export default async function SuperadminLeadsPage() {
         </div>
       )}
 
-      {/* ── Zeeg bookings ───────────────────────────────────────────────────── */}
+      {/* ── Demo Pipeline ───────────────────────────────────────────────────── */}
       <div className="mt-12">
         <div className="flex items-center gap-3 mb-2">
-          <h2 className="text-xl font-bold text-ink">Zeeg Bookings</h2>
+          <h2 className="text-xl font-bold text-ink">Demo Pipeline</h2>
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">
-            {zeegBookings?.length ?? 0} total
-          </span>
-        </div>
-        <p className="text-sm text-ink-muted mb-4">
-          Confirmed bookings received from Zeeg — includes booker email and name.
-        </p>
-
-        <AddZeegBookingForm />
-
-        {!zeegBookings || zeegBookings.length === 0 ? (
-          <p className="text-ink-muted text-sm">No Zeeg bookings yet.</p>
-        ) : (
-          <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-line bg-fill">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Name</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked for</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {zeegBookings.map(booking => {
-                  const bookedDate = new Date(booking.booked_at).toLocaleDateString('en-GB', {
-                    day: 'numeric', month: 'short', year: 'numeric',
-                  })
-                  return (
-                    <tr key={booking.id} className="hover:bg-fill transition-colors">
-                      <td className="px-5 py-3.5">
-                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                          booking.demo_type === '15min'
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-teal-100 text-teal-700'
-                        }`}>
-                          {booking.demo_type === '15min' ? '15 min' : '30 min'}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 font-medium text-ink">{booking.invitee_name ?? '—'}</td>
-                      <td className="px-5 py-3.5 text-ink-muted">
-                        <a
-                          href={`mailto:${booking.invitee_email}`}
-                          className="hover:text-brand transition-colors"
-                        >
-                          {booking.invitee_email}
-                        </a>
-                      </td>
-                      <td className="px-5 py-3.5 text-ink-muted text-xs">{bookedDate}</td>
-                      <td className="px-5 py-3.5">
-                        {booking.cancelled ? (
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">
-                            Cancelled
-                          </span>
-                        ) : (
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
-                            Confirmed
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* ── Demo leads ──────────────────────────────────────────────────────── */}
-      <div className="mt-12">
-        <div className="flex items-center gap-3 mb-2">
-          <h2 className="text-xl font-bold text-ink">Demo Bookings</h2>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">
-            {demoLeads?.length ?? 0} total
+            {enrichedLeads.length} {enrichedLeads.length === 1 ? 'lead' : 'leads'}
           </span>
         </div>
         <p className="text-sm text-ink-muted mb-6">
-          Pre-booking intake data collected before visitors reach the Zeeg scheduler.
+          Pre-booking intake data from alwaysready.uk, matched to confirmed Zeeg bookings by email.
         </p>
 
-        {!demoLeads || demoLeads.length === 0 ? (
-          <p className="text-ink-muted text-sm">No demo bookings yet.</p>
+        {enrichedLeads.length === 0 ? (
+          <p className="text-ink-muted text-sm">No demo leads yet.</p>
         ) : (
-          <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm mb-8">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-line bg-fill">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Name</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Service type</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">CQC rating</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Date</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
-                  <th></th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked</th>
+                  <th className="px-5 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {demoLeads.map(lead => {
-                  const date = new Date(lead.created_at).toLocaleDateString('en-GB', {
-                    day: 'numeric', month: 'short', year: 'numeric',
-                  })
+                {enrichedLeads.map(lead => {
+                  const booking = lead.zeegBooking
+                  const bookedAt = booking
+                    ? new Date(booking.booked_at).toLocaleString('en-GB', {
+                        day: 'numeric', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
+                      })
+                    : null
                   return (
                     <tr key={lead.id} className="hover:bg-fill transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-ink">
+                        {booking?.invitee_name ?? <span className="text-ink-subtle">—</span>}
+                      </td>
+                      <td className="px-5 py-3.5 text-ink-muted text-xs">
+                        {lead.email ?? <span className="text-ink-subtle">—</span>}
+                      </td>
                       <td className="px-5 py-3.5">
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                           lead.demo_type === '15min'
@@ -258,20 +208,10 @@ export default async function SuperadminLeadsPage() {
                           {lead.demo_type === '15min' ? '15 min' : '30 min'}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 font-medium text-ink">{lead.service_type}</td>
+                      <td className="px-5 py-3.5 text-ink">{lead.service_type}</td>
                       <td className="px-5 py-3.5 text-ink-muted">{lead.cqc_rating ?? '—'}</td>
-                      <td className="px-5 py-3.5 text-ink-muted text-xs">{date}</td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">
-                        {lead.email ? (
-                          <span className="flex items-center gap-2">
-                            {lead.email}
-                            {bookedEmails.has(lead.email.toLowerCase()) && (
-                              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Booked</span>
-                            )}
-                          </span>
-                        ) : (
-                          <span className="text-ink-subtle">—</span>
-                        )}
+                        {bookedAt ?? <span className="text-ink-subtle">—</span>}
                       </td>
                       <td className="px-5 py-3.5 text-right">
                         <DeleteDemoLeadButton id={lead.id} />
@@ -283,9 +223,66 @@ export default async function SuperadminLeadsPage() {
             </table>
           </div>
         )}
+
+        {/* Direct bookings — Zeeg entries with no matching demo lead */}
+        <div className="mt-8">
+          <h3 className="text-base font-semibold text-ink mb-1">Direct bookings</h3>
+          <p className="text-xs text-ink-muted mb-4">Zeeg bookings with no matching intake form — booked directly or intake email not captured.</p>
+
+          <AddZeegBookingForm />
+
+          {directBookings.length === 0 ? (
+            <p className="text-ink-muted text-sm mt-4">None.</p>
+          ) : (
+            <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm mt-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-line bg-fill">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Name</th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked</th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {directBookings.map(booking => {
+                    const bookedAt = new Date(booking.booked_at).toLocaleString('en-GB', {
+                      day: 'numeric', month: 'short', year: 'numeric',
+                      hour: '2-digit', minute: '2-digit',
+                    })
+                    return (
+                      <tr key={booking.id} className="hover:bg-fill transition-colors">
+                        <td className="px-5 py-3.5 font-medium text-ink">{booking.invitee_name ?? '—'}</td>
+                        <td className="px-5 py-3.5 text-ink-muted text-xs">{booking.invitee_email}</td>
+                        <td className="px-5 py-3.5">
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                            booking.demo_type === '15min'
+                              ? 'bg-amber-100 text-amber-700'
+                              : 'bg-teal-100 text-teal-700'
+                          }`}>
+                            {booking.demo_type === '15min' ? '15 min' : '30 min'}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 text-ink-muted text-xs">{bookedAt}</td>
+                        <td className="px-5 py-3.5">
+                          {booking.cancelled ? (
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Cancelled</span>
+                          ) : (
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Confirmed</span>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* ── Blog subscribers ────────────────────────────────────────────────── */}
+            {/* ── Blog subscribers ────────────────────────────────────────────────── */}
       <div className="mt-12">
         <div className="flex items-center gap-3 mb-2">
           <h2 className="text-xl font-bold text-ink">Blog Subscribers</h2>
