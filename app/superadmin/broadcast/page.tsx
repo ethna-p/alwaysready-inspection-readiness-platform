@@ -10,6 +10,7 @@ export default function BroadcastPage() {
   const [intro, setIntro]           = useState('')
   const [postUrl, setPostUrl]       = useState('')
   const [buttonText, setButtonText] = useState('Read the full post')
+  const [signOff, setSignOff]           = useState('')
   const [recipientCount, setRecipientCount] = useState<number | null>(null)
   const [confirming, setConfirming] = useState(false)
   const [result, setResult]         = useState<{ sent: number; skipped: number } | null>(null)
@@ -36,12 +37,13 @@ export default function BroadcastPage() {
         ${buttonText || 'Read the full post'}
       </a>
     </p>` : ''}
+    ${signOff ? `<p style="margin:24px 0 0;font-size:15px;line-height:1.7;color:#1a1a1a">${signOff}</p>` : ''}
   `
 
   function handleSend() {
     setError(null)
     startTransition(async () => {
-      const res = await sendBroadcast(subject, intro, postUrl, buttonText)
+      const res = await sendBroadcast(subject, intro, postUrl, buttonText, signOff)
       if (res.error) {
         setError(res.error)
         setConfirming(false)
@@ -73,6 +75,7 @@ export default function BroadcastPage() {
               setIntro('')
               setPostUrl('')
               setButtonText('Read the full post')
+              setSignOff('')
             }}
             className="mt-6 text-sm text-[#00b8a6] hover:underline"
           >
@@ -158,6 +161,20 @@ export default function BroadcastPage() {
               value={buttonText}
               onChange={e => setButtonText(e.target.value)}
               placeholder="Read the full post"
+              className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="broadcast-signoff" className="block text-sm font-medium text-ink mb-1">
+              Sign-off <span className="text-ink-muted font-normal">(optional)</span>
+            </label>
+            <input
+              id="broadcast-signoff"
+              type="text"
+              value={signOff}
+              onChange={e => setSignOff(e.target.value)}
+              placeholder="e.g. Enjoy the read."
               className="w-full bg-card border border-line rounded-lg px-4 py-2.5 text-ink placeholder-gray-400 text-sm focus:outline-none focus:border-[#00b8a6]"
             />
           </div>

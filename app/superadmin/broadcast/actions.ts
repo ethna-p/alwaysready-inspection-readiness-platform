@@ -38,7 +38,8 @@ export async function sendBroadcast(
   subject: string,
   intro: string,
   postUrl: string,
-  buttonText: string
+  buttonText: string,
+  signOff: string = ''
 ): Promise<BroadcastResult> {
   await assertSuperadmin()
 
@@ -63,6 +64,10 @@ export async function sendBroadcast(
     .map(p => `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${p.trim().replace(/\n/g, '<br>')}</p>`)
     .join('')
 
+  const signOffHtml = signOff.trim()
+    ? `<p style="margin:24px 0 0;font-size:15px;line-height:1.7;color:#1a1a1a">${signOff.trim()}</p>`
+    : ''
+
   const bodyHtml = `
     ${introHtml}
     <p style="margin:24px 0 0">
@@ -71,6 +76,7 @@ export async function sendBroadcast(
         ${buttonText || 'Read the full post'}
       </a>
     </p>
+    ${signOffHtml}
   `
 
   let sent = 0
