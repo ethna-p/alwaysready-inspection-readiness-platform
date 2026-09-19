@@ -4,6 +4,8 @@
 
 ## Hard rules
 
+- **Do not take any action AJ has not explicitly requested.** Propose changes and wait for approval before making them. If solving a stated problem seems to require a side change (removing a block, restructuring a file, touching an unrelated area), stop and ask first -- never assume. An assumption that turns out to be wrong wastes time and creates trust debt.
+
 - **`npm run dev` is a blocking process that never exits.** Never chain it with `&&` after other commands. Always run it alone, standalone, in its own terminal step.
 - **Every terminal command must start with `cd ~/Sites/[repo-name]`**: AJ works from one terminal window across multiple repos; never assume the working directory.
 - **Finish the work in the session.** Never suggest deferring a task to "a later session": there is no later session.
