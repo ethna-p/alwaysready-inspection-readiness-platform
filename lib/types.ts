@@ -972,6 +972,7 @@ export type Database = {
           invitee_name: string | null
           demo_type: string
           booked_at: string
+          scheduled_at: string | null
           cancelled: boolean
           raw_payload: Record<string, unknown> | null
           created_at: string
@@ -984,6 +985,7 @@ export type Database = {
           invitee_name?: string | null
           demo_type: string
           booked_at: string
+          scheduled_at?: string | null
           cancelled?: boolean
           raw_payload?: Record<string, unknown> | null
           created_at?: string
@@ -996,6 +998,7 @@ export type Database = {
           invitee_name?: string | null
           demo_type?: string
           booked_at?: string
+          scheduled_at?: string | null
           cancelled?: boolean
           raw_payload?: Record<string, unknown> | null
           created_at?: string

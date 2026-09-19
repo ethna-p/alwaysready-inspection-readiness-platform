@@ -28,25 +28,48 @@ export default async function SuperadminLeadsPage() {
 
   const { data: zeegBookings } = await supabase
     .from('zeeg_bookings')
-    .select('id, invitee_email, invitee_name, demo_type, booked_at, cancelled, created_at')
+    .select('id, invitee_email, invitee_name, demo_type, booked_at, scheduled_at, cancelled, created_at')
     .order('created_at', { ascending: false })
 
-  // Join demo leads with zeeg bookings by email
+  // Build unified rows: matched by email where possible, otherwise separate rows
   const zeegByEmail = new Map(
     (zeegBookings ?? [])
       .filter(b => b.invitee_email)
       .map(b => [b.invitee_email.toLowerCase(), b])
   )
-  const enrichedLeads = (demoLeads ?? []).map(lead => ({
-    ...lead,
-    zeegBooking: lead.email ? (zeegByEmail.get(lead.email.toLowerCase()) ?? null) : null,
-  }))
-  const demoLeadEmails = new Set(
-    (demoLeads ?? []).map(l => l.email?.toLowerCase()).filter(Boolean)
-  )
-  const directBookings = (zeegBookings ?? []).filter(
-    b => !b.invitee_email || !demoLeadEmails.has(b.invitee_email.toLowerCase())
-  )
+  const matchedZeegIds = new Set<string>()
+
+  const leadRows = (demoLeads ?? []).map(lead => {
+    const zeeg = lead.email ? zeegByEmail.get(lead.email.toLowerCase()) ?? null : null
+    if (zeeg) matchedZeegIds.add(zeeg.id)
+    return {
+      key:            `lead-${lead.id}`,
+      demo_lead_id:   lead.id,
+      zeeg_booking_id: zeeg?.id ?? null,
+      name:           lead.name ?? zeeg?.invitee_name ?? null,
+      email:          lead.email ?? zeeg?.invitee_email ?? null,
+      demo_type:      lead.demo_type,
+      service_type:   lead.service_type,
+      cqc_rating:     lead.cqc_rating ?? null,
+      scheduled_at:   zeeg?.scheduled_at ?? null,
+    }
+  })
+
+  const unmatchedZeegRows = (zeegBookings ?? [])
+    .filter(b => !matchedZeegIds.has(b.id))
+    .map(b => ({
+      key:            `zeeg-${b.id}`,
+      demo_lead_id:   null,
+      zeeg_booking_id: b.id,
+      name:           b.invitee_name ?? null,
+      email:          b.invitee_email ?? null,
+      demo_type:      b.demo_type,
+      service_type:   null,
+      cqc_rating:     null,
+      scheduled_at:   b.scheduled_at ?? null,
+    }))
+
+  const unifiedRows = [...leadRows, ...unmatchedZeegRows]
 
   const { data: blogSubscribers } = await supabase
     .from('blog_subscribers')
@@ -160,15 +183,17 @@ export default async function SuperadminLeadsPage() {
         <div className="flex items-center gap-3 mb-2">
           <h2 className="text-xl font-bold text-ink">Demo Pipeline</h2>
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">
-            {enrichedLeads.length} {enrichedLeads.length === 1 ? 'lead' : 'leads'}
+            {unifiedRows.length} {unifiedRows.length === 1 ? 'entry' : 'entries'}
           </span>
         </div>
-        <p className="text-sm text-ink-muted mb-6">
-          Pre-booking intake data from alwaysready.uk, matched to confirmed Zeeg bookings by email.
+        <p className="text-sm text-ink-muted mb-4">
+          All demo leads and Zeeg bookings. Rows with both intake data and a booking are fully matched by email.
         </p>
 
-        {enrichedLeads.length === 0 ? (
-          <p className="text-ink-muted text-sm">No demo leads yet.</p>
+        <AddZeegBookingForm />
+
+        {unifiedRows.length === 0 ? (
+          <p className="text-ink-muted text-sm">No entries yet.</p>
         ) : (
           <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm mb-8">
             <table className="w-full text-sm">
@@ -179,43 +204,44 @@ export default async function SuperadminLeadsPage() {
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Service type</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">CQC rating</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Scheduled for</th>
                   <th className="px-5 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {enrichedLeads.map(lead => {
-                  const booking = lead.zeegBooking
-                  const bookedAt = booking
-                    ? new Date(booking.booked_at).toLocaleString('en-GB', {
+                {unifiedRows.map(row => {
+                  const scheduledAt = row.scheduled_at
+                    ? new Date(row.scheduled_at).toLocaleString('en-GB', {
                         day: 'numeric', month: 'short', year: 'numeric',
                         hour: '2-digit', minute: '2-digit',
                       })
                     : null
+                  const demoType = row.demo_type
                   return (
-                    <tr key={lead.id} className="hover:bg-fill transition-colors">
+                    <tr key={row.key} className="hover:bg-fill transition-colors">
                       <td className="px-5 py-3.5 font-medium text-ink">
-                        {lead.name ?? <span className="text-ink-subtle">—</span>}
+                        {row.name ?? <span className="text-ink-subtle">—</span>}
                       </td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">
-                        {lead.email ?? <span className="text-ink-subtle">—</span>}
+                        {row.email ?? <span className="text-ink-subtle">—</span>}
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                          lead.demo_type === '15min'
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-teal-100 text-teal-700'
-                        }`}>
-                          {lead.demo_type === '15min' ? '15 min' : '30 min'}
-                        </span>
+                        {demoType ? (
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                            demoType === '15min' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'
+                          }`}>
+                            {demoType === '15min' ? '15 min' : '30 min'}
+                          </span>
+                        ) : <span className="text-ink-subtle">—</span>}
                       </td>
-                      <td className="px-5 py-3.5 text-ink">{lead.service_type}</td>
-                      <td className="px-5 py-3.5 text-ink-muted">{lead.cqc_rating ?? '—'}</td>
+                      <td className="px-5 py-3.5 text-ink">{row.service_type ?? <span className="text-ink-subtle">—</span>}</td>
+                      <td className="px-5 py-3.5 text-ink-muted">{row.cqc_rating ?? <span className="text-ink-subtle">—</span>}</td>
                       <td className="px-5 py-3.5 text-ink-muted text-xs">
-                        {bookedAt ?? <span className="text-ink-subtle">—</span>}
+                        {scheduledAt ?? <span className="text-ink-subtle">—</span>}
                       </td>
-                      <td className="px-5 py-3.5 text-right">
-                        <DeleteDemoLeadButton id={lead.id} />
+                      <td className="px-5 py-3.5 text-right space-x-3">
+                        {row.demo_lead_id && <DeleteDemoLeadButton id={row.demo_lead_id} />}
+                        {row.zeeg_booking_id && <DeleteZeegBookingButton id={row.zeeg_booking_id} />}
                       </td>
                     </tr>
                   )
@@ -224,70 +250,9 @@ export default async function SuperadminLeadsPage() {
             </table>
           </div>
         )}
-
-        {/* Direct bookings — Zeeg entries with no matching demo lead */}
-        <div className="mt-8">
-          <h3 className="text-base font-semibold text-ink mb-1">Direct bookings</h3>
-          <p className="text-xs text-ink-muted mb-4">Zeeg bookings with no matching intake form — booked directly or intake email not captured.</p>
-
-          <AddZeegBookingForm />
-
-          {directBookings.length === 0 ? (
-            <p className="text-ink-muted text-sm mt-4">None.</p>
-          ) : (
-            <div className="bg-card border border-line rounded-xl overflow-hidden shadow-sm mt-4">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-line bg-fill">
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Name</th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Email</th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked</th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
-                    <th className="px-5 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {directBookings.map(booking => {
-                    const bookedAt = new Date(booking.booked_at).toLocaleString('en-GB', {
-                      day: 'numeric', month: 'short', year: 'numeric',
-                      hour: '2-digit', minute: '2-digit',
-                    })
-                    return (
-                      <tr key={booking.id} className="hover:bg-fill transition-colors">
-                        <td className="px-5 py-3.5 font-medium text-ink">{booking.invitee_name ?? '—'}</td>
-                        <td className="px-5 py-3.5 text-ink-muted text-xs">{booking.invitee_email}</td>
-                        <td className="px-5 py-3.5">
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                            booking.demo_type === '15min'
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-teal-100 text-teal-700'
-                          }`}>
-                            {booking.demo_type === '15min' ? '15 min' : '30 min'}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3.5 text-ink-muted text-xs">{bookedAt}</td>
-                        <td className="px-5 py-3.5">
-                          {booking.cancelled ? (
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Cancelled</span>
-                          ) : (
-                            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Confirmed</span>
-                          )}
-                        </td>
-                        <td className="px-5 py-3.5 text-right">
-                          <DeleteZeegBookingButton id={booking.id} />
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
       </div>
 
-            {/* ── Blog subscribers ────────────────────────────────────────────────── */}
+      {/* ── Blog subscribers ────────────────────────────────────────────────── */}
       <div className="mt-12">
         <div className="flex items-center gap-3 mb-2">
           <h2 className="text-xl font-bold text-ink">Blog Subscribers</h2>

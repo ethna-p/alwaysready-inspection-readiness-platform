@@ -27,7 +27,8 @@ export async function addZeegBooking(formData: FormData) {
 
   const name     = (formData.get('invitee_name')  as string | null)?.trim() || null
   const email    = ((formData.get('invitee_email') as string | null) ?? '').trim()
-  const demoType = ((formData.get('demo_type')     as string | null) ?? '').trim()
+  const demoType    = ((formData.get('demo_type')     as string | null) ?? '').trim()
+  const scheduledAt = ((formData.get('scheduled_at')   as string | null) ?? '').trim() || null
 
   if (!email || !demoType) throw new Error('Email and demo type are required')
 
@@ -38,6 +39,7 @@ export async function addZeegBooking(formData: FormData) {
     invitee_name:  name,
     demo_type:     demoType,
     booked_at:     new Date().toISOString(),
+    scheduled_at:  scheduledAt,
   })
 
   revalidatePath('/superadmin/leads')
