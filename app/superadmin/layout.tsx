@@ -6,6 +6,7 @@
  */
 import Link from 'next/link'
 import IdleTimeout from '@/components/IdleTimeout'
+import RefreshButton from '@/app/superadmin/RefreshButton'
 
 export default function SuperadminLayout({
   children,
@@ -30,6 +31,7 @@ export default function SuperadminLayout({
             <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase tracking-wide">
               Superadmin
             </span>
+            <RefreshButton />
           </div>
           <form action="/auth/signout" method="POST">
             <button type="submit" className="text-sm text-ink-muted hover:text-brand transition-colors">

@@ -9,7 +9,6 @@ import DeleteSubscriberButton          from './DeleteSubscriberButton'
 import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
 import AddZeegBookingForm             from './AddZeegBookingForm'
 import DeletePipelineRowButton        from './DeletePipelineRowButton'
-import RefreshButton                  from './RefreshButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -190,7 +189,6 @@ export default async function SuperadminLeadsPage() {
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">
             {unifiedRows.length} {unifiedRows.length === 1 ? 'entry' : 'entries'}
           </span>
-          <RefreshButton />
         </div>
         <p className="text-sm text-ink-muted mb-4">
           All demo leads and Zeeg bookings. Rows with both intake data and a booking are fully matched by email.
