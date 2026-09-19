@@ -41,6 +41,11 @@ export interface SendEmailOptions {
    * the email type and recipient kind (blog subscriber vs platform user).
    */
   footerNote?: string
+  /**
+   * When true, renders the broadcast-mode email: no headshot/byline, and
+   * the handwritten "Ethna P" signature instead of the full signature block.
+   */
+  broadcastMode?: boolean
 }
 
 export interface SendEmailResult {
@@ -49,7 +54,7 @@ export interface SendEmailResult {
   error?: string
 }
 
-export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: string, footerNote?: string): string {
+export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscribeUrl?: string, footerNote?: string, broadcastMode?: boolean): string {
   // Always shown -- every email now explains why the recipient is getting
   // it, not just marketing ones. footerNote (per-call override) takes
   // priority; otherwise fall back to a type-appropriate default.
@@ -65,7 +70,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
 
   return `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AlwaysReady</title></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AlwaysReady</title>${broadcastMode ? `<style>@font-face{font-family:'Caveat';font-style:normal;font-weight:500;src:url('https://fonts.gstatic.com/s/caveat/v18/WnznHAc5bAfYB2Q7azYYiAzcPDKo.woff2') format('woff2');unicode-range:U+0000-00FF}</style>` : ''}</head>
 <body style="margin:0;padding:0;background-color:#faf9f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
     <tr>
@@ -98,7 +103,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
           <!-- From: circular headshot + name/title, shown on every email so
                this never again drifts per-template or gets lost behind a
                stale saved override (see lib/email-templates.ts). -->
-          <tr>
+          ${!broadcastMode ? `<tr>
             <td style="padding:16px 40px 0">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
@@ -112,7 +117,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
                 </tr>
               </table>
             </td>
-          </tr>
+          </tr>` : ''}
 
           <!-- Body -->
           <tr>
@@ -124,6 +129,27 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
           <!-- Signature -->
           <tr>
             <td style="padding:24px 40px 64px">
+              ${broadcastMode ? `
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="border-left:3px solid #D4AA3C;padding-left:14px">
+                    <p style="margin:0;font-family:'Caveat',cursive;font-size:38px;font-weight:500;color:#111111;line-height:1.15">Ethna P</p>
+                    <p style="margin:4px 0 10px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#014D4E;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">AlwaysReady Inspection Readiness Platform</p>
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                      <tr><td style="padding-top:10px;border-top:1px solid #e8e6e0">
+                        <p style="margin:0 0 3px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+                          <a href="mailto:support@alwaysready.uk" style="color:#014D4E;text-decoration:underline">support@alwaysready.uk</a>
+                        </p>
+                        <p style="margin:0 0 3px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+                          <a href="https://www.alwaysready.uk" style="color:#014D4E;text-decoration:underline">www.alwaysready.uk</a>
+                        </p>
+                        <p style="margin:0;font-size:13px;color:#595959;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">82A James Carter Road, Mildenhall, IP28 7DE</p>
+                      </td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              ` : `
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td style="padding-bottom:12px;border-bottom:2px solid #014D4E">
@@ -143,6 +169,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
                   </td>
                 </tr>
               </table>
+              `}
             </td>
           </tr>
 
@@ -296,7 +323,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
   const archiveId = randomUUID()
   const viewInBrowserUrl = `${PLATFORM_URL}/email/view/${archiveId}`
 
-  const html = buildHtml(opts.bodyHtml, viewInBrowserUrl, unsubscribeUrl, footerNote)
+  const html = buildHtml(opts.bodyHtml, viewInBrowserUrl, unsubscribeUrl, footerNote, opts.broadcastMode)
 
   // Archive is best-effort: a failure here shouldn't stop the actual send,
   // it just means that one email's "View in Browser" link 404s.

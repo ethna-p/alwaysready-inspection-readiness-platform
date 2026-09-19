@@ -92,6 +92,7 @@ export async function sendBroadcast(
       bodyHtml: `<p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a">${greeting}</p>${bodyHtml}`,
       type: 'marketing',
       subscriberEmail: subscriber.email,
+      broadcastMode: true,
     })
 
     if (result.sent) sent++; else skipped++
