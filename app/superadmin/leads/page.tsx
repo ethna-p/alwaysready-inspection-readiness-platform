@@ -6,10 +6,9 @@
 import { createAdminClient }          from '@/lib/supabase/admin'
 import DeleteLeadButton               from './DeleteLeadButton'
 import DeleteSubscriberButton          from './DeleteSubscriberButton'
-import DeleteDemoLeadButton           from './DeleteDemoLeadButton'
 import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
 import AddZeegBookingForm             from './AddZeegBookingForm'
-import DeleteZeegBookingButton        from './DeleteZeegBookingButton'
+import DeletePipelineRowButton        from './DeletePipelineRowButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -239,9 +238,8 @@ export default async function SuperadminLeadsPage() {
                       <td className="px-5 py-3.5 text-ink-muted text-xs">
                         {scheduledAt ?? <span className="text-ink-subtle">—</span>}
                       </td>
-                      <td className="px-5 py-3.5 text-right space-x-3">
-                        {row.demo_lead_id && <DeleteDemoLeadButton id={row.demo_lead_id} />}
-                        {row.zeeg_booking_id && <DeleteZeegBookingButton id={row.zeeg_booking_id} />}
+                      <td className="px-5 py-3.5 text-right">
+                        <DeletePipelineRowButton demoLeadId={row.demo_lead_id} zeegBookingId={row.zeeg_booking_id} />
                       </td>
                     </tr>
                   )
