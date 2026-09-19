@@ -103,7 +103,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
           <!-- From: circular headshot + name/title, shown on every email so
                this never again drifts per-template or gets lost behind a
                stale saved override (see lib/email-templates.ts). -->
-          ${!broadcastMode ? `<tr>
+          <tr>
             <td style="padding:16px 40px 0">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
@@ -117,7 +117,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
                 </tr>
               </table>
             </td>
-          </tr>` : ''}
+          </tr>
 
           <!-- Body -->
           <tr>
