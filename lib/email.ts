@@ -70,7 +70,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
 
   return `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AlwaysReady</title>${broadcastMode ? `<style>@font-face{font-family:'Caveat';font-style:normal;font-weight:500;src:url('https://fonts.gstatic.com/s/caveat/v18/WnznHAc5bAfYB2Q7azYYiAzcPDKo.woff2') format('woff2');unicode-range:U+0000-00FF}</style>` : ''}</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AlwaysReady</title></head>
 <body style="margin:0;padding:0;background-color:#faf9f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
     <tr>
@@ -133,7 +133,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td style="border-left:3px solid #D4AA3C;padding-left:14px">
-                    <p style="margin:0;font-family:'Caveat',cursive;font-size:38px;font-weight:500;color:#111111;line-height:1.15">Ethna P</p>
+                    <img src="https://portal.alwaysready.uk/icons/signature-ethna-p.png" width="119" height="54" alt="Ethna P" style="display:block;border:0;max-width:100%">
                     <p style="margin:4px 0 10px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#014D4E;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">AlwaysReady Inspection Readiness Platform</p>
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                       <tr><td style="padding-top:10px;border-top:1px solid #e8e6e0">
