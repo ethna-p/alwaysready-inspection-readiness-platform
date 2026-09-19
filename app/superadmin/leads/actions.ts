@@ -14,6 +14,13 @@ export async function deleteLead(id: string) {
   revalidatePath('/superadmin/leads')
 }
 
+export async function deleteSubscriber(id: string) {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+  await supabase.from('blog_subscribers').delete().eq('id', id)
+  revalidatePath('/superadmin/leads')
+}
+
 export async function addZeegBooking(formData: FormData) {
   await assertSuperadmin()
   const supabase = createAdminClient()

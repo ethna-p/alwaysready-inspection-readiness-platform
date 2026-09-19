@@ -5,6 +5,7 @@
 
 import { createAdminClient }          from '@/lib/supabase/admin'
 import DeleteLeadButton               from './DeleteLeadButton'
+import DeleteSubscriberButton          from './DeleteSubscriberButton'
 import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
 import AddZeegBookingForm             from './AddZeegBookingForm'
 
@@ -291,6 +292,7 @@ export default async function SuperadminLeadsPage() {
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Source</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Subscribed</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
+                  <th className="px-5 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -321,6 +323,9 @@ export default async function SuperadminLeadsPage() {
                             Active
                           </span>
                         )}
+                      </td>
+                      <td className="px-5 py-3.5 text-right">
+                        <DeleteSubscriberButton id={sub.id} />
                       </td>
                     </tr>
                   )
