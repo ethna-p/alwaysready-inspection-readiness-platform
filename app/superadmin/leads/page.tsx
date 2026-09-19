@@ -191,11 +191,12 @@ export default async function SuperadminLeadsPage() {
             {unifiedRows.length} {unifiedRows.length === 1 ? 'entry' : 'entries'}
           </span>
         </div>
+        <AddZeegBookingForm />
+
         <p className="text-sm text-ink-muted mb-4">
           All demo leads and Zeeg bookings. Rows with both intake data and a booking are fully matched by email.
         </p>
 
-        <AddZeegBookingForm />
 
         {unifiedRows.length === 0 ? (
           <p className="text-ink-muted text-sm">No entries yet.</p>
