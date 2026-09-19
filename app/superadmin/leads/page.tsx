@@ -9,6 +9,7 @@ import DeleteSubscriberButton          from './DeleteSubscriberButton'
 import DeleteDemoLeadButton           from './DeleteDemoLeadButton'
 import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
 import AddZeegBookingForm             from './AddZeegBookingForm'
+import DeleteZeegBookingButton        from './DeleteZeegBookingButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -243,6 +244,7 @@ export default async function SuperadminLeadsPage() {
                     <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Demo type</th>
                     <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Booked</th>
                     <th className="text-left px-5 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider">Status</th>
+                    <th className="px-5 py-3"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line">
@@ -271,6 +273,9 @@ export default async function SuperadminLeadsPage() {
                           ) : (
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">Confirmed</span>
                           )}
+                        </td>
+                        <td className="px-5 py-3.5 text-right">
+                          <DeleteZeegBookingButton id={booking.id} />
                         </td>
                       </tr>
                     )

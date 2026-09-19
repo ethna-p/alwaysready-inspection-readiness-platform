@@ -123,3 +123,10 @@ export async function deleteDemoLead(id: string) {
   await supabase.from('demo_leads').delete().eq('id', id)
   revalidatePath('/superadmin/leads')
 }
+
+export async function deleteZeegBooking(id: string) {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+  await supabase.from('zeeg_bookings').delete().eq('id', id)
+  revalidatePath('/superadmin/leads')
+}
