@@ -936,6 +936,7 @@ export type Database = {
           service_type: string
           cqc_rating: string | null
           demo_type: string
+          email: string | null
           created_at: string
         }
         Insert: {
@@ -943,6 +944,7 @@ export type Database = {
           service_type: string
           cqc_rating?: string | null
           demo_type: string
+          email?: string | null
           created_at?: string
         }
         Update: {
@@ -950,6 +952,7 @@ export type Database = {
           service_type?: string
           cqc_rating?: string | null
           demo_type?: string
+          email?: string | null
           created_at?: string
         }
         Relationships: []
