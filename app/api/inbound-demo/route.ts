@@ -92,6 +92,14 @@ export async function POST(req: NextRequest) {
       <p>Someone just booked a demo via alwaysready.uk/demo.</p>
       <table style="border-collapse:collapse;font-size:14px;margin-top:12px;">
         <tr>
+          <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Name</td>
+          <td style="padding:6px 0;">${name ? escapeHtml(name) : '<span style="color:#999;">Not provided</span>'}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Email</td>
+          <td style="padding:6px 0;">${email ? `<a href="mailto:${escapeHtml(email)}" style="color:#014D4E;">${escapeHtml(email)}</a>` : '<span style="color:#999;">Not provided</span>'}</td>
+        </tr>
+        <tr>
           <td style="padding:6px 16px 6px 0;font-weight:600;color:#555;">Demo type</td>
           <td style="padding:6px 0;">${escapeHtml(demoLabel)}</td>
         </tr>

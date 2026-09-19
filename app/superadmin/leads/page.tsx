@@ -32,15 +32,20 @@ export default async function SuperadminLeadsPage() {
     .order('created_at', { ascending: false })
 
   // Build unified rows: matched by email where possible, otherwise separate rows
-  const zeegByEmail = new Map(
-    (zeegBookings ?? [])
-      .filter(b => b.invitee_email)
-      .map(b => [b.invitee_email.toLowerCase(), b])
-  )
+  // Use a queue per email so multiple bookings with the same email can each
+  // match a different demo_lead (greedy, in creation order).
+  const zeegQueueByEmail = new Map<string, NonNullable<typeof zeegBookings>[number][]>()
+  for (const b of zeegBookings ?? []) {
+    if (!b.invitee_email) continue
+    const key = b.invitee_email.toLowerCase()
+    if (!zeegQueueByEmail.has(key)) zeegQueueByEmail.set(key, [])
+    zeegQueueByEmail.get(key)!.push(b)
+  }
   const matchedZeegIds = new Set<string>()
 
   const leadRows = (demoLeads ?? []).map(lead => {
-    const zeeg = lead.email ? zeegByEmail.get(lead.email.toLowerCase()) ?? null : null
+    const queue = lead.email ? (zeegQueueByEmail.get(lead.email.toLowerCase()) ?? []) : []
+    const zeeg = queue.find(b => !matchedZeegIds.has(b.id)) ?? null
     if (zeeg) matchedZeegIds.add(zeeg.id)
     return {
       key:            `lead-${lead.id}`,
