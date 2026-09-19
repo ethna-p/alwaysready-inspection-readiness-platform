@@ -71,6 +71,7 @@ export async function POST(req: NextRequest) {
           invitee_name:  name,
           demo_type:     demoType,
           booked_at:     startAt,
+          scheduled_at:  startAt,
           cancelled:     false,
           raw_payload:   payload,
         },

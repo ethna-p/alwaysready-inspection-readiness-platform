@@ -60,8 +60,8 @@ export async function GET(request: Request) {
     .from('zeeg_bookings')
     .select('invitee_name, invitee_email, demo_type, booked_at')
     .eq('cancelled', false)
-    .gte('booked_at', tomorrow.toISOString())
-    .lt('booked_at',  dayAfter.toISOString())
+    .gte('scheduled_at', tomorrow.toISOString())
+    .lt('scheduled_at',  dayAfter.toISOString())
     .order('booked_at', { ascending: true })
 
   if (error) {
