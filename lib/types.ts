@@ -2284,6 +2284,15 @@ export type Database = {
           at_byte_limit: boolean
         }[]
       }
+      get_usage_summary: {
+        Args: Record<string, never>
+        Returns: {
+          database_bytes: number
+          storage_bytes:  number
+          storage_files:  number
+          top_tables:     { name: string; bytes: number }[]
+        }
+      }
     }
     Enums: Record<string, never>
   }

@@ -139,20 +139,6 @@ export async function sendBulkLaunchEmail(
   return { sent, failed, errors }
 }
 
-export async function deleteDemoLead(id: string) {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-  await supabase.from('demo_leads').delete().eq('id', id)
-  revalidatePath('/superadmin/leads')
-}
-
-export async function deleteZeegBooking(id: string) {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-  await supabase.from('zeeg_bookings').delete().eq('id', id)
-  revalidatePath('/superadmin/leads')
-}
-
 export async function deletePipelineRow(
   demoLeadId: string | null,
   zeegBookingId: string | null,

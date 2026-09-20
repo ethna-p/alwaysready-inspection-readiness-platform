@@ -66,6 +66,19 @@ test('superadmin infrastructure: loads and shows honest fallbacks for unconfigur
   await expect(page.getByText('Resend — emails this month')).toBeVisible()
   await expect(page.getByText('Supabase — active users')).toBeVisible()
 
+  // Supabase database and file storage size come from get_usage_summary() and
+  // must be live here (preview database), not the "could not read" fallback.
+  const supabaseUsage = page.locator('.bg-card').filter({ hasText: 'Supabase: database & file storage' })
+  await expect(supabaseUsage).toBeVisible()
+  // The meters read "<used> / <limit> <unit>"; the subtitle also says "MB database",
+  // so match the meter's " / <limit>" part to keep the locator to one element.
+  await expect(supabaseUsage.getByText(/\d[\d.,]* \/ 500 MB database/)).toBeVisible()
+  await expect(supabaseUsage.getByText(/\d[\d.,]* \/ 1,?024 MB file storage/)).toBeVisible()
+  await expect(supabaseUsage.getByText(/Largest tables:/)).toBeVisible()
+  await expect(supabaseUsage.getByText('Could not read usage just now')).toHaveCount(0)
+  // Egress has no API, so it is an honest static reminder rather than a fake meter.
+  await expect(page.getByText('Supabase: egress (data sent out)')).toBeVisible()
+
   // No Upstash/Sentry/Vercel/Cloudflare credentials in this environment --
   // each of these must honestly show "not configured" rather than a blank
   // or fabricated meter.

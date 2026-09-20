@@ -104,3 +104,83 @@ test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports 
     await admin.from('zeeg_bookings').delete().eq('invitee_email', zeegEmail)
   }
 })
+
+/**
+ * The failure paths. These leads actions used to ignore the database's answer,
+ * so a rejected write looked exactly like a successful one. Each case here forces
+ * a genuine rejection and checks the page says so.
+ */
+test('superadmin leads: a rejected booking or time change shows an error instead of failing silently', async ({ page }) => {
+  test.setTimeout(60_000)
+  const account = loadTestAccount()
+  const admin = getAdminClient()
+
+  const badDateEmail = `e2e-leads-baddate-${Date.now()}@example.org`
+  const staleEmail = `e2e-leads-stale-${Date.now()}@example.org`
+
+  // A booking the page will list, which we later delete behind the page's back.
+  const { error: seedErr } = await admin.from('zeeg_bookings').insert({
+    event_uuid: crypto.randomUUID(),
+    invitee_uuid: crypto.randomUUID(),
+    invitee_email: staleEmail,
+    invitee_name: 'E2E Stale Booker',
+    demo_type: '30min',
+    booked_at: new Date().toISOString(),
+    scheduled_at: '2030-03-01T12:00:00Z',
+  })
+  expect(seedErr).toBeNull()
+
+  try {
+    await login(page, {
+      email: account.superadmin.email,
+      password: account.superadmin.password,
+      totpSecret: account.superadmin.totpSecret,
+    })
+    await page.waitForURL('**/superadmin/provision')
+    await page.goto('/superadmin/leads')
+
+    // ── addZeegBooking: the database rejects an unparseable date ─────────
+    // The browser's own date picker never lets a bad value through (and its
+    // validation blocks the submit outright), so fill in a valid date and swap it
+    // for a bad one in the request itself. The real action and the real database
+    // still do the rejecting.
+    const goodDate = '2030-04-01T12:00'
+    await page.route('**/superadmin/leads', async route => {
+      const request = route.request()
+      const body = request.postData()
+      if (request.method() === 'POST' && body?.includes(goodDate)) {
+        await route.continue({ postData: body.replace(goodDate, 'not-a-date') })
+      } else {
+        await route.continue()
+      }
+    })
+    await page.locator('#zb-name').fill('E2E Bad Date')
+    await page.locator('#zb-email').fill(badDateEmail)
+    await page.locator('#zb-type').selectOption('30min')
+    await page.locator('#zb-scheduled').fill(goodDate)
+    await page.getByRole('button', { name: 'Add booking' }).click()
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Could not add the booking' }),
+    ).toBeVisible()
+    await expect(page.locator('tr', { hasText: badDateEmail })).toHaveCount(0)
+    const { data: created } = await admin.from('zeeg_bookings').select('id').eq('invitee_email', badDateEmail)
+    expect(created ?? []).toHaveLength(0)
+    await page.unroute('**/superadmin/leads')
+
+    // ── updateScheduledAt: the booking vanished after the page loaded ────
+    const staleRow = page.locator('tr', { hasText: staleEmail })
+    await expect(staleRow).toBeVisible()
+    await staleRow.getByTitle('Edit scheduled time').click()
+    await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail)
+    await staleRow.locator('input[type="datetime-local"]').fill('2030-03-02T12:00')
+    await staleRow.getByRole('button', { name: 'Save' }).click()
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'That booking no longer exists' }),
+    ).toBeVisible()
+    // The editor stays open so nothing the admin typed is lost.
+    await expect(staleRow.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  } finally {
+    await admin.from('zeeg_bookings').delete().eq('invitee_email', badDateEmail)
+    await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail)
+  }
+})

@@ -98,7 +98,7 @@ Created `docs/backup-and-recovery.md` covering:
 **Context:** The platform has no paying customers yet, so the Free plan is acceptable for now. The runbook includes a launch day checklist (§8) that covers upgrading to Pro, enabling PITR, and completing the first test restore before the first customer signs up.
 
 **Actions required at launch:**
-- Upgrade `alwaysready-demo` Supabase project to Pro plan
+- Upgrade `alwaysready-production` Supabase project to Pro plan
 - Enable PITR under Project Settings → Backups
 - Complete first test restore and fill in the log in `docs/backup-and-recovery.md`
 

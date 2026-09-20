@@ -23,7 +23,7 @@ Supabase Pro tier provides two layers of backup:
 - Must be explicitly enabled — it is not on by default.
 - Available in: Supabase dashboard → Project Settings → Backups → Point in Time Recovery.
 
-> **⚠️ Action required — URGENT:** The production project (`alwaysready-demo`) is currently on the **FREE plan**. Free plan has no automated backups and no PITR. The dashboard shows "No backups". Upgrade to **Supabase Pro (~$25/month)** immediately. Once upgraded, verify PITR is enabled under Project Settings → Backups.
+> **⚠️ Action required — URGENT:** The production project (`alwaysready-production`) is currently on the **FREE plan**. Free plan has no automated backups and no PITR. The dashboard shows "No backups". Upgrade to **Supabase Pro (~$25/month)** immediately. Once upgraded, verify PITR is enabled under Project Settings → Backups.
 
 ---
 
@@ -127,7 +127,7 @@ Run this once per year to confirm backups are usable and the recovery procedure 
 
 Complete these steps before the first paying customer signs up:
 
-- [ ] Upgrade `alwaysready-demo` Supabase project to **Pro plan** (~$25/month): Supabase dashboard → Settings → Billing → Upgrade
+- [ ] Upgrade `alwaysready-production` Supabase project to **Pro plan** (~$25/month): Supabase dashboard → Settings → Billing → Upgrade
 - [ ] Confirm daily backups are active: Settings → Backups → at least one backup listed
 - [ ] Enable Point in Time Recovery: Settings → Backups → Point in Time Recovery → Enable
 - [ ] Complete first test restore (§5) and fill in the log (§6)

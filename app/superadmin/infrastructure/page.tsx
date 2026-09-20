@@ -4,6 +4,8 @@
  * Live data:
  *   - Resend email counts (from notification_log)
  *   - Supabase active user count (MAU proxy)
+ *   - Supabase database size + file storage size (get_usage_summary(), approximate;
+ *     Supabase's own usage page is the source of truth)
  *   - Upstash daily commands + storage (Management API)
  *   - Sentry errors this month (Stats v2 API)
  *   - Vercel bandwidth + build minutes (REST API)
@@ -11,7 +13,8 @@
  *
  * Each external API falls back to a static reference card when the
  * required env vars are absent or the fetch fails. Anthropic has no
- * public usage API so its card is always static.
+ * public usage API so its card is always static. Supabase egress has no API
+ * either (dashboard only), so it stays a static reminder to check monthly.
  *
  * Required env vars (add to Vercel dashboard + .env):
  *   UPSTASH_MANAGEMENT_EMAIL      — your Upstash account email
@@ -248,6 +251,7 @@ export default async function InfrastructurePage() {
     sentry,
     vercel,
     cloudflare,
+    usageResult,
   ] = await Promise.all([
     supabase.from('notification_log').select('id', { count: 'exact', head: true }).gte('sent_at', monthStart),
     supabase.from('notification_log').select('id', { count: 'exact', head: true }).gte('sent_at', todayStart),
@@ -256,11 +260,18 @@ export default async function InfrastructurePage() {
     fetchSentryStats(),
     fetchVercelUsage(),
     fetchCloudflareWorkerStats(),
+    supabase.rpc('get_usage_summary'),
   ])
 
   const resendMonth = emailsThisMonth ?? 0
   const resendDay   = emailsToday ?? 0
   const mau         = activeUsers ?? 0
+
+  if (usageResult.error) console.error('[infrastructure] get_usage_summary failed:', usageResult.error)
+  const usage      = usageResult.error ? null : usageResult.data
+  const BYTES_PER_MB = 1024 * 1024
+  const dbMB       = usage ? Math.round((usage.database_bytes / BYTES_PER_MB) * 10) / 10 : 0
+  const storageMB  = usage ? Math.round((usage.storage_bytes / BYTES_PER_MB) * 10) / 10 : 0
 
   return (
     <div className="space-y-10">
@@ -319,6 +330,33 @@ export default async function InfrastructurePage() {
               {statusBadge(pct(mau, 50000))}
             </div>
             <Meter used={mau} limit={50000} unit="users" />
+            <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer"
+              className="text-xs text-brand hover:underline">
+              Open Supabase dashboard
+            </a>
+          </div>
+
+          {/* Supabase database + file storage (live, approximate) */}
+          <div className="bg-card border border-line rounded-xl p-5 space-y-4">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-sm font-semibold text-ink">Supabase: database &amp; file storage</p>
+                <p className="text-xs text-ink-muted mt-0.5">Free tier: 500 MB database, 1 GB file storage (approximate)</p>
+              </div>
+              {usage && statusBadge(Math.max(pct(dbMB, 500), pct(storageMB, 1024)))}
+            </div>
+            {usage ? (
+              <>
+                <Meter used={dbMB}      limit={500}  unit="MB database" />
+                <Meter used={storageMB} limit={1024} unit="MB file storage" />
+                <p className="text-xs text-ink-muted">
+                  {usage.storage_files.toLocaleString()} files stored. Largest tables:{' '}
+                  {usage.top_tables.map(t => `${t.name} (${(t.bytes / BYTES_PER_MB).toFixed(1)} MB)`).join(', ')}.
+                </p>
+              </>
+            ) : (
+              <p className="text-xs text-ink-muted">Could not read usage just now. Check the Supabase dashboard instead.</p>
+            )}
             <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer"
               className="text-xs text-brand hover:underline">
               Open Supabase dashboard
@@ -436,13 +474,12 @@ export default async function InfrastructurePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
-          {/* Supabase DB + Storage */}
+          {/* Supabase egress: no API, dashboard only */}
           <div className="bg-card border border-line rounded-xl p-5 space-y-3">
-            <p className="text-sm font-semibold text-ink">Supabase — database &amp; storage</p>
+            <p className="text-sm font-semibold text-ink">Supabase: egress (data sent out)</p>
             <ul className="text-sm text-ink-muted space-y-1">
-              <li>Database: <span className="text-ink font-medium">500 MB</span></li>
-              <li>File storage: <span className="text-ink font-medium">1 GB</span></li>
-              <li>Bandwidth: <span className="text-ink font-medium">5 GB / month</span></li>
+              <li>Free tier: <span className="text-ink font-medium">5 GB / month</span> (plus 5 GB cached)</li>
+              <li>Supabase offers no way to read this from the platform. Check its usage page in the dashboard about once a month.</li>
             </ul>
             <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer"
               className="text-xs text-brand hover:underline block">

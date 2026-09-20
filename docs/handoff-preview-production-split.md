@@ -9,12 +9,12 @@ Until today, every Vercel **preview deployment** (any branch push, any PR) share
 That's fixed. There is now a second, separate Supabase project:
 
 - **Name:** `alwaysready-preview`
-- **Region:** Ireland (`eu-west-1`) — deliberately different from production (`alwaysready-demo`, Frankfurt/`eu-central-1`), chosen for no reason other than proximity; region has no bearing on which project is which
+- **Region:** Ireland (`eu-west-1`) — deliberately different from production (`alwaysready-production`, Frankfurt/`eu-central-1`), chosen for no reason other than proximity; region has no bearing on which project is which
 - **Purpose:** preview builds only. It holds no real customer data — it's schema-only, seeded with test/fake data as needed.
 
 Its schema was brought up to date by running every file in `supabase/migrations/` against it directly (121 migrations at the time, applied in filename order). Verified afterward to match production exactly: same table count, RLS enabled on every table, same function and policy counts.
 
-**Naming gotcha worth remembering:** the production project is called `alwaysready-demo` in the Supabase dashboard, not "production" or "alwaysready" — easy to pick the wrong project by name alone. Always confirm by region (Frankfurt = production) if in doubt.
+**Naming note worth remembering:** the production project is now called `alwaysready-production` in the Supabase dashboard. It was previously named `alwaysready-demo` (renamed in the dashboard by AJ), so older notes, emails and commits may still use that name; it is the same project. The preview project is `alwaysready-preview`. If in doubt about which is which, confirm by region (Frankfurt = production) and by the PRODUCTION label shown next to the branch name in the dashboard.
 
 ## Vercel environment variables
 
@@ -22,9 +22,9 @@ Its schema was brought up to date by running every file in `supabase/migrations/
 
 | Variable | Environment | Points to |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Production | `alwaysready-demo` (real production) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Production | `alwaysready-production` (real production) |
 | `NEXT_PUBLIC_SUPABASE_URL` | Preview | `alwaysready-preview` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Production | `alwaysready-demo`'s service_role key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Production | `alwaysready-production`'s service_role key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Preview | `alwaysready-preview`'s service_role key |
 
 Both are `Type: Config` for the URL and `Type: Secret` for the service_role key, matching Vercel's own guidance (`NEXT_PUBLIC_`-prefixed values are exposed to the browser regardless, so marking them Secret is misleading and Vercel won't even let you save that combination once it's already stored as Secret — had to delete and recreate rather than edit in place. Worth knowing before you hit the same dead end.)
