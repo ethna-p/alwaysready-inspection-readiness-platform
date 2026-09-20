@@ -21,7 +21,11 @@ export async function deleteSubscriber(id: string) {
   revalidatePath('/superadmin/leads')
 }
 
-export async function addZeegBooking(formData: FormData) {
+export type AddZeegBookingResult =
+  | { success: true }
+  | { success: false; error: string }
+
+export async function addZeegBooking(formData: FormData): Promise<AddZeegBookingResult> {
   await assertSuperadmin()
   const supabase = createAdminClient()
 
@@ -30,9 +34,9 @@ export async function addZeegBooking(formData: FormData) {
   const demoType    = ((formData.get('demo_type')     as string | null) ?? '').trim()
   const scheduledAt = ((formData.get('scheduled_at')   as string | null) ?? '').trim() || null
 
-  if (!email || !demoType) throw new Error('Email and demo type are required')
+  if (!email || !demoType) return { success: false, error: 'Email and demo type are required.' }
 
-  await supabase.from('zeeg_bookings').insert({
+  const { error } = await supabase.from('zeeg_bookings').insert({
     event_uuid:    crypto.randomUUID(),
     invitee_uuid:  crypto.randomUUID(),
     invitee_email: email,
@@ -42,7 +46,13 @@ export async function addZeegBooking(formData: FormData) {
     scheduled_at:  scheduledAt,
   })
 
+  if (error) {
+    console.error('[leads] addZeegBooking insert failed:', error)
+    return { success: false, error: 'Could not add the booking. Please try again.' }
+  }
+
   revalidatePath('/superadmin/leads')
+  return { success: true }
 }
 
 /**

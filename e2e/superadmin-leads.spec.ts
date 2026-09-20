@@ -58,11 +58,14 @@ test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports 
     await page.locator('#zb-name').fill('E2E Zeeg Booker')
     await page.locator('#zb-email').fill(zeegEmail)
     await page.locator('#zb-type').selectOption('30min')
+    // "Scheduled for" is required (unified Demo Pipeline, 2026-09-19). Noon keeps the
+    // rendered date stable whatever timezone the server formats it in.
+    await page.locator('#zb-scheduled').fill('2030-01-15T12:00')
     await page.getByRole('button', { name: 'Add booking' }).click()
     const bookingRow = page.locator('tr', { hasText: zeegEmail })
     await expect(bookingRow).toBeVisible()
     await expect(bookingRow.getByText('30 min', { exact: true })).toBeVisible()
-    await expect(bookingRow.getByText('Confirmed', { exact: true })).toBeVisible()
+    await expect(bookingRow.getByText(/15 Jan 2030/)).toBeVisible()
 
     // ── Bulk-send: confirm step, then an honest (not inflated) count ────
     await expect(page.getByText(/Send these when the event happens/)).toBeVisible()

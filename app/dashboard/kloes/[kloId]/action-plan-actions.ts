@@ -8,9 +8,6 @@
  * signOffActionItem  — mark complete with optional completion notes
  * deleteActionItem   — admin only; hard delete
  *
- * Note: action_items is a runtime-migrated table not yet in Supabase's generated
- * types, so we cast the client to `any` to bypass the type checker.
- *
  * Defence-in-depth: all mutations scope to profile.organisation_id in addition
  * to the RLS policies on the table, so a cross-org write fails at both layers.
  */
@@ -51,8 +48,7 @@ export async function createActionItem(formData: FormData): Promise<ActionResult
     return { success: false, error: 'That team member was not found in your organisation.' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any).from('action_items').insert({
+  const { error } = await supabase.from('action_items').insert({
     organisation_id:             profile.organisation_id,
     klo_item_id:                 kloItemId,
     title,
@@ -107,8 +103,7 @@ export async function updateActionItem(formData: FormData): Promise<ActionResult
   }
 
   // Scope to caller's org — defence-in-depth on top of RLS
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('action_items')
     .update({
       title,
@@ -149,8 +144,7 @@ export async function signOffActionItem(formData: FormData): Promise<ActionResul
   const supabase = await createClient()
 
   // Scope to caller's org — defence-in-depth on top of RLS
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('action_items')
     .update({
       status:           'completed',
@@ -188,8 +182,7 @@ export async function deleteActionItem(formData: FormData): Promise<ActionResult
   const supabase = await createClient()
 
   // Scope to caller's org — defence-in-depth on top of RLS
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('action_items')
     .delete()
     .eq('id', id)

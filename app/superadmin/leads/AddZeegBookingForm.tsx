@@ -1,18 +1,24 @@
 'use client'
 
-import { useRef, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import { addZeegBooking } from './actions'
 
 export default function AddZeegBookingForm() {
   const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     startTransition(async () => {
-      await addZeegBooking(formData)
-      formRef.current?.reset()
+      const result = await addZeegBooking(formData)
+      if (result.success) {
+        setError(null)
+        formRef.current?.reset()
+      } else {
+        setError(result.error)
+      }
     })
   }
 
@@ -85,6 +91,12 @@ export default function AddZeegBookingForm() {
       >
         {isPending ? 'Adding…' : 'Add booking'}
       </button>
+
+      {error && (
+        <p role="alert" className="w-full text-sm text-red-700">
+          {error}
+        </p>
+      )}
     </form>
   )
 }
