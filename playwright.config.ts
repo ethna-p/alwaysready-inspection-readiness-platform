@@ -10,10 +10,17 @@
  * Before running for the first time (or whenever you want a clean test
  * account): `npm run test:e2e:seed`.
  */
+import { randomBytes } from 'node:crypto'
 import { defineConfig, devices } from '@playwright/test'
 import { loadEnvLocal } from './e2e/support/env'
 
 const env = loadEnvLocal()
+
+// Fresh random bearer token for the /api/cron/* routes, generated once per test
+// run. The main Playwright process sets it first; worker processes re-load this
+// config but inherit the value, so `??=` keeps every process on the same one.
+// e2e/support/cron.ts reads it back for the specs. No fixed value lives in the repo.
+const E2E_CRON_SECRET = (process.env.E2E_CRON_SECRET ??= randomBytes(32).toString('hex'))
 
 const PORT = 3100 // distinct from the port you'd use for `npm run dev` yourself
 const BASE_URL = `http://localhost:${PORT}`
@@ -90,10 +97,12 @@ export default defineConfig({
       // Not set in .env.local at all -- verifyCronSecret() (lib/utils/cron.ts)
       // rejects every request unconditionally when this is unset, so the six
       // /api/cron/* routes' real "correct secret" path was previously
-      // untestable here, only ever hitting the always-401 branch. A fixed
-      // literal is fine: this is an app-internal shared bearer token this
-      // app itself defines, not a third-party credential.
-      CRON_SECRET: 'e2e-test-cron-secret-2f8a4c1d',
+      // untestable here, only ever hitting the always-401 branch. The value is
+      // random per run (see E2E_CRON_SECRET above) rather than a literal in the
+      // repository. If a dev server is already listening on this port,
+      // reuseExistingServer keeps it and this value never reaches it, so the
+      // cron specs would get 401s; stop that server and re-run.
+      CRON_SECRET: E2E_CRON_SECRET,
       // Only needed so e2e/support-tickets.spec.ts can genuinely exercise
       // /api/inbound-email (simulating what the real Cloudflare Email Worker
       // posts) rather than skip that code path entirely — not a production

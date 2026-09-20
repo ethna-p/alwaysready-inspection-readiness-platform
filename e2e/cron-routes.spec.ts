@@ -3,7 +3,7 @@
  * verifyCronSecret -- the same helper every one of them is supposed to
  * call first, per this repo's own Chunk 4 debugging-schedule check).
  *
- * playwright.config.ts's webServer sets a fixed, test-only CRON_SECRET
+ * playwright.config.ts's webServer sets a random, per-run, test-only CRON_SECRET
  * (see e2e/support/cron.ts) specifically so this file can exercise the
  * real "correct secret" path -- CRON_SECRET is unset in .env.local
  * entirely, and verifyCronSecret() rejects every request unconditionally
