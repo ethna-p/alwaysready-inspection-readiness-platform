@@ -72,10 +72,9 @@ GRANT SELECT ON public.service_types TO authenticated;
 -- ─────────────────────────────────────────────
 
 -- Migration 2: organisations table
--- One row per customer (or per demo session for shadow orgs).
--- is_demo + demo_expires_at support the per-session demo isolation
--- mechanism (Step 10 in the build order) — the flag costs nothing
--- now and avoids a schema change later.
+-- One row per customer.
+-- (The is_demo and demo_expires_at columns from the abandoned per-session demo
+-- feature were removed from the live schema by 20260920000003.)
 
 CREATE TABLE public.organisations (
   id                uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -84,8 +83,6 @@ CREATE TABLE public.organisations (
   service_type_id   uuid        NOT NULL REFERENCES public.service_types(id),
   subscription_tier text        NOT NULL DEFAULT 'trial'
                     CHECK (subscription_tier IN ('trial', 'starter', 'pro')),
-  is_demo           boolean     NOT NULL DEFAULT false,
-  demo_expires_at   timestamptz,                   -- null for real orgs; set for shadow orgs
   created_at        timestamptz NOT NULL DEFAULT now()
 );
 

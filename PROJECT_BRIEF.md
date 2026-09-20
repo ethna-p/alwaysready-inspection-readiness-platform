@@ -277,6 +277,7 @@ Before the platform is opened to real paying customers:
 
 - **Domain registrar:** FastHosts. Existing site DNS points to Cloudflare Pages and must not be disturbed.
 - **Supabase Data API grants:** Every table migration must include explicit `GRANT` statements (e.g. `GRANT SELECT ON public.table TO authenticated;`) alongside RLS policies. This has been a Supabase requirement for new projects since 30 May 2026.
+- **Function EXECUTE grants:** since migration 20260920000005, new functions created by the postgres role no longer receive EXECUTE for PUBLIC, anon or authenticated by default (only postgres and service_role do). A new function that logged-in users must call, either as an RPC on the user client or as a helper inside an RLS policy, needs an explicit `GRANT EXECUTE ON FUNCTION public.name(args) TO authenticated;` in its own migration, the same way new tables need explicit GRANTs. A missing grant fails loudly ("permission denied for function"). Trigger functions and functions only ever called through the service-role client need nothing. Never grant EXECUTE to anon on a SECURITY DEFINER function unless it is genuinely public. See Issue #23, Chunk 7 check (6).
 - **Free-tier Supabase** pauses after 7 days of inactivity (20–30 second cold start). A keep-alive ping mitigates this during the pre-launch period if traffic is infrequent.
 
 ---

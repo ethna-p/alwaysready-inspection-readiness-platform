@@ -7,25 +7,35 @@ import { sendEmail }               from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 import { renderTemplate } from '@/lib/email-templates'
 
-export async function deleteLead(id: string) {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-  await supabase.from('waitlist_leads').delete().eq('id', id)
-  revalidatePath('/superadmin/leads')
-}
-
-export async function deleteSubscriber(id: string) {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-  await supabase.from('blog_subscribers').delete().eq('id', id)
-  revalidatePath('/superadmin/leads')
-}
-
-export type AddZeegBookingResult =
+export type LeadsActionResult =
   | { success: true }
   | { success: false; error: string }
 
-export async function addZeegBooking(formData: FormData): Promise<AddZeegBookingResult> {
+export async function deleteLead(id: string): Promise<LeadsActionResult> {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+  const { error } = await supabase.from('waitlist_leads').delete().eq('id', id)
+  if (error) {
+    console.error('[leads] deleteLead failed:', error)
+    return { success: false, error: 'Could not delete the lead. Please try again.' }
+  }
+  revalidatePath('/superadmin/leads')
+  return { success: true }
+}
+
+export async function deleteSubscriber(id: string): Promise<LeadsActionResult> {
+  await assertSuperadmin()
+  const supabase = createAdminClient()
+  const { error } = await supabase.from('blog_subscribers').delete().eq('id', id)
+  if (error) {
+    console.error('[leads] deleteSubscriber failed:', error)
+    return { success: false, error: 'Could not delete the subscriber. Please try again.' }
+  }
+  revalidatePath('/superadmin/leads')
+  return { success: true }
+}
+
+export async function addZeegBooking(formData: FormData): Promise<LeadsActionResult> {
   await assertSuperadmin()
   const supabase = createAdminClient()
 
@@ -143,20 +153,48 @@ export async function deleteZeegBooking(id: string) {
   revalidatePath('/superadmin/leads')
 }
 
-export async function deletePipelineRow(demoLeadId: string | null, zeegBookingId: string | null) {
+export async function deletePipelineRow(
+  demoLeadId: string | null,
+  zeegBookingId: string | null,
+): Promise<LeadsActionResult> {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  if (demoLeadId)    await supabase.from('demo_leads').delete().eq('id', demoLeadId)
-  if (zeegBookingId) await supabase.from('zeeg_bookings').delete().eq('id', zeegBookingId)
+
+  // Attempt both deletes even if the first fails, so one bad row does not strand the other.
+  let failed = false
+  if (demoLeadId) {
+    const { error } = await supabase.from('demo_leads').delete().eq('id', demoLeadId)
+    if (error) { console.error('[leads] deletePipelineRow demo_leads failed:', error); failed = true }
+  }
+  if (zeegBookingId) {
+    const { error } = await supabase.from('zeeg_bookings').delete().eq('id', zeegBookingId)
+    if (error) { console.error('[leads] deletePipelineRow zeeg_bookings failed:', error); failed = true }
+  }
+
+  // Revalidate even on failure so the table shows whichever half did get deleted.
   revalidatePath('/superadmin/leads')
+  return failed
+    ? { success: false, error: 'Could not delete this entry. Please refresh and try again.' }
+    : { success: true }
 }
 
-export async function updateScheduledAt(zeegBookingId: string, scheduledAt: string) {
+export async function updateScheduledAt(zeegBookingId: string, scheduledAt: string): Promise<LeadsActionResult> {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase
+  const { data, error } = await supabase
     .from('zeeg_bookings')
     .update({ scheduled_at: scheduledAt })
     .eq('id', zeegBookingId)
+    .select('id')
+
+  if (error) {
+    console.error('[leads] updateScheduledAt failed:', error)
+    return { success: false, error: 'Could not save the new time. Please try again.' }
+  }
+  if (!data || data.length === 0) {
+    return { success: false, error: 'That booking no longer exists. Please refresh the page.' }
+  }
+
   revalidatePath('/superadmin/leads')
+  return { success: true }
 }

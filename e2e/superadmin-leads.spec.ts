@@ -67,6 +67,13 @@ test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports 
     await expect(bookingRow.getByText('30 min', { exact: true })).toBeVisible()
     await expect(bookingRow.getByText(/15 Jan 2030/)).toBeVisible()
 
+    // ── Edit the scheduled time inline (updateScheduledAt) ───────────────
+    await bookingRow.getByTitle('Edit scheduled time').click()
+    await bookingRow.locator('input[type="datetime-local"]').fill('2030-02-16T12:00')
+    await bookingRow.getByRole('button', { name: 'Save' }).click()
+    await expect(bookingRow.getByText(/16 Feb 2030/)).toBeVisible()
+    await expect(bookingRow.getByText(/15 Jan 2030/)).toHaveCount(0)
+
     // ── Bulk-send: confirm step, then an honest (not inflated) count ────
     await expect(page.getByText(/Send these when the event happens/)).toBeVisible()
     const sendButton = page.getByRole('button', { name: 'Send framework email (Email 9)' })
@@ -87,6 +94,11 @@ test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports 
     page.once('dialog', dialog => dialog.accept())
     await leadRow.getByRole('button', { name: 'Delete' }).click()
     await expect(page.locator('tr', { hasText: leadEmail })).toHaveCount(0)
+
+    // ── Delete the booking's Demo Pipeline row (deletePipelineRow) ───────
+    page.once('dialog', dialog => dialog.accept())
+    await bookingRow.getByRole('button', { name: 'Delete' }).click()
+    await expect(page.locator('tr', { hasText: zeegEmail })).toHaveCount(0)
   } finally {
     await admin.from('waitlist_leads').delete().eq('email', leadEmail)
     await admin.from('zeeg_bookings').delete().eq('invitee_email', zeegEmail)
