@@ -226,8 +226,22 @@ async function fetchCloudflareWorkerStats(): Promise<CloudflareStats | null> {
           }>
         }
       }
+      errors?: unknown[]
     }
-    const rows = data.data?.viewer?.accounts?.[0]?.workersInvocationsAdaptive ?? []
+    // Cloudflare's GraphQL API answers a rejected token or a bad query with HTTP 200 and an
+    // `errors` array (data is null), so res.ok alone cannot tell "no requests" from "not allowed".
+    // Treat both an error and a missing account as a failure so the card falls back honestly
+    // instead of showing a false zero.
+    if (data.errors?.length) {
+      console.error('[infrastructure] Cloudflare GraphQL returned errors:', JSON.stringify(data.errors).slice(0, 300))
+      return null
+    }
+    const account = data.data?.viewer?.accounts?.[0]
+    if (!account) {
+      console.error('[infrastructure] Cloudflare GraphQL returned no account for CLOUDFLARE_ACCOUNT_ID')
+      return null
+    }
+    const rows = account.workersInvocationsAdaptive ?? []
     const total = rows.reduce((acc, row) => acc + (row.sum?.requests ?? 0), 0)
     return { requestsToday: total }
   } catch { return null }
