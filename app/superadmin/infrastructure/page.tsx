@@ -180,8 +180,10 @@ async function fetchVercelUsage(): Promise<VercelUsage | null> {
 }
 
 type CloudflareStats = { requestsToday: number }
+type CloudflareFailure = { error: string }
 
-async function fetchCloudflareWorkerStats(): Promise<CloudflareStats | null> {
+/** null means the credentials are not configured; { error } means Cloudflare was asked and refused or failed. */
+async function fetchCloudflareWorkerStats(): Promise<CloudflareStats | CloudflareFailure | null> {
   const token      = process.env.CLOUDFLARE_API_TOKEN
   const accountId  = process.env.CLOUDFLARE_ACCOUNT_ID
   const workerName = process.env.CLOUDFLARE_WORKER_NAME
@@ -217,7 +219,7 @@ async function fetchCloudflareWorkerStats(): Promise<CloudflareStats | null> {
       body: JSON.stringify({ query }),
       cache: 'no-store',
     })
-    if (!res.ok) return null
+    if (!res.ok) return { error: `Cloudflare replied HTTP ${res.status}` }
     const data = await res.json() as {
       data?: {
         viewer?: {
@@ -226,7 +228,7 @@ async function fetchCloudflareWorkerStats(): Promise<CloudflareStats | null> {
           }>
         }
       }
-      errors?: unknown[]
+      errors?: Array<{ message?: string }>
     }
     // Cloudflare's GraphQL API answers a rejected token or a bad query with HTTP 200 and an
     // `errors` array (data is null), so res.ok alone cannot tell "no requests" from "not allowed".
@@ -234,17 +236,17 @@ async function fetchCloudflareWorkerStats(): Promise<CloudflareStats | null> {
     // instead of showing a false zero.
     if (data.errors?.length) {
       console.error('[infrastructure] Cloudflare GraphQL returned errors:', JSON.stringify(data.errors).slice(0, 300))
-      return null
+      return { error: (data.errors[0]?.message ?? 'unknown error').slice(0, 160) }
     }
     const account = data.data?.viewer?.accounts?.[0]
     if (!account) {
       console.error('[infrastructure] Cloudflare GraphQL returned no account for CLOUDFLARE_ACCOUNT_ID')
-      return null
+      return { error: 'no account matched CLOUDFLARE_ACCOUNT_ID' }
     }
     const rows = account.workersInvocationsAdaptive ?? []
     const total = rows.reduce((acc, row) => acc + (row.sum?.requests ?? 0), 0)
     return { requestsToday: total }
-  } catch { return null }
+  } catch { return { error: 'the request to Cloudflare failed' } }
 }
 
 // ── page ──────────────────────────────────────────────────────────────────────
@@ -435,10 +437,18 @@ export default async function InfrastructurePage() {
                 <p className="text-sm font-semibold text-ink">Cloudflare Workers — requests today</p>
                 <p className="text-xs text-ink-muted mt-0.5">Free tier: 100,000 / day</p>
               </div>
-              {cloudflare ? statusBadge(pct(cloudflare.requestsToday, 100000)) : <NotConfigured />}
+              {cloudflare && 'requestsToday' in cloudflare
+                ? statusBadge(pct(cloudflare.requestsToday, 100000))
+                : cloudflare
+                  ? <span className="text-xs font-medium text-red-700 bg-red-50 px-2 py-0.5 rounded-full">Could not read</span>
+                  : <NotConfigured />}
             </div>
-            {cloudflare ? (
+            {cloudflare && 'requestsToday' in cloudflare ? (
               <Meter used={cloudflare.requestsToday} limit={100000} unit="requests" />
+            ) : cloudflare ? (
+              <p role="alert" className="text-xs text-red-700">
+                Cloudflare was asked but did not give an answer: {cloudflare.error}. Check that the token&apos;s permissions and account still match.
+              </p>
             ) : (
               <ul className="text-sm text-ink-muted space-y-1">
                 <li>Pages: <span className="text-ink font-medium">Unlimited requests</span></li>
