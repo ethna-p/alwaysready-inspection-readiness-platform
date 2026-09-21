@@ -4,11 +4,10 @@ import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { renderTemplate } from '@/lib/email-templates'
-import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
-import { reportDbError, throwOnDbError } from '@/lib/db-errors'
+import { throwOnDbError } from '@/lib/db-errors'
 
 export type ReplyState =
   | { status: 'idle' }
@@ -44,16 +43,6 @@ export async function staffReply(
 
   if (error) return { status: 'error', message: error.message }
 
-  // Clear the AI draft now that a reply has actually been sent -- otherwise
-  // the stale draft (which may differ from what was just sent, if it was
-  // edited first) keeps reappearing in the reply box, with the "AI
-  // suggested" banner, on every future visit to this ticket.
-  const { error: clearDraftError } = await supabase
-    .from('support_tickets')
-    .update({ draft_reply: null })
-    .eq('id', ticketId)
-  reportDbError(clearDraftError, 'ticket reply: clear draft')
-
   // If this is a website enquiry, email the reply to the external sender
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
     const firstName = escapeHtml(getFirstName(ticket.external_name))
@@ -81,49 +70,6 @@ export async function staffReply(
 
   // Refresh page
   redirect(`/superadmin/tickets/${ticketId}`)
-}
-
-export async function regenerateDraft(ticketId: string): Promise<string | null> {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-
-  const { data: ticket } = await supabase
-    .from('support_tickets')
-    .select('subject, message, external_name')
-    .eq('id', ticketId)
-    .single()
-
-  if (!ticket) return null
-
-  const { data: replies } = await supabase
-    .from('support_ticket_replies')
-    .select('message, is_staff_reply, created_at')
-    .eq('ticket_id', ticketId)
-    .order('created_at', { ascending: true })
-
-  const thread: TicketThread = {
-    subject:         ticket.subject,
-    senderName:      ticket.external_name ?? null,
-    originalMessage: ticket.message,
-    replies: (replies ?? []).map(r => ({
-      role:      r.is_staff_reply ? 'staff' : 'customer',
-      message:   r.message,
-      createdAt: new Date(r.created_at).toLocaleDateString('en-GB'),
-    })),
-  }
-
-  try {
-    const draft = await generateSupportDraft(thread)
-    const { error: saveDraftError } = await supabase
-      .from('support_tickets')
-      .update({ draft_reply: draft })
-      .eq('id', ticketId)
-    reportDbError(saveDraftError, 'ticket: save regenerated draft')
-    return draft
-  } catch (err) {
-    console.error('[regenerateDraft] AI draft failed:', err)
-    return null
-  }
 }
 
 // ── GDPR template names ───────────────────────────────────────────────────────

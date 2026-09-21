@@ -28,7 +28,7 @@ export function buildCsp(nonce: string, isDev: boolean): string {
     "img-src 'self' data: blob: https://*.supabase.co",
     "font-src 'self'",
     // Supabase (auth, database), Anthropic (newsletter AI), Sentry EU ingest (data stays in Germany)
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://*.ingest.de.sentry.io",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.ingest.de.sentry.io",
     // Cloudflare Turnstile renders its challenge in an iframe
     'frame-src https://challenges.cloudflare.com',
     // Sentry session replay compresses in a web worker created from a blob: URL

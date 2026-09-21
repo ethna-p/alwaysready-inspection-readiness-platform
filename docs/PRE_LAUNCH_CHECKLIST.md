@@ -64,7 +64,7 @@ Nothing is bug-free. The bar is: no blockers, and a small, known, low-impact rem
 
 ## 4. API keys and external services
 
-- [ ] **Anthropic API key.** Ensure `ANTHROPIC_API_KEY` in Vercel environment variables is set to a valid, active key from console.anthropic.com. AI support ticket drafts depend on this. A bad or missing key causes a silent 401 error for users.
+- [x] **Anthropic API key in Vercel.** The platform no longer calls Anthropic (the AI ticket-draft feature was removed), so `ANTHROPIC_API_KEY` can be deleted from the Vercel environment variables. The marketing site's support bot has its own key in Cloudflare.
 - [ ] **Resend.** The free tier covers 3,000 emails/month (100/day). Monitor usage as the customer base grows; upgrade if approaching limits.
 - [ ] **Supabase.** The free tier covers 500MB database and 1GB file storage. Adequate for early customers; review as evidence file uploads grow.
 
@@ -85,4 +85,3 @@ Nothing is bug-free. The bar is: no blockers, and a small, known, low-impact rem
 ## 6. Reminders
 
 - Vercel requires a **redeploy** after any environment variable change before it takes effect in production.
-- The Anthropic API key in Vercel must match an active key in console.anthropic.com. If a key is rotated or deleted there, update Vercel immediately.

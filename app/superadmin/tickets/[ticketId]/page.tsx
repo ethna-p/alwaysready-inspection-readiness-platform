@@ -45,7 +45,7 @@ export default async function SuperadminTicketPage({ params }: Props) {
     .from('support_tickets')
     .select(`
       id, reference, subject, message, status, staff_initiated, source,
-      external_name, external_email, draft_reply, created_at,
+      external_name, external_email, created_at,
       organisations ( name ),
       submitted_by
     `)
@@ -217,7 +217,6 @@ export default async function SuperadminTicketPage({ params }: Props) {
       <StaffReplyForm
         ticketId={ticketId}
         currentStatus={status}
-        draftReply={category === 'general' ? (ticket as unknown as { draft_reply: string | null }).draft_reply : null}
         ticketCategory={category}
       />
 

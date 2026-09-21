@@ -22,7 +22,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { renderTemplate } from '@/lib/email-templates'
-import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
@@ -163,26 +162,6 @@ export async function POST(req: NextRequest) {
       { error: 'Could not save your message. Please try again, or email support@alwaysready.uk.' },
       { status: 500, headers: CORS_HEADERS }
     )
-  }
-
-  // ── Generate AI draft reply ───────────────────────────────────────────────
-  if (newTicket) {
-    const thread: TicketThread = {
-      subject,
-      senderName:      fullName || null,
-      originalMessage: ticketMessage,
-      replies:         [],
-    }
-    try {
-      const draft = await generateSupportDraft(thread)
-      const { error: draftError } = await supabase
-        .from('support_tickets')
-        .update({ draft_reply: draft })
-        .eq('id', newTicket.id)
-      reportDbError(draftError, 'inbound-contact: save AI draft')
-    } catch (err) {
-      console.error('[inbound-contact] AI draft generation failed (non-fatal):', err)
-    }
   }
 
   // ── Blog opt-in ───────────────────────────────────────────────────────────

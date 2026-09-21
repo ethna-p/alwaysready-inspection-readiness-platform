@@ -17,7 +17,6 @@
     "check:silent-writes": "node scripts/check-silent-writes.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.122.0",
     "@sentry/nextjs": "^10.70.0",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.3",
@@ -45,13 +44,13 @@
     "edge >= 93"
   ],
   "devDependencies": {
-    "axe-core": "4.12.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "axe-core": "4.12.1",
     "critters": "^0.0.25",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",

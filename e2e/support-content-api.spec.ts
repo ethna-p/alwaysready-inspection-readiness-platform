@@ -1,8 +1,7 @@
 /**
  * /api/support-content -- the single source of truth for AlwaysReady's
- * customer-facing support content, added so the platform's AI support-draft
- * tool, the marketing site's chatbot, and its Help Centre search stop
- * maintaining three independently hand-copied versions of the same FAQ
+ * customer-facing support content, added so the marketing site's chatbot and its Help Centre search stop
+ * maintaining independently hand-copied versions of the same FAQ
  * content (confirmed drifting out of sync at least once already -- stale
  * references to a removed feature survived in two of the three copies
  * after the feature itself was deleted, found while auditing all three at

@@ -52,7 +52,7 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 |---|---|
 | `organisations/` | All orgs, charity toggle, delete |
 | `leads/` | Waitlist leads, demo leads, Zeeg bookings |
-| `support/` | Support ticket desk with AI draft replies |
+| `support/` | Support ticket desk |
 | `test-emails/` | Send test emails for all email groups |
 | `account/` | Superadmin MFA settings |
 | `broadcast/` | Send a one-off email broadcast (blog-post-announcement style) to blog subscribers, with live recipient count and preview |
@@ -71,7 +71,6 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | `lib/types.ts` | All TypeScript types — single source of truth for data shapes |
 | `lib/email.ts` | Email sending infrastructure (Resend + CID attachments) |
 | `lib/cqc.ts` | CQC Register API client |
-| `lib/ai-draft.ts` | AI draft replies for support desk |
 | `lib/waitlist-nurture.ts` | Waitlist nurture email content (emails 1–8) |
 | `lib/supabase/` | Supabase client (server and browser) |
 | `lib/session.ts` | Current user profile helper |
