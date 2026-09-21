@@ -89,10 +89,13 @@ export default defineConfig({
   timeout: 60_000,
 
   // The full suite runs in Chromium (Chrome and Edge share that engine). `E2E_BROWSERS=webkit|firefox`
-  // (npm run test:e2e:browsers) instead runs the essential user paths only, in Safari's engine or
+  // (npm run test:e2e:browsers runs webkit) instead runs the essential user paths only, in Safari's engine or
   // Firefox: sign-in, sign-up, password reset, invites, the dashboard, KLOE rating, evidence upload,
   // checkout and the security policy. Each browser is run on its own after a re-seed, because the specs
-  // share one fixture organisation (see CLAUDE.md on fixture drift).
+  // share one fixture organisation (see CLAUDE.md on fixture drift). The npm script runs WebKit only:
+  // Playwright's Firefox build would not launch on the development Mac (macOS 27, "Could not find profile
+  // folder"), so Firefox was checked by hand on 2026-09-21. `E2E_BROWSERS=firefox npx playwright test`
+  // still works wherever that build launches.
   projects: crossBrowser
     ? [{
         name: crossBrowser,
