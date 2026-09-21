@@ -120,55 +120,51 @@ export async function updateKloCompliance(
     return { success: false, error: 'Failed to save. Please try again.' }
   }
 
-  // ── Audit: priority changed? (admin only, users can't change it) ────
-  if (isAdmin) {
-    const oldPriority = currentRecord?.priority ?? null
-    if (oldPriority !== priority) {
-      await supabase.from('priority_history').insert({
-        organisation_id: organisationId,
-        klo_item_id:     kloItemId,
-        old_priority:    oldPriority,
-        new_priority:    priority,
-        changed_by:      profile.id,
-      })
-    }
-
-    // ── Audit: review frequency changed? ─────────────────────
-    const oldFrequency = currentRecord?.review_frequency_days ?? null
-    if (oldFrequency !== reviewFrequencyDays) {
-      await supabase.from('review_frequency_history').insert({
-        organisation_id:    organisationId,
-        klo_item_id:        kloItemId,
-        old_frequency_days: oldFrequency,
-        new_frequency_days: reviewFrequencyDays,
-        changed_by:         profile.id,
-      })
-    }
-  }
+  // ── Audit: priority and review-frequency history ────────────────────
+  // Written by the database, not here. The trigger trg_record_priority_frequency_history
+  // (migration 20260921000001) records a row whenever an admin's save changes either value,
+  // in the same transaction as the insert above. That way the audit entry can never be lost
+  // or left out of step with the record, which separate unchecked requests could not promise.
 
   // ── Reset checklist ticks when a new review date is recorded ──────────
   // Completing a review cycle means the checklist needs to be re-ticked
   // for the next cycle. Evidence location fields are preserved.
+  let checklistResetFailed = false
   if (dateReviewed) {
     // Get all checklist item IDs for this KLOE
-    const { data: checklistItems } = await supabase
+    const { data: checklistItems, error: itemsErr } = await supabase
       .from('klo_checklist_items')
       .select('id')
       .eq('klo_item_id', kloItemId)
 
-    if (checklistItems && checklistItems.length > 0) {
+    if (itemsErr) {
+      console.error('[kloe] could not read checklist items to reset:', itemsErr)
+      checklistResetFailed = true
+    } else if (checklistItems && checklistItems.length > 0) {
       const itemIds = checklistItems.map(ci => ci.id)
-      await supabase
+      const { error: resetErr } = await supabase
         .from('klo_checklist_completions')
         .update({ is_complete: false })
         .in('checklist_item_id', itemIds)
         .eq('is_complete', true)
+      if (resetErr) {
+        console.error('[kloe] checklist reset failed:', resetErr)
+        checklistResetFailed = true
+      }
     }
   }
 
   // ── Revalidate pages that show this data ───────────────────
   revalidatePath('/dashboard/kloes')
   revalidatePath(`/dashboard/kloes/${kloItemId}`)
+
+  if (checklistResetFailed) {
+    // The review itself is saved and audited; only the automatic un-ticking failed.
+    return {
+      success: true,
+      message: 'KLOE updated and saved to your audit trail, but the checklist could not be reset for the next review. Please untick the checklist items yourself.',
+    }
+  }
 
   return { success: true, message: 'KLOE updated and saved to your audit trail.' }
 }
