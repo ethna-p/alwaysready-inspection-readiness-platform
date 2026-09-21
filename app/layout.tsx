@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import ThemeProvider from "@/components/ThemeProvider";
@@ -39,21 +40,26 @@ export const metadata: Metadata = {
   },
 };
 
+// Every page is rendered per request. The Content-Security-Policy carries a fresh nonce for each one
+// (middleware.ts, lib/csp.ts), and Next.js can only stamp a nonce on a page rendered at request time.
+export const dynamic = "force-dynamic";
+
 export const viewport: Viewport = {
   themeColor: "#014D4E",
   width: "device-width",
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-canvas text-ink">
-        <ThemeProvider>
+        <ThemeProvider nonce={nonce}>
           <ServiceWorkerRegistration />
           {children}
           <CookieBanner />

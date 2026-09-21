@@ -8,9 +8,12 @@
  */
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+export default function ThemeProvider({ children, nonce }: { children: React.ReactNode; nonce?: string }) {
   return (
     <NextThemesProvider
+      // next-themes puts a small inline script in the page (to set light/dark before first paint).
+      // Under the Content-Security-Policy that script only runs if it carries this request's nonce.
+      nonce={nonce}
       attribute="class"
       defaultTheme="system"
       enableSystem

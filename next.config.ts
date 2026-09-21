@@ -36,29 +36,7 @@ const nextConfig: NextConfig = {
             value: 'max-age=63072000; includeSubDomains; preload',
           },
 
-          // Content Security Policy
-          // Note: Next.js App Router requires 'unsafe-inline' and 'unsafe-eval' for
-          // its built-in script optimisation. These will be removable once Next.js
-          // ships stable nonce/hash support in the App Router.
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "style-src 'self' 'unsafe-inline'",
-              // Allow Supabase storage for org logos
-              "img-src 'self' data: blob: https://*.supabase.co",
-              "font-src 'self'",
-              // Supabase (auth, database), Anthropic (newsletter AI),
-              // Sentry EU ingest (error reporting — data stays in Germany)
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://*.ingest.de.sentry.io",
-              // Sentry session replay compresses in a web worker created from a blob: URL,
-              // which the default-src fallback would otherwise block.
-              "worker-src 'self' blob:",
-              // No iframes anywhere — same effect as X-Frame-Options above, but CSP version
-              "frame-ancestors 'none'",
-            ].join('; '),
-          },
+          // Content-Security-Policy is set per request in middleware.ts (lib/csp.ts): it needs a fresh nonce.
         ],
       },
     ]

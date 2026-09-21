@@ -24,6 +24,7 @@
 import { wrapMiddlewareWithSentry } from '@sentry/nextjs'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { buildCsp, newNonce } from '@/lib/csp'
 
 // ── Rate limiter (login brute-force protection) ────────────────────────────
 //
@@ -67,12 +68,27 @@ function checkLoginRateLimit(ip: string): boolean {
 // ── Middleware ─────────────────────────────────────────────────────────────
 
 async function middlewareFn(request: NextRequest) {
+  // A fresh nonce and Content-Security-Policy for every request (lib/csp.ts). The policy goes on the
+  // REQUEST headers so Next.js can read the nonce and stamp it on its scripts while rendering, and on
+  // the RESPONSE so the browser enforces it.
+  const nonce = newNonce()
+  const csp   = buildCsp(nonce, process.env.NODE_ENV === 'development')
+
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('Content-Security-Policy', csp)
+
+  const response = await routeRequest(request, requestHeaders)
+  response.headers.set('Content-Security-Policy', csp)
+  return response
+}
+
+async function routeRequest(request: NextRequest, requestHeaders: Headers) {
   const { pathname } = request.nextUrl
 
   // Forward the pathname to server components as a request header.
   // Server components read request headers (not response headers) via headers(),
   // so this must be set here, before NextResponse.next() is called.
-  const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-pathname', pathname)
 
   let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } })
