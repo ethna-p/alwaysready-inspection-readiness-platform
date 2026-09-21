@@ -10,6 +10,15 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - "dependencies"
+    groups:
+      # react and react-dom must move together (react-dom requires the same react version), and
+      # so must their type packages; raised separately, the install fails on a peer conflict.
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
     ignore:
       # Major version bumps need manual review — Dependabot will still flag
       # security vulnerabilities regardless of this setting
