@@ -28,8 +28,8 @@ Nothing is bug-free. The bar is: no blockers, and a small, known, low-impact rem
 | L4 | Automated tests | CI green; full Playwright suite green against a production build, including `subscribe.spec` with the Stripe listener running | In progress |
 | L5 | Backups | Supabase Pro with point-in-time recovery, and one backup restored into a scratch project and checked | Not started (AJ, just before launch) |
 | L6 | Payments | Test-mode checkout, cancellation and webhook pass; one small live-mode payment made and refunded | Test mode passing; live rehearsal not done |
-| L7 | Alerts | Site-down and stopped-scheduled-job alerts each proven to fire once by a deliberate test | Not started |
-| L8 | Browsers | Critical-path specs pass on Chrome, Safari (WebKit) and Firefox; Edge is covered by Chrome (same engine) | Chrome only |
+| L7 | Alerts | Site-down and stopped-scheduled-job alerts each proven to fire once by a deliberate test | Done 2026-09-21 (partly proven). UptimeRobot checks `/api/health` every 5 minutes with email alerts. A deliberately stale `demo-reminder` heartbeat on production gave a 503, a down email and a recovery email. A total outage with no reply at all was not staged. |
+| L8 | Browsers | Critical-path specs pass on Chrome, Safari (WebKit) and Firefox; Edge is covered by Chrome (same engine) | Done 2026-09-21. WebKit: 14 of 14 automated essential-path tests. Firefox: checked by hand on the live site, because Playwright's Firefox will not launch on the development Mac. |
 | L9 | Accessibility | Automated WCAG 2.1 AA scan reports no serious or critical violations on the main screens; any remainder is logged | Known failures; fixes next |
 | L10 | Security | Content-Security-Policy without `unsafe-inline` / `unsafe-eval` for scripts; database privileges and RLS covered by integration tests; secrets rotated; an outside review commissioned and its findings dealt with | CSP done (pending merge); outside review not started |
 | L11 | Private beta | At least 3 providers using it for at least 2 weeks, with a crash-free session rate of 99% or better in Sentry and no unresolved unhandled errors from the last 7 days | Not started |
