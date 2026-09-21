@@ -10,6 +10,7 @@ import BulkSendLaunchEmailButton      from './BulkSendLaunchEmailButton'
 import AddZeegBookingForm             from './AddZeegBookingForm'
 import EditScheduledAtButton          from './EditScheduledAtButton'
 import DeletePipelineRowButton        from './DeletePipelineRowButton'
+import { matchLeadsToBookings }       from '@/lib/leads-pipeline'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,22 +32,19 @@ export default async function SuperadminLeadsPage() {
     .select('id, invitee_email, invitee_name, demo_type, booked_at, scheduled_at, cancelled, created_at')
     .order('created_at', { ascending: false })
 
-  // Build unified rows: matched by email where possible, otherwise separate rows
-  // Use a queue per email so multiple bookings with the same email can each
-  // match a different demo_lead (greedy, in creation order).
-  const zeegQueueByEmail = new Map<string, NonNullable<typeof zeegBookings>[number][]>()
-  for (const b of zeegBookings ?? []) {
-    if (!b.invitee_email) continue
-    const key = b.invitee_email.toLowerCase()
-    if (!zeegQueueByEmail.has(key)) zeegQueueByEmail.set(key, [])
-    zeegQueueByEmail.get(key)!.push(b)
-  }
-  const matchedZeegIds = new Set<string>()
+  // Build unified rows: a lead and a booking are paired when they share an email, and when one email
+  // appears on several leads the name and demo type decide which booking goes with which lead
+  // (see lib/leads-pipeline.ts).
+  const bookingById = new Map((zeegBookings ?? []).map(b => [b.id, b]))
+  const bookingForLead = matchLeadsToBookings(
+    (demoLeads ?? []).map(l => ({ id: l.id, email: l.email, name: l.name, demo_type: l.demo_type })),
+    (zeegBookings ?? []).map(b => ({ id: b.id, invitee_email: b.invitee_email, invitee_name: b.invitee_name, demo_type: b.demo_type })),
+  )
+  const matchedZeegIds = new Set<string>(bookingForLead.values())
 
   const leadRows = (demoLeads ?? []).map(lead => {
-    const queue = lead.email ? (zeegQueueByEmail.get(lead.email.toLowerCase()) ?? []) : []
-    const zeeg = queue.find(b => !matchedZeegIds.has(b.id)) ?? null
-    if (zeeg) matchedZeegIds.add(zeeg.id)
+    const zeegId = bookingForLead.get(lead.id)
+    const zeeg = zeegId ? bookingById.get(zeegId) ?? null : null
     return {
       key:            `lead-${lead.id}`,
       demo_lead_id:   lead.id,

@@ -26,7 +26,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
-import { tidy } from './support/db'
+import { must, tidy } from './support/db'
 
 test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports an honest count', async ({ page }) => {
   test.setTimeout(60_000)
@@ -183,5 +183,61 @@ test('superadmin leads: a rejected booking or time change shows an error instead
   } finally {
     tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', badDateEmail), 'superadmin-leads: delete zeeg_bookings')
     tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail), 'superadmin-leads: delete zeeg_bookings')
+  }
+})
+
+test('superadmin leads: a booking added for one of two leads sharing an email attaches to the right lead', async ({ page }) => {
+  test.setTimeout(60_000)
+  const account = loadTestAccount()
+  const admin = getAdminClient()
+
+  // Two demo leads at one address (as when two people share an inbox). Laura is created last, so the
+  // pipeline lists her FIRST. Matching on email alone used to hand every new booking to that first row.
+  const sharedEmail = `e2e-leads-shared-${Date.now()}@example.org`
+  must(await admin.from('demo_leads').insert({
+    service_type: 'Homecare Agency', demo_type: '30min', email: sharedEmail, name: 'E2E Peter Parker',
+    created_at: new Date(Date.now() - 60_000).toISOString(),
+  }), 'superadmin-leads: insert demo_leads (Peter)')
+  must(await admin.from('demo_leads').insert({
+    service_type: 'Homecare Agency', demo_type: '30min', email: sharedEmail, name: 'E2E Laura Parker',
+  }), 'superadmin-leads: insert demo_leads (Laura)')
+
+  try {
+    await login(page, {
+      email: account.superadmin.email,
+      password: account.superadmin.password,
+      totpSecret: account.superadmin.totpSecret,
+    })
+    await page.waitForURL('**/superadmin/provision')
+    await page.goto('/superadmin/leads')
+
+    const peterRow = page.locator('tr', { hasText: 'E2E Peter Parker' })
+    const lauraRow = page.locator('tr', { hasText: 'E2E Laura Parker' })
+    await expect(peterRow).toBeVisible()
+    await expect(lauraRow).toBeVisible()
+
+    async function addBooking(name: string, when: string) {
+      await page.locator('#zb-name').fill(name)
+      await page.locator('#zb-email').fill(sharedEmail)
+      await page.locator('#zb-type').selectOption('30min')
+      await page.locator('#zb-scheduled').fill(when)
+      await page.getByRole('button', { name: 'Add booking' }).click()
+    }
+
+    // Book Peter (the lead listed second) first: his row must get the date, Laura's must not.
+    await addBooking('E2E Peter Parker', '2030-03-11T12:00')
+    await expect(peterRow.getByText(/11 Mar 2030/)).toBeVisible()
+    await expect(lauraRow.getByText(/11 Mar 2030/)).toHaveCount(0)
+
+    // Then Laura: hers gets its own date, and Peter's is untouched.
+    await addBooking('E2E Laura Parker', '2030-03-12T12:00')
+    await expect(lauraRow.getByText(/12 Mar 2030/)).toBeVisible()
+    await expect(peterRow.getByText(/11 Mar 2030/)).toBeVisible()
+    await expect(peterRow.getByText(/12 Mar 2030/)).toHaveCount(0)
+    // Both bookings paired with a lead: no stray booking-only rows for this address.
+    await expect(page.locator('tr', { hasText: sharedEmail })).toHaveCount(2)
+  } finally {
+    tidy(await admin.from('demo_leads').delete().eq('email', sharedEmail), 'superadmin-leads: delete demo_leads')
+    tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', sharedEmail), 'superadmin-leads: delete zeeg_bookings')
   }
 })
