@@ -26,8 +26,16 @@ export interface LoginCredentials {
 export async function login(page: Page, account: LoginCredentials): Promise<void> {
   await page.goto('/login')
 
-  await page.locator('#login').fill(account.email)
-  await page.locator('#password').fill(account.password)
+  // Fill, then CONFIRM the value stuck before submitting. On a freshly loaded page (notably in WebKit) the
+  // app can finish starting up just after Playwright has typed and wipe the field, so the form was
+  // submitted with an empty email and rejected with "Incorrect email or password". Retrying until the
+  // value is really there removes that race without slowing the normal case.
+  await expect(async () => {
+    await page.locator('#login').fill(account.email)
+    await page.locator('#password').fill(account.password)
+    await expect(page.locator('#login')).toHaveValue(account.email, { timeout: 1000 })
+    await expect(page.locator('#password')).toHaveValue(account.password, { timeout: 1000 })
+  }).toPass({ timeout: 15_000 })
   await page.getByRole('button', { name: 'Sign in' }).click()
 
   if (account.totpSecret) {

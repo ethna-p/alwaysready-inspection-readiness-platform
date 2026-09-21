@@ -22,6 +22,16 @@ const env = loadEnvLocal()
 // e2e/support/cron.ts reads it back for the specs. No fixed value lives in the repo.
 const E2E_CRON_SECRET = (process.env.E2E_CRON_SECRET ??= randomBytes(32).toString('hex'))
 
+// Specs that make up the essential-paths run in other browsers (see `projects` below).
+const CROSS_BROWSER_SPECS = [
+  'auth.spec.ts', 'trial-signup.spec.ts', 'self-service-password-reset.spec.ts', 'user-invite.spec.ts',
+  'readiness-dashboard.spec.ts', 'kloe-rating.spec.ts', 'kloe-evidence-upload.spec.ts', 'incidents.spec.ts',
+  'subscribe.spec.ts', 'csp.spec.ts', 'visitor-login.spec.ts',
+]
+const crossBrowser = process.env.E2E_BROWSERS === 'webkit' || process.env.E2E_BROWSERS === 'firefox'
+  ? process.env.E2E_BROWSERS
+  : undefined
+
 const PORT = 3100 // distinct from the port you'd use for `npm run dev` yourself
 const BASE_URL = `http://localhost:${PORT}`
 
@@ -78,9 +88,18 @@ export default defineConfig({
   // the expect timeout above). 60s matches the same reasoning.
   timeout: 60_000,
 
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  // The full suite runs in Chromium (Chrome and Edge share that engine). `E2E_BROWSERS=webkit|firefox`
+  // (npm run test:e2e:browsers) instead runs the essential user paths only, in Safari's engine or
+  // Firefox: sign-in, sign-up, password reset, invites, the dashboard, KLOE rating, evidence upload,
+  // checkout and the security policy. Each browser is run on its own after a re-seed, because the specs
+  // share one fixture organisation (see CLAUDE.md on fixture drift).
+  projects: crossBrowser
+    ? [{
+        name: crossBrowser,
+        use: { ...(crossBrowser === 'webkit' ? devices['Desktop Safari'] : devices['Desktop Firefox']) },
+        testMatch: CROSS_BROWSER_SPECS,
+      }]
+    : [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 
   webServer: {
     command: 'npm run dev',
