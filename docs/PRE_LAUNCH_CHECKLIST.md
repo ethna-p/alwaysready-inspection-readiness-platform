@@ -6,6 +6,7 @@ Things to action before onboarding paying customers.
 
 ## Infrastructure & Hosting
 
+- [ ] **Upgrade the production Supabase project to Pro and enable point-in-time recovery (hard gate)** — production is on the Free plan, which has no automated backups (see docs/backup-and-recovery.md). Do it before any real customer data is loaded, then restore a backup into a scratch project once to prove it works. Deferred by AJ to just before launch (2026-09-21), which is only safe while production holds test data.
 - [ ] **Upgrade Vercel to Pro** — the current Hobby plan is for non-commercial personal use only. Upgrade to Pro ($20/month) before going live with paying customers. Vercel dashboard → Settings → Billing.
 
 ---

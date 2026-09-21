@@ -270,6 +270,8 @@ Before the platform is opened to real paying customers:
 8. Point a real domain at the Vercel deployment (DNS at FastHosts)
 9. Configure Supabase custom domain (Pro plan)
 10. Set up Cloudflare in front of the domain (free plan) — DDoS protection, CDN, hides Vercel origin
+11. **Hard gate: upgrade the production Supabase project to Pro and enable point-in-time recovery, then do one restore test to a scratch project.** Production is on the Free plan, which has no automated backups, so nothing that matters to a customer may be loaded until this is done. AJ decided (2026-09-21) to do it just before launch, which is safe only while production holds test data.
+12. **Hard gate: upgrade Vercel to Pro.** Hobby is for non-commercial use only (see docs/PRE_LAUNCH_CHECKLIST.md).
 
 ---
 
