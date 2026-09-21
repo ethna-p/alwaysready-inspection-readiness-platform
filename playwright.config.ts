@@ -103,6 +103,10 @@ export default defineConfig({
       // reuseExistingServer keeps it and this value never reaches it, so the
       // cron specs would get 401s; stop that server and re-run.
       CRON_SECRET: E2E_CRON_SECRET,
+      // A syntactically valid but fake Sentry address, so e2e/error-reporting.spec.ts can
+      // prove the browser SDK starts and sends an error report. The spec intercepts the
+      // request, so nothing ever reaches Sentry.
+      NEXT_PUBLIC_SENTRY_DSN: 'https://e2etestkey@o0.ingest.de.sentry.io/0',
       // Only needed so e2e/support-tickets.spec.ts can genuinely exercise
       // /api/inbound-email (simulating what the real Cloudflare Email Worker
       // posts) rather than skip that code path entirely — not a production

@@ -52,6 +52,9 @@ const nextConfig: NextConfig = {
               // Supabase (auth, database), Anthropic (newsletter AI),
               // Sentry EU ingest (error reporting — data stays in Germany)
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://*.ingest.de.sentry.io",
+              // Sentry session replay compresses in a web worker created from a blob: URL,
+              // which the default-src fallback would otherwise block.
+              "worker-src 'self' blob:",
               // No iframes anywhere — same effect as X-Frame-Options above, but CSP version
               "frame-ancestors 'none'",
             ].join('; '),
