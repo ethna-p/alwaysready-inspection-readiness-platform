@@ -773,6 +773,27 @@ export type Database = {
         ]
       }
 
+      // ── Cron send-once ledger (service role only) ─────────────────────
+
+      cron_claims: {
+        Row: {
+          job:        string
+          claim_key:  string
+          claimed_at: string
+        }
+        Insert: {
+          job:         string
+          claim_key:   string
+          claimed_at?: string
+        }
+        Update: {
+          job?:        string
+          claim_key?:  string
+          claimed_at?: string
+        }
+        Relationships: []
+      }
+
       // ── Support tickets ────────────────────────────────────────────────
 
       support_tickets: {

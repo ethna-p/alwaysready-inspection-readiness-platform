@@ -23,6 +23,7 @@ import { sendEmail }                     from '@/lib/email'
 import { getWaitlistNurtureEmail }       from '@/lib/waitlist-nurture'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { renderTemplate } from '@/lib/email-templates'
+import { claimCronSlot, releaseCronSlot } from '@/lib/notification-log'
 
 export async function GET(request: Request) {
   if (!verifyCronSecret(request)) {
@@ -61,6 +62,19 @@ export async function GET(request: Request) {
       continue
     }
 
+    // Claim this exact email for this lead before sending, so a redelivered or overlapping
+    // run cannot send it twice. Released again if the send fails so the next run retries.
+    const claimKey = `${lead.id}:${nextEmailNum}`
+    const slot = await claimCronSlot(supabase, 'waitlist-nurture', claimKey)
+    if (slot === 'already_done') {
+      emailsSkipped++
+      continue
+    }
+    if (slot === 'error') {
+      errors.push(lead.email)
+      continue
+    }
+
     try {
       const bodyHtml = await renderTemplate(
         `waitlist_nurture_${nextEmailNum}`,
@@ -68,7 +82,7 @@ export async function GET(request: Request) {
         emailContent.bodyHtml,
       )
 
-      await sendEmail({
+      const result = await sendEmail({
         to:              lead.email,
         subject:         emailContent.subject,
         type:            'marketing',
@@ -76,6 +90,14 @@ export async function GET(request: Request) {
         footerNote:      'You are receiving this because you joined the AlwaysReady waitlist.',
         bodyHtml,
       })
+
+      // An unsubscribed lead is handled (nothing to send); a real failure is not.
+      if (!result.sent && result.skipped !== 'opted_out') {
+        await releaseCronSlot(supabase, 'waitlist-nurture', claimKey)
+        console.error(`[waitlist-nurture] Send failed for ${lead.email}:`, result.error ?? result.skipped)
+        errors.push(lead.email)
+        continue
+      }
 
       const { error: updateError } = await supabase
         .from('waitlist_leads')
@@ -86,12 +108,15 @@ export async function GET(request: Request) {
         .eq('id', lead.id)
 
       if (updateError) {
+        // The email went out, so the claim stays: better to stall the sequence than to
+        // resend this email next run.
         console.error(`[waitlist-nurture] Failed to update lead ${lead.id}:`, updateError.message)
         errors.push(lead.email)
       } else {
         emailsSent++
       }
     } catch (err) {
+      await releaseCronSlot(supabase, 'waitlist-nurture', claimKey)
       console.error(`[waitlist-nurture] Failed to send email to ${lead.email}:`, err)
       errors.push(lead.email)
     }

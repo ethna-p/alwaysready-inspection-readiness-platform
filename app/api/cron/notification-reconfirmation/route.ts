@@ -81,20 +81,41 @@ export async function GET(request: Request) {
     if (user.notify_governance_digest) items.push('Weekly governance digest')
     const notificationsList = items.map(i => `<li style="margin:0 0 4px">${i}</li>`).join('')
 
-    const result = await sendEmail({
-      to:       user.email,
-      subject:  'Still want these AlwaysReady notifications?',
-      bodyHtml: await renderTemplate('notification_reconfirmation', { notificationsList }, reconfirmationHtml(notificationsList)),
-      type:     'transactional',
-    })
+    // Claim this user by stamping their confirmation time first, but only if they are still
+    // due (compare-and-set). A redelivered or overlapping run finds no row to stamp and skips
+    // them, so nobody is emailed twice. If the send then fails, the old value is put back.
+    const { data: claimed, error: claimError } = await supabase
+      .from('users')
+      .update({ notification_prefs_confirmed_at: new Date().toISOString() })
+      .eq('id', user.id)
+      .or(`notification_prefs_confirmed_at.is.null,notification_prefs_confirmed_at.lt.${cutoffIso}`)
+      .select('id')
+    if (claimError) {
+      errors.push(`${user.id} → could not claim: ${claimError.message}`)
+      continue
+    }
+    if (!claimed || claimed.length === 0) continue
+
+    let result: Awaited<ReturnType<typeof sendEmail>>
+    try {
+      result = await sendEmail({
+        to:       user.email,
+        subject:  'Still want these AlwaysReady notifications?',
+        bodyHtml: await renderTemplate('notification_reconfirmation', { notificationsList }, reconfirmationHtml(notificationsList)),
+        type:     'transactional',
+      })
+    } catch (err) {
+      result = { sent: false, error: err instanceof Error ? err.message : String(err) }
+    }
 
     if (result.sent) {
-      await supabase
-        .from('users')
-        .update({ notification_prefs_confirmed_at: new Date().toISOString() })
-        .eq('id', user.id)
       emailsSent++
     } else {
+      const { error: restoreError } = await supabase
+        .from('users')
+        .update({ notification_prefs_confirmed_at: user.notification_prefs_confirmed_at })
+        .eq('id', user.id)
+      if (restoreError) console.error(`[notification-reconfirmation] could not restore ${user.id}:`, restoreError)
       errors.push(`${user.id} → ${result.error ?? result.skipped}`)
     }
   }

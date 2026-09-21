@@ -13,13 +13,14 @@
  * Protected by CRON_SECRET (Vercel sends this automatically for registered crons).
  * Uses the Supabase admin client (service role) to bypass RLS for reads/writes.
  *
- * Idempotent: the notification_log unique index prevents double-sends even if
- * the cron fires more than once for the same day.
+ * Idempotent: each reminder claims its notification_log row (unique index) before it
+ * is sent, so a cron delivered twice for the same day cannot double-send.
  */
 import 'server-only'
 import { NextResponse }    from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendEmail }         from '@/lib/email'
+import { sendEmail, type SendEmailResult } from '@/lib/email'
+import { sendOnce }          from '@/lib/notification-log'
 import { escapeHtml }        from '@/lib/utils/escape'
 import { renderTemplate }    from '@/lib/email-templates'
 
@@ -187,47 +188,31 @@ export async function GET(request: Request) {
   let emailsSkipped = 0
   const errors: string[] = []
 
-  // ── Helper: check if notification already sent ────────────────────────────
+  // ── Helper: claim, send, release on failure ──────────────────────────────
+  // Claiming before sending (rather than checking, sending, then logging) means a
+  // redelivered or overlapping run cannot send the same reminder twice. See sendOnce().
 
   type EntityType = 'kloe' | 'hr_dbs' | 'hr_supervision' | 'hr_appraisal' | 'hr_training'
 
-  async function alreadySent(
+  async function deliver(
     organisationId: string,
     notificationType: 'due_soon' | 'overdue',
     entityType: EntityType,
     entityId: string,
     dueDate: string,
     recipientEmail: string,
-  ): Promise<boolean> {
-    const { data } = await supabase
-      .from('notification_log')
-      .select('id')
-      .eq('organisation_id',   organisationId)
-      .eq('notification_type', notificationType)
-      .eq('entity_type',       entityType)
-      .eq('entity_id',         entityId)
-      .eq('due_date',          dueDate)
-      .eq('recipient_email',   recipientEmail)
-      .maybeSingle()
-    return !!data
-  }
-
-  async function logNotification(
-    organisationId: string,
-    notificationType: 'due_soon' | 'overdue',
-    entityType: EntityType,
-    entityId: string,
-    dueDate: string,
-    recipientEmail: string,
+    errorLabel: string,
+    send: () => Promise<SendEmailResult>,
   ): Promise<void> {
-    await supabase.from('notification_log').insert({
-      organisation_id:   organisationId,
-      notification_type: notificationType,
-      entity_type:       entityType,
-      entity_id:         entityId,
-      due_date:          dueDate,
-      recipient_email:   recipientEmail,
-    })
+    const result = await sendOnce(
+      supabase,
+      { organisationId, notificationType, entityType, entityId, dueDate, recipientEmail },
+      'review-reminders',
+      send,
+    )
+    if (result.status === 'sent') emailsSent++
+    else if (result.status === 'already_sent' || result.status === 'opted_out') emailsSkipped++
+    else errors.push(`${errorLabel} → ${result.error}`)
   }
 
   // ── Fetch all active organisations ────────────────────────────────────────
@@ -301,10 +286,7 @@ export async function GET(request: Request) {
 
         if (days >= 1 && days <= DUE_SOON_DAYS) {
           // Due soon
-          const sent = await alreadySent(org.id, 'due_soon', 'kloe', record.klo_item_id, dueDateStr, recipientEmail)
-          if (sent) { emailsSkipped++; continue }
-
-          const result = await sendEmail({
+          await deliver(org.id, 'due_soon', 'kloe', record.klo_item_id, dueDateStr, recipientEmail, `KLOE due_soon: ${org.id}/${record.klo_item_id}`, async () => sendEmail({
             to:       recipientEmail,
             subject:  `KLOE review due in ${days} day${days === 1 ? '' : 's'}: ${kloeTitle}`,
             bodyHtml: await renderTemplate(
@@ -313,21 +295,11 @@ export async function GET(request: Request) {
               kloeDueSoonHtml(kloeTitle, record.next_review_due, days),
             ),
             type:     'transactional',
-          })
-
-          if (result.sent) {
-            await logNotification(org.id, 'due_soon', 'kloe', record.klo_item_id, dueDateStr, recipientEmail)
-            emailsSent++
-          } else {
-            errors.push(`KLOE due_soon: ${org.id}/${record.klo_item_id} → ${result.error ?? result.skipped}`)
-          }
+          }))
 
         } else if (days < 0) {
           // Overdue
-          const sent = await alreadySent(org.id, 'overdue', 'kloe', record.klo_item_id, dueDateStr, recipientEmail)
-          if (sent) { emailsSkipped++; continue }
-
-          const result = await sendEmail({
+          await deliver(org.id, 'overdue', 'kloe', record.klo_item_id, dueDateStr, recipientEmail, `KLOE overdue: ${org.id}/${record.klo_item_id}`, async () => sendEmail({
             to:       recipientEmail,
             subject:  `Overdue KLOE review: ${kloeTitle}`,
             bodyHtml: await renderTemplate(
@@ -336,14 +308,7 @@ export async function GET(request: Request) {
               kloeOverdueHtml(kloeTitle, record.next_review_due),
             ),
             type:     'transactional',
-          })
-
-          if (result.sent) {
-            await logNotification(org.id, 'overdue', 'kloe', record.klo_item_id, dueDateStr, recipientEmail)
-            emailsSent++
-          } else {
-            errors.push(`KLOE overdue: ${org.id}/${record.klo_item_id} → ${result.error ?? result.skipped}`)
-          }
+          }))
         }
       }
     }
@@ -389,53 +354,35 @@ export async function GET(request: Request) {
       for (const field of fields) {
         if (!field.dueDate) continue
 
-        const days       = daysUntil(field.dueDate, today)
-        const dueDateStr = field.dueDate.split('T')[0]
+        // Copied to a const so the narrowing to string survives inside the send closures below.
+        const fieldDueDate = field.dueDate
+        const days       = daysUntil(fieldDueDate, today)
+        const dueDateStr = fieldDueDate.split('T')[0]
 
         for (const adminEmail of adminEmails) {
           if (days >= 1 && days <= DUE_SOON_DAYS) {
-            const sent = await alreadySent(org.id, 'due_soon', field.entityType, entityId, dueDateStr, adminEmail)
-            if (sent) { emailsSkipped++; continue }
-
-            const result = await sendEmail({
+            await deliver(org.id, 'due_soon', field.entityType, entityId, dueDateStr, adminEmail, `HR due_soon ${field.entityType}: ${org.id}/${entityId}`, async () => sendEmail({
               to:       adminEmail,
               subject:  `${staffName}: ${field.label} due in ${days} day${days === 1 ? '' : 's'}`,
               bodyHtml: await renderTemplate(
                 'hr_field_due_soon',
-                { staffName: escapeHtml(staffName), fieldLabel: escapeHtml(field.label), dueDate: formatDate(field.dueDate), daysLeft: String(days) },
-                hrDueSoonHtml(staffName, field.label, field.dueDate, days),
+                { staffName: escapeHtml(staffName), fieldLabel: escapeHtml(field.label), dueDate: formatDate(fieldDueDate), daysLeft: String(days) },
+                hrDueSoonHtml(staffName, field.label, fieldDueDate, days),
               ),
               type:     'transactional',
-            })
-
-            if (result.sent) {
-              await logNotification(org.id, 'due_soon', field.entityType, entityId, dueDateStr, adminEmail)
-              emailsSent++
-            } else {
-              errors.push(`HR due_soon ${field.entityType}: ${org.id}/${entityId} → ${result.error ?? result.skipped}`)
-            }
+            }))
 
           } else if (days < 0) {
-            const sent = await alreadySent(org.id, 'overdue', field.entityType, entityId, dueDateStr, adminEmail)
-            if (sent) { emailsSkipped++; continue }
-
-            const result = await sendEmail({
+            await deliver(org.id, 'overdue', field.entityType, entityId, dueDateStr, adminEmail, `HR overdue ${field.entityType}: ${org.id}/${entityId}`, async () => sendEmail({
               to:       adminEmail,
               subject:  `${staffName}: ${field.label} is overdue`,
               bodyHtml: await renderTemplate(
                 'hr_field_overdue',
-                { staffName: escapeHtml(staffName), fieldLabel: escapeHtml(field.label), dueDate: formatDate(field.dueDate) },
-                hrOverdueHtml(staffName, field.label, field.dueDate),
+                { staffName: escapeHtml(staffName), fieldLabel: escapeHtml(field.label), dueDate: formatDate(fieldDueDate) },
+                hrOverdueHtml(staffName, field.label, fieldDueDate),
               ),
               type:     'transactional',
-            })
-
-            if (result.sent) {
-              await logNotification(org.id, 'overdue', field.entityType, entityId, dueDateStr, adminEmail)
-              emailsSent++
-            } else {
-              errors.push(`HR overdue ${field.entityType}: ${org.id}/${entityId} → ${result.error ?? result.skipped}`)
-            }
+            }))
           }
         }
       }
@@ -482,40 +429,20 @@ export async function GET(request: Request) {
 
       for (const adminEmail of adminEmails) {
         if (days >= 1 && days <= DUE_SOON_DAYS) {
-          const sent = await alreadySent(org.id, 'due_soon', 'hr_training', rec.id, dueDateStr, adminEmail)
-          if (sent) { emailsSkipped++; continue }
-
-          const result = await sendEmail({
+          await deliver(org.id, 'due_soon', 'hr_training', rec.id, dueDateStr, adminEmail, `HR training due_soon: ${org.id}/${rec.id}`, async () => sendEmail({
             to:       adminEmail,
             subject:  `${staffName}: ${label} due in ${days} day${days === 1 ? '' : 's'}`,
             bodyHtml: hrDueSoonHtml(staffName, label, rec.next_due, days),
             type:     'transactional',
-          })
-
-          if (result.sent) {
-            await logNotification(org.id, 'due_soon', 'hr_training', rec.id, dueDateStr, adminEmail)
-            emailsSent++
-          } else {
-            errors.push(`HR training due_soon: ${org.id}/${rec.id} → ${result.error ?? result.skipped}`)
-          }
+          }))
 
         } else if (days < 0) {
-          const sent = await alreadySent(org.id, 'overdue', 'hr_training', rec.id, dueDateStr, adminEmail)
-          if (sent) { emailsSkipped++; continue }
-
-          const result = await sendEmail({
+          await deliver(org.id, 'overdue', 'hr_training', rec.id, dueDateStr, adminEmail, `HR training overdue: ${org.id}/${rec.id}`, async () => sendEmail({
             to:       adminEmail,
             subject:  `${staffName}: ${label} is overdue`,
             bodyHtml: hrOverdueHtml(staffName, label, rec.next_due),
             type:     'transactional',
-          })
-
-          if (result.sent) {
-            await logNotification(org.id, 'overdue', 'hr_training', rec.id, dueDateStr, adminEmail)
-            emailsSent++
-          } else {
-            errors.push(`HR training overdue: ${org.id}/${rec.id} → ${result.error ?? result.skipped}`)
-          }
+          }))
         }
       }
     }

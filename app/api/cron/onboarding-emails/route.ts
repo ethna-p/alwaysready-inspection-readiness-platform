@@ -45,6 +45,7 @@ import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { ONBOARDING_EMAILS, buildHtml } from '@/lib/onboarding-emails'
 import { renderTemplate } from '@/lib/email-templates'
+import { sendOnce } from '@/lib/notification-log'
 
 // ── Route handler ──────────────────────────────────────────────────────────────
 
@@ -111,36 +112,33 @@ export async function GET(req: NextRequest) {
 
         const bodyInner = await renderTemplate(`onboarding_${email.weekId}`, { firstName }, email.body(firstName))
 
-        const result = await sendEmail({
-          to:       admin.email,
-          subject:  email.subject,
-          type:     'marketing',
-          userId:   admin.id,
-          bodyHtml: buildHtml(bodyInner),
-        })
+        // Claim, send, release on failure: a redelivered or overlapping run cannot double-send.
+        const result = await sendOnce(
+          supabase,
+          {
+            organisationId:   org.id,
+            notificationType: 'onboarding_week',
+            entityType:       'onboarding',
+            entityId:         email.weekId,
+            dueDate:          anchorDate,  // deduplication anchor is the subscribed_at date
+            recipientEmail:   admin.email,
+          },
+          'onboarding-emails',
+          () => sendEmail({
+            to:       admin.email!,
+            subject:  email.subject,
+            type:     'marketing',
+            userId:   admin.id,
+            bodyHtml: buildHtml(bodyInner),
+          })
+        )
 
-        if (result.sent) {
-          // Log it: deduplication anchor is subscribed_at date
-          await supabase
-            .from('notification_log')
-            .upsert(
-              {
-                organisation_id:   org.id,
-                notification_type: 'onboarding_week',
-                entity_type:       'onboarding',
-                entity_id:         email.weekId,
-                due_date:          anchorDate,
-                recipient_email:   admin.email,
-              },
-              {
-                onConflict:       'organisation_id,notification_type,entity_type,entity_id,due_date,recipient_email',
-                ignoreDuplicates: true,
-              }
-            )
-
+        if (result.status === 'sent') {
           totalSent++
         } else {
-          console.warn(`[onboarding-emails] skipped ${email.weekId} → ${admin.email}: ${result.error ?? result.skipped}`)
+          if (result.status === 'failed') {
+            console.warn(`[onboarding-emails] skipped ${email.weekId} → ${admin.email}: ${result.error}`)
+          }
           totalSkipped++
         }
       }

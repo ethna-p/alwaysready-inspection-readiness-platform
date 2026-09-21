@@ -17,11 +17,11 @@
  * ×3) — extracted here so a future fix to the claim logic only needs making
  * once.
  *
- * Some cron routes (data-deletion, review-reminders, onboarding-emails,
- * governance-digest) use a different, non-atomic check-then-send-then-record
- * idiom instead (SELECT to check, send, INSERT only after success) — that's
- * a deliberate, different tradeoff for those single-invocation cron jobs,
- * not the same duplication, and is left as-is here.
+ * Every scheduled email job now claims before it sends (claim, send, release the
+ * claim if the send fails), because Vercel can deliver a cron invocation twice and
+ * a Hobby-plan job fires anywhere within its hour. Jobs that have no organisation
+ * to key on (demo-reminder, waitlist-nurture) use claimCronSlot() instead, which
+ * does the same thing against the cron_claims table.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -79,11 +79,81 @@ export async function releaseNotificationClaim(
   supabase: SupabaseClient,
   key: NotificationClaimKey
 ): Promise<void> {
-  await supabase.from('notification_log').delete()
+  const { error } = await supabase.from('notification_log').delete()
     .eq('organisation_id',   key.organisationId)
     .eq('notification_type', key.notificationType)
     .eq('entity_type',       key.entityType)
     .eq('entity_id',         key.entityId)
     .eq('due_date',          key.dueDate)
     .eq('recipient_email',   key.recipientEmail)
+  // If this fails the notification stays claimed and will not be retried. That is the safe
+  // direction (never a duplicate), but it must not be silent.
+  if (error) console.error('[notification-log] could not release claim:', error)
+}
+
+export type SendOnceResult =
+  | { status: 'sent' }
+  | { status: 'opted_out' }
+  | { status: 'already_sent' }
+  | { status: 'failed'; error: string }
+
+/**
+ * Sends one email at most once per claim key.
+ *
+ * Claims first, sends only if the claim was won, and releases the claim if the send
+ * did not go out so a later run can retry. `opted_out` counts as handled (the
+ * recipient asked not to receive it, so retrying is pointless); a missing API key or
+ * a send error releases the claim.
+ */
+export async function sendOnce(
+  supabase: SupabaseClient,
+  key: NotificationClaimKey,
+  context: string,
+  send: () => Promise<{ sent: boolean; skipped?: 'opted_out' | 'no_api_key'; error?: string }>
+): Promise<SendOnceResult> {
+  const claim = await claimNotification(supabase, key, context)
+  if (!claim.claimed) {
+    if (claim.reason === 'already_sent') return { status: 'already_sent' }
+    return { status: 'failed', error: 'could not claim notification' }
+  }
+
+  let result: Awaited<ReturnType<typeof send>>
+  try {
+    result = await send()
+  } catch (err) {
+    await releaseNotificationClaim(supabase, key)
+    return { status: 'failed', error: err instanceof Error ? err.message : String(err) }
+  }
+
+  if (result.sent) return { status: 'sent' }
+  if (result.skipped === 'opted_out') return { status: 'opted_out' }
+
+  await releaseNotificationClaim(supabase, key)
+  return { status: 'failed', error: result.error ?? result.skipped ?? 'send failed' }
+}
+
+/**
+ * Claims a send-once slot in cron_claims for jobs with no organisation.
+ * Returns 'claimed' (go ahead), 'already_done' (skip), or 'error' (do not send).
+ */
+export async function claimCronSlot(
+  supabase: SupabaseClient,
+  job: string,
+  claimKey: string
+): Promise<'claimed' | 'already_done' | 'error'> {
+  const { error } = await supabase.from('cron_claims').insert({ job, claim_key: claimKey })
+  if (!error) return 'claimed'
+  if (error.code === '23505') return 'already_done'
+  console.error(`[${job}] cron_claims claim error:`, error)
+  return 'error'
+}
+
+/** Releases a cron_claims slot after a failed send so a later run can retry. */
+export async function releaseCronSlot(
+  supabase: SupabaseClient,
+  job: string,
+  claimKey: string
+): Promise<void> {
+  const { error } = await supabase.from('cron_claims').delete().eq('job', job).eq('claim_key', claimKey)
+  if (error) console.error(`[${job}] could not release cron_claims slot:`, error)
 }
