@@ -129,7 +129,7 @@ function MeetingForm({
 
       <div className="flex gap-3 pt-1">
         <button type="submit" disabled={pending}
-          className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : submitLabel}
         </button>
         <button type="button" onClick={onCancel}
@@ -325,7 +325,7 @@ export default function GovernanceClient({ meetings, isAdmin, isViewer, currentU
   const draftCount    = meetings.filter(m => m.status === 'draft').length
   const signedCount   = meetings.filter(m => m.status === 'signed_off').length
 
-  const select = 'border border-line rounded-lg px-3 py-2 text-sm text-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand'
+  const select = 'border border-line rounded-lg px-3 py-2 text-sm text-ink bg-card focus:outline-none focus:ring-2 focus:ring-brand'
 
   return (
     <div className="space-y-6">
@@ -346,7 +346,7 @@ export default function GovernanceClient({ meetings, isAdmin, isViewer, currentU
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3">
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as '' | MeetingStatus)} className={select}>
+        <select aria-label="Filter meetings by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value as '' | MeetingStatus)} className={select}>
           <option value="">All meetings</option>
           <option value="draft">Drafts only</option>
           <option value="signed_off">Signed off only</option>
@@ -363,7 +363,7 @@ export default function GovernanceClient({ meetings, isAdmin, isViewer, currentU
         {!isViewer && !showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90">
+            className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90">
             + Record meeting
           </button>
         )}

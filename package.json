@@ -44,6 +44,7 @@
     "edge >= 93"
   ],
   "devDependencies": {
+    "axe-core": "4.12.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20",

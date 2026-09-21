@@ -70,7 +70,7 @@ export default function AddContactForm({ campaignId }: { campaignId: string }) {
         </select>
         <button
           type="submit"
-          className="px-5 py-2 text-sm font-semibold rounded-lg bg-brand text-white hover:bg-brand-dark transition-colors"
+          className="px-5 py-2 text-sm font-semibold rounded-lg bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] hover:bg-brand-dark transition-colors"
         >
           Add contact
         </button>

@@ -137,7 +137,7 @@ function statusLabel(status: string | null): string {
 /** Coloured dot character + label for print-safe RAG display */
 function RagCell({ status }: { status: RAGStatus }) {
   const colours: Record<RAGStatus, string> = {
-    grey:  '#9ca3af',
+    grey:  '#6b7280',
     red:   '#dc2626',
     amber: '#d97706',
     green: '#16a34a',

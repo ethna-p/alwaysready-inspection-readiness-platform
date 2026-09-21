@@ -41,7 +41,7 @@ export default function DemoProvisionButton() {
           onClick={handleClick}
           disabled={isPending}
           className="
-            bg-amber-500 text-white font-semibold text-sm
+            bg-amber-500 text-[#1a1a1a] font-semibold text-sm
             px-6 py-2.5 rounded-xl
             hover:bg-amber-600
             focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2
@@ -82,7 +82,7 @@ export default function DemoProvisionButton() {
                     <td className="px-4 py-3 text-center">
                       {r.success
                         ? <span className="text-green-600">✓</span>
-                        : <span className="text-red-500">✗</span>
+                        : <span className="text-red-600">✗</span>
                       }
                     </td>
                     <td className="px-4 py-3 text-ink">{r.serviceType}</td>
@@ -100,7 +100,7 @@ export default function DemoProvisionButton() {
           </div>
 
           <p className="text-xs text-ink-muted mt-3 flex items-start gap-1.5">
-            <span className="text-amber-500 font-bold shrink-0">⚠</span>
+            <span className="text-amber-700 font-bold shrink-0">⚠</span>
             Copy these passwords now — they are generated at runtime and cannot be recovered from the platform.
             A copy was also sent to support@alwaysready.uk.
           </p>

@@ -212,7 +212,7 @@ export default async function OrganisationsPage({
                     {org.charity_number && (
                       <p className="text-xs text-ink-muted mt-1">
                         Charity no. <span className="font-mono text-ink">{org.charity_number}</span>
-                        {' '}· <span className="text-amber-600 font-medium">Verify document before enabling discount</span>
+                        {' '}· <span className="text-amber-700 font-medium">Verify document before enabling discount</span>
                       </p>
                     )}
 
@@ -225,7 +225,7 @@ export default async function OrganisationsPage({
                           <span className="font-mono">{admin.email}</span>
                         </p>
                       ) : (
-                        <p className="text-amber-600">No admin user found</p>
+                        <p className="text-amber-700">No admin user found</p>
                       )}
                       <p>
                         Provisioned {formatDate(org.created_at)}

@@ -159,7 +159,7 @@ function LogIncidentForm({ onDone }: { onDone: () => void }) {
         <button
           type="submit"
           disabled={pending}
-          className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50"
+          className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50"
         >
           {pending ? 'Saving…' : 'Log incident'}
         </button>
@@ -231,7 +231,7 @@ function CloseIncidentForm({
       )}
       <div className="flex gap-3">
         <button type="submit" disabled={pending}
-          className="px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-3 py-1.5 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : 'Save'}
         </button>
         <button type="button" onClick={onDone}
@@ -329,7 +329,7 @@ function EditIncidentForm({ incident, onDone }: { incident: Incident; onDone: ()
 
       <div className="flex gap-3 pt-1">
         <button type="submit" disabled={pending}
-          className="px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-3 py-1.5 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : 'Save changes'}
         </button>
         <button type="button" onClick={onDone}
@@ -527,7 +527,7 @@ export default function IncidentsClient({ incidents, currentUserId, isAdmin, isV
 
   const hasFilters = filterStatus !== '' || filterType !== ''
 
-  const select = 'border border-line rounded-lg px-3 py-2 text-sm text-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand'
+  const select = 'border border-line rounded-lg px-3 py-2 text-sm text-ink bg-card focus:outline-none focus:ring-2 focus:ring-brand'
 
   // Summary counts
   const openCount   = incidents.filter(i => i.status === 'open').length
@@ -559,10 +559,10 @@ export default function IncidentsClient({ incidents, currentUserId, isAdmin, isV
 
       {/* Controls row */}
       <div className="flex flex-wrap items-center gap-3">
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as '' | IncidentStatus)} className={select}>
+        <select aria-label="Filter incidents by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value as '' | IncidentStatus)} className={select}>
           {FILTER_STATUS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
         </select>
-        <select value={filterType} onChange={e => setFilterType(e.target.value as '' | IncidentType)} className={select}>
+        <select aria-label="Filter incidents by type" value={filterType} onChange={e => setFilterType(e.target.value as '' | IncidentType)} className={select}>
           {FILTER_TYPE.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
         </select>
         {hasFilters && (
@@ -577,7 +577,7 @@ export default function IncidentsClient({ incidents, currentUserId, isAdmin, isV
         {!isViewer && !showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90"
+            className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90"
           >
             + Log incident
           </button>

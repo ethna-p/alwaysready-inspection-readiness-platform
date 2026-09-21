@@ -76,7 +76,7 @@ export default function ReportOutput({
   kloeSort, kloeSortDir, onKloeSort,
 }: Props) {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', fontSize: '15px', color: '#111' }}>
+    <div className="force-light dark:bg-white dark:p-6 dark:rounded-xl" style={{ fontFamily: 'system-ui, sans-serif', fontSize: '15px', color: '#111' }}>
 
       {/* Report header */}
       <div style={{ marginBottom: '24px', borderBottom: '2px solid #014D4E', paddingBottom: '12px' }}>
@@ -356,7 +356,7 @@ export default function ReportOutput({
                         {(() => {
                           const pill = h.mandatory_training_complete
                             ? { bg: '#dcfce7', color: '#15803d', label: 'Complete' }
-                            : { bg: '#f3f4f6', color: '#6b7280', label: 'Incomplete' }
+                            : { bg: '#f3f4f6', color: '#4b5563', label: 'Incomplete' }
                           return (
                             <span style={{ display: 'inline-block', borderRadius: '9999px', padding: '2px 8px', fontSize: '12px', fontWeight: 500, backgroundColor: pill.bg, color: pill.color }}>
                               {pill.label}

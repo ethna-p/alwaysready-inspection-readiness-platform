@@ -251,7 +251,7 @@ export default function ProvisionPage() {
           type="submit"
           disabled={pending}
           className="
-            w-full bg-[#00b8a6] text-white font-semibold text-sm
+            w-full bg-[#00b8a6] text-[#1a1a1a] font-semibold text-sm
             py-3 rounded-xl
             hover:bg-[#009d8e]
             focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2 focus:ring-offset-[#faf9f6]

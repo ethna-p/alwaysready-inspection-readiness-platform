@@ -378,7 +378,7 @@ export default async function DashboardPage() {
                         <span className={`h-2 w-2 rounded-full shrink-0 ${dot}`} aria-hidden="true" />
                         <span className="text-sm text-amber-900">
                           <strong>{alert.count}</strong> {alert.label} —{' '}
-                          <Link href={alert.href} className="text-brand underline underline-offset-2 hover:text-[#013636]">review now</Link>
+                          <Link href={alert.href} className="text-[#014D4E] underline underline-offset-2 hover:text-[#013636]">review now</Link>
                         </span>
                       </li>
                     )

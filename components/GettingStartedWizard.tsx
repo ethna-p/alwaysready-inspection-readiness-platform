@@ -305,7 +305,7 @@ export default function GettingStartedWizard() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-semibold mb-0.5 ${done ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+                      <p className={`text-sm font-semibold mb-0.5 ${done ? 'line-through text-gray-500' : 'text-gray-800'}`}>
                         {step.title}
                       </p>
                       {!done && (
@@ -335,12 +335,12 @@ export default function GettingStartedWizard() {
               className="px-5 py-3 flex items-center justify-between border-t"
               style={{ borderColor: '#f0f0f0' }}
             >
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-gray-600">
                 Need help? Use <strong>Support</strong> at any time.
               </p>
               <button
                 onClick={handleDismiss}
-                className="text-xs text-gray-400 hover:text-gray-600 transition-colors ml-3 shrink-0"
+                className="text-xs text-gray-600 hover:text-gray-900 transition-colors ml-3 shrink-0"
               >
                 Dismiss
               </button>

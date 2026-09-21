@@ -270,8 +270,9 @@ export default function ReportFilterPanel({
             <div className="bg-card border border-line rounded-xl p-5">
               <p className="text-sm font-semibold text-ink mb-3">Action plan filters</p>
               <div className="max-w-xs">
-                <label className="block text-xs font-medium text-ink-dim mb-1">Action status</label>
+                <label htmlFor="report-action-status" className="block text-xs font-medium text-ink-dim mb-1">Action status</label>
                 <select
+                  id="report-action-status"
                   value={actionStatus}
                   onChange={e => { setActionStatus(e.target.value as typeof actionStatus); onClearView() }}
                   className={inputClass}
@@ -288,8 +289,8 @@ export default function ReportFilterPanel({
             <div className="bg-card border border-line rounded-xl p-5">
               <p className="text-sm font-semibold text-ink mb-3">HR filters</p>
               <div className="max-w-xs">
-                <label className="block text-xs font-medium text-ink-dim mb-1">Staff member</label>
-                <select value={selectedStaff} onChange={e => setSelectedStaff(e.target.value)} className={inputClass}>
+                <label htmlFor="report-staff-member" className="block text-xs font-medium text-ink-dim mb-1">Staff member</label>
+                <select id="report-staff-member" value={selectedStaff} onChange={e => setSelectedStaff(e.target.value)} className={inputClass}>
                   <option value="all">All staff</option>
                   {hrStaff.map(h => (
                     <option key={h.user_id} value={h.user_id}>
@@ -308,8 +309,9 @@ export default function ReportFilterPanel({
         <div className="bg-card border border-line rounded-xl p-5">
           <p className="text-sm font-semibold text-ink mb-3">Annual review filters</p>
           <div className="max-w-xs">
-            <label className="block text-xs font-medium text-ink-dim mb-1">Year</label>
+            <label htmlFor="report-year" className="block text-xs font-medium text-ink-dim mb-1">Year</label>
             <select
+              id="report-year"
               value={reviewYear}
               onChange={e => setReviewYear(Number(e.target.value))}
               className={inputClass}

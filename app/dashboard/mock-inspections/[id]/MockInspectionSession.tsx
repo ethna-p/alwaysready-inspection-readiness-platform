@@ -321,7 +321,7 @@ export default function MockInspectionSession({
             type="button"
             onClick={() => saveAndNavigate(isLast ? 'complete' : currentKloeIndex + 1)}
             disabled={isPending}
-            className="flex-1 bg-[#00b8a6] text-white font-semibold text-sm py-3 rounded-xl hover:bg-[#009d8e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 bg-[#00b8a6] text-[#1a1a1a] font-semibold text-sm py-3 rounded-xl hover:bg-[#009d8e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isPending
               ? 'Saving…'

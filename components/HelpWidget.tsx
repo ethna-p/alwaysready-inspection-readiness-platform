@@ -78,6 +78,10 @@ export default function HelpWidget({ title, items }: Props) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        // Closed, the panel is only slid off-screen. Without inert its links and scroll area would still be
+        // reachable by keyboard and read out by screen readers, from a panel nobody can see.
+        inert={!open}
+        aria-hidden={!open}
         className={`
           fixed top-0 right-0 z-50 h-full w-full max-w-sm
           bg-card border-l border-line shadow-xl
@@ -107,7 +111,7 @@ export default function HelpWidget({ title, items }: Props) {
         </div>
 
         {/* Items */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+        <div tabIndex={0} role="region" aria-label={`${title} topics`} className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
           {items.map((item, i) => (
             <div key={i}>
               <p className="text-sm font-semibold text-[#014D4E] mb-1">{item.heading}</p>

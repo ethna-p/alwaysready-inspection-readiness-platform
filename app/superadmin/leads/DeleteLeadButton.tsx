@@ -20,7 +20,7 @@ export default function DeleteLeadButton({ id }: { id: string }) {
       <button
         onClick={handleClick}
         disabled={isPending}
-        className="text-xs text-red-500 hover:text-red-700 disabled:opacity-40 transition-colors"
+        className="text-xs text-red-600 hover:text-red-700 disabled:opacity-40 transition-colors"
       >
         {isPending ? 'Deleting…' : 'Delete'}
       </button>

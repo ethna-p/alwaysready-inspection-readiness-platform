@@ -47,7 +47,7 @@ function barColour(p: number) {
 
 function statusBadge(p: number) {
   if (p >= 90) return <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Near limit</span>
-  if (p >= 70) return <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Watch this</span>
+  if (p >= 70) return <span className="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Watch this</span>
   return <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Fine</span>
 }
 
