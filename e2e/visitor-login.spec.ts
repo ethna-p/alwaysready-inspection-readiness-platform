@@ -126,6 +126,15 @@ test('visitor login: invite, set own password, read-only access, expiry, and rev
   // viewer_expires_at) — it's RLS that then blocks every org-scoped query,
   // which the dashboard layout treats as "no org" and bounces to /login.
   await expiredVisitorPage.waitForURL('**/login')
+
+  // The expired visitor is still holding a signed-in session, so try the data endpoints directly with
+  // it: none may hand over anything. (Inspectors must not get in once their expiry date has passed.)
+  for (const path of ['/api/wizard-status', '/api/report-views', '/api/export-data', '/api/export-evidence']) {
+    const res = await expiredVisitorContext.request.get(path)
+    expect(res.status(), `${path} must refuse an expired visitor`).toBeGreaterThanOrEqual(400)
+    expect(res.headers()['content-type'] ?? '').not.toContain('zip')
+    expect(res.headers()['content-type'] ?? '').not.toContain('csv')
+  }
   await expiredVisitorContext.close()
 
   // Restore a live expiry so the revoke step below exercises "revoke an
