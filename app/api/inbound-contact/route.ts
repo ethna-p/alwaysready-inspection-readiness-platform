@@ -156,7 +156,13 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (ticketError || !newTicket) {
-    console.error('[inbound-contact] ticket insert error:', ticketError?.message)
+    // The ticket is the only place the message is stored, and the auto-responder below tells the sender
+    // it was received. Do not claim that when it was not saved.
+    reportDbError(ticketError ?? { message: 'insert returned no row' }, 'inbound-contact: save ticket')
+    return NextResponse.json(
+      { error: 'Could not save your message. Please try again, or email support@alwaysready.uk.' },
+      { status: 500, headers: CORS_HEADERS }
+    )
   }
 
   // ── Generate AI draft reply ───────────────────────────────────────────────
@@ -194,8 +200,8 @@ export async function POST(req: NextRequest) {
         { onConflict: 'email', ignoreDuplicates: true },
       )
 
-    if (subError) {
-      console.error('[inbound-contact] blog subscriber upsert error:', subError.message)
+    if (reportDbError(subError, 'inbound-contact: blog subscriber upsert')) {
+      // Not subscribed; the enquiry itself is already saved, so carry on without the blog welcome.
     } else {
       const defaultBlogSubscribeHtml = `
           <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">You're subscribed to the AlwaysReady blog</h1>

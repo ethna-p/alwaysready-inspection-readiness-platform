@@ -16,6 +16,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
+import { reportDbError } from '@/lib/db-errors'
 
 // 10 requests per IP per hour
 const limiter = createRateLimiter({ name: 'inbound-demo', windowMs: 60 * 60_000, max: 10 })
@@ -73,10 +74,8 @@ export async function POST(req: NextRequest) {
     .from('demo_leads')
     .insert({ service_type: serviceType, cqc_rating: cqcRating, demo_type: demoType, email, name })
 
-  if (insertError) {
-    console.error('[inbound-demo] insert error:', insertError.message)
-    // Don't block the user; still redirect them to Zeeg
-  }
+  // Don't block the user on a failure: still redirect them to Zeeg. AJ is emailed below either way.
+  reportDbError(insertError, 'inbound-demo: save lead')
 
   // ── Notify AJ ─────────────────────────────────────────────────────────────
   const demoLabel = demoType === '15min'

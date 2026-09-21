@@ -23,6 +23,7 @@
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import SetPasswordForm from '@/components/SetPasswordForm'
+import { reportDbError } from '@/lib/db-errors'
 
 export default function ChangePasswordPage() {
   const supabase = createClient()
@@ -42,7 +43,7 @@ export default function ChangePasswordPage() {
     if (flagError) {
       // Password is already changed at this point — don't block the user on
       // a flag update failing. Log it; worst case they see this page once more.
-      console.error('[change-password] failed to clear must_change_password:', flagError.message)
+      reportDbError(flagError, 'change-password: clear must_change_password')
     }
 
     // Hard-navigate so middleware picks up the cleared flag on the next request

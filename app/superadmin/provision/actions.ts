@@ -126,7 +126,7 @@ export async function provisionOrganisation(
         .insert(records)
 
       if (crError) {
-        console.error('Compliance record seeding failed:', crError.message)
+        reportDbError(crError, 'provision: seed compliance records')
         // Non-fatal: don't roll back, the org and user are usable
       }
     }

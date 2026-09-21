@@ -25,6 +25,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { reportDbError } from '@/lib/db-errors'
 
 export interface NotificationClaimKey {
   organisationId: string
@@ -88,7 +89,7 @@ export async function releaseNotificationClaim(
     .eq('recipient_email',   key.recipientEmail)
   // If this fails the notification stays claimed and will not be retried. That is the safe
   // direction (never a duplicate), but it must not be silent.
-  if (error) console.error('[notification-log] could not release claim:', error)
+  reportDbError(error, 'notification-log: release claim')
 }
 
 export type SendOnceResult =
@@ -155,5 +156,5 @@ export async function releaseCronSlot(
   claimKey: string
 ): Promise<void> {
   const { error } = await supabase.from('cron_claims').delete().eq('job', job).eq('claim_key', claimKey)
-  if (error) console.error(`[${job}] could not release cron_claims slot:`, error)
+  reportDbError(error, `${job}: release cron_claims slot`)
 }
