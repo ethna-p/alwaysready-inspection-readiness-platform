@@ -149,7 +149,6 @@ async function middlewareFn(request: NextRequest) {
   const isMfaVerifyPage        = pathname === '/login/mfa'
   const isMfaSetupPage         = pathname.startsWith('/dashboard/account/mfa')
   const isSuperadminAccountPage = pathname === '/superadmin/account'
-  const isChangePasswordPage   = pathname === '/dashboard/account/change-password'
 
   if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/superadmin'))) {
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
@@ -185,26 +184,13 @@ async function middlewareFn(request: NextRequest) {
         aal.nextLevel !== 'aal2' &&
         user.email !== superadminEmail &&
         pathname.startsWith('/dashboard') &&
-        !isMfaSetupPage &&
-        !isChangePasswordPage
+        !isMfaSetupPage
       ) {
-        // Fetch role + must_change_password in one query. A forced password
-        // change takes priority over forcing MFA enrolment: if MFA setup
-        // ran first, whoever currently holds the admin-generated temporary
-        // password (the admin who reset it, or anyone it was shared with)
-        // could complete enrolment — registering their own authenticator —
-        // before the real account owner ever sets their own password.
         const { data: profile } = await supabase
           .from('users')
-          .select('role, must_change_password')
+          .select('role')
           .eq('id', user.id)
           .single()
-
-        if (profile?.must_change_password) {
-          const url = request.nextUrl.clone()
-          url.pathname = '/dashboard/account/change-password'
-          return NextResponse.redirect(url)
-        }
 
         if (profile?.role === 'admin' || profile?.role === 'user') {
           const url = request.nextUrl.clone()
@@ -216,12 +202,7 @@ async function middlewareFn(request: NextRequest) {
     }
   }
 
-  // ── Forced password change + first-login onboarding redirect ───────────
-  // must_change_password: an admin reset this user's password for them
-  // (resetTeamMemberPassword) — they're still on the admin-generated one
-  // until they set their own. Checked in the same query as
-  // onboarding_complete rather than as a separate round-trip; password
-  // change takes priority when both are true.
+  // ── First-login onboarding redirect ─────────────────────────────────────
   // onboarding_complete === false: send them to /dashboard/welcome.
   // Skip if they're already on /dashboard/welcome (avoid loop).
   // Also skip for superadmin — they have no profile row.
@@ -230,20 +211,13 @@ async function middlewareFn(request: NextRequest) {
     user.email !== superadminEmail &&
     pathname.startsWith('/dashboard') &&
     pathname !== '/dashboard/welcome' &&
-    !isMfaSetupPage &&
-    !isChangePasswordPage
+    !isMfaSetupPage
   ) {
     const { data: profile } = await supabase
       .from('users')
-      .select('onboarding_complete, must_change_password')
+      .select('onboarding_complete')
       .eq('id', user.id)
       .single()
-
-    if (profile?.must_change_password) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard/account/change-password'
-      return NextResponse.redirect(url)
-    }
 
     if (profile && profile.onboarding_complete === false) {
       const url = request.nextUrl.clone()

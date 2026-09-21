@@ -2,17 +2,15 @@
 
 /**
  * Shared "choose a new password" form — the fields, validation, and markup
- * common to both places a user sets a password directly (no current-password
+ * used where a user sets a password directly (no current-password
  * re-verification, unlike the voluntary account-settings change flow in
  * app/dashboard/account/ChangePasswordForm.tsx, which is a genuinely
  * different shape and stays separate):
  *
  *   - app/login/new-password/page.tsx — after a password-reset email link
- *   - app/dashboard/account/change-password/page.tsx — forced change after
- *     an admin resets a team member's password
  *
- * Each caller owns what happens after a successful submit (redirect,
- * success screen, clearing a DB flag, etc.) via the `onSubmit` callback —
+ * The caller owns what happens after a successful submit (redirect,
+ * success screen, etc.) via the `onSubmit` callback —
  * this component only owns the fields, validation, and the pending/error
  * states around calling it.
  */

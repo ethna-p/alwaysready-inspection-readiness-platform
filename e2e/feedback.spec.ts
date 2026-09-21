@@ -44,9 +44,7 @@
  * The teammate account (role 'user', no MFA of its own) is shared with
  * other specs in this suite. This spec resets its password defensively
  * before use (same reasoning as incidents.spec.ts and governance.spec.ts,
- * even though "feedback.spec.ts" currently sorts before
- * "forced-password-change.spec.ts" alphabetically -- file order is not
- * something to depend on) and cleans up the real MFA factor
+ * even though file order is not something to depend on) and cleans up the real MFA factor
  * completeMandatoryMfaSetup() enrols, so later specs' "teammate's first
  * login has no MFA yet" assumption still holds.
  *

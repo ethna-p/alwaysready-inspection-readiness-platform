@@ -18,7 +18,7 @@ export interface LoginCredentials {
 /**
  * Logs in via /login. If `totpSecret` is provided, also completes the
  * mandatory /login/mfa verification step. Leaves the page wherever the app's
- * own post-login redirect lands (dashboard, my-kloes, change-password, mfa
+ * own post-login redirect lands (dashboard, my-kloes, mfa
  * setup, etc.) — callers should assert their own expected destination rather
  * than this helper guessing it for them.
  */

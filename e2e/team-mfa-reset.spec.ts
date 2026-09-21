@@ -7,8 +7,7 @@
  * self-service (MfaSection.tsx's "Remove"), which requires already being
  * logged in with a working factor -- circular for someone actually locked
  * out, and admins had no way to help a teammate in that position at all.
- * Mirrors the existing "Reset password" action's shape and org-scoping
- * check exactly.
+ * Same shape and org-scoping check as the other team actions.
  *
  * Covers: a real enrolled factor is genuinely removed server-side (not
  * just hidden in the UI) and the teammate is correctly sent through
@@ -110,7 +109,29 @@ test('an admin cannot reset their own MFA from the Team page', async ({ page }) 
   await page.goto('/dashboard/account?tab=team')
 
   // isSelf renders "—" instead of the form entirely — same treatment as
-  // "Reset password" already gets for your own row.
+  // the other team actions get for your own row.
   const ownRow = page.locator('tr', { hasText: account.email })
   await expect(ownRow.getByRole('button', { name: 'Reset MFA' })).toHaveCount(0)
+})
+
+test('the Team page offers no admin password reset: teammates reset their own from the login page', async ({ page }) => {
+  test.setTimeout(60_000)
+  const account = loadTestAccount()
+
+  await login(page, account)
+  await page.waitForURL('**/dashboard')
+  await page.goto('/dashboard/account?tab=team')
+
+  const teammateRow = page.locator('tr', { hasText: account.teammate.email })
+  await expect(teammateRow).toBeVisible()
+  // The MFA reset is still there (a lost authenticator cannot be self-served)...
+  await expect(teammateRow.getByRole('button', { name: 'Reset MFA' })).toBeVisible()
+  // ...but there is no password reset button and no Password column.
+  await expect(page.getByRole('button', { name: 'Reset password' })).toHaveCount(0)
+  await expect(page.getByRole('columnheader', { name: 'Password' })).toHaveCount(0)
+
+  // The self-service route is what replaces it.
+  await page.context().clearCookies()
+  await page.goto('/login')
+  await expect(page.getByText('Forgot your password?')).toBeVisible()
 })

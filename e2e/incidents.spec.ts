@@ -24,8 +24,8 @@
  * below rather than worked around.
  *
  * The teammate account (role 'user', no MFA of its own) is shared with
- * other specs in this suite -- forced-password-change.spec.ts permanently
- * changes its password earlier in file order, so this spec resets it via
+ * other specs in this suite -- another spec may have changed its password,
+ * so this spec resets it via
  * the admin API first, exactly like kloe-assignment.spec.ts does. No
  * earlier-running spec completes the teammate's MFA enrolment for real, so
  * this is still their first genuine login -- completeMandatoryMfaSetup
@@ -162,7 +162,7 @@ test('Incident Log: create, filter, admin review/close, and a reporter editing t
 
   // completeMandatoryMfaSetup() above just enrolled a real MFA factor for
   // the shared teammate account -- other specs later in the same suite run
-  // (kloe-assignment.spec.ts, forced-password-change.spec.ts) assume it
+  // (kloe-assignment.spec.ts and others) assume it
   // still has none on ITS first login. Remove it so this spec doesn't leave
   // that assumption broken for whoever runs after it.
   const { data: factorsData } = await admin.auth.admin.mfa.listFactors({ userId: account.teammate.userId })

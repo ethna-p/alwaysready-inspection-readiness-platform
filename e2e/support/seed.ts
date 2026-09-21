@@ -298,7 +298,7 @@ export async function seed() {
 
   // ── Create a second, teammate account (role 'user', no MFA enrolled) ───
   // Gives the admin fixture a real in-org target for team-management
-  // actions (e.g. resetTeamMemberPassword) without needing MFA of its own.
+  // actions (e.g. resetTeamMemberMfa) without needing MFA of its own.
   const { data: teammateAuthUser, error: teammateAuthError } = await admin.auth.admin.createUser({
     email: TEAMMATE_EMAIL,
     password: TEAMMATE_PASSWORD,

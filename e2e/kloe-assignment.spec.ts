@@ -15,11 +15,10 @@
  * would look like.
  *
  * The teammate account is shared with other specs in this suite, and
- * forced-password-change.spec.ts genuinely, permanently changes its
- * password as part of its own test (runs earlier in file order) — so this
- * spec can't assume the fixture's original password still works. It
+ * other specs can change its password (a real password-reset spec has), so
+ * this spec can't assume the fixture's original password still works. It
  * forces the password back to a known value via the admin API first,
- * exactly like an admin's own "Reset password" action would, rather than
+ * rather than
  * assuming what state an unrelated spec happened to leave it in.
  *
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.

@@ -40,9 +40,8 @@
  * feature is this meeting log. Corrected alongside this spec.
  *
  * The teammate account (role 'user', no MFA of its own) is shared with
- * other specs in this suite -- forced-password-change.spec.ts permanently
- * changes its password earlier in file order (this spec runs after it,
- * alphabetically), so this spec resets it via the admin API first, same as
+ * other specs in this suite -- another spec may have changed its password,
+ * so this spec resets it via the admin API first, same as
  * incidents.spec.ts and kloe-assignment.spec.ts do. Also mirrors
  * incidents.spec.ts's own MFA-factor cleanup at the end: this spec runs
  * BEFORE kloe-assignment.spec.ts and incidents.spec.ts in file order, so
