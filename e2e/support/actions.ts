@@ -5,7 +5,8 @@
  * then MFA verification if (and only if) the account has a factor enrolled.
  * Centralised here so a change to the login/MFA UI only needs updating once.
  */
-import { Page } from '@playwright/test'
+import { Page, Browser, expect } from '@playwright/test'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { currentTotpCode } from './totp'
 
 export interface LoginCredentials {
@@ -74,4 +75,37 @@ export async function completeMandatoryMfaSetup(page: Page): Promise<string> {
   await page.waitForURL(url => url.searchParams.get('mfa') === 'enrolled')
 
   return secret
+}
+
+
+/**
+ * Stands in for an invited person opening the email link and choosing their own password.
+ *
+ * There is no inbox to read in CI, so an admin-minted magic link (the same kind of link the real invite
+ * email carries) is followed to /account/setup, where the real page and the real updateUser() call set
+ * the password. Used for invited visitors and team members alike. See user-invite.spec.ts.
+ */
+export async function setPasswordFromInvite(
+  browser: Browser,
+  admin: SupabaseClient,
+  baseURL: string,
+  email: string,
+  password: string,
+): Promise<void> {
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: 'magiclink',
+    email,
+    options: { redirectTo: `${baseURL}/auth/callback?next=/account/setup` },
+  })
+  expect(error).toBeNull()
+
+  const context = await browser.newContext()
+  const page = await context.newPage()
+  await page.goto(data!.properties!.action_link)
+  await page.waitForURL('**/account/setup')
+  await page.locator('#password').fill(password)
+  await page.locator('#confirm').fill(password)
+  await page.getByRole('button', { name: 'Set password and continue' }).click()
+  await expect(page.getByText('Password set')).toBeVisible()
+  await context.close()
 }

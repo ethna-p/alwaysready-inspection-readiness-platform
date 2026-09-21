@@ -598,10 +598,10 @@ export default async function AccountPage({
             aria-labelledby="add-visitor-heading"
           >
             <h3 id="add-visitor-heading" className="text-base font-semibold text-brand mb-1">
-              Create visitor login
+              Invite a visitor
             </h3>
             <p className="text-sm text-ink-dim mb-4">
-              Create a temporary read-only login for an inspector or external visitor. They can view all KLOEs, the audit trail, trend data, and reports — but cannot make any changes.
+              Invite an inspector or external visitor to a temporary read-only login. They are emailed a link to set their own password, so there is nothing for you to share. They can view all KLOEs, the audit trail, trend data, and reports — but cannot make any changes.
             </p>
             <AddVisitorForm />
           </section>
