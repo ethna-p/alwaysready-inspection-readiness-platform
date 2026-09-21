@@ -13,10 +13,11 @@
  *
  * Requires, beyond the usual seeded fixture:
  *   - STRIPE_SECRET_KEY / STRIPE_PRICE_ID (test mode) — see item 17's setup
- *   - STRIPE_WEBHOOK_SECRET — printed by `stripe listen --forward-to
- *     localhost:3100/api/stripe-webhook`, which must be RUNNING for this
- *     spec to pass (the webhook is how the DB actually gets updated; this
- *     spec cannot itself start that process)
+ *   - STRIPE_WEBHOOK_SECRET — the `whsec_` that `stripe listen` prints.
+ *     The spec starts `stripe listen --forward-to localhost:3100/api/stripe-webhook`
+ *     itself (e2e/support/stripe-listener.ts) and stops it afterwards, using the
+ *     test-mode key from .env.local, so there is no manual step. The Stripe CLI
+ *     must be installed. (The webhook is how the DB actually gets updated.)
  *
  * Two real, significant issues were found and fixed while setting this up:
  *   1. This Stripe account had "Managed Payments" enabled, which requires
@@ -48,6 +49,15 @@ import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { loadEnvLocal } from './support/env'
 import { tidy } from './support/db'
+import { startStripeListener, type StripeListener } from './support/stripe-listener'
+
+// The spec starts `stripe listen` itself (and stops it), so it no longer depends on a manual step.
+let listener: StripeListener | undefined
+test.beforeAll(async () => {
+  test.setTimeout(60_000)
+  listener = await startStripeListener(loadEnvLocal())
+})
+test.afterAll(() => { listener?.stop() })
 
 test('subscribing via Stripe Checkout activates the organisation for real', async ({ page }) => {
   test.setTimeout(150_000) // real Stripe checkout (~15s) + up to 60s redirect wait + up to 20s webhook poll, with headroom
@@ -58,7 +68,7 @@ test('subscribing via Stripe Checkout activates the organisation for real', asyn
 
   expect(
     env.STRIPE_WEBHOOK_SECRET,
-    'STRIPE_WEBHOOK_SECRET missing — is `stripe listen --forward-to localhost:3100/api/stripe-webhook` running?'
+    'STRIPE_WEBHOOK_SECRET missing from .env.local'
   ).toBeTruthy()
 
   await login(page, account)
