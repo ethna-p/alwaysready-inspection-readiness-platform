@@ -22,6 +22,7 @@ import { sendEmail } from '@/lib/email'
 import { renderTemplate } from '@/lib/email-templates'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
+import { reportDbError } from '@/lib/db-errors'
 
 const RECONFIRM_AFTER_DAYS = 35 // midpoint of the 4-6 week window
 
@@ -115,7 +116,7 @@ export async function GET(request: Request) {
         .from('users')
         .update({ notification_prefs_confirmed_at: user.notification_prefs_confirmed_at })
         .eq('id', user.id)
-      if (restoreError) console.error(`[notification-reconfirmation] could not restore ${user.id}:`, restoreError)
+      reportDbError(restoreError, `notification-reconfirmation: restore ${user.id}`)
       errors.push(`${user.id} → ${result.error ?? result.skipped}`)
     }
   }

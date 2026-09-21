@@ -16,11 +16,19 @@
  *   error-not-bound    const { data } = await s.from('t').insert(...)  (no `error` taken out)
  *   error-never-read   const { error } = await ...insert(...)          (bound, never used after)
  *   result-never-used  const r = await ...insert(...)                  (whole result never used)
+ *   error-only-logged  if (error) console.error(...)  and carry on     (noticed, then ignored)
  *
  * Run with `npm run check:silent-writes`; CI runs it on every PR.
  *
- * Limits: it cannot tell whether a check is meaningful (an error that is checked and then
- * ignored passes), and it only recognises supabase-js chains (`.from(...).insert/update/delete/upsert`).
+ * "error-only-logged" means the error is only ever read by console.* calls, or by an `if` whose
+ * body does none of: return / throw / continue / break, call throwOnDbError / reportDbError / must /
+ * tidy / captureException, push to an `errors`/`results` list, or assign or increment a variable
+ * (recording the failure for later). A log line alone reaches nobody: use reportDbError, which also
+ * sends it to Sentry, or handle it.
+ *
+ * Limits: it cannot judge whether the handling is the RIGHT one (an `if (error) return null` that
+ * should have returned an error response passes), and it only recognises supabase-js chains
+ * (`.from(...).insert/update/delete/upsert`).
  */
 const ts = require('typescript')
 const fs = require('fs')
@@ -63,6 +71,50 @@ function tableOf(node) {
   return m ? m[1] : '?'
 }
 
+const HANDLER_CALL = /(^|\.)(throwOnDbError|reportDbError|must|tidy|captureException)$|\.push$/
+
+/** True if this statement records, reports, or exits on failure (ignoring nested functions). */
+function bodyHandles(stmt) {
+  let handled = false
+  function visit(n) {
+    if (handled || ts.isFunctionLike(n)) return
+    if (ts.isReturnStatement(n) || ts.isThrowStatement(n) || ts.isContinueStatement(n) || ts.isBreakStatement(n)) handled = true
+    else if (ts.isCallExpression(n) && HANDLER_CALL.test(n.expression.getText())) handled = true
+    else if (ts.isBinaryExpression(n) && n.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && n.operatorToken.kind <= ts.SyntaxKind.LastAssignment) handled = true
+    else if ((ts.isPostfixUnaryExpression(n) || ts.isPrefixUnaryExpression(n)) && (n.operator === ts.SyntaxKind.PlusPlusToken || n.operator === ts.SyntaxKind.MinusMinusToken)) handled = true
+    if (!handled) ts.forEachChild(n, visit)
+  }
+  visit(stmt)
+  return handled
+}
+
+function insideConsoleCall(id) {
+  for (let c = id.parent; c; c = c.parent) {
+    if (ts.isCallExpression(c) && /^console\./.test(c.expression.getText())) return true
+    if (ts.isBlock(c) || ts.isSourceFile(c)) return false
+  }
+  return false
+}
+
+/** True when `name` (a write's error) is read, but only in ways that leave the failure unhandled. */
+function errorOnlyLogged(decl, name, scope) {
+  let handled = false
+  ;(function visit(n) {
+    if (n.end <= decl.getEnd()) return
+    if (ts.isIdentifier(n) && n.text === name && n.getStart() >= decl.getEnd() && !insideConsoleCall(n)) {
+      let ifs = null
+      for (let c = n.parent; c; c = c.parent) {
+        if (ts.isIfStatement(c) && n.getStart() >= c.expression.getStart() && n.getEnd() <= c.expression.getEnd()) { ifs = c; break }
+        if (ts.isBlock(c)) break
+      }
+      if (!ifs) handled = true // passed on: returned, assigned, given to another function...
+      else if (HANDLER_CALL.test(ifs.expression.getText().replace(/\([\s\S]*$/, '')) || /\b(throwOnDbError|reportDbError|must|tidy|captureException)\s*\(/.test(ifs.expression.getText()) || bodyHandles(ifs.thenStatement)) handled = true
+    }
+    ts.forEachChild(n, visit)
+  })(scope)
+  return !handled
+}
+
 /** Returns [{ line, kind, op, table }] for every ignored database write in one source string. */
 function findSilentWrites(source, fileName = 'file.ts') {
   const sf = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true)
@@ -89,6 +141,7 @@ function findSilentWrites(source, fileName = 'file.ts') {
           const err = node.name.elements.find(e => (e.propertyName ? e.propertyName.getText() : e.name.getText()) === 'error')
           if (!err) add(node, 'error-not-bound', op)
           else if (!usedLater(node, err.name.getText())) add(node, 'error-never-read', op)
+          else if (errorOnlyLogged(node, err.name.getText(), enclosingScope(node))) add(node, 'error-only-logged', op)
         } else if (ts.isIdentifier(node.name) && !usedLater(node, node.name.getText())) {
           add(node, 'result-never-used', op)
         }
@@ -115,6 +168,7 @@ const MESSAGES = {
   'error-not-bound':   'takes the data but never looks at the error',
   'error-never-read':  'binds the error but never uses it',
   'result-never-used': 'never uses its result',
+  'error-only-logged': 'only logs its error and carries on',
 }
 
 function main() {

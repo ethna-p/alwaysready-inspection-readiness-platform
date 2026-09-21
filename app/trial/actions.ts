@@ -244,7 +244,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   if (crError) {
     // Transient insert error: log and continue. The dashboard layout will self-heal
     // by re-seeding on the user's first login via lib/seed-compliance.ts.
-    console.error('[trial-signup] compliance_records seed error (will self-heal on login):', crError.message)
+    reportDbError(crError, 'trial-signup: seed compliance records (self-heals on login)')
   }
 
   // ── 8. Generate password-setup link ─────────────────────────────────────────

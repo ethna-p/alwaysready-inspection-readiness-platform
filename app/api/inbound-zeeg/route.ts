@@ -17,6 +17,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { escapeHtml } from '@/lib/utils/escape'
+import { reportDbError } from '@/lib/db-errors'
 
 
 const ZEEG_WEBHOOK_TOKEN = process.env.ZEEG_WEBHOOK_TOKEN ?? ''
@@ -78,8 +79,9 @@ export async function POST(req: NextRequest) {
         { onConflict: 'invitee_uuid' }
       )
 
-    if (upsertError) {
-      console.error('[inbound-zeeg] upsert error:', upsertError.message)
+    if (reportDbError(upsertError, 'inbound-zeeg: save booking')) {
+      // Not stored: answer with an error so Zeeg redelivers instead of the booking silently vanishing.
+      return NextResponse.json({ error: 'Failed to save booking' }, { status: 500 })
     }
 
     // Notify AJ
@@ -141,8 +143,8 @@ export async function POST(req: NextRequest) {
       .update({ cancelled: true, raw_payload: payload })
       .eq('invitee_uuid', inviteeUuid)
 
-    if (error) {
-      console.error('[inbound-zeeg] cancel update error:', error.message)
+    if (reportDbError(error, 'inbound-zeeg: cancel booking')) {
+      return NextResponse.json({ error: 'Failed to record cancellation' }, { status: 500 })
     }
 
     return NextResponse.json({ ok: true }, { status: 200 })

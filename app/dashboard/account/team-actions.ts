@@ -13,6 +13,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
+import { reportDbError } from '@/lib/db-errors'
 
 export type TeamActionState =
   | { success: true; message: string; credentials?: { password: string } }
@@ -152,15 +153,15 @@ export async function resetTeamMemberPassword(
     .update({ must_change_password: true })
     .eq('id', userId)
 
-  if (flagError) {
-    // Non-fatal — the password reset itself succeeded. Log so it can be
-    // investigated, but don't block the admin from relaying the password.
-    console.error('resetPassword: failed to set must_change_password flag:', flagError.message)
-  }
+  // The password itself was reset, so the admin still needs to be given it. But if the flag failed, the
+  // teammate will NOT be forced to choose their own password, and the admin must know that.
+  const flagFailed = reportDbError(flagError, 'resetPassword: set must_change_password')
 
   return {
     success: true,
-    message: `Password reset for ${fullName}.`,
+    message: flagFailed
+      ? `Password reset for ${fullName}, but they will not be prompted to choose their own at first sign-in. Please ask them to change it in their account settings.`
+      : `Password reset for ${fullName}.`,
     credentials: { password },
   }
 }

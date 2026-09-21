@@ -24,6 +24,7 @@ import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
 import { claimNotification } from '@/lib/notification-log'
+import { reportDbError } from '@/lib/db-errors'
 
 // notification_log's unique index is (organisation_id, notification_type,
 // entity_type, entity_id, due_date, recipient_email). For stripe_event rows,
@@ -34,6 +35,16 @@ import { claimNotification } from '@/lib/notification-log'
 // a different due_date, didn't collide with the earlier claim (no 23505),
 // and the confirmation/deletion-notice email was sent a second time.
 const STRIPE_EVENT_LOG_DUE_DATE = '2000-01-01'
+
+/**
+ * A failed database write must not be answered with 200: Stripe treats 200 as "handled" and never
+ * retries, which would leave a paying customer un-activated (or a cancelled one not scheduled for
+ * deletion) with nothing to tell anyone. A 500 makes Stripe redeliver with backoff. Every update in
+ * this handler is idempotent and the emails are claimed per event id, so a redelivery is safe.
+ */
+function retryLater() {
+  return NextResponse.json({ error: 'Temporary failure, please retry.' }, { status: 500 })
+}
 
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -87,8 +98,8 @@ export async function POST(req: NextRequest) {
         })
         .eq('id', orgId)
 
-      if (error) {
-        console.error('[stripe-webhook] checkout update error:', error.message)
+      if (reportDbError(error, 'stripe-webhook: checkout update')) {
+        return retryLater()
       } else {
         // Day 14a: send subscription confirmation email to the org admin.
         // Stripe does not guarantee exactly-once delivery. The same event
@@ -154,7 +165,7 @@ export async function POST(req: NextRequest) {
       .update({ subscription_tier: tier as 'trial' | 'active' })
       .eq('stripe_subscription_id', sub.id)
 
-    if (error) console.error('[stripe-webhook] subscription update error:', error.message)
+    if (reportDbError(error, 'stripe-webhook: subscription update')) return retryLater()
   }
 
   // ── customer.subscription.deleted ─────────────────────────────────────
@@ -181,10 +192,10 @@ export async function POST(req: NextRequest) {
       .eq('stripe_subscription_id', sub.id)
       .maybeSingle()
 
-    if (lookupError) {
-      console.error('[stripe-webhook] subscription delete lookup error:', lookupError.message)
-    } else if (!existingOrg) {
-      console.error(`[stripe-webhook] subscription delete: no organisation found for stripe_subscription_id ${sub.id}`)
+    if (reportDbError(lookupError, 'stripe-webhook: subscription delete lookup')) return retryLater()
+    if (!existingOrg) {
+      // Retrying cannot fix a data mismatch, so this stays a 200, but it is reported rather than only logged.
+      reportDbError({ message: `no organisation found for stripe_subscription_id ${sub.id}` }, 'stripe-webhook: subscription delete')
     } else if (existingOrg.data_deletion_due_at) {
       // Already processed by an earlier delivery of this same event: skip silently.
     } else {
@@ -198,9 +209,8 @@ export async function POST(req: NextRequest) {
         .select('id, name')
         .single()
 
-      if (error) {
-        console.error('[stripe-webhook] subscription delete update error:', error.message)
-      } else if (org) {
+      if (reportDbError(error, 'stripe-webhook: subscription delete update')) return retryLater()
+      if (org) {
         // Notify the org's admin(s) that their data will be deleted in 30 days
         const { data: admins } = await supabase
           .from('users')
@@ -267,7 +277,7 @@ export async function POST(req: NextRequest) {
         .update({ subscription_tier: 'active' })
         .eq('stripe_subscription_id', subId)
 
-      if (error) console.error('[stripe-webhook] invoice success error:', error.message)
+      if (reportDbError(error, 'stripe-webhook: invoice success')) return retryLater()
     }
   }
 
@@ -284,7 +294,7 @@ export async function POST(req: NextRequest) {
         .update({ subscription_tier: 'past_due' as 'trial' | 'active' })
         .eq('stripe_subscription_id', subId)
 
-      if (error) console.error('[stripe-webhook] invoice failure error:', error.message)
+      if (reportDbError(error, 'stripe-webhook: invoice failure')) return retryLater()
     }
   }
 

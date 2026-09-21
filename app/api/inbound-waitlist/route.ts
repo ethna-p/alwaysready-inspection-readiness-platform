@@ -192,8 +192,12 @@ export async function POST(req: NextRequest) {
       { onConflict: 'email', ignoreDuplicates: false }
     )
 
-  if (leadError) {
-    console.error('[inbound-waitlist] lead upsert error:', leadError.message)
+  if (reportDbError(leadError, 'inbound-waitlist: save lead')) {
+    // Not stored, so do not send the welcome email or report success.
+    return NextResponse.json(
+      { error: 'Could not save your details. Please try again.' },
+      { status: 500, headers: CORS_HEADERS }
+    )
   }
 
   // ── Add to blog_subscribers if opted in ───────────────────────────────────
@@ -207,8 +211,8 @@ export async function POST(req: NextRequest) {
         { onConflict: 'email', ignoreDuplicates: true }
       )
 
-    if (subError) {
-      console.error('[inbound-waitlist] subscriber upsert error:', subError.message)
+    if (reportDbError(subError, 'inbound-waitlist: blog subscriber upsert')) {
+      // Lead is saved; only the blog subscription failed.
     } else {
       subscribedToBlog = true
     }

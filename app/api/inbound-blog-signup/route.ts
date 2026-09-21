@@ -17,6 +17,7 @@ import { sendEmail } from '@/lib/email'
 import { renderTemplate } from '@/lib/email-templates'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
+import { reportDbError } from '@/lib/db-errors'
 
 
 // 10 requests per IP per hour: generous for a signup form
@@ -100,9 +101,10 @@ export async function POST(req: NextRequest) {
       { onConflict: 'email' },
     )
 
-  if (dbError) {
-    console.error('[inbound-blog-signup] Supabase error:', dbError.message)
-    // Still return 200 to prevent retries: log and move on
+  if (reportDbError(dbError, 'inbound-blog-signup: save subscriber')) {
+    // Not saved, so do not send the "you're subscribed" email or answer success: the person would
+    // believe they were subscribed and never hear from us.
+    return NextResponse.json({ error: 'Could not subscribe you. Please try again.' }, { status: 500 })
   }
 
   // ── Send welcome email to subscriber ─────────────────────────────────────
