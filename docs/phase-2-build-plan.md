@@ -69,7 +69,7 @@ Currently admins must reset passwords manually from the Team page. This creates 
 
 ### Admin UI changes
 - Add "Account settings" link to the nav or user menu (visible to all roles)
-- Admin Team page: "Reset password" remains for cases where staff are locked out
+- Admin Team page: the admin "Reset password" button was later removed (2026-09-21); staff reset their own password from the login page ("Forgot your password?")
 
 ### Schema changes
 - None — handled entirely by Supabase Auth

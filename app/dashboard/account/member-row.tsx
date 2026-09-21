@@ -1,11 +1,12 @@
 'use client'
 
 /**
- * MemberRow — a single team member row with inline role change and password reset.
+ * MemberRow — a single team member row with inline role change and MFA reset.
+ * (Team members reset their own password from the login page with "Forgot your password?".)
  */
 
 import { useActionState } from 'react'
-import { resetTeamMemberPassword, resetTeamMemberMfa, changeTeamMemberRole } from './team-actions'
+import { resetTeamMemberMfa, changeTeamMemberRole } from './team-actions'
 import type { TeamActionState } from './team-actions'
 
 const ROLE_LABELS: Record<string, string> = {
@@ -25,10 +26,6 @@ interface Props {
 }
 
 export default function MemberRow({ member, isSelf }: Props) {
-  const [resetState, resetAction, resetPending] = useActionState<TeamActionState, FormData>(
-    resetTeamMemberPassword,
-    null
-  )
   const [roleState, roleAction, rolePending] = useActionState<TeamActionState, FormData>(
     changeTeamMemberRole,
     null
@@ -85,41 +82,6 @@ export default function MemberRow({ member, isSelf }: Props) {
           <p className={`text-xs mt-1 ${roleState.success ? 'text-green-700' : 'text-red-600'}`}>
             {roleState.success ? roleState.message : roleState.error}
           </p>
-        )}
-      </td>
-
-      {/* Password reset */}
-      <td className="px-4 py-4">
-        {isSelf ? (
-          <span className="text-xs text-ink-dim">—</span>
-        ) : (
-          <>
-            <form action={resetAction}>
-              <input type="hidden" name="user_id" value={member.id} />
-              <input type="hidden" name="full_name" value={displayName} />
-              <button
-                type="submit"
-                disabled={resetPending}
-                className="text-xs text-brand font-medium hover:underline disabled:opacity-50"
-              >
-                {resetPending ? 'Resetting…' : 'Reset password'}
-              </button>
-            </form>
-            {resetState?.success && resetState.credentials?.password && (
-              <div className="mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                <p className="text-xs text-amber-800 font-medium mb-1">New temporary password:</p>
-                <p className="font-mono text-sm text-brand font-semibold select-all">
-                  {resetState.credentials.password}
-                </p>
-                <p className="text-xs text-ink-dim mt-1">
-                  Give this to {displayName} directly. They&apos;ll be required to set their own password on next login.
-                </p>
-              </div>
-            )}
-            {resetState && !resetState.success && (
-              <p className="text-xs text-red-600 mt-1">{resetState.error}</p>
-            )}
-          </>
         )}
       </td>
 

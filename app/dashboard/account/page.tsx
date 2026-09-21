@@ -501,7 +501,6 @@ export default async function AccountPage({
                     <tr className="border-b border-line text-xs text-ink-dim uppercase tracking-wide">
                       <th scope="col" className="text-left px-4 py-3 font-medium">Name</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">Role</th>
-                      <th scope="col" className="text-left px-4 py-3 font-medium">Password</th>
                       <th scope="col" className="text-left px-4 py-3 font-medium">MFA</th>
                     </tr>
                   </thead>
