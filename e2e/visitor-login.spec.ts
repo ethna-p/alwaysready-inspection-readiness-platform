@@ -2,16 +2,18 @@
  * Visitor (inspector) time-limited login: create -> works read-only -> expires
  * -> revoke.
  *
- * createVisitorLogin (app/dashboard/account/team-actions.ts) uses
- * admin.createUser directly with a generated password — unlike inviteTeamMember,
- * it never sends an email, so this feature has no dependency on Supabase's
- * auth email sending at all (no rate limit / SMTP concerns here).
+ * createVisitorLogin (app/dashboard/account/team-actions.ts) invites the visitor
+ * by email exactly like inviteTeamMember: the visitor sets their OWN password from
+ * the emailed link and the admin never sees a credential. (It used to create the
+ * account with a generated password shown to the admin to pass on.)
  *
  * Covers:
- *   - admin creates a visitor login via the real UI, sees the one-time
- *     temporary password
- *   - the visitor logs in with it (no MFA — middleware exempts viewers by
- *     design) and gets genuinely read-only access: the "view-only" notice is
+ *   - admin invites a visitor via the real UI (a real invite email is sent) and is
+ *     shown NO password; the visitor row is created as a viewer with an expiry
+ *   - the visitor's "click the email" step is stood in for by an admin-minted magic
+ *     link (same reasoning as user-invite.spec.ts), they set their own password on
+ *     /account/setup, and log in (no MFA — middleware exempts viewers by
+ *     design) and get genuinely read-only access: the "view-only" notice is
  *     shown, and the edit form is not rendered at all
  *   - expiry is enforced for real: viewer_expires_at is backdated directly via
  *     the admin client (equivalent to waiting for real time to pass) and the
@@ -24,11 +26,11 @@
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.
  */
 import { test, expect } from '@playwright/test'
-import { login } from './support/actions'
+import { login, setPasswordFromInvite } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 
-test('visitor login: create, read-only access, expiry, and revoke', async ({ page, browser }) => {
+test('visitor login: invite, set own password, read-only access, expiry, and revoke', async ({ page, browser, baseURL }) => {
   test.setTimeout(90_000)
   const account = loadTestAccount()
   const admin = getAdminClient()
@@ -48,15 +50,31 @@ test('visitor login: create, read-only access, expiry, and revoke', async ({ pag
   // ── Admin creates a visitor login via the real UI ───────────────────────
   await page.goto('/dashboard/account?tab=team')
 
-  const visitorEmail = `e2e-visitor-${Date.now()}@alwaysready.invalid`
+  const visitorEmail = `e2e-visitor-${Date.now()}@example.org`
+  const visitorPassword = 'E2E-visitor-own-pw-4h7k!'
   await page.locator('#visitor_full_name').fill('E2E Test Inspector')
   await page.locator('#visitor_email').fill(visitorEmail)
   await page.locator('#duration_days').fill('7')
-  await page.getByRole('button', { name: 'Create visitor login' }).click()
+  await page.getByRole('button', { name: 'Send visitor invite' }).click()
 
-  await expect(page.getByText('Temporary password — share this now')).toBeVisible()
-  const visitorPassword = (await page.locator('p.font-mono').innerText()).trim()
-  expect(visitorPassword.length).toBeGreaterThan(0)
+  await expect(page.getByText('Invitation sent', { exact: true })).toBeVisible()
+  await expect(page.getByText(`Invitation sent to ${visitorEmail}.`, { exact: false })).toBeVisible()
+  // The admin is never shown a credential.
+  await expect(page.getByText('Temporary password')).toHaveCount(0)
+  await expect(page.locator('p.font-mono')).toHaveCount(0)
+
+  const { data: createdRow, error: createdErr } = await admin
+    .from('users')
+    .select('id, organisation_id, role, onboarding_complete, viewer_expires_at')
+    .eq('email', visitorEmail)
+    .single()
+  expect(createdErr).toBeNull()
+  expect(createdRow!.organisation_id).toBe(account.orgId)
+  expect(createdRow!.role).toBe('viewer')
+  expect(createdRow!.onboarding_complete).toBe(true)
+  const daysUntilExpiry = (new Date(createdRow!.viewer_expires_at!).getTime() - Date.now()) / 86_400_000
+  expect(daysUntilExpiry).toBeGreaterThan(6.9)
+  expect(daysUntilExpiry).toBeLessThan(7.1)
 
   // Confirm the row now shows up with a real, non-expired expiry (revalidatePath
   // now correctly targets this page — see team-actions.ts fix).
@@ -67,6 +85,9 @@ test('visitor login: create, read-only access, expiry, and revoke', async ({ pag
   // shows inside 2 days — see formatExpiry in visitor-row.tsx) — just confirm
   // it's a real date, not flagged as expired.
   await expect(visitorRow.getByText('(expired)')).toHaveCount(0)
+
+  // ── The visitor opens the emailed link and sets their own password ─────
+  await setPasswordFromInvite(browser, admin, baseURL!, visitorEmail, visitorPassword)
 
   // ── Visitor logs in and gets genuinely read-only access ─────────────────
   const visitorContext = await browser.newContext()

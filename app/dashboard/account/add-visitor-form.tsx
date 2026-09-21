@@ -4,7 +4,8 @@
  * AddVisitorForm — creates a time-limited visitor (viewer) login.
  *
  * The admin enters a name, real email address, and how many days access to grant.
- * On success, shows the temporary password to share with the visitor.
+ * The visitor is emailed a link to set their own password (same as a team invite);
+ * the admin never sees a credential.
  */
 
 import { useActionState } from 'react'
@@ -17,42 +18,17 @@ export default function AddVisitorForm() {
     null
   )
 
-  if (state?.success && state.credentials) {
+  if (state?.success) {
     return (
-      <div className="space-y-4">
-        <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-sm text-green-800">
-          {state.message}
-        </div>
-
-        <div className="bg-canvas border border-line rounded-lg p-4 space-y-3">
-          <p className="text-xs font-semibold text-brand uppercase tracking-wide">
-            Temporary password — share this now
-          </p>
-          <div>
-            <p className="text-xs text-ink-dim mb-0.5">Temporary password</p>
-            <p
-              className="font-mono text-sm bg-card border border-line rounded px-3 py-2 select-all cursor-text"
-              onClick={e => {
-                const range = document.createRange()
-                range.selectNodeContents(e.currentTarget)
-                window.getSelection()?.removeAllRanges()
-                window.getSelection()?.addRange(range)
-              }}
-            >
-              {state.credentials.password}
-            </p>
-          </div>
-          <p className="text-sm text-ink-dim">
-            The visitor logs in with their email address and this password. Click the field to select all. This will not be shown again.
-          </p>
-        </div>
-
+      <div className="rounded-xl border border-green-200 bg-green-50 p-5">
+        <p className="font-semibold text-green-900 mb-1">Invitation sent</p>
+        <p className="text-sm text-green-800">{state.message}</p>
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
+          className="mt-4 text-sm font-medium text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-[#014D4E] rounded"
         >
-          Create another visitor login →
+          ← Invite another visitor
         </button>
       </div>
     )
@@ -110,7 +86,7 @@ export default function AddVisitorForm() {
             className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-card text-ink placeholder:text-ink-dim focus:outline-none focus:ring-2 focus:ring-[#014D4E] focus:border-[#014D4E]"
           />
           <p className="text-sm text-ink-dim mt-1">
-            Login will stop working automatically after this many days.
+            Access stops working automatically this many days after you send the invite.
           </p>
         </div>
       </div>
@@ -127,7 +103,7 @@ export default function AddVisitorForm() {
           transition-colors
         "
       >
-        {isPending ? 'Creating…' : 'Create visitor login'}
+        {isPending ? 'Sending…' : 'Send visitor invite'}
       </button>
     </form>
   )

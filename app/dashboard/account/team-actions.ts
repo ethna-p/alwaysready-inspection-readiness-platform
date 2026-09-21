@@ -15,7 +15,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
 
 export type TeamActionState =
-  | { success: true; message: string; credentials?: { password: string } }
+  | { success: true; message: string }
   | { success: false; error: string }
   | null
 
@@ -92,16 +92,6 @@ export async function inviteTeamMember(
     success: true,
     message: `Invitation sent to ${email}. ${fullName} will receive an email with a link to set up their account.`,
   }
-}
-
-
-// ── Generate a cryptographically random temporary password ─────────────────
-
-function generatePassword(length = 10): string {
-  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$'
-  const array = new Uint8Array(length)
-  crypto.getRandomValues(array)
-  return Array.from(array, b => chars[b % chars.length]).join('')
 }
 
 
@@ -203,23 +193,29 @@ export async function createVisitorLogin(
     return { success: false, error: 'Duration must be between 1 and 365 days.' }
   }
 
-  const password  = generatePassword()
   const expiresAt = new Date()
   expiresAt.setUTCDate(expiresAt.getUTCDate() + daysRaw)
 
-  // ── Create Supabase auth user ────────────────────────────────────────────
-  const { data: authData, error: authError } = await adminSupabase.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
+  // ── Invite the visitor by email ──────────────────────────────────────────
+  // Same route as a team invite: Supabase emails the visitor a link, and they set their OWN password
+  // on /account/setup. The admin never sees or relays a credential. (This used to create the account
+  // with a generated password and show it to the admin to pass on.)
+  const headersList = await headers()
+  const host        = headersList.get('host') ?? 'localhost:3000'
+  const proto       = host.startsWith('localhost') ? 'http' : 'https'
+  const redirectTo  = `${proto}://${host}/auth/callback?next=/account/setup`
+
+  const { data: authData, error: authError } = await adminSupabase.auth.admin.inviteUserByEmail(email, {
+    data: { organisation_id: profile.organisation_id, role: 'viewer', full_name: fullName },
+    redirectTo,
   })
 
-  if (authError || !authData.user) {
-    console.error('createVisitorLogin auth error:', authError)
-    if (authError?.message?.includes('already been registered')) {
+  if (authError || !authData?.user) {
+    console.error('createVisitorLogin invite error:', authError)
+    if (authError?.message?.toLowerCase().includes('already been registered')) {
       return { success: false, error: 'An account with this email already exists.' }
     }
-    return { success: false, error: 'Failed to create visitor login. Please try again.' }
+    return { success: false, error: 'Failed to send the invitation. Please try again.' }
   }
 
   // ── Insert into public.users ─────────────────────────────────────────────
@@ -250,8 +246,9 @@ export async function createVisitorLogin(
 
   return {
     success: true,
-    message: `Visitor login created for ${fullName}. Access expires in ${daysRaw} day${daysRaw === 1 ? '' : 's'}.`,
-    credentials: { password },
+    message: `Invitation sent to ${email}. ${fullName} will receive an email with a link to set their own password. `
+      + `Their access expires ${daysRaw} day${daysRaw === 1 ? '' : 's'} from now, whether or not they have signed in yet. `
+      + `If the link expires before they use it, they can choose "Forgot your password?" on the login page.`,
   }
 }
 

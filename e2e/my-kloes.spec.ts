@@ -25,7 +25,7 @@
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist.
  */
 import { test, expect } from '@playwright/test'
-import { login, completeMandatoryMfaSetup } from './support/actions'
+import { login, completeMandatoryMfaSetup, setPasswordFromInvite } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { must } from './support/db'
@@ -42,7 +42,7 @@ function daysFromNow(n: number): string {
   return d.toISOString()
 }
 
-test('Admin and Viewer are redirected away from My KLOEs', async ({ page, browser }) => {
+test('Admin and Viewer are redirected away from My KLOEs', async ({ page, browser, baseURL }) => {
   test.setTimeout(60_000)
   const account = loadTestAccount()
   const admin = getAdminClient()
@@ -56,13 +56,14 @@ test('Admin and Viewer are redirected away from My KLOEs', async ({ page, browse
 
   // ── Viewer ────────────────────────────────────────────────────────────
   await page.goto('/dashboard/account?tab=team')
-  const visitorEmail = `e2e-my-kloes-viewer-${Date.now()}@alwaysready.invalid`
+  const visitorEmail = `e2e-my-kloes-viewer-${Date.now()}@example.org`
+  const visitorPassword = 'E2E-my-kloes-viewer-pw-9c2m!'
   await page.locator('#visitor_full_name').fill('E2E My KLOEs Viewer')
   await page.locator('#visitor_email').fill(visitorEmail)
   await page.locator('#duration_days').fill('1')
-  await page.getByRole('button', { name: 'Create visitor login' }).click()
-  await expect(page.getByText('Temporary password — share this now')).toBeVisible()
-  const visitorPassword = (await page.locator('p.font-mono').innerText()).trim()
+  await page.getByRole('button', { name: 'Send visitor invite' }).click()
+  await expect(page.getByText('Invitation sent', { exact: true })).toBeVisible()
+  await setPasswordFromInvite(browser, admin, baseURL!, visitorEmail, visitorPassword)
 
   const viewerContext = await browser.newContext()
   const viewerPage = await viewerContext.newPage()
