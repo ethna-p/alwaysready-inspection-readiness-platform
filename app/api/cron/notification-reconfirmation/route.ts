@@ -23,6 +23,7 @@ import { renderTemplate } from '@/lib/email-templates'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { reportDbError } from '@/lib/db-errors'
+import { withHeartbeat } from '@/lib/cron-health'
 
 const RECONFIRM_AFTER_DAYS = 35 // midpoint of the 4-6 week window
 
@@ -50,7 +51,7 @@ function reconfirmationHtml(notificationsList: string): string {
   `
 }
 
-export async function GET(request: Request) {
+async function handler(request: Request) {
   if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
@@ -130,3 +131,5 @@ export async function GET(request: Request) {
     errors: errors.length > 0 ? errors : undefined,
   })
 }
+
+export const GET = withHeartbeat('notification-reconfirmation', handler, createAdminClient)

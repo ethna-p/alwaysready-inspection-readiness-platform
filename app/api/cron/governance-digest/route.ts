@@ -25,6 +25,7 @@ import { verifyCronSecret } from '@/lib/utils/cron'
 import { PLATFORM_URL }     from '@/lib/config'
 import { escapeHtml }       from '@/lib/utils/escape'
 import { sendOnce }         from '@/lib/notification-log'
+import { withHeartbeat } from '@/lib/cron-health'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -162,7 +163,7 @@ function digestHtml({
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
-export async function GET(request: Request) {
+async function handler(request: Request) {
   if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
@@ -326,3 +327,5 @@ export async function GET(request: Request) {
     errors:  errors.length > 0 ? errors : undefined,
   })
 }
+
+export const GET = withHeartbeat('governance-digest', handler, createAdminClient)

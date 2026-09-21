@@ -46,10 +46,11 @@ import { escapeHtml } from '@/lib/utils/escape'
 import { ONBOARDING_EMAILS, buildHtml } from '@/lib/onboarding-emails'
 import { renderTemplate } from '@/lib/email-templates'
 import { sendOnce } from '@/lib/notification-log'
+import { withHeartbeat } from '@/lib/cron-health'
 
 // ── Route handler ──────────────────────────────────────────────────────────────
 
-export async function GET(req: NextRequest) {
+async function handler(req: NextRequest) {
   if (!verifyCronSecret(req)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
@@ -148,3 +149,5 @@ export async function GET(req: NextRequest) {
   console.log(`[onboarding-emails] sent=${totalSent} skipped=${totalSkipped}`)
   return NextResponse.json({ sent: totalSent, skipped: totalSkipped }, { status: 200 })
 }
+
+export const GET = withHeartbeat('onboarding-emails', handler, createAdminClient)

@@ -773,6 +773,24 @@ export type Database = {
         ]
       }
 
+      // ── Cron heartbeats (service role only) ────────────────────────────
+
+      cron_heartbeats: {
+        Row: {
+          job:             string
+          last_success_at: string
+        }
+        Insert: {
+          job:              string
+          last_success_at?: string
+        }
+        Update: {
+          job?:             string
+          last_success_at?: string
+        }
+        Relationships: []
+      }
+
       // ── Cron send-once ledger (service role only) ─────────────────────
 
       cron_claims: {
