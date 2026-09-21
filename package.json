@@ -12,6 +12,7 @@
     "test:integration": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --config vitest.integration.config.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:browsers": "npm run test:e2e:seed && E2E_BROWSERS=webkit playwright test",
     "test:e2e:seed": "node e2e/support/seed.ts",
     "check:silent-writes": "node scripts/check-silent-writes.js"
   },

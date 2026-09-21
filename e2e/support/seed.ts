@@ -86,6 +86,11 @@ async function clearStaleRateLimitKeys(env: Record<string, string>) {
   const patterns = [
     `ar:rl:inbound-email*${TEST_EMAIL}*`,
     ...IP_KEYED_LIMITER_NAMES.map(name => `ar:rl:${name}*unknown*`),
+    // Next's dev server reports the client as the loopback address itself when a browser connects over
+    // IPv6 (WebKit does; the key is e.g. `ar:rl:trial-signup:trial:::1:<window>`) or IPv4. Behind
+    // Vercel's proxy a real customer never has a loopback address. The `:::1:` form (three colons)
+    // cannot be produced by a genuine IPv6 address ending in `::1`.
+    ...IP_KEYED_LIMITER_NAMES.flatMap(name => [`ar:rl:${name}*:::1:*`, `ar:rl:${name}*:127.0.0.1:*`]),
   ]
 
   for (const pattern of patterns) {

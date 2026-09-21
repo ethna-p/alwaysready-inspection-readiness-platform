@@ -44,8 +44,14 @@ test('MFA screen: "Sign in with a different account" actually reaches a fresh lo
   const admin = getAdminClient()
 
   await page.goto('/login')
-  await page.locator('#login').fill(account.email)
-  await page.locator('#password').fill(account.password)
+  // Confirm the values stuck before submitting (see login() in support/actions.ts: on a freshly loaded
+  // page the app can wipe a field just after it is typed, notably in WebKit).
+  await expect(async () => {
+    await page.locator('#login').fill(account.email)
+    await page.locator('#password').fill(account.password)
+    await expect(page.locator('#login')).toHaveValue(account.email, { timeout: 1000 })
+    await expect(page.locator('#password')).toHaveValue(account.password, { timeout: 1000 })
+  }).toPass({ timeout: 15_000 })
   await page.getByRole('button', { name: 'Sign in' }).click()
 
   // Genuinely aal1 here -- password verified, MFA not yet completed.
