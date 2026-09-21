@@ -13,6 +13,7 @@ import { NextResponse }       from 'next/server'
 import { createAdminClient }  from '@/lib/supabase/admin'
 import { sendEmail }          from '@/lib/email'
 import { verifyCronSecret }   from '@/lib/utils/cron'
+import { claimCronSlot, releaseCronSlot } from '@/lib/notification-log'
 
 const NOTIFY_EMAIL = 'hello@alwaysready.uk'
 
@@ -117,6 +118,18 @@ export async function GET(request: Request) {
     </p>
   `
 
+  // One reminder per demo day. The job can be delivered twice (or fire twice in its hour),
+  // and this email has no organisation, so it claims a slot in cron_claims first.
+  const claimKey = tomorrow.toISOString().slice(0, 10)
+  const slot = await claimCronSlot(supabase, 'demo-reminder', claimKey)
+  if (slot === 'already_done') {
+    console.log(`[demo-reminder] Reminder for ${claimKey} already sent, skipping.`)
+    return NextResponse.json({ ok: true, sent: false, reason: 'already sent' })
+  }
+  if (slot === 'error') {
+    return NextResponse.json({ ok: false, error: 'Could not record the send' }, { status: 500 })
+  }
+
   const result = await sendEmail({
     to:          NOTIFY_EMAIL,
     subject:     `${bookings.length} demo${bookings.length > 1 ? 's' : ''} tomorrow — ${dateLabel}`,
@@ -126,6 +139,7 @@ export async function GET(request: Request) {
   })
 
   if (!result.sent) {
+    await releaseCronSlot(supabase, 'demo-reminder', claimKey)
     console.error('[demo-reminder] Failed to send email:', result.error ?? result.skipped)
     return NextResponse.json({ ok: false, error: result.error ?? result.skipped }, { status: 500 })
   }

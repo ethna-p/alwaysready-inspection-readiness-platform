@@ -303,6 +303,7 @@ Before the platform is opened to real paying customers:
 - `support_tickets` — customer support and website enquiries
 - `support_ticket_replies` — threaded replies on support tickets
 - `notification_log` — deduplication log for all outgoing emails
+- `cron_claims` — send-once ledger for scheduled emails with no organisation (demo-reminder, waitlist-nurture); service role only. Every scheduled email job claims before it sends (`sendOnce` / `claimCronSlot` in `lib/notification-log.ts`) and releases the claim if the send fails
 - `waitlist_leads` — trial/waitlist signups from marketing site
 - `blog_subscribers` — email list subscribers
 - `hr_staff_profiles` — HR module staff records

@@ -28,6 +28,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { deleteStoragePrefix } from '@/lib/utils/storage-cleanup'
+import { sendOnce } from '@/lib/notification-log'
 
 export async function GET(request: Request) {
   if (!verifyCronSecret(request)) {
@@ -119,30 +120,37 @@ export async function GET(request: Request) {
           </p>
         `
 
-      const result = await sendEmail({
-        to:      admin.email,
-        subject: 'Reminder: your AlwaysReady data will be deleted in 3 days',
-        type:    'transactional',
-        bodyHtml: await renderTemplate(
-          'data_deletion_reminder',
-          { firstName, orgName: escapeHtml(org.name), deletionDate },
-          defaultDeletionReminderHtml,
-        ),
-      })
-
-      if (result.sent) {
-        await supabase.from('notification_log').insert({
-          organisation_id:   org.id,
-          notification_type: 'data_deletion_warning',
-          entity_type:       'organisation',
-          entity_id:         org.id,
-          due_date:          todayStr,
-          recipient_email:   admin.email,
+      // Claim, send, release on failure, so a redelivered or overlapping run cannot double-send.
+      const result = await sendOnce(
+        supabase,
+        {
+          organisationId:   org.id,
+          notificationType: 'data_deletion_warning',
+          entityType:       'organisation',
+          entityId:         org.id,
+          dueDate:          todayStr,
+          recipientEmail:   admin.email,
+        },
+        'data-deletion',
+        async () => sendEmail({
+          to:      admin.email!,
+          subject: 'Reminder: your AlwaysReady data will be deleted in 3 days',
+          type:    'transactional',
+          bodyHtml: await renderTemplate(
+            'data_deletion_reminder',
+            { firstName, orgName: escapeHtml(org.name), deletionDate },
+            defaultDeletionReminderHtml,
+          ),
         })
+      )
+
+      if (result.status === 'sent') {
         warned++
         console.log(`[data-deletion] 3-day warning sent to ${admin.email} (${org.name})`)
+      } else if (result.status === 'already_sent') {
+        skipped++
       } else {
-        errors.push(`warn → ${admin.email}: ${result.error ?? result.skipped}`)
+        errors.push(`warn → ${admin.email}: ${result.status === 'failed' ? result.error : result.status}`)
       }
     }
   }
@@ -196,16 +204,22 @@ export async function GET(request: Request) {
     }
 
     // ── Database deletion ────────────────────────────────────────────────────
-    const { error: delError } = await supabase
+    const { data: deletedRows, error: delError } = await supabase
       .from('organisations')
       .delete()
       .eq('id', org.id)
+      .select('id')
 
     if (delError) {
       errors.push(`delete ${org.id} (${org.name}): ${delError.message}`)
       console.error(`[data-deletion] Failed to delete org ${org.id}:`, delError.message)
       continue
     }
+
+    // Nothing deleted means an overlapping run already removed this organisation (and sent
+    // its confirmation). The organisation's log rows go with it, so this is the only guard
+    // against emailing the confirmation twice.
+    if (!deletedRows || deletedRows.length === 0) continue
 
     deleted++
     console.log(`[data-deletion] Deleted org ${org.id} (${org.name})`)

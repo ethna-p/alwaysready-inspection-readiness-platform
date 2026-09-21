@@ -24,6 +24,7 @@ import { renderTemplate }    from '@/lib/email-templates'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { PLATFORM_URL }     from '@/lib/config'
 import { escapeHtml }       from '@/lib/utils/escape'
+import { sendOnce }         from '@/lib/notification-log'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -194,19 +195,9 @@ export async function GET(request: Request) {
   }
 
   for (const org of orgs) {
-    // Check idempotency: one digest per org per week (keyed on Monday's date)
-
-    const { data: alreadySent } = await supabase
-      .from('notification_log')
-      .select('id')
-      .eq('organisation_id',   org.id)
-      .eq('notification_type', 'weekly_digest')
-      .eq('entity_type',       'governance_digest')
-      .eq('entity_id',         org.id)
-      .eq('due_date',          todayStr)
-      .maybeSingle()
-
-    if (alreadySent) { emailsSkipped++; continue }
+    // Idempotency is per admin, claimed just before each send (see sendOnce below): one
+    // digest per admin per day. A failed send releases its own claim, so a retry reaches
+    // only the admins who did not get it.
 
     // Fetch admins -- opt-in only (Issue #31): an admin who hasn't turned
     // the digest on gets none.
@@ -293,34 +284,37 @@ export async function GET(request: Request) {
     })
 
     for (const adminEmail of adminEmails) {
-      const result = await sendEmail({
-        to:       adminEmail,
-        subject:  `Weekly governance digest: ${org.name} (${readinessPct}% ready)`,
-        bodyHtml: await renderTemplate(
-          'governance_digest',
-          { orgName: org.name, readinessPct: String(readinessPct), reportDate },
-          defaultDigestHtml,
-        ),
-        type: 'transactional',
-      })
+      const result = await sendOnce(
+        supabase,
+        {
+          organisationId:   org.id,
+          notificationType: 'weekly_digest',
+          entityType:       'governance_digest',
+          entityId:         org.id,
+          dueDate:          todayStr,
+          recipientEmail:   adminEmail,
+        },
+        'governance-digest',
+        async () => sendEmail({
+          to:       adminEmail,
+          subject:  `Weekly governance digest: ${org.name} (${readinessPct}% ready)`,
+          bodyHtml: await renderTemplate(
+            'governance_digest',
+            { orgName: org.name, readinessPct: String(readinessPct), reportDate },
+            defaultDigestHtml,
+          ),
+          type: 'transactional',
+        })
+      )
 
-      if (result.sent) {
+      if (result.status === 'sent') {
         emailsSent++
+      } else if (result.status === 'already_sent') {
+        emailsSkipped++
       } else {
-        errors.push(`${org.id} → ${adminEmail}: ${result.error ?? result.skipped}`)
+        errors.push(`${org.id} → ${adminEmail}: ${result.status === 'failed' ? result.error : result.status}`)
       }
     }
-
-    // Log to prevent re-send this week
-
-    await supabase.from('notification_log').insert({
-      organisation_id:   org.id,
-      notification_type: 'weekly_digest',
-      entity_type:       'governance_digest',
-      entity_id:         org.id,
-      due_date:          todayStr,
-      recipient_email:   adminEmails[0], // primary admin for dedup key
-    })
   }
 
   console.log(`[governance-digest] sent=${emailsSent} skipped=${emailsSkipped} errors=${errors.length}`)
