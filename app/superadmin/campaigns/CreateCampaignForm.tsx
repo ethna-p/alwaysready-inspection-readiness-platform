@@ -26,7 +26,7 @@ export default function CreateCampaignForm() {
       />
       <button
         type="submit"
-        className="px-4 py-2 text-sm font-semibold rounded-lg bg-brand text-white hover:bg-brand-dark transition-colors shrink-0"
+        className="px-4 py-2 text-sm font-semibold rounded-lg bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] hover:bg-brand-dark transition-colors shrink-0"
       >
         Create campaign
       </button>

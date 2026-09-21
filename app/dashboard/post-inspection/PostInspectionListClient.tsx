@@ -127,7 +127,7 @@ function NewReviewForm({
 
       <div className="flex gap-3">
         <button type="submit" disabled={pending}
-          className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : 'Save and open'}
         </button>
         <button type="button" onClick={onCancel}
@@ -248,7 +248,7 @@ export default function PostInspectionListClient({
         {isAdmin && !showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90">
+            className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90">
             + Log inspection
           </button>
         )}

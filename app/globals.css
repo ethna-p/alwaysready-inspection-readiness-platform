@@ -75,6 +75,24 @@
   --color-off-white: #0f1117;
 }
 
+/* ── Light "paper" inside dark mode ─────────────────────────────────
+   The generated report is a document meant to look like a printed sheet. Its own inline colours are
+   light-theme colours, so it sits on a white sheet in dark mode too. This class puts the theme tokens
+   back to their light values inside it, so text using text-ink etc. is dark on that white sheet
+   instead of light-on-white. */
+.force-light,
+.dark .force-light {
+  --canvas:    #faf9f6;
+  --card:      #ffffff;
+  --fill:      #f9fafb;
+  --fill-dim:  #f3f4f6;
+  --ink:       #1a1a1a;
+  --ink-dim:   #1a1a1a;
+  --ink-muted: #374151;
+  --line:      #e5e7eb;
+  --brand:     #014D4E;
+}
+
 /* ─────────────────────────────────────────────
    Global base
 ───────────────────────────────────────────── */

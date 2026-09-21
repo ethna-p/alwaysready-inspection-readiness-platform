@@ -93,7 +93,7 @@ export default function StartMockInspectionForm({ keyQuestions }: { keyQuestions
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-[#00b8a6] text-white font-semibold text-sm py-3 rounded-xl hover:bg-[#009d8e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-[#00b8a6] text-[#1a1a1a] font-semibold text-sm py-3 rounded-xl hover:bg-[#009d8e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isPending ? 'Starting…' : 'Begin mock inspection →'}
       </button>

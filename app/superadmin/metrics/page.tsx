@@ -657,7 +657,7 @@ export default async function MetricsPage() {
                     <td className="px-4 py-3 text-ink">{r.org}</td>
                     <td className="px-4 py-3 text-ink-muted">{r.jobTitle}</td>
                     <td className="px-4 py-3 text-ink-muted">{r.due}</td>
-                    <td className={`px-4 py-3 text-right font-semibold ${r.daysLeft <= 14 ? 'text-red-600' : 'text-amber-600'}`}>
+                    <td className={`px-4 py-3 text-right font-semibold ${r.daysLeft <= 14 ? 'text-red-600' : 'text-amber-700'}`}>
                       {r.daysLeft}
                     </td>
                   </tr>
@@ -722,19 +722,19 @@ export default async function MetricsPage() {
                     {r.name}
                     {r.subscribed && <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-teal-100 text-teal-700">Paid</span>}
                   </td>
-                  <td className="px-4 py-3 text-center">{r.hasCompliance ? '✓' : <span className="text-red-400">✗</span>}</td>
-                  <td className="px-4 py-3 text-center">{r.hasMock ? '✓' : <span className="text-red-400">✗</span>}</td>
-                  <td className="px-4 py-3 text-center">{r.hasEvidence ? '✓' : <span className="text-red-400">✗</span>}</td>
+                  <td className="px-4 py-3 text-center">{r.hasCompliance ? '✓' : <span className="text-red-600">✗</span>}</td>
+                  <td className="px-4 py-3 text-center">{r.hasMock ? '✓' : <span className="text-red-600">✗</span>}</td>
+                  <td className="px-4 py-3 text-center">{r.hasEvidence ? '✓' : <span className="text-red-600">✗</span>}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`font-bold ${r.score === 0 ? 'text-red-500' : r.score < 3 ? 'text-amber-500' : 'text-teal-600'}`}>
+                    <span className={`font-bold ${r.score === 0 ? 'text-red-600' : r.score < 3 ? 'text-amber-700' : 'text-teal-700'}`}>
                       {r.score}/3
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
                     {r.daysToFirst === null ? (
-                      <span className="text-red-400">Never</span>
+                      <span className="text-red-600">Never</span>
                     ) : (
-                      <span className={`font-semibold ${r.daysToFirst <= 1 ? 'text-teal-600' : r.daysToFirst <= 7 ? 'text-amber-600' : 'text-red-500'}`}>
+                      <span className={`font-semibold ${r.daysToFirst <= 1 ? 'text-teal-700' : r.daysToFirst <= 7 ? 'text-amber-700' : 'text-red-600'}`}>
                         {r.daysToFirst}d
                       </span>
                     )}
@@ -815,7 +815,7 @@ export default async function MetricsPage() {
                 {staffGapRows.map(r => (
                   <tr key={r.name}>
                     <td className="px-4 py-3 text-ink">{r.name}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-amber-600">{r.count}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-amber-700">{r.count}</td>
                   </tr>
                 ))}
               </tbody>

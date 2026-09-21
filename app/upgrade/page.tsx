@@ -183,7 +183,7 @@ export default async function UpgradePage() {
         {/* Beta Partner callout */}
         <div className="bg-card border border-[#00b8a6] rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-[#00b8a6] px-8 py-4 text-center">
-            <p className="text-sm font-semibold text-white uppercase tracking-widest">
+            <p className="text-sm font-semibold text-[#1a1a1a] uppercase tracking-widest">
               Beta Partner Programme
             </p>
           </div>
@@ -208,7 +208,7 @@ export default async function UpgradePage() {
                     type="submit"
                     className="
                       block w-full sm:w-auto
-                      bg-[#00b8a6] text-white
+                      bg-[#00b8a6] text-[#1a1a1a]
                       font-bold text-sm
                       px-6 py-3 rounded-xl
                       hover:bg-[#009e8e]
@@ -227,7 +227,7 @@ export default async function UpgradePage() {
                   href="/login"
                   className="
                     block w-full sm:w-auto text-center
-                    bg-[#00b8a6] text-white
+                    bg-[#00b8a6] text-[#1a1a1a]
                     font-bold text-sm
                     px-6 py-3 rounded-xl
                     hover:bg-[#009e8e]

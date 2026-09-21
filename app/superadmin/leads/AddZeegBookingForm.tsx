@@ -43,7 +43,7 @@ export default function AddZeegBookingForm() {
 
       <div className="flex flex-col gap-1">
         <label className="text-xs font-semibold text-ink-muted" htmlFor="zb-email">
-          Email <span className="text-red-500">*</span>
+          Email <span className="text-red-600">*</span>
         </label>
         <input
           id="zb-email"
@@ -57,7 +57,7 @@ export default function AddZeegBookingForm() {
 
       <div className="flex flex-col gap-1">
         <label className="text-xs font-semibold text-ink-muted" htmlFor="zb-type">
-          Demo type <span className="text-red-500">*</span>
+          Demo type <span className="text-red-600">*</span>
         </label>
         <select
           id="zb-type"
@@ -73,7 +73,7 @@ export default function AddZeegBookingForm() {
 
       <div className="flex flex-col gap-1">
         <label className="text-xs font-semibold text-ink-muted" htmlFor="zb-scheduled">
-          Scheduled for <span className="text-red-500">*</span>
+          Scheduled for <span className="text-red-600">*</span>
         </label>
         <input
           id="zb-scheduled"
@@ -87,7 +87,7 @@ export default function AddZeegBookingForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="px-4 py-2 rounded-lg bg-brand text-white text-sm font-semibold hover:bg-brand/90 disabled:opacity-50 transition-colors"
+        className="px-4 py-2 rounded-lg bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold hover:bg-brand/90 disabled:opacity-50 transition-colors"
       >
         {isPending ? 'Adding…' : 'Add booking'}
       </button>

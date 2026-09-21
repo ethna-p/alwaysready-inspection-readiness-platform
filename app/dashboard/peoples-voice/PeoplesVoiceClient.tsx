@@ -317,7 +317,7 @@ function StatementRow({
                 type="button"
                 onClick={handleSave}
                 disabled={isPending}
-                className="text-sm font-semibold px-4 py-2 rounded-lg bg-[#014D4E] text-white hover:bg-[#00b8a6] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6] disabled:opacity-50"
+                className="text-sm font-semibold px-4 py-2 rounded-lg bg-[#014D4E] text-white hover:bg-[#00b8a6] hover:text-[#1a1a1a] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00b8a6] disabled:opacity-50"
               >
                 {isPending ? 'Saving…' : 'Save'}
               </button>
@@ -361,7 +361,7 @@ export default function PeoplesVoiceClient({
           <section key={kq}>
             <div className={`flex items-center justify-between px-4 py-2.5 rounded-t-xl ${styles.header} border ${styles.border}`}>
               <h2 className="text-sm font-bold uppercase tracking-wide">{kq}</h2>
-              <span className="text-xs font-medium opacity-70">{assessed}/{total} assessed</span>
+              <span className="text-xs font-medium">{assessed}/{total} assessed</span>
             </div>
 
             <div className={`rounded-b-xl border-x border-b ${styles.border} bg-card divide-y divide-gray-50 overflow-hidden`}>

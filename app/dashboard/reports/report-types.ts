@@ -143,7 +143,7 @@ export const HR_STATUS_PILL: Record<string, { bg: string; color: string }> = {
   overdue:  { bg: '#fee2e2', color: '#b91c1c' },
   due_soon: { bg: '#fef3c7', color: '#b45309' },
   ok:       { bg: '#dcfce7', color: '#15803d' },
-  not_set:  { bg: '#f3f4f6', color: '#6b7280' },
+  not_set:  { bg: '#f3f4f6', color: '#4b5563' },
 }
 
 export const MOCK_RATING_LABELS: Record<string, string> = {

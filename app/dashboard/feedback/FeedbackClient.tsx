@@ -236,7 +236,7 @@ function FeedbackForm({
 
       <div className="flex gap-3 pt-1">
         <button type="submit" disabled={pending}
-          className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : submitLabel}
         </button>
         <button type="button" onClick={onCancel}
@@ -414,7 +414,7 @@ export default function FeedbackClient({ records, isAdmin, isViewer, currentUser
     open:       records.filter(r => r.status === 'open').length,
   }
 
-  const select = 'border border-line rounded-lg px-3 py-2 text-sm text-ink bg-white focus:outline-none focus:ring-2 focus:ring-brand'
+  const select = 'border border-line rounded-lg px-3 py-2 text-sm text-ink bg-card focus:outline-none focus:ring-2 focus:ring-brand'
 
   return (
     <div className="space-y-6">
@@ -452,14 +452,14 @@ export default function FeedbackClient({ records, isAdmin, isViewer, currentUser
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3">
-        <select value={filterType} onChange={e => setFilterType(e.target.value as '' | FeedbackType)} className={select}>
+        <select aria-label="Filter feedback by type" value={filterType} onChange={e => setFilterType(e.target.value as '' | FeedbackType)} className={select}>
           <option value="">All types</option>
           <option value="complaint">Complaints</option>
           <option value="compliment">Compliments</option>
           <option value="suggestion">Suggestions</option>
           <option value="concern">Concerns</option>
         </select>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value as '' | FeedbackStatus)} className={select}>
+        <select aria-label="Filter feedback by status" value={filterStatus} onChange={e => setFilterStatus(e.target.value as '' | FeedbackStatus)} className={select}>
           <option value="">All statuses</option>
           <option value="open">Open</option>
           <option value="actioned">Actioned</option>
@@ -477,7 +477,7 @@ export default function FeedbackClient({ records, isAdmin, isViewer, currentUser
         {!isViewer && !showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90">
+            className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90">
             + Log feedback
           </button>
         )}

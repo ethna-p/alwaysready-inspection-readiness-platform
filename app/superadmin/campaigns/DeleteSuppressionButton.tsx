@@ -11,7 +11,7 @@ export default function DeleteSuppressionButton({ id }: { id: string }) {
   return (
     <button
       onClick={handleClick}
-      className="text-xs text-red-500 hover:text-red-700 transition-colors"
+      className="text-xs text-red-600 hover:text-red-700 transition-colors"
     >
       Remove
     </button>

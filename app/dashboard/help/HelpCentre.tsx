@@ -229,7 +229,7 @@ function AccordionItem({ faq, isOpen, onToggle }: { faq: FAQItem; isOpen: boolea
   return (
     <div className="border-b border-line last:border-0">
       <button
-        className="flex w-full items-center justify-between gap-4 py-[1.125rem] text-left text-[0.9375rem] font-semibold text-ink hover:text-[#014D4E] transition-colors"
+        className="flex w-full items-center justify-between gap-4 py-[1.125rem] text-left text-[0.9375rem] font-semibold text-ink hover:text-brand transition-colors"
         aria-expanded={isOpen}
         onClick={onToggle}
       >
@@ -348,7 +348,7 @@ function SearchResults({ query, allFaqs, openFaqs, onToggle, onSearchChange }: {
       {results.length === 0 ? (
         <p className="text-sm text-ink-dim">
           Try different words, or{' '}
-          <Link href="/dashboard/support/new" className="text-[#014D4E] underline hover:text-[#00b8a6] transition-colors">
+          <Link href="/dashboard/support/new" className="text-brand underline hover:text-[#00b8a6] transition-colors">
             contact support
           </Link>
           .
@@ -399,7 +399,7 @@ function HomeView({
         `}</style>
         <div className="relative mb-5" style={{ overflow: 'visible' }}>
           <h1 className="text-[clamp(1.75rem,3vw,2.25rem)] font-extrabold tracking-tight text-ink leading-tight">
-            How can we <em className="not-italic text-[#014D4E]">help you?</em>
+            How can we <em className="not-italic text-brand">help you?</em>
           </h1>
           {/* Floating particles */}
           {([
@@ -488,7 +488,7 @@ function HomeView({
 
       {/* Suggestion callout */}
       <div className="mt-12 rounded-xl border border-[#014D4E]/20 bg-[#014D4E]/5 px-6 py-5">
-        <p className="font-semibold text-[#014D4E] mb-1">Got an idea for something new?</p>
+        <p className="font-semibold text-brand mb-1">Got an idea for something new?</p>
         <p className="text-sm text-ink-dim mb-3">
           If there is a feature you would find useful that is not listed here, we would love to hear about it. Your suggestions help shape the platform.
         </p>
@@ -565,8 +565,8 @@ export function HelpCentre() {
               flex items-center gap-2.5 w-full px-5 py-2.5 mb-2 text-left
               text-[0.9375rem] font-bold transition-colors
               ${!activeTopicId
-                ? 'text-[#014D4E]'
-                : 'text-[#014D4E] hover:text-[#013838]'
+                ? 'text-brand'
+                : 'text-brand hover:text-ink'
               }
             `}
           >
@@ -588,12 +588,12 @@ export function HelpCentre() {
                         text-sm font-medium transition-all
                         border-l-[3px]
                         ${isActive
-                          ? 'border-[#014D4E] bg-[#014D4E]/[0.08] text-[#014D4E] font-bold'
-                          : 'border-transparent text-ink hover:bg-[#014D4E]/[0.07] hover:text-[#014D4E]'
+                          ? 'border-[#014D4E] bg-[#014D4E]/[0.08] text-brand font-bold'
+                          : 'border-transparent text-ink hover:bg-[#014D4E]/[0.07] hover:text-brand'
                         }
                       `}
                     >
-                      <span className={isActive ? 'text-[#014D4E]' : 'text-ink-muted'}>
+                      <span className={isActive ? 'text-brand' : 'text-ink-muted'}>
                         {/* sidebar uses 16px icons */}
                         {topic.id === 'getting-started' && IconPlay(16)}
                         {topic.id === 'kloe-tracker' && IconActivity(16)}
@@ -625,7 +625,7 @@ export function HelpCentre() {
           <div className="flex items-center gap-1 px-4 py-3 whitespace-nowrap">
             <button
               onClick={goHome}
-              className="text-[0.8125rem] font-bold text-[#014D4E] px-3 py-2 shrink-0"
+              className="text-[0.8125rem] font-bold text-brand px-3 py-2 shrink-0"
             >
               Help Centre
             </button>
@@ -636,8 +636,8 @@ export function HelpCentre() {
                 className={`
                   text-[0.8125rem] font-medium px-3 py-2 shrink-0 border-b-2 transition-colors
                   ${activeTopicId === topic.id
-                    ? 'border-[#014D4E] text-[#014D4E]'
-                    : 'border-transparent text-ink hover:text-[#014D4E]'
+                    ? 'border-[#014D4E] text-brand'
+                    : 'border-transparent text-ink hover:text-brand'
                   }
                 `}
               >

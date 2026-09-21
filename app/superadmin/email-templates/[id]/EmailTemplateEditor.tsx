@@ -92,7 +92,7 @@ export default function EmailTemplateEditor({ data }: { data: TemplateEditData }
             <button
               onClick={handleSave}
               disabled={saving || !dirty}
-              className="bg-[#014D4E] hover:bg-[#00b8a6] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors disabled:opacity-40"
+              className="bg-[#014D4E] hover:bg-[#00b8a6] hover:text-[#1a1a1a] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors disabled:opacity-40"
             >
               {saving ? 'Saving…' : 'Save'}
             </button>

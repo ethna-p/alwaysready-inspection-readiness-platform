@@ -121,7 +121,7 @@ export default function CreateActionFromFinding({
             <button
               type="submit"
               disabled={pending}
-              className="px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50"
+              className="px-3 py-1.5 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-xs font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50"
             >
               {pending ? 'Saving…' : 'Create action item'}
             </button>

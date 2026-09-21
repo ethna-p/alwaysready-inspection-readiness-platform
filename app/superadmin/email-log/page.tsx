@@ -148,7 +148,7 @@ export default async function EmailLogPage() {
                             className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
                               sent
                                 ? 'bg-teal-50 text-teal-700 border-teal-200'
-                                : 'bg-gray-50 text-gray-400 border-gray-200'
+                                : 'bg-gray-50 text-ink-muted border-gray-200'
                             }`}
                           >
                             {sent ? '✓ ' : ''}{sentLabel(id)}
@@ -178,7 +178,7 @@ export default async function EmailLogPage() {
                             className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
                               sent
                                 ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                : 'bg-gray-50 text-gray-400 border-gray-200'
+                                : 'bg-gray-50 text-ink-muted border-gray-200'
                             }`}
                           >
                             {sent ? '✓ ' : ''}{sentLabel(id)}

@@ -168,7 +168,7 @@ function EditReviewForm({
 
       <div className="flex gap-3">
         <button type="submit" disabled={pending}
-          className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : 'Save changes'}
         </button>
         <button type="button" onClick={onCancel}
@@ -270,7 +270,7 @@ function FacItemForm({
 
       <div className="flex gap-3">
         <button type="submit" disabled={pending}
-          className="px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
+          className="px-4 py-2 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-brand/90 disabled:opacity-50">
           {pending ? 'Saving…' : submitLabel}
         </button>
         <button type="button" onClick={onCancel}
@@ -569,7 +569,7 @@ export default function PostInspectionDetailClient({
               {isAdmin && !showFacForm && (
                 <button
                   onClick={() => setShowFacForm(true)}
-                  className="px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-lg hover:bg-brand/90">
+                  className="px-3 py-1.5 bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] text-xs font-semibold rounded-lg hover:bg-brand/90">
                   + Add FAC item
                 </button>
               )}

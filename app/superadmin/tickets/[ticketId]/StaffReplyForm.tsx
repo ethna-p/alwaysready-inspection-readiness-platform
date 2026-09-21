@@ -101,7 +101,7 @@ export default function StaffReplyForm({
                   transition-colors
                   focus:outline-none focus:ring-2 focus:ring-[#00b8a6]
                   ${opt.value === currentStatus
-                    ? 'bg-[#00b8a6] text-white cursor-default'
+                    ? 'bg-[#00b8a6] text-[#1a1a1a] cursor-default'
                     : 'bg-fill-dim text-ink-muted hover:bg-fill-dim hover:text-ink'
                   }
                 `}
@@ -121,7 +121,7 @@ export default function StaffReplyForm({
           {isGdpr ? (
             /* Template picker for GDPR tickets */
             <div className="flex items-center gap-2">
-              <span className="text-xs text-amber-600 font-semibold">{gdprLabel}</span>
+              <span className="text-xs text-amber-700 font-semibold">{gdprLabel}</span>
               <select
                 disabled={isLoadingTpl}
                 defaultValue=""
@@ -194,7 +194,7 @@ export default function StaffReplyForm({
             type="submit"
             disabled={pending}
             className="
-              bg-[#00b8a6] text-white font-semibold text-sm
+              bg-[#00b8a6] text-[#1a1a1a] font-semibold text-sm
               px-5 py-2.5 rounded-lg
               hover:bg-[#009d8e]
               focus:outline-none focus:ring-2 focus:ring-[#00b8a6] focus:ring-offset-2 focus:ring-offset-white

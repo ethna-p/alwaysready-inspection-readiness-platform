@@ -50,7 +50,7 @@ export default function BulkSendLaunchEmailButton({ emailNum, label, description
         </span>
         <button
           onClick={handleConfirm}
-          className="text-sm font-semibold px-3 py-1 rounded bg-brand text-white hover:bg-brand-dark transition-colors"
+          className="text-sm font-semibold px-3 py-1 rounded bg-brand text-white dark:text-[#1a1a1a] dark:text-[#1a1a1a] hover:bg-brand-dark transition-colors"
         >
           Yes, send
         </button>
@@ -69,7 +69,7 @@ export default function BulkSendLaunchEmailButton({ emailNum, label, description
       <button
         onClick={handleFirstClick}
         disabled={isPending || count === 0}
-        className="text-sm font-semibold px-3 py-1.5 rounded border border-brand text-brand hover:bg-brand hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="text-sm font-semibold px-3 py-1.5 rounded border border-brand text-brand hover:bg-brand hover:text-white dark:text-[#1a1a1a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPending ? 'Sending…' : label}
       </button>

@@ -82,7 +82,7 @@ export default function TestEmailsPage() {
               </div>
 
               {state?.error && (
-                <p className="text-xs text-red-500">{state.error}</p>
+                <p className="text-xs text-red-600">{state.error}</p>
               )}
 
               {done ? (
@@ -90,7 +90,7 @@ export default function TestEmailsPage() {
                   <span className="text-sm text-[#00b8a6] font-medium">
                     {state.sent}/{state.count} sent
                     {state.failed.length > 0 && (
-                      <span className="text-red-500 ml-2">({state.failed.length} failed)</span>
+                      <span className="text-red-600 ml-2">({state.failed.length} failed)</span>
                     )}
                   </span>
                   <button
@@ -104,7 +104,7 @@ export default function TestEmailsPage() {
                 <button
                   onClick={() => handleSend(group.id)}
                   disabled={loading || !!pending}
-                  className="w-full bg-[#014D4E] hover:bg-[#00b8a6] text-white text-sm font-semibold py-2 rounded-lg transition-colors disabled:opacity-40"
+                  className="w-full bg-[#014D4E] hover:bg-[#00b8a6] hover:text-[#1a1a1a] text-white text-sm font-semibold py-2 rounded-lg transition-colors disabled:opacity-40"
                 >
                   {loading ? 'Sending…' : 'Send'}
                 </button>

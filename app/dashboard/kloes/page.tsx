@@ -291,7 +291,7 @@ export default async function KloesPage({
                           <td className="px-4 py-3 hidden lg:table-cell text-ink-dim text-xs">
                             {record?.assigned_to
                               ? nameByUserId.get(record.assigned_to) ?? '—'
-                              : <span className="text-gray-300">Unassigned</span>
+                              : <span className="text-ink-muted">Unassigned</span>
                             }
                           </td>
 
