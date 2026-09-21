@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { renderTemplate } from '@/lib/email-templates'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
+import { reportDbError } from '@/lib/db-errors'
 
 export type ProvisionResult =
   | { success: true; orgId: string; userId: string; reference: string }
@@ -78,7 +79,7 @@ export async function provisionOrganisation(
 
     if (authError || !authData.user) {
       // Roll back: delete the org we just created
-      await supabase.from('organisations').delete().eq('id', org.id)
+      reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'provision rollback')
       return { success: false, error: 'Failed to create auth user: ' + (authError?.message ?? 'unknown error') }
     }
 
@@ -100,7 +101,7 @@ export async function provisionOrganisation(
     if (userError) {
       // Roll back
       await supabase.auth.admin.deleteUser(authUserId)
-      await supabase.from('organisations').delete().eq('id', org.id)
+      reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'provision rollback')
       return { success: false, error: 'Failed to create user profile: ' + userError.message }
     }
 

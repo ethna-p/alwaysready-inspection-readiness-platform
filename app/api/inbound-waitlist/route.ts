@@ -28,6 +28,7 @@ import { fetchCqcLocation } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
+import { reportDbError } from '@/lib/db-errors'
 
 
 // 10 requests per IP per hour: generous for a waitlist signup
@@ -227,13 +228,16 @@ export async function POST(req: NextRequest) {
           subscriberEmail: email,
           bodyHtml: await renderTemplate('waitlist_nurture_1', { firstName: displayName }, email1.bodyHtml),
         })
-        await supabase
+        // If this fails the lead never enters the weekly sequence (the cron needs nurture_emails_sent >= 1),
+        // so it must be reported, not swallowed.
+        const { error: nurtureError } = await supabase
           .from('waitlist_leads')
           .update({
             nurture_emails_sent: 1,
             nurture_last_sent_at: new Date().toISOString(),
           })
           .eq('email', email)
+        reportDbError(nurtureError, 'inbound-waitlist: record nurture email 1')
       }
     } else {
       // Simple auto-responder for non-nurture leads

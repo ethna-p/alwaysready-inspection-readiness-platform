@@ -39,6 +39,7 @@ import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
 import { claimNotification, releaseNotificationClaim } from '@/lib/notification-log'
 import { renderTemplate } from '@/lib/email-templates'
+import { reportDbError } from '@/lib/db-errors'
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
@@ -180,11 +181,12 @@ export async function GET(request: Request) {
     // Set data_deletion_due_at (idempotent, only if not already set)
     const trialDeletionDue = new Date()
     trialDeletionDue.setDate(trialDeletionDue.getDate() + 30)
-    await supabase
+    const { error: deletionDueError } = await supabase
       .from('organisations')
       .update({ data_deletion_due_at: trialDeletionDue.toISOString() })
       .eq('id', org.id)
       .is('data_deletion_due_at', null)   // don't overwrite if already set
+    reportDbError(deletionDueError, 'trial-emails: set data_deletion_due_at')
 
     const { data: admins } = await supabase
       .from('users')

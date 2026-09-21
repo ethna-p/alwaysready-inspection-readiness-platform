@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin, requireUser } from '@/lib/auth'
 import { MAX_SIZE_BYTES, validateFileMime, scanWithCloudmersive } from '@/lib/utils/upload'
+import { reportDbError } from '@/lib/db-errors'
 
 export type HrActionResult =
   | { success: true; message?: string }
@@ -526,14 +527,20 @@ export async function deleteTrainingCertificate(
     return { success: false, error: 'Certificate not found.' }
   }
 
-  // Delete from storage
-  await adminClient.storage.from('evidence').remove([cert.file_path])
-
-  // Delete from database
-  await supabase
+  // Delete the database row first. If that fails the certificate is untouched and the user is told;
+  // if it were the other way round, a failed row delete would leave a certificate pointing at a
+  // file that no longer exists.
+  const { error: deleteError } = await supabase
     .from('hr_training_certificates')
     .delete()
     .eq('id', certId)
+  if (reportDbError(deleteError, 'hr: delete training certificate')) {
+    return { success: false, error: 'Could not delete the certificate. Please try again.' }
+  }
+
+  // Then remove the file. A failure here only leaves an unreferenced file behind, so report it and carry on.
+  const { error: storageError } = await adminClient.storage.from('evidence').remove([cert.file_path])
+  reportDbError(storageError, 'hr: remove training certificate file')
 
   revalidatePath(`/dashboard/hr/${userId}`)
   return { success: true, message: 'Certificate deleted.' }

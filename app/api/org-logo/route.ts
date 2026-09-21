@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { fileTypeFromBuffer } from 'file-type'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getCurrentUserProfile } from '@/lib/session'
+import { reportDbError } from '@/lib/db-errors'
 
 const BUCKET = 'org-logos'
 const MAX_BYTES = 2 * 1024 * 1024 // 2 MB
@@ -114,14 +115,20 @@ export async function DELETE() {
   const { data: files } = await supabase.storage.from(BUCKET).list(orgId)
   if (files && files.length > 0) {
     const paths = files.map(f => `${orgId}/${f.name}`)
-    await supabase.storage.from(BUCKET).remove(paths)
+    const { error: removeError } = await supabase.storage.from(BUCKET).remove(paths)
+    if (reportDbError(removeError, 'org-logo: remove files')) {
+      return NextResponse.json({ error: 'Could not remove the logo. Please try again.' }, { status: 500 })
+    }
   }
 
   // Clear URL in DB
-  await supabase
+  const { error: clearError } = await supabase
     .from('organisations')
     .update({ logo_url: null })
     .eq('id', orgId)
+  if (reportDbError(clearError, 'org-logo: clear logo_url')) {
+    return NextResponse.json({ error: 'Could not remove the logo. Please try again.' }, { status: 500 })
+  }
 
   return NextResponse.json({ ok: true })
 }

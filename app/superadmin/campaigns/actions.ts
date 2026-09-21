@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
+import { throwOnDbError } from '@/lib/db-errors'
 
 export async function createCampaign(formData: FormData) {
   await assertSuperadmin()
@@ -11,14 +12,18 @@ export async function createCampaign(formData: FormData) {
   if (!name) return
 
   const supabase = createAdminClient()
-  await supabase.from('marketing_campaigns').insert({ name, description })
+  const { error } = await supabase.from('marketing_campaigns').insert({ name, description })
+  throwOnDbError(error, 'campaigns.createCampaign')
+
   revalidatePath('/superadmin/campaigns')
 }
 
 export async function updateCampaignStatus(id: string, status: 'draft' | 'active' | 'closed') {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase.from('marketing_campaigns').update({ status }).eq('id', id)
+  const { error } = await supabase.from('marketing_campaigns').update({ status }).eq('id', id)
+  throwOnDbError(error, 'campaigns.updateCampaignStatus')
+
   revalidatePath('/superadmin/campaigns')
   revalidatePath(`/superadmin/campaigns/${id}`)
 }
@@ -26,7 +31,9 @@ export async function updateCampaignStatus(id: string, status: 'draft' | 'active
 export async function deleteCampaign(id: string) {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase.from('marketing_campaigns').delete().eq('id', id)
+  const { error } = await supabase.from('marketing_campaigns').delete().eq('id', id)
+  throwOnDbError(error, 'campaigns.deleteCampaign')
+
   revalidatePath('/superadmin/campaigns')
 }
 
@@ -46,7 +53,7 @@ export async function addContact(campaignId: string, formData: FormData) {
   if (!locationName) return
 
   const supabase = createAdminClient()
-  await supabase.from('campaign_contacts').insert({
+  const { error } = await supabase.from('campaign_contacts').insert({
     campaign_id:     campaignId,
     location_id:     locationId,
     location_name:   locationName,
@@ -60,23 +67,29 @@ export async function addContact(campaignId: string, formData: FormData) {
     contact_method:  contactMethod,
   })
 
+  throwOnDbError(error, 'campaigns.addContact')
+
   revalidatePath(`/superadmin/campaigns/${campaignId}`)
 }
 
 export async function markContacted(contactId: string, campaignId: string) {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase
+  const { error } = await supabase
     .from('campaign_contacts')
     .update({ contacted_at: new Date().toISOString() })
     .eq('id', contactId)
+  throwOnDbError(error, 'campaigns.markContacted')
+
   revalidatePath(`/superadmin/campaigns/${campaignId}`)
 }
 
 export async function deleteContact(contactId: string, campaignId: string) {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase.from('campaign_contacts').delete().eq('id', contactId)
+  const { error } = await supabase.from('campaign_contacts').delete().eq('id', contactId)
+  throwOnDbError(error, 'campaigns.deleteContact')
+
   revalidatePath(`/superadmin/campaigns/${campaignId}`)
 }
 
@@ -90,10 +103,12 @@ export async function deleteContact(contactId: string, campaignId: string) {
 export async function suppressContact(contactId: string, campaignId: string) {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase
+  const { error } = await supabase
     .from('campaign_contacts')
     .update({ suppressed_at: new Date().toISOString() })
     .eq('id', contactId)
+  throwOnDbError(error, 'campaigns.suppressContact')
+
   revalidatePath(`/superadmin/campaigns/${campaignId}`)
 }
 
@@ -105,12 +120,14 @@ export async function addSuppression(formData: FormData) {
   if (!locationName) return
 
   const supabase = createAdminClient()
-  await supabase.from('marketing_suppressions').insert({
+  const { error } = await supabase.from('marketing_suppressions').insert({
     location_name: locationName,
     postcode,
     email,
     source: 'manual',
   })
+
+  throwOnDbError(error, 'campaigns.addSuppression')
 
   revalidatePath('/superadmin/campaigns')
 }
@@ -118,6 +135,8 @@ export async function addSuppression(formData: FormData) {
 export async function deleteSuppression(id: string) {
   await assertSuperadmin()
   const supabase = createAdminClient()
-  await supabase.from('marketing_suppressions').delete().eq('id', id)
+  const { error } = await supabase.from('marketing_suppressions').delete().eq('id', id)
+  throwOnDbError(error, 'campaigns.deleteSuppression')
+
   revalidatePath('/superadmin/campaigns')
 }

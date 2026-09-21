@@ -8,6 +8,7 @@ import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
 import { getFirstName } from '@/lib/utils/name'
 import { escapeHtml } from '@/lib/utils/escape'
+import { reportDbError, throwOnDbError } from '@/lib/db-errors'
 
 export type ReplyState =
   | { status: 'idle' }
@@ -47,10 +48,11 @@ export async function staffReply(
   // the stale draft (which may differ from what was just sent, if it was
   // edited first) keeps reappearing in the reply box, with the "AI
   // suggested" banner, on every future visit to this ticket.
-  await supabase
+  const { error: clearDraftError } = await supabase
     .from('support_tickets')
     .update({ draft_reply: null })
     .eq('id', ticketId)
+  reportDbError(clearDraftError, 'ticket reply: clear draft')
 
   // If this is a website enquiry, email the reply to the external sender
   if (ticket && (ticket.source === 'website_contact' || ticket.source === 'website') && ticket.external_email) {
@@ -112,10 +114,11 @@ export async function regenerateDraft(ticketId: string): Promise<string | null> 
 
   try {
     const draft = await generateSupportDraft(thread)
-    await supabase
+    const { error: saveDraftError } = await supabase
       .from('support_tickets')
       .update({ draft_reply: draft })
       .eq('id', ticketId)
+    reportDbError(saveDraftError, 'ticket: save regenerated draft')
     return draft
   } catch (err) {
     console.error('[regenerateDraft] AI draft failed:', err)
@@ -270,10 +273,12 @@ export async function updateTicketStatus(ticketId: string, status: string) {
   const supabase = createAdminClient()
   const validStatus = status as 'open' | 'in_progress' | 'resolved'
 
-  await supabase
+  const { error: statusError } = await supabase
     .from('support_tickets')
     .update({ status: validStatus })
     .eq('id', ticketId)
+  // Stop here if the status did not change, so no closure email goes out for a ticket that is still open.
+  throwOnDbError(statusError, 'updateTicketStatus')
 
   // Send closure email when a ticket is marked as resolved
   if (validStatus === 'resolved') {

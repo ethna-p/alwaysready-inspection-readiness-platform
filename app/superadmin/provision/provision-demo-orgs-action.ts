@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { assertSuperadmin } from '@/lib/assert-superadmin'
+import { reportDbError } from '@/lib/db-errors'
 
 export type DemoOrgResult = {
   serviceType: string
@@ -89,7 +90,7 @@ export async function provisionDemoOrgs(): Promise<DemoOrgResult[]> {
       })
 
       if (authErr || !authData.user) {
-        await supabase.from('organisations').delete().eq('id', org.id)
+        reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'demo-provision rollback')
         results.push({ ...demo, email, password, orgId: null, success: false,
           error: authErr?.message ?? 'Auth user creation failed' })
         continue
@@ -112,7 +113,7 @@ export async function provisionDemoOrgs(): Promise<DemoOrgResult[]> {
 
       if (userErr) {
         await supabase.auth.admin.deleteUser(authUserId)
-        await supabase.from('organisations').delete().eq('id', org.id)
+        reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'demo-provision rollback')
         results.push({ ...demo, email, password, orgId: null, success: false,
           error: userErr.message })
         continue
@@ -125,11 +126,10 @@ export async function provisionDemoOrgs(): Promise<DemoOrgResult[]> {
         .order('title')
 
       if (klos && klos.length > 0) {
-        await supabase.from('compliance_records').insert(
+        const { error: crErr } = await supabase.from('compliance_records').insert(
           klos.map(klo => ({ organisation_id: org.id, klo_item_id: klo.id }))
-        ).then(({ error: crErr }) => {
-          if (crErr) console.error('[demo-provision] compliance_records seed failed:', crErr.message)
-        })
+        )
+        reportDbError(crErr, 'demo-provision compliance_records seed')
       }
 
       results.push({ ...demo, email, password, orgId: org.id, success: true, error: null })

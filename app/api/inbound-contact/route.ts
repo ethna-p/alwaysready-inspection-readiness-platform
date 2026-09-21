@@ -26,6 +26,7 @@ import { generateSupportDraft, type TicketThread } from '@/lib/ai-draft'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
+import { reportDbError } from '@/lib/db-errors'
 
 // 5 requests per IP per hour: generous for a contact form
 const limiter = createRateLimiter({ name: 'inbound-contact', windowMs: 60 * 60_000, max: 5 })
@@ -168,10 +169,11 @@ export async function POST(req: NextRequest) {
     }
     try {
       const draft = await generateSupportDraft(thread)
-      await supabase
+      const { error: draftError } = await supabase
         .from('support_tickets')
         .update({ draft_reply: draft })
         .eq('id', newTicket.id)
+      reportDbError(draftError, 'inbound-contact: save AI draft')
     } catch (err) {
       console.error('[inbound-contact] AI draft generation failed (non-fatal):', err)
     }

@@ -33,6 +33,7 @@ import { renderTemplate } from '@/lib/email-templates'
 import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
+import { reportDbError } from '@/lib/db-errors'
 
 // 10 inbound emails per sender per hour: generous for a support inbox,
 // but prevents a single address flooding ticket creation and AI draft calls.
@@ -211,10 +212,11 @@ export async function POST(req: NextRequest) {
 
       // Reopen if resolved
       if (ticket.status === 'resolved') {
-        await supabase
+        const { error: reopenError } = await supabase
           .from('support_tickets')
           .update({ status: 'open' })
           .eq('id', ticket.id)
+        reportDbError(reopenError, 'inbound-email: reopen ticket')
       }
 
       // If sender email didn't match, prepend a visible warning so AJ can
@@ -227,7 +229,7 @@ export async function POST(req: NextRequest) {
         : cleanBody
 
       // Append reply
-      await supabase
+      const { error: replyError } = await supabase
         .from('support_ticket_replies')
         .insert({
           ticket_id:      ticket.id,
@@ -235,6 +237,11 @@ export async function POST(req: NextRequest) {
           message:        messageBody,
           is_staff_reply: false,
         })
+      if (reportDbError(replyError, 'inbound-email: save customer reply')) {
+        // The customer's reply was not stored. Answer with an error rather than 200 so the failure is
+        // visible instead of the message silently disappearing.
+        return NextResponse.json({ error: 'Failed to save reply' }, { status: 500 })
+      }
 
       // Notify AJ that a customer has replied to this ticket
       const superadminEmail = process.env.SUPERADMIN_EMAIL
