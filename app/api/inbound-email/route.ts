@@ -23,7 +23,6 @@
  *   2. Otherwise, create a new ticket with source='email'.
  *   3. Notify AJ and send an auto-responder to the sender.
  *
- * AI draft replies are generated on-demand from the ticket detail page.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -36,7 +35,7 @@ import { escapeHtml } from '@/lib/utils/escape'
 import { reportDbError } from '@/lib/db-errors'
 
 // 10 inbound emails per sender per hour: generous for a support inbox,
-// but prevents a single address flooding ticket creation and AI draft calls.
+// but prevents a single address flooding ticket creation.
 const inboundLimiter = createRateLimiter({ name: 'inbound-email', windowMs: 60 * 60_000, max: 10 })
 
 
@@ -169,8 +168,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing from address' }, { status: 400 })
   }
 
-  // Rate limit per sender: prevents a single address flooding ticket creation
-  // and triggering unbounded AI draft calls.
+  // Rate limit per sender: prevents a single address flooding ticket creation.
   if (!(await inboundLimiter.check(`inbound-email:${from.toLowerCase()}`))) {
     console.warn(`[inbound-email] Rate limit hit for sender: ${from}`)
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
@@ -197,7 +195,7 @@ export async function POST(req: NextRequest) {
     if (ticket) {
       // Verify the sender matches the ticket's original email address.
       // Without this check, anyone who knows (or guesses) a ticket reference
-      // can inject replies, reopen resolved tickets, and corrupt the AI draft.
+      // can inject replies, reopen resolved tickets, and corrupt the thread.
       // If external_email is set (email-sourced tickets), it must match `from`.
       // Web-form tickets may have no external_email; we allow those through
       // since there's no address to compare against.

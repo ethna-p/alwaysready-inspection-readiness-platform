@@ -2,10 +2,9 @@
  * GET /api/support-content
  *
  * Single source of truth for AlwaysReady's customer-facing support
- * content, so the platform's AI support-draft tool (lib/ai-draft.ts),
- * the marketing site's chatbot (alwaysready-site/functions/chat.js), and
+ * content, so the marketing site's chatbot (alwaysready-site/functions/chat.js) and
  * its Help Centre search (alwaysready-site/src/js/helpcentre-search.js)
- * stop maintaining three independently hand-copied versions of the same
+ * stop maintaining independently hand-copied versions of the same
  * FAQ content -- confirmed drifting out of sync at least once already
  * (stale references to a removed feature survived in two of the three
  * copies after the feature itself was deleted).

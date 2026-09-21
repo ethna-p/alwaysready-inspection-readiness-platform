@@ -1,17 +1,15 @@
 /**
  * StaffReplyForm — client component for the superadmin ticket reply UI.
  *
- * - General tickets: AI draft button (generate on demand).
- * - Data deletion / SAR tickets: template picker instead. No AI draft.
+ * - General tickets: a plain reply box.
+ * - Data deletion / SAR tickets: a template picker to fill the reply box.
  */
 'use client'
 
-import { useActionState, useEffect, useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
+import { useActionState, useState, useTransition } from 'react'
 import {
   staffReply,
   updateTicketStatus,
-  regenerateDraft,
   getTicketTemplate,
   type ReplyState,
   type GdprTemplateName,
@@ -40,39 +38,22 @@ const SAR_TEMPLATES: { value: GdprTemplateName; label: string }[] = [
 interface Props {
   ticketId:       string
   currentStatus:  string
-  draftReply?:    string | null
   ticketCategory: TicketCategory
 }
 
 export default function StaffReplyForm({
   ticketId,
   currentStatus,
-  draftReply,
   ticketCategory,
 }: Props) {
-  const router = useRouter()
   const boundReply = staffReply.bind(null, ticketId)
   const [state, action, pending] = useActionState<ReplyState, FormData>(
     boundReply,
     { status: 'idle' }
   )
 
-  const [message, setMessage]           = useState(draftReply ?? '')
-  const [isGenerating, startGenerating] = useTransition()
+  const [message, setMessage]           = useState('')
   const [isLoadingTpl, startLoadingTpl] = useTransition()
-
-  // Sync textarea when a new draft arrives after regeneration
-  useEffect(() => {
-    if (draftReply) setMessage(draftReply)
-  }, [draftReply])
-
-  const handleGenerate = () => {
-    startGenerating(async () => {
-      const newDraft = await regenerateDraft(ticketId)
-      if (newDraft) setMessage(newDraft)
-      router.refresh()
-    })
-  }
 
   const handleLoadTemplate = (templateName: GdprTemplateName) => {
     startLoadingTpl(async () => {
@@ -118,7 +99,7 @@ export default function StaffReplyForm({
         <div className="flex items-center justify-between mb-4">
           <p className="text-xs text-ink-muted uppercase tracking-wide">Reply to customer</p>
 
-          {isGdpr ? (
+          {isGdpr && (
             /* Template picker for GDPR tickets */
             <div className="flex items-center gap-2">
               <span className="text-xs text-amber-700 font-semibold">{gdprLabel}</span>
@@ -141,25 +122,8 @@ export default function StaffReplyForm({
                 ))}
               </select>
             </div>
-          ) : (
-            /* AI draft button for general tickets */
-            <button
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className="text-xs text-[#00b8a6] hover:text-[#009d8e] font-medium transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              {isGenerating ? 'Generating…' : draftReply ? '↺ Regenerate AI draft' : '✦ Generate AI draft'}
-            </button>
           )}
         </div>
-
-        {/* AI suggested dot — only for general tickets with a draft */}
-        {!isGdpr && draftReply && (
-          <div className="flex items-center gap-1.5 mb-3">
-            <span className="inline-block w-2 h-2 rounded-full bg-amber-400" />
-            <span className="text-xs text-ink-muted">AI suggested · edit before sending</span>
-          </div>
-        )}
 
         {/* Template loaded indicator */}
         {isGdpr && message && (
