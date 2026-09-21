@@ -40,10 +40,11 @@ import { verifyCronSecret } from '@/lib/utils/cron'
 import { claimNotification, releaseNotificationClaim } from '@/lib/notification-log'
 import { renderTemplate } from '@/lib/email-templates'
 import { reportDbError } from '@/lib/db-errors'
+import { withHeartbeat } from '@/lib/cron-health'
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
-export async function GET(request: Request) {
+async function handler(request: Request) {
   if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
@@ -333,3 +334,5 @@ export async function GET(request: Request) {
     errors:  errors.length > 0 ? errors : undefined,
   })
 }
+
+export const GET = withHeartbeat('trial-emails', handler, createAdminClient)

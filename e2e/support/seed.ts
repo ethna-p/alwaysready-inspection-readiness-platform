@@ -60,6 +60,7 @@ const IP_KEYED_LIMITER_NAMES = [
   'inbound-waitlist',
   'inbound-optout',
   'support-content',
+  'health',
 ]
 
 /**

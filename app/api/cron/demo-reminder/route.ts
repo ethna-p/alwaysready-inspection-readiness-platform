@@ -14,6 +14,7 @@ import { createAdminClient }  from '@/lib/supabase/admin'
 import { sendEmail }          from '@/lib/email'
 import { verifyCronSecret }   from '@/lib/utils/cron'
 import { claimCronSlot, releaseCronSlot } from '@/lib/notification-log'
+import { withHeartbeat } from '@/lib/cron-health'
 
 const NOTIFY_EMAIL = 'hello@alwaysready.uk'
 
@@ -41,7 +42,7 @@ function demoLabel(demoType: string): string {
   return demoType
 }
 
-export async function GET(request: Request) {
+async function handler(request: Request) {
   if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
@@ -147,3 +148,5 @@ export async function GET(request: Request) {
   console.log(`[demo-reminder] Sent reminder for ${bookings.length} demo(s) on ${dateLabel}`)
   return NextResponse.json({ ok: true, sent: true, count: bookings.length })
 }
+
+export const GET = withHeartbeat('demo-reminder', handler, createAdminClient)

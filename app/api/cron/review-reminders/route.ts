@@ -28,6 +28,7 @@ import { renderTemplate }    from '@/lib/email-templates'
 
 import { PLATFORM_URL } from '@/lib/config'
 import { verifyCronSecret } from '@/lib/utils/cron'
+import { withHeartbeat } from '@/lib/cron-health'
 
 const DUE_SOON_DAYS = 7
 
@@ -174,7 +175,7 @@ function hrOverdueHtml(staffNameRaw: string, fieldLabelRaw: string, dueDate: str
 
 // ── Cron handler ──────────────────────────────────────────────────────────────
 
-export async function GET(request: Request) {
+async function handler(request: Request) {
   // Verify cron secret
   if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
@@ -459,3 +460,5 @@ export async function GET(request: Request) {
     errors:  errors.length > 0 ? errors : undefined,
   })
 }
+
+export const GET = withHeartbeat('review-reminders', handler, createAdminClient)
