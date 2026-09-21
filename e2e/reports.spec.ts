@@ -34,6 +34,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { must, tidy } from './support/db'
 
 function daysFromNow(n: number): string {
   const d = new Date()
@@ -69,24 +70,24 @@ test('Report Builder: view filtering (RAG + action status), evidence gaps, key-q
 
   // ── Seed RAG states directly -- this spec is about the Report Builder's
   // filtering, not the KLOE-rating UI (already covered elsewhere). ────────
-  await admin.from('compliance_records')
+  must(await admin.from('compliance_records')
     .update({ status: 'completed', date_reviewed: daysFromNow(-5), next_review_due: daysFromNow(90) })
-    .eq('organisation_id', account.orgId).eq('klo_item_id', kloGreen.id)
+    .eq('organisation_id', account.orgId).eq('klo_item_id', kloGreen.id), 'reports: update compliance_records')
 
-  await admin.from('compliance_records')
+  must(await admin.from('compliance_records')
     .update({ status: 'completed', date_reviewed: daysFromNow(-40), next_review_due: daysFromNow(-10) })
-    .eq('organisation_id', account.orgId).eq('klo_item_id', kloRed.id)
+    .eq('organisation_id', account.orgId).eq('klo_item_id', kloRed.id), 'reports: update compliance_records')
   // kloEvidenceGaps and kloWithEvidence are left at their auto-seeded
   // default (grey) -- irrelevant to the Evidence Gaps view, which filters
   // purely on evidence count.
 
-  await admin.from('kloe_evidence').insert({
+  must(await admin.from('kloe_evidence').insert({
     organisation_id: account.orgId,
     klo_item_id: kloWithEvidence.id,
     file_name: 'e2e-policy.pdf',
     storage_path: `${account.orgId}/e2e-report-test.pdf`,
     scan_status: 'clean',
-  })
+  }), 'reports: insert kloe_evidence')
 
   // ── One open action on the red KLOE, one completed action on the green
   // one -- "Attention Needed" filters to open actions only. ───────────────
@@ -198,10 +199,10 @@ test('Report Builder: view filtering (RAG + action status), evidence gaps, key-q
   await expect(page.getByText(`since ${yesterdayLabel}`)).toHaveCount(2)
 
   // ── Cleanup: only this spec's own rows, nothing shared. ──────────────────
-  await admin.from('report_snapshots').delete().eq('organisation_id', account.orgId).eq('view_key', 'attention-needed').eq('captured_date', yesterdayDate)
-  await admin.from('action_items').delete().in('id', [openAction!.id])
-  await admin.from('action_items').delete().eq('organisation_id', account.orgId).eq('title', 'E2E: already resolved item')
-  await admin.from('kloe_evidence').delete().eq('organisation_id', account.orgId).eq('klo_item_id', kloWithEvidence.id)
+  tidy(await admin.from('report_snapshots').delete().eq('organisation_id', account.orgId).eq('view_key', 'attention-needed').eq('captured_date', yesterdayDate), 'reports: delete report_snapshots')
+  tidy(await admin.from('action_items').delete().in('id', [openAction!.id]), 'reports: delete action_items')
+  tidy(await admin.from('action_items').delete().eq('organisation_id', account.orgId).eq('title', 'E2E: already resolved item'), 'reports: delete action_items')
+  tidy(await admin.from('kloe_evidence').delete().eq('organisation_id', account.orgId).eq('klo_item_id', kloWithEvidence.id), 'reports: delete kloe_evidence')
 })
 
 test('Report Builder: save, apply, and delete a custom saved view', async ({ page }) => {
@@ -214,7 +215,7 @@ test('Report Builder: save, apply, and delete a custom saved view', async ({ pag
   // state rather than assuming a clean org (other specs in this suite share
   // the same seeded fixture, and saved_report_views has no per-spec index
   // reservation the way klo_items rows do).
-  await admin.from('saved_report_views').delete().eq('org_id', account.orgId).eq('name', viewName)
+  tidy(await admin.from('saved_report_views').delete().eq('org_id', account.orgId).eq('name', viewName), 'reports: delete saved_report_views')
 
   await login(page, account)
   await page.waitForURL('**/dashboard')
@@ -256,5 +257,5 @@ test('Report Builder: save, apply, and delete a custom saved view', async ({ pag
   await expect(page.getByText('No saved views yet.')).toBeVisible()
 
   // ── Cleanup: guard against a failure leaving the row behind ──────────────
-  await admin.from('saved_report_views').delete().eq('org_id', account.orgId).eq('name', viewName)
+  tidy(await admin.from('saved_report_views').delete().eq('org_id', account.orgId).eq('name', viewName), 'reports: delete saved_report_views')
 })

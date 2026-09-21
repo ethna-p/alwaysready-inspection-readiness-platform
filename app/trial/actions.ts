@@ -9,6 +9,7 @@ import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
 import { renderTemplate } from '@/lib/email-templates'
+import { reportDbError } from '@/lib/db-errors'
 
 // 3 trial signups per IP per hour: generous for legitimate use,
 // prevents automated provisioning of many orgs from one address.
@@ -173,7 +174,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   })
 
   if (authError || !authData.user) {
-    await supabase.from('organisations').delete().eq('id', org.id)
+    reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'trial-signup rollback')
 
     const msg = authError?.message ?? ''
     if (msg.includes('already registered') || msg.includes('already exists')) {
@@ -201,7 +202,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
 
   if (userError) {
     await supabase.auth.admin.deleteUser(authUserId)
-    await supabase.from('organisations').delete().eq('id', org.id)
+    reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'trial-signup rollback')
     return { success: false, error: 'Could not create your profile. Please try again.' }
   }
 
@@ -211,7 +212,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
   // it up on first login.
   if (cqcResult.status === 'found') {
     try {
-      await supabase
+      const { error: cqcUpdateError } = await supabase
         .from('organisations')
         .update({
           cqc_location_name:        cqcResult.data.locationName,
@@ -220,6 +221,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
           cqc_rating_fetched_at:    new Date().toISOString(),
         })
         .eq('id', org.id)
+      reportDbError(cqcUpdateError, 'trial-signup CQC enrichment')
     } catch (err) {
       console.warn('[trial-signup] CQC enrichment update failed (non-fatal):', err)
     }
@@ -231,7 +233,7 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
     // klo_items is empty: this is an infrastructure problem, not a transient error.
     // Roll back and fail hard; the dashboard self-heal cannot fix a missing reference table.
     await supabase.auth.admin.deleteUser(authUserId)
-    await supabase.from('organisations').delete().eq('id', org.id)
+    reportDbError((await supabase.from('organisations').delete().eq('id', org.id)).error, 'trial-signup rollback')
     console.error('[trial-signup] klo_items table is empty, cannot seed compliance records')
     return { success: false, error: 'Could not set up your account. Please try again.' }
   }

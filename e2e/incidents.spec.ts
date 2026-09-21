@@ -41,6 +41,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 const SAFETY_TITLE       = 'E2E Incident: Wet floor near kitchen entrance'
 const SAFEGUARDING_TITLE = 'E2E Incident: Unexplained bruising noted on resident'
@@ -157,7 +158,7 @@ test('Incident Log: create, filter, admin review/close, and a reporter editing t
   await teammateContext.close()
 
   // ── Cleanup: only this spec's own rows ────────────────────────────────
-  await admin.from('incidents').delete().eq('organisation_id', account.orgId).in('title', [SAFETY_TITLE, SAFEGUARDING_TITLE, editedTitle])
+  tidy(await admin.from('incidents').delete().eq('organisation_id', account.orgId).in('title', [SAFETY_TITLE, SAFEGUARDING_TITLE, editedTitle]), 'incidents: delete incidents')
 
   // completeMandatoryMfaSetup() above just enrolled a real MFA factor for
   // the shared teammate account -- other specs later in the same suite run

@@ -28,6 +28,7 @@ import { test, expect } from '@playwright/test'
 import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { must } from './support/db'
 
 function daysAgo(n: number): string {
   const d = new Date()
@@ -176,11 +177,11 @@ test('My KLOEs sorts red-before-green and shows the overdue warning only on the 
   // run of this same spec (the seed script also resets it, but this spec
   // shouldn't rely on that alone), and remove the MFA factor this test
   // enrolled -- same reasoning as every other spec sharing this account.
-  await admin
+  must(await admin
     .from('compliance_records')
     .update({ assigned_to: null })
     .eq('organisation_id', account.orgId)
-    .in('klo_item_id', [overdueKlo.id, upToDateKlo.id])
+    .in('klo_item_id', [overdueKlo.id, upToDateKlo.id]), 'my-kloes: update compliance_records')
 
   const { data: factors } = await admin.auth.admin.mfa.listFactors({ userId: account.teammate.userId })
   for (const factor of factors?.factors ?? []) {

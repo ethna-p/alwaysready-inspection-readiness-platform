@@ -18,6 +18,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin email log: shows sent trial/onboarding emails, correctly labelled and counted', async ({ page }) => {
   test.setTimeout(60_000)
@@ -79,7 +80,7 @@ test('superadmin email log: shows sent trial/onboarding emails, correctly labell
     await expect(card.getByText('W01', { exact: true })).toBeVisible()
     await expect(card.getByText('✓ W01', { exact: true })).toHaveCount(0)
   } finally {
-    await admin.from('notification_log').delete().eq('organisation_id', orgId)
-    await admin.from('organisations').delete().eq('id', orgId)
+    tidy(await admin.from('notification_log').delete().eq('organisation_id', orgId), 'superadmin-email-log: delete notification_log')
+    tidy(await admin.from('organisations').delete().eq('id', orgId), 'superadmin-email-log: delete organisations')
   }
 })

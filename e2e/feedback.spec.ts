@@ -58,6 +58,7 @@ import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { loadEnvLocal } from './support/env'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 function daysAgo(n: number): string {
   const d = new Date()
@@ -204,7 +205,7 @@ test('Feedback Log: log, edit, admin-only status changes, filter, and a real sel
   await teammateContext.close()
 
   // ── Cleanup: only this spec's own rows ────────────────────────────────
-  await admin.from('feedback_records').delete().eq('organisation_id', account.orgId).in('summary', [ADMIN_FEEDBACK_SUMMARY, TEAMMATE_FEEDBACK_SUMMARY])
+  tidy(await admin.from('feedback_records').delete().eq('organisation_id', account.orgId).in('summary', [ADMIN_FEEDBACK_SUMMARY, TEAMMATE_FEEDBACK_SUMMARY]), 'feedback: delete feedback_records')
 
   // completeMandatoryMfaSetup() above enrolled a real MFA factor for the
   // shared teammate account -- specs later in the same suite run assume it

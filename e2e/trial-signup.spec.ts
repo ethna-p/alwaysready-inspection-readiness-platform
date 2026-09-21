@@ -57,6 +57,7 @@ import { test, expect } from '@playwright/test'
 import { completeMandatoryMfaSetup, login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 // A real, publicly-documented example CQC Location ID (CQC's own Syndication
 // API docs use this exact ID for their GET /locations/{id} example).
@@ -83,13 +84,13 @@ test('trial signup: real form, real org, real email, through to a working dashbo
       .eq('cqc_location_id', cqcLocationId)
       .maybeSingle()
     if (!staleOrg) return
-    await admin.from('compliance_records').delete().eq('organisation_id', staleOrg.id)
+    tidy(await admin.from('compliance_records').delete().eq('organisation_id', staleOrg.id), 'trial-signup: delete compliance_records')
     const { data: staleUsers } = await admin.from('users').select('id').eq('organisation_id', staleOrg.id)
     for (const u of staleUsers ?? []) {
       await admin.auth.admin.deleteUser(u.id)
     }
-    await admin.from('users').delete().eq('organisation_id', staleOrg.id)
-    await admin.from('organisations').delete().eq('id', staleOrg.id)
+    tidy(await admin.from('users').delete().eq('organisation_id', staleOrg.id), 'trial-signup: delete users')
+    tidy(await admin.from('organisations').delete().eq('id', staleOrg.id), 'trial-signup: delete organisations')
   }
   await cleanupTrialOrg(REAL_CQC_LOCATION_ID)
 

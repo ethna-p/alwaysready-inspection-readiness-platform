@@ -24,6 +24,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { must, tidy } from './support/db'
 
 // A genuine, minimal 1x1 transparent PNG -- real magic bytes (file-type
 // detects this as image/png), not just a file named ".png".
@@ -51,7 +52,7 @@ test('org logo: real PNG upload persists, SVG is honestly rejected (not advertis
     // Start from a known state regardless of what an earlier run left behind.
     const { data: before } = await admin.from('organisations').select('logo_url').eq('id', account.orgId).single()
     if (before?.logo_url) {
-      await admin.from('organisations').update({ logo_url: null }).eq('id', account.orgId)
+      must(await admin.from('organisations').update({ logo_url: null }).eq('id', account.orgId), 'org-logo: update organisations')
       await page.reload()
     }
     await expect(page.getByLabel('No logo uploaded')).toBeVisible()
@@ -88,7 +89,7 @@ test('org logo: real PNG upload persists, SVG is honestly rejected (not advertis
     const { data: afterRemove } = await admin.from('organisations').select('logo_url').eq('id', account.orgId).single()
     expect(afterRemove!.logo_url).toBeNull()
   } finally {
-    await admin.from('organisations').update({ logo_url: null }).eq('id', account.orgId)
+    tidy(await admin.from('organisations').update({ logo_url: null }).eq('id', account.orgId), 'org-logo: update organisations')
     await admin.storage.from('org-logos').remove([`${account.orgId}/logo.png`]).catch(() => {})
   }
 })

@@ -66,3 +66,7 @@ share-certificate-parker-digital.docx
 /docs/supabase-email-password-changed.html
 /docs/supabase-email-reset-password.html
 /scripts/create-security-issues.sh
+
+# Local working files, not part of the project
+/Claude outputs/
+/ethna-p.png

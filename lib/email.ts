@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { buildUnsubscribeUrl, buildSubscriberUnsubscribeUrl } from '@/lib/unsubscribe-token'
 import { PLATFORM_URL } from '@/lib/config'
+import { reportDbError } from '@/lib/db-errors'
 
 /**
  * Email types.
@@ -329,7 +330,8 @@ export async function sendEmail(opts: SendEmailOptions): Promise<SendEmailResult
   // it just means that one email's "View in Browser" link 404s.
   try {
     const archiveSupabase = createAdminClient()
-    await archiveSupabase.from('email_archive').insert({ id: archiveId, subject: opts.subject, body_html: html })
+    const { error: archiveError } = await archiveSupabase.from('email_archive').insert({ id: archiveId, subject: opts.subject, body_html: html })
+    reportDbError(archiveError, 'email: archive for "View in Browser"')
   } catch (err) {
     console.error('[email] failed to archive for "View in Browser":', err)
   }

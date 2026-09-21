@@ -19,6 +19,7 @@ import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { CRON_SECRET } from './support/cron'
 import { ensureComplianceRecordsSeeded } from './support/compliance'
+import { must, tidy } from './support/db'
 
 function daysFromNow(n: number): string {
   const d = new Date()
@@ -31,11 +32,11 @@ test('Account -> Notifications: toggling preferences persists server-side', asyn
   const account = loadTestAccount()
   const admin = getAdminClient()
 
-  await admin.from('users').update({
+  must(await admin.from('users').update({
     notify_review_reminders: false,
     notify_governance_digest: false,
     notification_prefs_confirmed_at: null,
-  }).eq('id', account.userId)
+  }).eq('id', account.userId), 'notification-preferences: update users')
 
   try {
     await login(page, account)
@@ -66,11 +67,11 @@ test('Account -> Notifications: toggling preferences persists server-side', asyn
     await page.reload()
     await expect(page.locator('input[name="notify_review_reminders"]')).toBeChecked()
   } finally {
-    await admin.from('users').update({
+    tidy(await admin.from('users').update({
       notify_review_reminders: false,
       notify_governance_digest: false,
       notification_prefs_confirmed_at: null,
-    }).eq('id', account.userId)
+    }).eq('id', account.userId), 'notification-preferences: update users')
   }
 })
 
@@ -92,24 +93,24 @@ test('review-reminders cron only emails the assignee when they have opted in', a
   expect(kloErr).toBeNull()
   const dueSoonKlo = kloItems![0]
 
-  await admin
+  must(await admin
     .from('compliance_records')
     .update({ assigned_to: account.teammate.userId, next_review_due: daysFromNow(3) })
     .eq('organisation_id', account.orgId)
-    .eq('klo_item_id', dueSoonKlo.id)
+    .eq('klo_item_id', dueSoonKlo.id), 'notification-preferences: update compliance_records')
 
   // Clear any log entry a prior run left so idempotency doesn't hide the
   // send attempt this test is checking for.
-  await admin
+  must(await admin
     .from('notification_log')
     .delete()
     .eq('organisation_id', account.orgId)
     .eq('entity_type', 'kloe')
-    .eq('entity_id', dueSoonKlo.id)
+    .eq('entity_id', dueSoonKlo.id), 'notification-preferences: delete notification_log')
 
   try {
     // ── Opted out: no send attempt at all ────────────────────────────────
-    await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId)
+    must(await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId), 'notification-preferences: update users')
 
     const optedOutRes = await request.get('/api/cron/review-reminders', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
@@ -124,7 +125,7 @@ test('review-reminders cron only emails the assignee when they have opted in', a
 
     // ── Opted in: a send is attempted (and reported as skipped, since this
     // environment has no RESEND_API_KEY -- that's what lands it in errors) ──
-    await admin.from('users').update({ notify_review_reminders: true }).eq('id', account.teammate.userId)
+    must(await admin.from('users').update({ notify_review_reminders: true }).eq('id', account.teammate.userId), 'notification-preferences: update users')
 
     const optedInRes = await request.get('/api/cron/review-reminders', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
@@ -134,18 +135,18 @@ test('review-reminders cron only emails the assignee when they have opted in', a
     const optedInErrors: string[] = optedInBody.errors ?? []
     expect(optedInErrors.some(e => e.includes('KLOE due_soon') && e.includes(dueSoonKlo.id))).toBe(true)
   } finally {
-    await admin
+    tidy(await admin
       .from('compliance_records')
       .update({ assigned_to: null, next_review_due: null })
       .eq('organisation_id', account.orgId)
-      .eq('klo_item_id', dueSoonKlo.id)
-    await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId)
-    await admin
+      .eq('klo_item_id', dueSoonKlo.id), 'notification-preferences: update compliance_records')
+    tidy(await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId), 'notification-preferences: update users')
+    tidy(await admin
       .from('notification_log')
       .delete()
       .eq('organisation_id', account.orgId)
       .eq('entity_type', 'kloe')
-      .eq('entity_id', dueSoonKlo.id)
+      .eq('entity_id', dueSoonKlo.id), 'notification-preferences: delete notification_log')
   }
 })
 
@@ -155,16 +156,16 @@ test('governance-digest cron only emails admins who have opted in', async ({ req
   const admin = getAdminClient()
 
   const today = new Date().toISOString().slice(0, 10)
-  await admin
+  must(await admin
     .from('notification_log')
     .delete()
     .eq('organisation_id', account.orgId)
     .eq('entity_type', 'governance_digest')
     .eq('entity_id', account.orgId)
-    .eq('due_date', today)
+    .eq('due_date', today), 'notification-preferences: delete notification_log')
 
   try {
-    await admin.from('users').update({ notify_governance_digest: false }).eq('id', account.userId)
+    must(await admin.from('users').update({ notify_governance_digest: false }).eq('id', account.userId), 'notification-preferences: update users')
     const optedOutRes = await request.get('/api/cron/governance-digest', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
     })
@@ -172,7 +173,7 @@ test('governance-digest cron only emails admins who have opted in', async ({ req
     const optedOutErrors: string[] = (await optedOutRes.json()).errors ?? []
     expect(optedOutErrors.some(e => e.includes(account.email))).toBe(false)
 
-    await admin.from('users').update({ notify_governance_digest: true }).eq('id', account.userId)
+    must(await admin.from('users').update({ notify_governance_digest: true }).eq('id', account.userId), 'notification-preferences: update users')
     const optedInRes = await request.get('/api/cron/governance-digest', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
     })
@@ -180,14 +181,14 @@ test('governance-digest cron only emails admins who have opted in', async ({ req
     const optedInErrors: string[] = (await optedInRes.json()).errors ?? []
     expect(optedInErrors.some(e => e.includes(account.email))).toBe(true)
   } finally {
-    await admin.from('users').update({ notify_governance_digest: false }).eq('id', account.userId)
-    await admin
+    tidy(await admin.from('users').update({ notify_governance_digest: false }).eq('id', account.userId), 'notification-preferences: update users')
+    tidy(await admin
       .from('notification_log')
       .delete()
       .eq('organisation_id', account.orgId)
       .eq('entity_type', 'governance_digest')
       .eq('entity_id', account.orgId)
-      .eq('due_date', today)
+      .eq('due_date', today), 'notification-preferences: delete notification_log')
   }
 })
 
@@ -201,10 +202,10 @@ test('notification-reconfirmation cron only emails opted-in users whose confirma
 
   try {
     // Opted in, freshly confirmed -- should NOT be emailed.
-    await admin.from('users').update({
+    must(await admin.from('users').update({
       notify_review_reminders: true,
       notification_prefs_confirmed_at: new Date().toISOString(),
-    }).eq('id', account.teammate.userId)
+    }).eq('id', account.teammate.userId), 'notification-preferences: update users')
 
     const freshRes = await request.get('/api/cron/notification-reconfirmation', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
@@ -216,9 +217,9 @@ test('notification-reconfirmation cron only emails opted-in users whose confirma
     // Opted in, stale confirmation -- should be emailed (and, since there's
     // no RESEND_API_KEY, land in errors the same way the other crons' skipped
     // sends do).
-    await admin.from('users').update({
+    must(await admin.from('users').update({
       notification_prefs_confirmed_at: sixWeeksAgo.toISOString(),
-    }).eq('id', account.teammate.userId)
+    }).eq('id', account.teammate.userId), 'notification-preferences: update users')
 
     const staleRes = await request.get('/api/cron/notification-reconfirmation', {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
@@ -227,11 +228,11 @@ test('notification-reconfirmation cron only emails opted-in users whose confirma
     const staleErrors: string[] = (await staleRes.json()).errors ?? []
     expect(staleErrors.some(e => e.includes(account.teammate.userId))).toBe(true)
   } finally {
-    await admin.from('users').update({
+    tidy(await admin.from('users').update({
       notify_review_reminders: false,
       notify_governance_digest: false,
       notification_prefs_confirmed_at: null,
-    }).eq('id', account.teammate.userId)
+    }).eq('id', account.teammate.userId), 'notification-preferences: update users')
   }
 })
 
@@ -240,7 +241,7 @@ test('notification feedback: submitting on the Notifications tab shows up in the
   const account = loadTestAccount()
   const admin = getAdminClient()
 
-  await admin.from('notification_feedback').delete().eq('user_id', account.userId)
+  tidy(await admin.from('notification_feedback').delete().eq('user_id', account.userId), 'notification-preferences: delete notification_feedback')
 
   try {
     await login(page, account)
@@ -277,6 +278,6 @@ test('notification feedback: submitting on the Notifications tab shows up in the
     await expect(superadminPage.getByText('E2E feedback suggestion text.')).toBeVisible()
     await superadminContext.close()
   } finally {
-    await admin.from('notification_feedback').delete().eq('user_id', account.userId)
+    tidy(await admin.from('notification_feedback').delete().eq('user_id', account.userId), 'notification-preferences: delete notification_feedback')
   }
 })

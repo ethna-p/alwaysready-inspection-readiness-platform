@@ -25,6 +25,7 @@ import { test, expect } from '@playwright/test'
 import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { must } from './support/db'
 
 test('Welcome: first login after MFA enrolment shows onboarding, unchecking consent is respected, and it never shows again', async ({ page }) => {
   test.setTimeout(90_000)
@@ -91,10 +92,10 @@ test('Welcome: first login after MFA enrolment shows onboarding, unchecking cons
   await expect(page.getByRole('heading', { name: /Welcome,/ })).toHaveCount(0)
 
   // Cleanup: leave the shared fixture as the seed script created it.
-  await admin
+  must(await admin
     .from('users')
     .update({ onboarding_complete: true, marketing_consent: null, marketing_consent_at: null })
-    .eq('id', account.teammate.userId)
+    .eq('id', account.teammate.userId), 'welcome: update users')
 
   const { data: factorsAfter } = await admin.auth.admin.mfa.listFactors({ userId: account.teammate.userId })
   for (const factor of factorsAfter?.factors ?? []) {

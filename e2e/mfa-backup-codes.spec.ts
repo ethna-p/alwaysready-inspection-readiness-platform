@@ -14,6 +14,7 @@ import { login, completeMandatoryMfaSetup } from './support/actions'
 import { currentTotpCode } from './support/totp'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('a valid backup code resets the stuck factor and routes to mandatory re-setup', async ({ page }) => {
   test.setTimeout(90_000)
@@ -30,7 +31,7 @@ test('a valid backup code resets the stuck factor and routes to mandatory re-set
   for (const factor of staleFactors?.factors ?? []) {
     await admin.auth.admin.mfa.deleteFactor({ id: factor.id, userId: account.teammate.userId })
   }
-  await admin.from('mfa_backup_codes').delete().eq('user_id', account.teammate.userId)
+  tidy(await admin.from('mfa_backup_codes').delete().eq('user_id', account.teammate.userId), 'mfa-backup-codes: delete mfa_backup_codes')
 
   try {
     // ── Enrol TOTP for real, capture the backup codes shown ──────────────
@@ -94,7 +95,7 @@ test('a valid backup code resets the stuck factor and routes to mandatory re-set
     for (const factor of cleanupFactors?.factors ?? []) {
       await admin.auth.admin.mfa.deleteFactor({ id: factor.id, userId: account.teammate.userId })
     }
-    await admin.from('mfa_backup_codes').delete().eq('user_id', account.teammate.userId)
+    tidy(await admin.from('mfa_backup_codes').delete().eq('user_id', account.teammate.userId), 'mfa-backup-codes: delete mfa_backup_codes')
   }
 })
 
@@ -141,7 +142,7 @@ test('an invalid backup code is rejected without touching the real factor', asyn
     for (const factor of cleanupFactors?.factors ?? []) {
       await admin.auth.admin.mfa.deleteFactor({ id: factor.id, userId: account.teammate.userId })
     }
-    await admin.from('mfa_backup_codes').delete().eq('user_id', account.teammate.userId)
+    tidy(await admin.from('mfa_backup_codes').delete().eq('user_id', account.teammate.userId), 'mfa-backup-codes: delete mfa_backup_codes')
   }
 })
 
@@ -191,5 +192,5 @@ test('Account -> Security: generating backup codes, then regenerating, invalidat
     .eq('user_id', account.userId)
   expect(afterRegenerate).toBe(10)
 
-  await admin.from('mfa_backup_codes').delete().eq('user_id', account.userId)
+  tidy(await admin.from('mfa_backup_codes').delete().eq('user_id', account.userId), 'mfa-backup-codes: delete mfa_backup_codes')
 })

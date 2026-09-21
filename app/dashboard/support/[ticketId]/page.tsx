@@ -4,6 +4,7 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { reportDbError } from '@/lib/db-errors'
 
 type Props = { params: Promise<{ ticketId: string }> }
 
@@ -34,12 +35,13 @@ export default async function TicketThreadPage({ params }: Props) {
     .order('created_at', { ascending: true })
 
   // Mark any unread staff replies as read now that the user has opened the thread
-  await supabase
+  const { error: markReadError } = await supabase
     .from('support_ticket_replies')
     .update({ read_at: new Date().toISOString() })
     .eq('ticket_id', ticketId)
     .eq('is_staff_reply', true)
     .is('read_at', null)
+  reportDbError(markReadError, 'support ticket: mark replies read')
 
   const status = STATUS_LABELS[ticket.status] ?? STATUS_LABELS.open
   const createdAt = new Date(ticket.created_at).toLocaleString('en-GB', {

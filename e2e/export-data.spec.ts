@@ -24,6 +24,7 @@ import JSZip from 'jszip'
 import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('export-data: admin-only, and the real ZIP contains every expected CSV with formula injection neutralised', async ({ page }) => {
   test.setTimeout(60_000)
@@ -109,10 +110,10 @@ test('export-data: admin-only, and the real ZIP contains every expected CSV with
     expect(kloeCsv).toContain(`'${dangerousNote}`)
     expect(kloeCsv).not.toContain(`,${dangerousNote}`)
   } finally {
-    await admin
+    tidy(await admin
       .from('compliance_records')
       .update({ notes: null, date_reviewed: null })
       .eq('organisation_id', account.orgId)
-      .eq('klo_item_id', kloId)
+      .eq('klo_item_id', kloId), 'export-data: update compliance_records')
   }
 })

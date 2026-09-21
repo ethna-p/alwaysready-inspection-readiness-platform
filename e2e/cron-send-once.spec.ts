@@ -14,6 +14,7 @@
 import { test, expect } from '@playwright/test'
 import { getAdminClient } from './support/admin'
 import { CRON_SECRET } from './support/cron'
+import { tidy } from './support/db'
 
 const auth = { Authorization: `Bearer ${CRON_SECRET}` }
 
@@ -46,7 +47,7 @@ test('demo-reminder: an already-claimed day sends nothing; a failed send release
   }
 
   try {
-    await admin.from('cron_claims').delete().eq('job', 'demo-reminder').eq('claim_key', claimKey)
+    tidy(await admin.from('cron_claims').delete().eq('job', 'demo-reminder').eq('claim_key', claimKey), 'cron-send-once: delete cron_claims')
 
     // 1. Already claimed: the route skips without trying to send.
     const { error: claimErr } = await admin.from('cron_claims').insert({ job: 'demo-reminder', claim_key: claimKey })
@@ -58,13 +59,13 @@ test('demo-reminder: an already-claimed day sends nothing; a failed send release
 
     // 2. Not claimed: the route tries, the send cannot go out (no API key), so it reports
     //    failure AND releases the claim, leaving the day free for the next run.
-    await admin.from('cron_claims').delete().eq('job', 'demo-reminder').eq('claim_key', claimKey)
+    tidy(await admin.from('cron_claims').delete().eq('job', 'demo-reminder').eq('claim_key', claimKey), 'cron-send-once: delete cron_claims')
     const failed = await request.get('/api/cron/demo-reminder', { headers: auth })
     expect(failed.status()).toBe(500)
     expect(await claimRow()).toHaveLength(0)
   } finally {
-    await admin.from('zeeg_bookings').delete().eq('event_uuid', eventUuid)
-    await admin.from('cron_claims').delete().eq('job', 'demo-reminder').eq('claim_key', claimKey)
+    tidy(await admin.from('zeeg_bookings').delete().eq('event_uuid', eventUuid), 'cron-send-once: delete zeeg_bookings')
+    tidy(await admin.from('cron_claims').delete().eq('job', 'demo-reminder').eq('claim_key', claimKey), 'cron-send-once: delete cron_claims')
   }
 })
 
@@ -108,7 +109,7 @@ test('waitlist-nurture: an already-claimed email is not resent; a failed send le
 
     // 2. Not claimed: the send cannot go out (no API key), so the lead must NOT advance
     //    (it used to, silently) and the claim must be released for a retry.
-    await admin.from('cron_claims').delete().eq('job', 'waitlist-nurture').eq('claim_key', claimKey)
+    tidy(await admin.from('cron_claims').delete().eq('job', 'waitlist-nurture').eq('claim_key', claimKey), 'cron-send-once: delete cron_claims')
     const failed = await request.get('/api/cron/waitlist-nurture', { headers: auth })
     expect(failed.status()).toBe(200)
     expect((await failed.json()).errors).toContain(lead!.email)
@@ -118,7 +119,7 @@ test('waitlist-nurture: an already-claimed email is not resent; a failed send le
     expect(new Date(state.nurture_last_sent_at!).toISOString()).toBe(new Date(tenDaysAgo).toISOString())
     expect(await claimRow()).toHaveLength(0)
   } finally {
-    await admin.from('waitlist_leads').delete().eq('id', lead!.id)
-    await admin.from('cron_claims').delete().eq('job', 'waitlist-nurture').eq('claim_key', claimKey)
+    tidy(await admin.from('waitlist_leads').delete().eq('id', lead!.id), 'cron-send-once: delete waitlist_leads')
+    tidy(await admin.from('cron_claims').delete().eq('job', 'waitlist-nurture').eq('claim_key', claimKey), 'cron-send-once: delete cron_claims')
   }
 })

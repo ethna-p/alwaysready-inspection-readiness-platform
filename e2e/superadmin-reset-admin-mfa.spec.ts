@@ -19,6 +19,7 @@ import { test, expect } from '@playwright/test'
 import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin resets a sole admin\'s MFA from another org, real removal', async ({ page }) => {
   test.setTimeout(90_000)
@@ -102,7 +103,7 @@ test('superadmin resets a sole admin\'s MFA from another org, real removal', asy
     expect(factorsAfter?.factors.length).toBe(0)
   } finally {
     await admin.auth.admin.deleteUser(targetUserId).catch(() => {})
-    await admin.from('users').delete().eq('organisation_id', orgId)
-    await admin.from('organisations').delete().eq('id', orgId)
+    tidy(await admin.from('users').delete().eq('organisation_id', orgId), 'superadmin-reset-admin-mfa: delete users')
+    tidy(await admin.from('organisations').delete().eq('id', orgId), 'superadmin-reset-admin-mfa: delete organisations')
   }
 })

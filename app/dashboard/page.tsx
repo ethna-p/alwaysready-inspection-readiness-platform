@@ -21,6 +21,7 @@ import { fetchCqcLocation, cqcRatingColours, formatCqcDate } from '@/lib/cqc'
 import TeamWorkloadTable from '@/components/TeamWorkloadTable'
 import type { CqcRating } from '@/lib/cqc'
 import AnalyticsSectionServer from '@/components/AnalyticsSectionServer'
+import { reportDbError } from '@/lib/db-errors'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -135,12 +136,13 @@ export default async function DashboardPage() {
           const fresh = await fetchCqcLocation(locationId)
           if (fresh.status === 'found') {
             const admin = createAdminClient()
-            await admin.from('organisations').update({
+            const { error: refreshError } = await admin.from('organisations').update({
               cqc_location_name:        fresh.data.locationName,
               cqc_rating:               fresh.data.overallRating,
               cqc_last_inspection_date: fresh.data.lastInspectionDate,
               cqc_rating_fetched_at:    new Date().toISOString(),
             }).eq('id', orgIdToUpdate)
+            reportDbError(refreshError, 'dashboard: CQC background refresh')
           }
           if (fresh.status === 'not_found') {
             console.warn('[dashboard] CQC refresh: location no longer on register', locationId)

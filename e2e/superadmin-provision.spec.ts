@@ -22,6 +22,7 @@ import { test, expect } from '@playwright/test'
 import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin provisions a new organisation, and the admin account it creates genuinely works', async ({ page, browser }) => {
   test.setTimeout(120_000)
@@ -114,8 +115,8 @@ test('superadmin provisions a new organisation, and the admin account it creates
   } finally {
     if (userId) await admin.auth.admin.deleteUser(userId).catch(() => {})
     if (orgId) {
-      await admin.from('users').delete().eq('organisation_id', orgId)
-      await admin.from('organisations').delete().eq('id', orgId)
+      tidy(await admin.from('users').delete().eq('organisation_id', orgId), 'superadmin-provision: delete users')
+      tidy(await admin.from('organisations').delete().eq('id', orgId), 'superadmin-provision: delete organisations')
     }
   }
 })

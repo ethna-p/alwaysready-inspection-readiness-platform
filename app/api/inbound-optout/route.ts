@@ -28,6 +28,7 @@ import { sendEmail } from '@/lib/email'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import type { MarketingSuppression, CampaignContact } from '@/lib/types'
 import { escapeHtml } from '@/lib/utils/escape'
+import { reportDbError } from '@/lib/db-errors'
 
 
 // 10 requests per IP per hour
@@ -131,24 +132,39 @@ export async function POST(req: NextRequest) {
 
   // ── Suppress the matched contact ────────────────────────────────────────
   let needsManualReview = false
+  let suppressContactFailed = false
 
   if (matchedContact) {
-    await supabase
+    const { error: contactError } = await supabase
       .from('campaign_contacts')
       .update({ suppressed_at: new Date().toISOString() })
       .eq('id', matchedContact.id)
 
-    await supabase
+    const { error: linkError } = await supabase
       .from('marketing_suppressions')
       .update({ campaign_contact_id: matchedContact.id })
       .eq('id', suppression!.id)
+
+    // The opt-out itself is already recorded (marketing_suppressions row above). If marking the
+    // contact as suppressed failed, that must not pass silently: flag it in AJ's email so she
+    // suppresses the contact by hand, since this is a legal opt-out request.
+    if (reportDbError(contactError, 'inbound-optout: suppress contact')) {
+      suppressContactFailed = true
+      needsManualReview = true
+    }
+    reportDbError(linkError, 'inbound-optout: link suppression to contact')
   } else {
     needsManualReview = true
   }
 
   // ── Notify AJ ─────────────────────────────────────────────────────────────
   const ajEmail = process.env.SUPERADMIN_EMAIL ?? 'hello@alwaysready.uk'
-  const reviewBanner = codeOrTokenNotRecognised
+  const reviewBanner = suppressContactFailed
+    ? `<p style="margin:0 0 12px;font-size:13px;color:#991b1b;background:#fee2e2;padding:8px 12px;border-radius:4px">
+         🛑 <strong>Automatic suppression failed.</strong> The opt-out request was recorded, but this contact could not be
+         marked as suppressed. Open the campaigns page and suppress it yourself so it is not contacted again.
+       </p>`
+    : codeOrTokenNotRecognised
     ? `<p style="margin:0 0 12px;font-size:13px;color:#92400e;background:#fef3c7;padding:8px 12px;border-radius:4px">
          ⚠️ <strong>Needs manual review.</strong> A ${optoutCode ? 'code' : 'link'} was provided but didn't match any
          contact, likely mistyped, or this contact was already suppressed. Check the ${optoutCode ? `code ${escapeHtml(optoutCode)}` : 'link'}
