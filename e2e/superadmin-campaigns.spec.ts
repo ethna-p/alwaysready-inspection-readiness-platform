@@ -16,6 +16,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin campaigns: create/delete a campaign, add/remove a manual opt-out', async ({ page }) => {
   test.setTimeout(60_000)
@@ -72,7 +73,7 @@ test('superadmin campaigns: create/delete a campaign, add/remove a manual opt-ou
     await suppressionRow.getByRole('button', { name: 'Remove' }).click()
     await expect(page.locator('tr', { hasText: suppressionServiceName })).toHaveCount(0)
   } finally {
-    await admin.from('marketing_campaigns').delete().eq('name', campaignName)
-    await admin.from('marketing_suppressions').delete().eq('location_name', suppressionServiceName)
+    tidy(await admin.from('marketing_campaigns').delete().eq('name', campaignName), 'superadmin-campaigns: delete marketing_campaigns')
+    tidy(await admin.from('marketing_suppressions').delete().eq('location_name', suppressionServiceName), 'superadmin-campaigns: delete marketing_suppressions')
   }
 })

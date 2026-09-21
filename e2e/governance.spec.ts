@@ -57,6 +57,7 @@ import { login, completeMandatoryMfaSetup } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { loadEnvLocal } from './support/env'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 function daysAgo(n: number): string {
   const d = new Date()
@@ -215,7 +216,7 @@ test('Governance Log: record, edit, sign off, filter, and a real self-sign-off f
   await teammateContext.close()
 
   // ── Cleanup: only this spec's own rows ────────────────────────────────
-  await admin.from('governance_meetings').delete().eq('organisation_id', account.orgId).in('title', [ADMIN_MEETING_TITLE, TEAMMATE_MEETING_TITLE])
+  tidy(await admin.from('governance_meetings').delete().eq('organisation_id', account.orgId).in('title', [ADMIN_MEETING_TITLE, TEAMMATE_MEETING_TITLE]), 'governance: delete governance_meetings')
 
   // completeMandatoryMfaSetup() above enrolled a real MFA factor for the
   // shared teammate account -- specs later in the same suite run

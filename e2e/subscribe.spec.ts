@@ -47,6 +47,7 @@ import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { loadEnvLocal } from './support/env'
+import { tidy } from './support/db'
 
 test('subscribing via Stripe Checkout activates the organisation for real', async ({ page }) => {
   test.setTimeout(150_000) // real Stripe checkout (~15s) + up to 60s redirect wait + up to 20s webhook poll, with headroom
@@ -199,7 +200,7 @@ test('subscribing via Stripe Checkout activates the organisation for real', asyn
         await stripe.customers.del(cleanupOrg.stripe_customer_id).catch(() => {})
       }
     }
-    await admin
+    tidy(await admin
       .from('organisations')
       .update({
         subscription_tier: 'active',
@@ -208,6 +209,6 @@ test('subscribing via Stripe Checkout activates the organisation for real', asyn
         subscribed_at: null,
         data_deletion_due_at: null,
       })
-      .eq('id', account.orgId)
+      .eq('id', account.orgId), 'subscribe: update organisations')
   }
 })

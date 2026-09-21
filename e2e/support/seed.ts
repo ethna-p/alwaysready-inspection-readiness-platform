@@ -26,6 +26,7 @@ import { Redis } from '@upstash/redis'
 import { loadEnvLocal } from './env.ts'
 import { currentTotpCode } from './totp.ts'
 import { deleteStoragePrefix } from '../../lib/utils/storage-cleanup.ts'
+import { must } from './db.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = join(__dirname, '..', '..')
@@ -155,9 +156,9 @@ export async function seed() {
       .eq('organisation_id', existingOrg.id)
     const existingTicketIds = (existingTickets ?? []).map(t => t.id)
     if (existingTicketIds.length > 0) {
-      await admin.from('support_ticket_replies').delete().in('ticket_id', existingTicketIds)
+      must(await admin.from('support_ticket_replies').delete().in('ticket_id', existingTicketIds), 'seed: delete support_ticket_replies')
     }
-    await admin.from('support_tickets').delete().eq('organisation_id', existingOrg.id)
+    must(await admin.from('support_tickets').delete().eq('organisation_id', existingOrg.id), 'seed: delete support_tickets')
 
     // A user who has ever made a compliance update (exactly what every spec
     // in this suite does) has rows in these audit tables referencing them
@@ -205,7 +206,7 @@ export async function seed() {
     }
     // deleteUser cascades the public.users row for a real FK-driven delete,
     // but belt-and-braces in case that row somehow outlived it.
-    await admin.from('users').delete().eq('organisation_id', existingOrg.id)
+    must(await admin.from('users').delete().eq('organisation_id', existingOrg.id), 'seed: delete users')
 
     // A spec that actually uploaded evidence (kloe-evidence-upload.spec.ts)
     // left real files in Storage — the row deletes above never touch those.

@@ -35,6 +35,7 @@ import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { CRON_SECRET } from './support/cron'
 import { ensureComplianceRecordsSeeded } from './support/compliance'
+import { must, tidy } from './support/db'
 
 function daysFromNow(n: number): string {
   const d = new Date()
@@ -73,7 +74,7 @@ test('review-reminders: detects a due-soon KLOE and an overdue one, leaves a saf
     expect(error).toBeNull()
   }
 
-  await admin.from('users').update({ notify_review_reminders: true }).eq('id', account.teammate.userId)
+  must(await admin.from('users').update({ notify_review_reminders: true }).eq('id', account.teammate.userId), 'cron-review-reminders: update users')
 
   try {
     const response = await request.get('/api/cron/review-reminders', {
@@ -88,11 +89,11 @@ test('review-reminders: detects a due-soon KLOE and an overdue one, leaves a saf
     expect(errors.some(e => e.includes(`KLOE overdue`) && e.includes(overdueKlo.id))).toBe(true)
     expect(errors.some(e => e.includes(safeKlo.id))).toBe(false)
   } finally {
-    await admin
+    tidy(await admin
       .from('compliance_records')
       .update({ assigned_to: null, next_review_due: null })
       .eq('organisation_id', account.orgId)
-      .in('klo_item_id', [dueSoonKlo.id, overdueKlo.id, safeKlo.id])
-    await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId)
+      .in('klo_item_id', [dueSoonKlo.id, overdueKlo.id, safeKlo.id]), 'cron-review-reminders: update compliance_records')
+    tidy(await admin.from('users').update({ notify_review_reminders: false }).eq('id', account.teammate.userId), 'cron-review-reminders: update users')
   }
 })

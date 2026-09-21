@@ -26,6 +26,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin broadcast: counts only active subscribers, sends, and reports the real total', async ({ page }) => {
   test.setTimeout(60_000)
@@ -83,7 +84,7 @@ test('superadmin broadcast: counts only active subscribers, sends, and reports t
     await expect(page.getByText(String(expectedRecipients))).toBeVisible()
     await expect(page.getByText(`${expectedRecipients} skipped`, { exact: false })).toBeVisible()
   } finally {
-    await admin.from('blog_subscribers').delete().eq('email', activeEmail)
-    await admin.from('blog_subscribers').delete().eq('email', unsubscribedEmail)
+    tidy(await admin.from('blog_subscribers').delete().eq('email', activeEmail), 'superadmin-broadcast: delete blog_subscribers')
+    tidy(await admin.from('blog_subscribers').delete().eq('email', unsubscribedEmail), 'superadmin-broadcast: delete blog_subscribers')
   }
 })

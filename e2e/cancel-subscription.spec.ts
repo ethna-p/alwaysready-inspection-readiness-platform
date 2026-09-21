@@ -40,6 +40,7 @@ import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { loadEnvLocal } from './support/env'
+import { tidy } from './support/db'
 
 test('cancelling a subscription lands on a real Stripe portal session; no-customer org sees only Subscribe', async ({ page }) => {
   test.setTimeout(60_000)
@@ -112,9 +113,9 @@ test('cancelling a subscription lands on a real Stripe portal session; no-custom
     // (subscription_tier: 'active', no stripe_customer_id) — this is a
     // shared org across every spec in the suite, and leaving it on 'trial'
     // could affect whatever spec runs after this one.
-    await admin
+    tidy(await admin
       .from('organisations')
       .update({ stripe_customer_id: null, subscription_tier: 'active' })
-      .eq('id', account.orgId)
+      .eq('id', account.orgId), 'cancel-subscription: update organisations')
   }
 })

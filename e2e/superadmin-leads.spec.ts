@@ -26,6 +26,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports an honest count', async ({ page }) => {
   test.setTimeout(60_000)
@@ -100,8 +101,8 @@ test('superadmin leads: Zeeg booking form, lead deletion, and bulk-send reports 
     await bookingRow.getByRole('button', { name: 'Delete' }).click()
     await expect(page.locator('tr', { hasText: zeegEmail })).toHaveCount(0)
   } finally {
-    await admin.from('waitlist_leads').delete().eq('email', leadEmail)
-    await admin.from('zeeg_bookings').delete().eq('invitee_email', zeegEmail)
+    tidy(await admin.from('waitlist_leads').delete().eq('email', leadEmail), 'superadmin-leads: delete waitlist_leads')
+    tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', zeegEmail), 'superadmin-leads: delete zeeg_bookings')
   }
 })
 
@@ -171,7 +172,7 @@ test('superadmin leads: a rejected booking or time change shows an error instead
     const staleRow = page.locator('tr', { hasText: staleEmail })
     await expect(staleRow).toBeVisible()
     await staleRow.getByTitle('Edit scheduled time').click()
-    await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail)
+    tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail), 'superadmin-leads: delete zeeg_bookings')
     await staleRow.locator('input[type="datetime-local"]').fill('2030-03-02T12:00')
     await staleRow.getByRole('button', { name: 'Save' }).click()
     await expect(
@@ -180,7 +181,7 @@ test('superadmin leads: a rejected booking or time change shows an error instead
     // The editor stays open so nothing the admin typed is lost.
     await expect(staleRow.getByRole('button', { name: 'Cancel' })).toBeVisible()
   } finally {
-    await admin.from('zeeg_bookings').delete().eq('invitee_email', badDateEmail)
-    await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail)
+    tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', badDateEmail), 'superadmin-leads: delete zeeg_bookings')
+    tidy(await admin.from('zeeg_bookings').delete().eq('invitee_email', staleEmail), 'superadmin-leads: delete zeeg_bookings')
   }
 })

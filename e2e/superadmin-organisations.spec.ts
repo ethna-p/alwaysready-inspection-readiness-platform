@@ -53,6 +53,7 @@ import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
+import { tidy } from './support/db'
 
 test('superadmin: permanently delete an organisation', async ({ page }) => {
   test.setTimeout(90_000)
@@ -151,8 +152,8 @@ test('superadmin: permanently delete an organisation', async ({ page }) => {
     // successful run has nothing left to clean up.
     if (orgStillExists) {
       await admin.auth.admin.deleteUser(targetUserId).catch(() => {})
-      await admin.from('users').delete().eq('organisation_id', orgId)
-      await admin.from('organisations').delete().eq('id', orgId)
+      tidy(await admin.from('users').delete().eq('organisation_id', orgId), 'superadmin-organisations: delete users')
+      tidy(await admin.from('organisations').delete().eq('id', orgId), 'superadmin-organisations: delete organisations')
     }
   }
 })
