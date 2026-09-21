@@ -19,8 +19,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
     "@sentry/nextjs": "^10.75.1",
-    "@supabase/ssr": "^0.12.5",
-    "@supabase/supabase-js": "^2.112.3",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.116.0",
     "@types/canvas-confetti": "^1.9.0",
     "@upstash/ratelimit": "^2.1.0",
     "@upstash/redis": "^1.39.0",
