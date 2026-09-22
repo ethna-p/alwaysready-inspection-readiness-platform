@@ -30,6 +30,7 @@ const CRON_ROUTES = [
   '/api/cron/review-reminders',
   '/api/cron/trial-emails',
   '/api/cron/waitlist-nurture',
+  '/api/cron/storage-backup',
 ]
 
 for (const route of CRON_ROUTES) {

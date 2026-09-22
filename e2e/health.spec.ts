@@ -16,7 +16,7 @@ import { must } from './support/db'
 
 const JOBS = [
   'review-reminders', 'trial-emails', 'onboarding-emails', 'waitlist-nurture',
-  'governance-digest', 'data-deletion', 'notification-reconfirmation',
+  'governance-digest', 'data-deletion', 'notification-reconfirmation', 'storage-backup',
 ]
 
 async function setHeartbeat(job: string, when: Date) {

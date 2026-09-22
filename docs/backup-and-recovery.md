@@ -1,7 +1,8 @@
-# Database Backup and Recovery Runbook
+# Database and Storage Backup and Recovery Runbook
 
 **Platform:** AlwaysReady Inspection Readiness Platform  
-**Database:** Supabase (PostgreSQL)  
+**Database:** Supabase (PostgreSQL) — see §1-6  
+**Storage:** Supabase Storage, mirrored nightly to Cloudflare R2 — see §7  
 **Last verified:** 31 August 2026  
 **Last test restore:** Not yet completed  
 **Current status:** FREE plan — no paying customers yet. Upgrade to Pro on launch day (see §8).
@@ -120,6 +121,54 @@ Run this once per year to confirm backups are usable and the recovery procedure 
 | Date | Restored from | organisations | kloe_compliance_records | users | Notes |
 |---|---|---|---|---|---|
 | [TBC] | | | | | First test restore — to be completed |
+
+---
+
+## 7. Storage backup (Cloudflare R2)
+
+Supabase's own daily backups and PITR (§1) cover the Postgres database only. Supabase's docs
+are explicit that Storage objects are excluded: "Database backups do not include objects you
+store via the Storage API, as the database only includes metadata about these objects." Without
+a separate backup, a catastrophic Supabase failure would take every uploaded evidence file and
+org logo with it, permanently, with no recovery path at all.
+
+**What it is:** a nightly cron (`/api/cron/storage-backup`, 04:00 UTC, `lib/storage-backup.ts`)
+that writes a complete snapshot of both Supabase Storage buckets (`evidence`, `org-logos`) into
+a Cloudflare R2 bucket (`alwaysready-storage-backup`), under `{YYYY-MM-DD}/{bucket}/...`.
+
+**Retention:** R2 has no native S3 bucket versioning, so this isn't a single mirrored copy kept
+under version history. Each night's run is a fresh, complete, self-contained dated folder. A
+lifecycle rule on the R2 bucket itself (Settings → Object Lifecycle Rules) deletes objects older
+than 30 days, so each dated folder ages out on its own after 30 days — no delete logic runs in
+the app. This also means a file a customer genuinely deleted (or the data-deletion cron erased)
+simply stops appearing in new snapshots and ages out of the retained window naturally, rather
+than being kept forever in a backup.
+
+**Monitoring:** like every other scheduled job, this one stamps `cron_heartbeats` on success
+(`withHeartbeat` in `lib/cron-health.ts`) and `/api/health` will report it stale if it goes
+quiet for more than 27 hours. It skips cleanly (200, `sent: false`) if the R2 environment
+variables aren't configured, the same pattern as every other optional integration.
+
+**Credentials:** `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`
+are set in Vercel's environment variables (production). The R2 API token is scoped to
+Object Read and Write on this one bucket only.
+
+### Recovery scenario — restoring lost Storage files
+
+1. In the Cloudflare dashboard, open **R2 Object Storage** → `alwaysready-storage-backup`.
+2. Browse to the most recent dated folder before the loss (`{YYYY-MM-DD}/{bucket}/...`).
+3. Download the needed object(s) (R2's dashboard supports direct download, or use an S3-
+   compatible client with the same credentials as the backup job).
+4. Re-upload the file(s) to the corresponding path in the live Supabase Storage bucket, either
+   via the Supabase dashboard's Storage browser or a one-off script using the service role key.
+5. Confirm the file is reachable through the app (e.g. an evidence record's download link).
+
+### Recovery time objective
+
+| Scenario | Target RTO | Notes |
+|---|---|---|
+| Single file restore | < 15 minutes | Manual download from R2 + re-upload to Supabase |
+| Full bucket restore | < 2 hours | Bulk download from the most recent dated folder + re-upload |
 
 ---
 
