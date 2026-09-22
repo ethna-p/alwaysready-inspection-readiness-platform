@@ -56,7 +56,6 @@ const IP_KEYED_LIMITER_NAMES = [
   'cqc-lookup',
   'inbound-blog-signup',
   'inbound-contact',
-  'inbound-demo',
   'inbound-waitlist',
   'inbound-optout',
   'support-content',

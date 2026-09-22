@@ -20,7 +20,7 @@
  * Every scheduled email job now claims before it sends (claim, send, release the
  * claim if the send fails), because Vercel can deliver a cron invocation twice and
  * a Hobby-plan job fires anywhere within its hour. Jobs that have no organisation
- * to key on (demo-reminder, waitlist-nurture) use claimCronSlot() instead, which
+ * to key on (waitlist-nurture) use claimCronSlot() instead, which
  * does the same thing against the cron_claims table.
  */
 

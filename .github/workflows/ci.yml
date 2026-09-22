@@ -123,4 +123,3 @@ jobs:
           UPSTASH_REDIS_REST_URL: https://placeholder.upstash.io
           UPSTASH_REDIS_REST_TOKEN: placeholder
           TURNSTILE_SECRET_KEY: placeholder
-          ZEEG_WEBHOOK_TOKEN: placeholder
