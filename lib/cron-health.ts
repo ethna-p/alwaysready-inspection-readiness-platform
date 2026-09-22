@@ -24,7 +24,6 @@ export const CRON_JOBS: Record<string, number> = {
   'governance-digest':           WEEKLY_HOURS,
   'data-deletion':               DAILY_HOURS,
   'notification-reconfirmation': WEEKLY_HOURS,
-  'demo-reminder':               DAILY_HOURS,
 }
 
 export interface HeartbeatRow { job: string; last_success_at: string }

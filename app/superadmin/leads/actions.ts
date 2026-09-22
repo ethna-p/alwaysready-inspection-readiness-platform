@@ -35,36 +35,6 @@ export async function deleteSubscriber(id: string): Promise<LeadsActionResult> {
   return { success: true }
 }
 
-export async function addZeegBooking(formData: FormData): Promise<LeadsActionResult> {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-
-  const name     = (formData.get('invitee_name')  as string | null)?.trim() || null
-  const email    = ((formData.get('invitee_email') as string | null) ?? '').trim()
-  const demoType    = ((formData.get('demo_type')     as string | null) ?? '').trim()
-  const scheduledAt = ((formData.get('scheduled_at')   as string | null) ?? '').trim() || null
-
-  if (!email || !demoType) return { success: false, error: 'Email and demo type are required.' }
-
-  const { error } = await supabase.from('zeeg_bookings').insert({
-    event_uuid:    crypto.randomUUID(),
-    invitee_uuid:  crypto.randomUUID(),
-    invitee_email: email,
-    invitee_name:  name,
-    demo_type:     demoType,
-    booked_at:     new Date().toISOString(),
-    scheduled_at:  scheduledAt,
-  })
-
-  if (error) {
-    console.error('[leads] addZeegBooking insert failed:', error)
-    return { success: false, error: 'Could not add the booking. Please try again.' }
-  }
-
-  revalidatePath('/superadmin/leads')
-  return { success: true }
-}
-
 /**
  * Bulk-send Email 9 (CQC framework date) or Email 10 (launch) to all
  * nurture_opt_in waitlist subscribers. Triggered manually by AJ once CQC
@@ -137,50 +107,4 @@ export async function sendBulkLaunchEmail(
   }
 
   return { sent, failed, errors }
-}
-
-export async function deletePipelineRow(
-  demoLeadId: string | null,
-  zeegBookingId: string | null,
-): Promise<LeadsActionResult> {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-
-  // Attempt both deletes even if the first fails, so one bad row does not strand the other.
-  let failed = false
-  if (demoLeadId) {
-    const { error } = await supabase.from('demo_leads').delete().eq('id', demoLeadId)
-    if (error) { console.error('[leads] deletePipelineRow demo_leads failed:', error); failed = true }
-  }
-  if (zeegBookingId) {
-    const { error } = await supabase.from('zeeg_bookings').delete().eq('id', zeegBookingId)
-    if (error) { console.error('[leads] deletePipelineRow zeeg_bookings failed:', error); failed = true }
-  }
-
-  // Revalidate even on failure so the table shows whichever half did get deleted.
-  revalidatePath('/superadmin/leads')
-  return failed
-    ? { success: false, error: 'Could not delete this entry. Please refresh and try again.' }
-    : { success: true }
-}
-
-export async function updateScheduledAt(zeegBookingId: string, scheduledAt: string): Promise<LeadsActionResult> {
-  await assertSuperadmin()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('zeeg_bookings')
-    .update({ scheduled_at: scheduledAt })
-    .eq('id', zeegBookingId)
-    .select('id')
-
-  if (error) {
-    console.error('[leads] updateScheduledAt failed:', error)
-    return { success: false, error: 'Could not save the new time. Please try again.' }
-  }
-  if (!data || data.length === 0) {
-    return { success: false, error: 'That booking no longer exists. Please refresh the page.' }
-  }
-
-  revalidatePath('/superadmin/leads')
-  return { success: true }
 }

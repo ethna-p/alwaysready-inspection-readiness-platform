@@ -27,10 +27,6 @@
     {
       "path": "/api/cron/notification-reconfirmation",
       "schedule": "0 9 * * 1"
-    },
-    {
-      "path": "/api/cron/demo-reminder",
-      "schedule": "0 19 * * *"
     }
   ]
 }

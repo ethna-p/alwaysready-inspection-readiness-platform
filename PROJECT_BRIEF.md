@@ -74,7 +74,6 @@ The following modules and features are fully built and deployed:
 - Self-service trial signup flow
 - Cancel subscription — Account page button redirects the admin to Stripe's hosted billing portal, deep-linked directly to its cancellation flow; the resulting webhook (customer.subscription.deleted) updates the organisation
 - Trial banners and welcome screen
-- Demo leads capture with marketing consent
 - Trial email sequence (Days 3, 5, 7, 9, 11, 13) via Resend
 - Unsubscribe system (HMAC tokens, /unsubscribe page, marketing_opt_out flag)
 - Superadmin provisioning tool (provision Beta users, manage orgs)
@@ -303,7 +302,7 @@ Before the platform is opened to real paying customers:
 - `support_tickets` — customer support and website enquiries
 - `support_ticket_replies` — threaded replies on support tickets
 - `notification_log` — deduplication log for all outgoing emails
-- `cron_claims` — send-once ledger for scheduled emails with no organisation (demo-reminder, waitlist-nurture); service role only. Every scheduled email job claims before it sends (`sendOnce` / `claimCronSlot` in `lib/notification-log.ts`) and releases the claim if the send fails
+- `cron_claims` — send-once ledger for scheduled emails with no organisation (waitlist-nurture); service role only. Every scheduled email job claims before it sends (`sendOnce` / `claimCronSlot` in `lib/notification-log.ts`) and releases the claim if the send fails
 - `waitlist_leads` — trial/waitlist signups from marketing site
 - `blog_subscribers` — email list subscribers
 - `hr_staff_profiles` — HR module staff records
@@ -319,8 +318,6 @@ Before the platform is opened to real paying customers:
 - `i_statement_evidence_files` — uploaded evidence files for I-statement records
 - `saved_report_views` — named saved filter configurations for the ReportBuilder
 - `report_snapshots` — point-in-time snapshots of readiness % for progress delta
-- `demo_leads` — demo booking form submissions
-- `zeeg_bookings` — Zeeg calendar booking webhooks
 - `marketing_campaigns` — outbound email campaign records
 - `campaign_contacts` — per-campaign contact list
 - `marketing_suppressions` — opt-out suppression list for marketing campaigns
