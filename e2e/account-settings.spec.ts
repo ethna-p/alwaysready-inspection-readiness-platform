@@ -117,6 +117,10 @@ test('Account: self-service password change, Notifications tab is gone, and admi
   // (net::ERR_ABORTED). Wait for real, known dashboard content instead of
   // a generic load-state signal.
   await expect(teammatePage.getByRole('link', { name: 'Dashboard' })).toBeVisible()
+  // Content being visible was still not enough (about 1 run in 3 aborted); the dashboard keeps
+  // fetching briefly after it renders, so wait for the network to go quiet too, as
+  // accessibility.spec.ts and error-reporting.spec.ts do.
+  await teammatePage.waitForLoadState('networkidle')
 
   // ── The OLD Notifications tab (PersonalContactForm) is gone ─────────────
   // A tab of the same name now legitimately exists for a different purpose
