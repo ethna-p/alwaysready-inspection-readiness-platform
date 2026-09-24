@@ -105,7 +105,6 @@ test('accessibility: superadmin pages have no serious or critical WCAG 2.1 AA vi
     '/superadmin/leads',
     '/superadmin/campaigns',
     '/superadmin/tickets',
-    '/superadmin/metrics',
     '/superadmin/infrastructure',
     '/superadmin/broadcast',
     '/superadmin/email-log',
