@@ -8,6 +8,9 @@ port = 54321
 schemas = ["public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
+# Mirror Supabase's new default (tables in public are no longer exposed automatically);
+# the setting is scheduled for removal by Supabase on 2026-10-30.
+auto_expose_new_tables = false
 
 [db]
 port = 54322
