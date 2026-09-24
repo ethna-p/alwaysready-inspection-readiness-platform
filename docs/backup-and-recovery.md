@@ -184,6 +184,20 @@ Complete these steps before the first paying customer signs up:
 
 ---
 
+## 9. Vercel environment variables
+
+Vercel stores production secrets as Sensitive, which cannot be read back once saved, so there
+is no copy to restore. The recovery plan is to regenerate. The "Recovery Guide" tab of
+`docs/alwaysready-api-key-rotation-log.xlsx` lists every variable the platform reads (36), where
+it is stored, how to get it back, what to know when replacing it, and a checklist for rebuilding
+the Vercel project. It holds no secret values.
+
+Three secrets are self-generated and stored nowhere else: `CRON_SECRET`, `INBOUND_EMAIL_SECRET`
+(also in the Cloudflare Worker) and `UNSUBSCRIBE_SECRET`. Replacing `UNSUBSCRIBE_SECRET` breaks
+every unsubscribe link already sent in past emails.
+
+---
+
 ## 10. Contacts
 
 | Resource | URL |
