@@ -7,12 +7,14 @@
 > **Session updates (July 2026):** sole trader status (removed "registered at"); AI newsletter tool added to Privacy Policy and T&Cs; readiness score / inspection pack self-assessment language added to Disclaimer and T&Cs; T&Cs acceptance logging added to Privacy Policy; Cancellation Policy updated with 30-day data retention window.
 >
 > **Session updates (September 2026):** the AI newsletter drafting tool was removed from the product. Replaced its Privacy Policy and T&Cs passages below with a description of AlwaysReady's actual current AI usage: internal support-desk draft replies (Anthropic's Claude API, used by our team to draft a reply to a support ticket before review and sending — never user-facing, never used to generate content on an organisation's behalf). Matches the update already live on alwaysready.uk/legal.
+>
+> **Session updates (24 September 2026):** the AI reply-draft feature was removed, so the passages below now describe only the website chatbot (Anthropic's Claude API, visitor questions only, nothing stored, no platform data). The Cloudflare sub-processor row now covers the encrypted R2 backup of uploaded evidence files, and the retention table has a 30-day backup row. This supersedes the September note above and matches alwaysready.uk/legal.
 
 ---
 
 ## Privacy Policy
 
-Last updated: July 2026 · AlwaysReady · Parker Digital & Print Services
+Last updated: 24 September 2026 · AlwaysReady · Parker Digital & Print Services
 
 This policy explains how AlwaysReady collects, uses and protects your personal data when you use our marketing website (alwaysready.uk) or our inspection readiness platform (portal.alwaysready.uk).
 
@@ -95,11 +97,9 @@ We use the data above solely to:
 
 We do not use platform data for marketing purposes. We never sell your data.
 
-#### AI-assisted support replies
+#### Website chatbot
 
-When a support ticket is received, the AlwaysReady support team may use Anthropic's Claude API to generate a draft reply for internal review before sending. This processing uses only the content of the support ticket.
-
-The Anthropic API is not used to train AI models on your data. See anthropic.com/privacy for Anthropic's privacy policy.
+The chatbot on alwaysready.uk answers general questions about AlwaysReady. What you type into it is sent to Anthropic's Claude API to produce a reply. We do not store the conversation, and the chatbot has no access to any organisation's platform data. Please do not enter personal information. Anthropic does not use this data to train its AI models; see anthropic.com/privacy.
 
 #### Data you enter on behalf of others
 
@@ -115,11 +115,11 @@ We use the following third-party services to deliver our website and platform. E
 |---|---|---|
 | Supabase | Platform database and user authentication | EU / US |
 | Vercel | Platform hosting and deployment | US (global edge) |
-| Cloudflare | DNS, security, and inbound email routing | US (global edge) |
+| Cloudflare | DNS, security, inbound email routing, and encrypted backup copies of uploaded evidence files (R2 storage) | US (global edge) |
 | Stripe | Subscription payment processing | US / UK |
 | Resend | Transactional email delivery | US |
 | Cloudflare Pages | Marketing website hosting | US (global edge) |
-| Anthropic | AI processing for internal support desk draft replies | US |
+| Anthropic | AI processing for the website chatbot (visitor questions only, no platform data) | US |
 
 All data transfers outside the UK are protected by appropriate safeguards including UK adequacy decisions, standard contractual clauses, or the UK International Data Transfer Agreement (IDTA).
 
@@ -132,6 +132,7 @@ All data transfers outside the UK are protected by appropriate safeguards includ
 | Marketing website form submissions | Retained as contact/lead records in Supabase until deletion is requested |
 | Contact and lead records (Supabase) | Retained until you request deletion |
 | Platform account and compliance data | Retained for the duration of your subscription, plus 30 days after cancellation to allow for data export |
+| Backup copies of uploaded evidence files | Deleted automatically 30 days after the copy is made. A file removed from the platform can therefore remain in a backup for up to 30 days. |
 | Support ticket correspondence | Retained for 3 years |
 | Billing records | Retained for 7 years (legal requirement) |
 
@@ -171,7 +172,7 @@ If you are unsatisfied with our response, you may complain to the Information Co
 
 ## Terms and Conditions
 
-Last updated: July 2026
+Last updated: September 2026
 
 **Important:** AlwaysReady is an independent company. We are not affiliated with, endorsed by, or connected to the Care Quality Commission (CQC). Use of our tools does not guarantee any particular inspection rating or outcome.
 
@@ -245,7 +246,7 @@ You may export your organisation's compliance data and evidence files at any tim
 
 ### 10. AI-assisted features
 
-AlwaysReady uses Anthropic's Claude API for internal support operations, including generating draft replies to support tickets for review by our team before sending. This processing is internal only and does not involve user-facing AI content generation.
+AlwaysReady's website chatbot uses Anthropic's Claude API to answer general questions about AlwaysReady. It is not part of the platform, has no access to your organisation's data, and its answers are not legal, clinical or regulatory advice.
 
 ### 11. Service availability
 
