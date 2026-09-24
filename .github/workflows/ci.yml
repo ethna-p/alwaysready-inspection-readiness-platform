@@ -114,7 +114,6 @@ jobs:
           STRIPE_PRICE_ID: price_placeholder
           STRIPE_CHARITY_PRICE_ID: price_placeholder
           STRIPE_BETA_PRICE_ID: price_placeholder
-          ANTHROPIC_API_KEY: sk-ant-placeholder
           CLOUDMERSIVE_API_KEY: placeholder
           INBOUND_EMAIL_SECRET: placeholder
           CRON_SECRET: placeholder
