@@ -1,16 +1,13 @@
 /**
- * Superadmin Metrics and Infrastructure (app/superadmin/metrics/,
- * app/superadmin/infrastructure/) — two purely read-only operational
- * dashboards, no forms or mutating actions on either page.
+ * Superadmin Infrastructure (app/superadmin/infrastructure/) -- a purely
+ * read-only operational dashboard, no forms or mutating actions.
  *
- * Smoke-level coverage: both pages load successfully as the superadmin
- * (rather than erroring on one of their many aggregation queries) and
- * render every section heading. For Infrastructure specifically, this
- * environment has none of the external monitoring API keys configured
- * (Upstash, Sentry, Vercel, Cloudflare), so those four cards are expected
- * to show their "API key not configured" fallback rather than live data --
- * asserting on that documents the expected degraded state instead of
- * silently passing or failing on absent live numbers.
+ * Smoke-level coverage: the page loads successfully as the superadmin and
+ * renders every section heading. This environment has none of the external
+ * monitoring API keys configured (Upstash, Sentry, Vercel, Cloudflare), so
+ * those four cards are expected to show their "API key not configured"
+ * fallback rather than live data -- asserting on that documents the expected
+ * degraded state instead of silently passing or failing on absent live numbers.
  *
  * Requires the seeded fixture from `npm run test:e2e:seed` to exist (for
  * the superadmin account).
@@ -18,36 +15,6 @@
 import { test, expect } from '@playwright/test'
 import { login } from './support/actions'
 import { loadTestAccount } from './support/fixtures'
-
-test('superadmin metrics: loads and renders every section', async ({ page }) => {
-  const account = loadTestAccount()
-
-  await login(page, {
-    email: account.superadmin.email,
-    password: account.superadmin.password,
-    totpSecret: account.superadmin.totpSecret,
-  })
-  await page.waitForURL('**/superadmin/provision')
-  await page.goto('/superadmin/metrics')
-
-  await expect(page.getByRole('heading', { name: 'Metrics', exact: true })).toBeVisible()
-  for (const heading of [
-    'Subscription health',
-    'Marketing funnel',
-    'Trial signups — last 12 weeks',
-    'Trial to paid conversion — last 6 months',
-    'Active subscribers',
-    'Evidence uploads by org',
-    'Notifications sent — last 30 days',
-    'DBS checks expiring in 60 days',
-    'Training completions — last 90 days',
-    'Engagement quality',
-    'Mock inspection usage',
-    'Support tickets',
-  ]) {
-    await expect(page.getByRole('heading', { name: heading })).toBeVisible()
-  }
-})
 
 test('superadmin infrastructure: loads and shows honest fallbacks for unconfigured services', async ({ page }) => {
   const account = loadTestAccount()

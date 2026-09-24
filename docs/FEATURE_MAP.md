@@ -59,7 +59,6 @@ Before writing marketing copy, blog content, email copy, help text, or any other
 | `campaigns/` | Direct marketing campaign management — create/track campaigns, contacted leads, opt-out suppression list |
 | `email-log/` | Per-organisation view of which scheduled trial/onboarding emails have been sent (from `notification_log`) |
 | `infrastructure/` | Free-tier usage monitor across Resend, Supabase, Upstash, Sentry, Vercel, and Cloudflare, with a static fallback card per service when its API keys are absent |
-| `metrics/` | Operational health dashboard — org growth/conversion, evidence/KLOE coverage, notification stats, HR compliance (DBS, training) |
 | `provision/` | Manually provision a new organisation + admin user (service-role, bypasses RLS, seeds 24 compliance records) — for demos/onboarding outside the self-serve trial flow |
 
 ---
