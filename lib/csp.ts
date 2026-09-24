@@ -15,7 +15,7 @@
  * Third parties, and why:
  *   Cloudflare Turnstile (challenges.cloudflare.com): the bot check on /trial. Its script is loaded by
  *     a nonced script so 'strict-dynamic' covers it; its widget is an iframe, so frame-src is needed.
- *   Supabase, Sentry (EU ingest), Anthropic: browser network calls (connect-src).
+ *   Supabase, Sentry (EU ingest): browser network calls (connect-src).
  */
 
 export function buildCsp(nonce: string, isDev: boolean): string {
@@ -27,7 +27,7 @@ export function buildCsp(nonce: string, isDev: boolean): string {
     // Supabase storage for org logos
     "img-src 'self' data: blob: https://*.supabase.co",
     "font-src 'self'",
-    // Supabase (auth, database), Anthropic (newsletter AI), Sentry EU ingest (data stays in Germany)
+    // Supabase (auth, database), Sentry EU ingest (data stays in Germany)
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.ingest.de.sentry.io",
     // Cloudflare Turnstile renders its challenge in an iframe
     'frame-src https://challenges.cloudflare.com',

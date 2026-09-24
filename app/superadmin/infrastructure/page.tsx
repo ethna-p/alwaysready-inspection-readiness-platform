@@ -12,9 +12,8 @@
  *   - Cloudflare Workers requests today (GraphQL Analytics API)
  *
  * Each external API falls back to a static reference card when the
- * required env vars are absent or the fetch fails. Anthropic has no
- * public usage API so its card is always static. Supabase egress has no API
- * either (dashboard only), so it stays a static reminder to check monthly.
+ * required env vars are absent or the fetch fails. Supabase egress has no API
+ * (dashboard only), so it stays a static reminder to check monthly.
  *
  * Required env vars (add to Vercel dashboard + .env):
  *   UPSTASH_MANAGEMENT_EMAIL      — your Upstash account email
@@ -508,20 +507,6 @@ export default async function InfrastructurePage() {
             <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer"
               className="text-xs text-brand hover:underline block">
               Open Supabase dashboard
-            </a>
-          </div>
-
-          {/* Anthropic */}
-          <div className="bg-card border border-line rounded-xl p-5 space-y-3">
-            <p className="text-sm font-semibold text-ink">Anthropic — AI (pay as you go)</p>
-            <ul className="text-sm text-ink-muted space-y-1">
-              <li>Model: <span className="text-ink font-medium">Claude Haiku 4.5</span></li>
-              <li>Est. spend: <span className="text-ink font-medium">~$1 / month</span></li>
-              <li>Spend cap: <span className="text-ink font-medium">Set in console</span></li>
-            </ul>
-            <a href="https://console.anthropic.com/settings/billing" target="_blank" rel="noopener noreferrer"
-              className="text-xs text-brand hover:underline block">
-              Open Anthropic console
             </a>
           </div>
 
