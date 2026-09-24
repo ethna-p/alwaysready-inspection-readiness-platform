@@ -62,8 +62,8 @@ export async function deleteBlogSubscriberData(email: string, token: string): Pr
         with your request.
       </p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
-        This includes your email address, name, and subscription record. No copies are retained,
-        and you will not receive any further emails from us unless you subscribe again in future.
+        This includes your email address, name, and subscription record. It has been removed from our live systems, and any encrypted backup copies are automatically deleted within 30 days.
+        You will not receive any further emails from us unless you subscribe again in future.
       </p>
       <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#1a1a1a">
         If you would like to subscribe again at any point, you are very welcome to do so

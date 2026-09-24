@@ -233,7 +233,7 @@ async function handler(request: Request) {
           <h1 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#111111;line-height:1.3">Your AlwaysReady data has been deleted</h1>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             As notified, ${firstName}, all data associated with <strong>${escapeHtml(org.name)}</strong> on AlwaysReady
-            has now been permanently deleted in accordance with our data retention policy.
+            has now been permanently deleted in accordance with our data retention policy. It has been removed from our live systems, and any encrypted backup copies are automatically deleted within 30 days.
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
             One exception: our payment processor, Stripe, is legally required to retain certain billing and
