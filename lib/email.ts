@@ -69,6 +69,13 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
          ${unsubscribeUrl ? `<a href="${unsubscribeUrl}" style="color:#ffffff;text-decoration:underline">Unsubscribe</a> from non-essential emails.` : ''}
        </p>`
 
+  // The headline sits between the logo and the founder byline. The byline lives in this
+  // wrapper (added to every email on 2026-09-18), so a headline written at the start of a body
+  // would otherwise render below it. Lift a leading <h1> out and render it above the byline.
+  const headlineMatch = bodyHtml.match(/^\s*(<h1\b[\s\S]*?<\/h1>)/i)
+  const headlineHtml = headlineMatch ? headlineMatch[1].replace('margin:0 0 20px', 'margin:0') : ''
+  const bodyAfterHeadline = headlineMatch ? bodyHtml.slice(headlineMatch[0].length) : bodyHtml
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AlwaysReady</title></head>
@@ -101,6 +108,13 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
             </td>
           </tr>
 
+          ${headlineHtml ? `<!-- Headline: between the logo and the byline -->
+          <tr>
+            <td style="padding:16px 40px 0">
+              ${headlineHtml}
+            </td>
+          </tr>
+` : ''}
           <!-- From: circular headshot + name/title, shown on every email so
                this never again drifts per-template or gets lost behind a
                stale saved override (see lib/email-templates.ts). -->
@@ -123,7 +137,7 @@ export function buildHtml(bodyHtml: string, viewInBrowserUrl: string, unsubscrib
           <!-- Body -->
           <tr>
             <td style="padding:16px 40px 0;color:#111111;font-size:16px;line-height:1.7">
-              ${bodyHtml}
+              ${bodyAfterHeadline}
             </td>
           </tr>
 
