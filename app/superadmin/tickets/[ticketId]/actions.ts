@@ -142,7 +142,7 @@ AlwaysReady`
 
 We are writing to confirm that your data deletion request, received on ${today}, has now been completed in accordance with UK GDPR Article 17.
 
-All personal data associated with your account has been permanently deleted from our systems, including your account details, compliance records, uploaded evidence, and email communication history. Where we are required to retain limited records for legal or accounting purposes (for example, invoices), these are kept only for as long as the law requires and are not used for any other purpose.
+All personal data associated with your account has been permanently deleted from our live systems, including your account details, compliance records, uploaded evidence, and email communication history. Any encrypted backup copies are automatically deleted within 30 days. Where we are required to retain limited records for legal or accounting purposes (for example, invoices), these are kept only for as long as the law requires and are not used for any other purpose.
 
 If you have any questions, contact us at support@alwaysready.uk.
 

@@ -481,7 +481,7 @@ async function sendDataDeletion(
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           This includes your account, team member profiles, compliance records, evidence files, HR data,
-          and all other information held within your workspace. No copies are retained.
+          and all other information held within your workspace. It has been removed from our live systems, and any encrypted backup copies are automatically deleted within 30 days.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#1a1a1a">
           One exception: our payment processor, Stripe, is legally required to retain certain billing and
