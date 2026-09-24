@@ -41,8 +41,8 @@ Nothing is bug-free. The bar is: no blockers, and a small, known, low-impact rem
 
 | Gate | Owner | Evidence to record |
 |---|---|---|
-| Upgrade the production Supabase project to Pro and enable point-in-time recovery | AJ | Plan screenshot; restore-test date and result (see docs/backup-and-recovery.md). Deferred to just before launch, which is only safe while production holds test data. |
-| Upgrade Vercel to Pro | AJ | Plan screenshot. The Hobby plan is for non-commercial use only. Vercel dashboard, Settings, Billing. |
+| Upgrade the production Supabase project to Pro and enable point-in-time recovery | AJ | Plan screenshot; restore-test date and result (see docs/backup-and-recovery.md). Deferred until the first real signup, which is only safe while production holds test data. The trigger is the first real free-trial signup, not the first payment: a trial user enters real staff and compliance data on day one. |
+| Upgrade Vercel to Pro | AJ | Plan screenshot. The Hobby plan is for non-commercial use only. Vercel counts a deployment used for financial gain as commercial, so the trigger is when the platform starts being marketed to customers, before the first sale (see Vercel's Fair Use Guidelines). Vercel dashboard, Settings, Billing. |
 | Live-mode payment rehearsal | AJ (payment) with Claude (checking the result) | Date; the payment, the resulting activation in the platform, and the refund |
 | `subscribe.spec` green with the Stripe listener | Claude | Test run output |
 | Alerts (site down, scheduled job stopped) | Claude builds the health check; AJ creates the external monitor account | A deliberate failure that triggered an alert |
@@ -57,8 +57,8 @@ Nothing is bug-free. The bar is: no blockers, and a small, known, low-impact rem
 
 ## 3. Infrastructure and hosting
 
-- [ ] **Upgrade the production Supabase project to Pro and enable point-in-time recovery (hard gate).** Production is on the Free plan, which has no automated backups (see docs/backup-and-recovery.md). Do it before any real customer data is loaded, then restore a backup into a scratch project once to prove it works.
-- [ ] **Upgrade Vercel to Pro (hard gate).** The current Hobby plan is for non-commercial personal use only. Upgrade to Pro ($20/month) before going live with paying customers.
+- [ ] **Upgrade the production Supabase project to Pro and enable point-in-time recovery (hard gate).** Production is on the Free plan, which has no automated backups (see docs/backup-and-recovery.md). Do it before any real customer data is loaded, which includes the first real free-trial signup (the trial needs no payment, but the data is real from day one). Daily backups only start from the day of the upgrade. Then restore a backup into a scratch project once to prove it works.
+- [ ] **Upgrade Vercel to Pro (hard gate).** The current Hobby plan is for non-commercial personal use only. Vercel treats any deployment used for financial gain as commercial use, so upgrade to Pro ($20/month) as soon as the platform is marketed to customers, before the first sale rather than after it.
 
 ---
 
