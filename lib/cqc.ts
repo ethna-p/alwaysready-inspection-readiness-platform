@@ -1,8 +1,11 @@
 /**
  * CQC Syndication API client
  *
- * Wraps the CQC public REST API (https://api.cqc.org.uk/public/v1).
- * No authentication required — the partnerCode param is for attribution only.
+ * Wraps the CQC Syndication REST API (https://api.service.cqc.org.uk/public/v1).
+ * Every request needs a subscription key from the CQC Developer Portal
+ * (Syndication product), sent in the Ocp-Apim-Subscription-Key header.
+ * The key is read from the CQC_API_KEY environment variable. The old
+ * keyless host (api.cqc.org.uk) no longer answers lookups.
  *
  * fetchCqcLocation returns a discriminated CqcLookupResult so callers can
  * distinguish between a genuine 404 (not registered) and a transient API
@@ -14,8 +17,7 @@
  * Docs: https://api-portal.service.cqc.org.uk
  */
 
-const CQC_API_BASE  = 'https://api.cqc.org.uk/public/v1'
-const PARTNER_CODE  = 'alwaysready'
+const CQC_API_BASE  = 'https://api.service.cqc.org.uk/public/v1'
 const FETCH_TIMEOUT = 8_000  // 8 s — generous for an external API
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -87,7 +89,7 @@ function asRating(value: string | undefined | null): CqcRating | null {
 }
 
 function buildUrl(path: string): string {
-  return `${CQC_API_BASE}${path}?partnerCode=${PARTNER_CODE}`
+  return `${CQC_API_BASE}${path}`
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -105,13 +107,24 @@ export async function fetchCqcLocation(
 ): Promise<CqcLookupResult> {
   if (!locationId?.trim()) return { status: 'unavailable' }
 
+  const apiKey = process.env.CQC_API_KEY?.trim()
+  if (!apiKey) {
+    // Without a key CQC rejects every request, so every lookup would silently
+    // fail open. Log loudly so a missing key is noticed rather than hidden.
+    console.error('[cqc] CQC_API_KEY is not set: CQC lookups cannot run and are failing open')
+    return { status: 'unavailable' }
+  }
+
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT)
 
   try {
     const res = await fetch(buildUrl(`/locations/${encodeURIComponent(locationId.trim())}`), {
       signal:  controller.signal,
-      headers: { Accept: 'application/json' },
+      headers: {
+        Accept: 'application/json',
+        'Ocp-Apim-Subscription-Key': apiKey,
+      },
       // Don't cache at the fetch layer — we manage staleness ourselves in the DB
       cache: 'no-store',
     })
@@ -120,7 +133,11 @@ export async function fetchCqcLocation(
       if (res.status === 404) {
         return { status: 'not_found' }
       }
-      console.warn(`[cqc] API returned ${res.status} for location ${locationId}`)
+      if (res.status === 401 || res.status === 403) {
+        console.error(`[cqc] CQC rejected the API key (HTTP ${res.status}): check CQC_API_KEY and the Syndication subscription`)
+      } else {
+        console.warn(`[cqc] API returned ${res.status} for location ${locationId}`)
+      }
       return { status: 'unavailable' }
     }
 

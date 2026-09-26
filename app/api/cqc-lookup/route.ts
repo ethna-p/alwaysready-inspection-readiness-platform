@@ -16,21 +16,33 @@ import { NextRequest, NextResponse } from 'next/server'
 import { fetchCqcLocation } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': 'https://alwaysready.uk',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+// Sites allowed to call this endpoint from a browser: the live marketing site
+// and its Cloudflare Pages preview, so form changes can be tested before launch.
+const ALLOWED_ORIGINS = [
+  'https://alwaysready.uk',
+  'https://preview.alwaysready-marketing.pages.dev',
+]
+
+function corsHeaders(req: NextRequest): Record<string, string> {
+  const origin = req.headers.get('origin') ?? ''
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    Vary: 'Origin',
+  }
 }
 
 // 60 lookups per 10 minutes per IP — allows repeated onBlur validation
 // without being exploitable as a CQC API proxy
 const limiter = createRateLimiter({ name: 'cqc-lookup', windowMs: 10 * 60_000, max: 60 })
 
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
+export async function OPTIONS(req: NextRequest) {
+  return new NextResponse(null, { status: 204, headers: corsHeaders(req) })
 }
 
 export async function GET(req: NextRequest) {
+  const CORS_HEADERS = corsHeaders(req)
   if (!await limiter.check(getClientIp(req))) {
     return new NextResponse('Too many requests. Please try again later.', {
       status: 429,
