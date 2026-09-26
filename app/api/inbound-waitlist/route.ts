@@ -24,7 +24,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
 import { getWaitlistNurtureEmail } from '@/lib/waitlist-nurture'
 import { renderTemplate } from '@/lib/email-templates'
-import { fetchCqcLocation } from '@/lib/cqc'
+import { fetchCqcLocation, isEligibleProvider, CQC_NOT_ELIGIBLE_MESSAGE } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
 import { verifyTurnstile } from '@/lib/utils/turnstile'
@@ -150,6 +150,12 @@ export async function POST(req: NextRequest) {
     if (cqcResult.status === 'not_found') {
       return NextResponse.json(
         { error: 'CQC Location ID not found. Please check your ID and try again.' },
+        { status: 400, headers: CORS_HEADERS }
+      )
+    }
+    if (cqcResult.status === 'found' && !isEligibleProvider(cqcResult.data)) {
+      return NextResponse.json(
+        { error: CQC_NOT_ELIGIBLE_MESSAGE },
         { status: 400, headers: CORS_HEADERS }
       )
     }

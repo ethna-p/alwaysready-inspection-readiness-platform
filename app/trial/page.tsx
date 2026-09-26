@@ -54,7 +54,7 @@ export default function TrialPage() {
   const [isPending,        startTransition]     = useTransition()
 
   // CQC Location ID lookup state
-  const [cqcLookupStatus,  setCqcLookupStatus]  = useState<'idle' | 'loading' | 'found' | 'not_found' | 'unavailable'>('idle')
+  const [cqcLookupStatus,  setCqcLookupStatus]  = useState<'idle' | 'loading' | 'found' | 'not_found' | 'not_eligible' | 'unavailable'>('idle')
   const [cqcFoundName,     setCqcFoundName]     = useState<string | null>(null)
   const [turnstileToken,   setTurnstileToken]   = useState('')
 
@@ -76,7 +76,9 @@ export default function TrialPage() {
     try {
       const res  = await fetch(`/api/cqc-lookup?locationId=${encodeURIComponent(id)}`)
       const data = await res.json()
-      if (data.found) {
+      if (data.found && data.eligible === false) {
+        setCqcLookupStatus('not_eligible')
+      } else if (data.found) {
         setCqcLookupStatus('found')
         setCqcFoundName(data.locationName ?? null)
         // Auto-fill service name if blank
@@ -220,6 +222,14 @@ export default function TrialPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       We couldn&apos;t find that ID on the CQC register. Please double-check it — only CQC-registered services can sign up.
+                    </span>
+                  )}
+                  {cqcLookupStatus === 'not_eligible' && (
+                    <span className="text-red-700 flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      This isn&apos;t a currently registered adult social care service. AlwaysReady is only available to CQC-registered adult social care providers.
                     </span>
                   )}
                   {cqcLookupStatus === 'unavailable' && (
@@ -401,7 +411,7 @@ export default function TrialPage() {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={isPending || cqcLookupStatus === 'not_found' || !termsAccepted}
+                disabled={isPending || cqcLookupStatus === 'not_found' || cqcLookupStatus === 'not_eligible' || !termsAccepted}
                 className="
                   w-full inline-flex items-center justify-center gap-2
                   bg-[#014D4E] text-white text-base font-bold

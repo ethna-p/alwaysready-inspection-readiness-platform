@@ -6,14 +6,15 @@
  * so the form can show inline confirmation before the user submits.
  *
  * Response shapes:
- *   { found: true,  locationName, registrationStatus, overallRating, lastInspectionDate }
+ *   { found: true,  eligible, locationName, registrationStatus, overallRating, lastInspectionDate }
+ *     eligible: true only for a currently registered adult social care location
  *   { found: false, unavailable: false }  — 404 from CQC
  *   { found: false, unavailable: true  }  — CQC API is temporarily unreachable
  *
  * No authentication required — the CQC data returned is already public.
  */
 import { NextRequest, NextResponse } from 'next/server'
-import { fetchCqcLocation } from '@/lib/cqc'
+import { fetchCqcLocation, isEligibleProvider } from '@/lib/cqc'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 
 // Sites allowed to call this endpoint from a browser: the live marketing site
@@ -68,6 +69,7 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     found:              true,
+    eligible:           isEligibleProvider(result.data),
     locationName:       result.data.locationName,
     registrationStatus: result.data.registrationStatus,
     overallRating:      result.data.overallRating,

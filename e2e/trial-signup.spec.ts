@@ -17,36 +17,18 @@
  *     same one already used for any environment without Turnstile
  *     configured -- not a workaround invented for this test.
  *
- *   - CQC API: genuinely public, no-auth (per lib/cqc.ts's own doc
- *     comment), and this spec does call the real live endpoint with a
- *     real, publicly-documented example Location ID (1-545611283, from
- *     CQC's own Syndication API docs) rather than a made-up one. As of
- *     writing, that live call returns 403 Forbidden from this specific
- *     environment (confirmed directly, independent of this app, via a
- *     plain fetch/curl) -- worth checking whether production sees the same
- *     thing, since a silent 403 there would mean CQC verification is
- *     currently non-functional for real signups too. Whatever the cause,
- *     fetchCqcLocation() already treats any non-404 failure as
- *     'unavailable' and fails OPEN by design (a CQC outage must never
- *     block a legitimate signup) -- so this spec genuinely exercises that
- *     real fail-open path, live, rather than mocking a "CQC is down"
- *     scenario. AJ raised the security/data-quality concern this trade-off
- *     creates (an org can end up live without CQC ever having confirmed
- *     its Location ID); the agreed fix was to keep signup fail-open but
- *     surface it for manual review rather than block trials during a CQC
- *     outage -- app/superadmin/organisations/page.tsx now shows a
- *     "CQC unverified" badge for any org whose cqc_rating_fetched_at is
- *     still null, checked below via a genuine superadmin login, live,
- *     using this same unavailable-CQC environment rather than a mocked
- *     one. The "new trial" notification email to AJ also flags it (subject
- *     line + a direct link to CQC's page for that Location ID) but isn't
- *     asserted here -- RESEND_API_KEY isn't set for this test env (every
- *     spec in this suite skips real sends the same way), so there's no
- *     inbox to check content against. The one thing this environment's current
- *     CQC access genuinely prevents testing is the 'found' enrichment path
- *     (real rating/inspection-date populated on signup, badge absent) and
- *     the 'not_found' hard-block path (a real 404 for a genuinely
- *     unregistered ID) -- both would need CQC access restored to verify.
+ *   - CQC API: calls the real live Syndication API (api.service.cqc.org.uk)
+ *     using the CQC_API_KEY subscription key from .env.local, the same way
+ *     production does. The main test signs up with a real, currently
+ *     registered adult social care location (Highlands Borders Care Home,
+ *     1-1000587219), so it exercises the 'found' enrichment path: real
+ *     location name and rating stored, and no "CQC unverified" badge for
+ *     superadmin. A second test uses a real GP practice (Morden Hall Medical
+ *     Centre, 1-545611283, CQC's own documentation example), which is on the
+ *     register but outside adult social care, and confirms sign-up is
+ *     refused. If CQC_API_KEY is missing or rejected, every lookup fails open
+ *     as 'unavailable' and both tests fail loudly, which is the intended
+ *     signal that CQC verification is not working.
  *
  * Requires no seeded fixture (this creates its own fresh organisation from
  * nothing, exactly like a real prospect would) -- but does still need the
@@ -59,9 +41,12 @@ import { loadTestAccount } from './support/fixtures'
 import { getAdminClient } from './support/admin'
 import { tidy } from './support/db'
 
-// A real, publicly-documented example CQC Location ID (CQC's own Syndication
-// API docs use this exact ID for their GET /locations/{id} example).
-const REAL_CQC_LOCATION_ID = '1-545611283'
+// A real, currently registered adult social care location (a care home).
+const REAL_CQC_LOCATION_ID = '1-1000587219'
+const REAL_CQC_LOCATION_NAME = 'Highlands Borders Care Home'
+// A real location that is on the CQC register but is NOT adult social care
+// (a GP practice, CQC's own documentation example), so must be refused.
+const NON_ASC_CQC_LOCATION_ID = '1-545611283'
 
 test('trial signup: real form, real org, real email, through to a working dashboard', async ({ page, baseURL, browser }) => {
   test.setTimeout(90_000)
@@ -102,13 +87,10 @@ test('trial signup: real form, real org, real email, through to a working dashbo
 
     await page.locator('#service-name').fill(serviceName)
     await page.locator('#cqc-id').fill(REAL_CQC_LOCATION_ID)
-    // Blur triggers the real /api/cqc-lookup call -- confirmed to genuinely
-    // reach the live CQC API and correctly show the "unavailable, you can
-    // still continue" state given that API's current 403 from here (see file
-    // doc comment). The submit button is only ever disabled for 'not_found',
-    // so this doesn't block the rest of the form.
+    // Blur triggers the real /api/cqc-lookup call against the live CQC API,
+    // which confirms this eligible adult social care location by name.
     await page.locator('#cqc-id').blur()
-    await expect(page.getByText(/couldn.t reach the CQC register/i)).toBeVisible()
+    await expect(page.getByText(`Found: ${REAL_CQC_LOCATION_NAME}`)).toBeVisible()
 
     await page.locator('#service-type').selectOption('Residential Care Home')
     await page.locator('#manager-name').fill(managerName)
@@ -134,22 +116,17 @@ test('trial signup: real form, real org, real email, through to a working dashbo
     expect(org!.terms_accepted_at).toBeTruthy()
     expect(org!.terms_version).toBe('v1.0')
     expect(org!.cqc_location_id).toBe(REAL_CQC_LOCATION_ID)
-    // CQC currently unavailable from this environment (see file doc comment)
-    // -- enrichment genuinely wasn't populated, matching the real fail-open
-    // behaviour rather than assuming the happy path. cqc_rating_fetched_at
-    // staying null is exactly the signal the superadmin "CQC unverified"
-    // badge (checked below) keys off.
-    expect(org!.cqc_location_name).toBeNull()
-    expect(org!.cqc_rating).toBeNull()
-    expect(org!.cqc_rating_fetched_at).toBeNull()
+    // CQC confirmed the location, so the org is enriched with real CQC data.
+    // A non-null cqc_rating_fetched_at is what keeps the superadmin
+    // "CQC unverified" badge (checked below) away.
+    expect(org!.cqc_location_name).toBe(REAL_CQC_LOCATION_NAME)
+    expect(org!.cqc_rating_fetched_at).toBeTruthy()
 
-    // ── Superadmin: an unverified CQC signup is flagged for manual review ───
-    // A CQC outage must never block a legitimate signup (see step 0's
-    // comment in app/trial/actions.ts), but silently trusting an
-    // unconfirmed Location ID forever isn't right either -- the org list
-    // flags it so a human can check. Separate browser context: this is a
-    // genuinely different actor, not the trial admin the rest of this test
-    // continues as.
+    // ── Superadmin: a CQC-verified signup is NOT flagged for review ─────────
+    // The "CQC unverified" badge only appears when CQC could not be reached
+    // at signup (fail-open). This org was verified, so the badge must be
+    // absent. Separate browser context: a genuinely different actor, not the
+    // trial admin the rest of this test continues as.
     const superadminContext = await browser.newContext()
     const superadminPage = await superadminContext.newPage()
     await login(superadminPage, {
@@ -161,7 +138,7 @@ test('trial signup: real form, real org, real email, through to a working dashbo
     await superadminPage.goto('/superadmin/organisations')
     const orgCard = superadminPage.locator('.bg-card').filter({ hasText: serviceName })
     await expect(orgCard).toBeVisible()
-    await expect(orgCard.getByText('CQC unverified')).toBeVisible()
+    await expect(orgCard.getByText('CQC unverified')).toHaveCount(0)
     await superadminContext.close()
 
     const daysUntilExpiry = (new Date(org!.trial_expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
@@ -260,4 +237,27 @@ test('trial signup: real form, real org, real email, through to a working dashbo
     // the cleanup at the start -- runs on failure too, not just the happy path.
     await cleanupTrialOrg(REAL_CQC_LOCATION_ID)
   }
+})
+
+test('trial signup: a CQC location outside adult social care is refused', async ({ page }) => {
+  const admin = getAdminClient()
+  const serviceName = `E2E Non-ASC ${Date.now()}`
+
+  await page.goto('/trial')
+  await page.locator('#service-name').fill(serviceName)
+  await page.locator('#cqc-id').fill(NON_ASC_CQC_LOCATION_ID)
+  await page.locator('#cqc-id').blur()
+
+  // The live lookup finds the GP practice but marks it ineligible, and the
+  // form refuses to go any further.
+  await expect(page.getByText(/isn.t a currently registered adult social care service/i)).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Start free trial' })).toBeDisabled()
+
+  // Nothing was provisioned for it.
+  const { data: org } = await admin
+    .from('organisations')
+    .select('id')
+    .eq('name', serviceName)
+    .maybeSingle()
+  expect(org).toBeNull()
 })

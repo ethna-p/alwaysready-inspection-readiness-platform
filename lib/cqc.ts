@@ -45,6 +45,8 @@ export type CqcLocationData = {
   locationId:          string
   locationName:        string
   registrationStatus:  string           // 'Registered' | 'Deregistered' | …
+  /** CQC's sector for the location, e.g. 'Adult social care', 'Hospitals' */
+  inspectionDirectorate: string | null
   overallRating:       CqcRating | null // null = not yet rated
   lastInspectionDate:  string | null    // ISO date string YYYY-MM-DD, or null
   /** Per-key-question ratings (may be absent for unrated locations) */
@@ -62,6 +64,7 @@ type CqcApiLocation = {
   locationId:         string
   name:               string
   registrationStatus: string
+  inspectionDirectorate?: string
   currentRatings?: {
     overall?: {
       rating:     string
@@ -153,6 +156,7 @@ export async function fetchCqcLocation(
         locationId:         raw.locationId,
         locationName:       raw.name,
         registrationStatus: raw.registrationStatus,
+        inspectionDirectorate: raw.inspectionDirectorate ?? null,
         overallRating,
         lastInspectionDate,
         keyQuestionRatings: {
@@ -175,6 +179,25 @@ export async function fetchCqcLocation(
     clearTimeout(timer)
   }
 }
+
+// ── Eligibility ───────────────────────────────────────────────────────────────
+
+/**
+ * AlwaysReady is only for adult social care providers that are currently
+ * registered with CQC. A location found on the register is eligible only if
+ * CQC files it under the Adult social care directorate (not Hospitals,
+ * Primary medical services, etc.) and its registration is still active.
+ */
+export function isEligibleProvider(data: CqcLocationData): boolean {
+  return (
+    data.registrationStatus === 'Registered' &&
+    (data.inspectionDirectorate ?? '').trim().toLowerCase() === 'adult social care'
+  )
+}
+
+/** Shown wherever sign-up is refused because a found location is not eligible. */
+export const CQC_NOT_ELIGIBLE_MESSAGE =
+  "This CQC Location ID isn't a currently registered adult social care service. AlwaysReady is only available to CQC-registered adult social care providers in England. If you think this is wrong, please contact support@alwaysready.uk."
 
 // ── Display helpers ───────────────────────────────────────────────────────────
 

@@ -3,7 +3,7 @@
 import { headers } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email'
-import { fetchCqcLocation } from '@/lib/cqc'
+import { fetchCqcLocation, isEligibleProvider, CQC_NOT_ELIGIBLE_MESSAGE } from '@/lib/cqc'
 import { getFirstName } from '@/lib/utils/name'
 import { createRateLimiter } from '@/lib/rate-limit'
 import { escapeHtml } from '@/lib/utils/escape'
@@ -106,6 +106,12 @@ export async function startTrial(input: TrialSignupInput): Promise<TrialSignupRe
       success: false,
       error: 'We could not find this CQC Location ID on the CQC register. AlwaysReady is only available to CQC-registered providers. CQC regulates health and social care services in England only. If you believe this is an error, please check your Location ID and try again, or contact support@alwaysready.uk.',
     }
+  }
+  // A location on the register but outside adult social care (a hospital, a GP
+  // practice) or no longer registered is refused: AlwaysReady is only for
+  // currently registered adult social care providers.
+  if (cqcResult.status === 'found' && !isEligibleProvider(cqcResult.data)) {
+    return { success: false, error: CQC_NOT_ELIGIBLE_MESSAGE }
   }
   // status === 'unavailable' → CQC API is temporarily down; allow signup to
   // proceed (see this file's step 9 and app/superadmin/organisations/page.tsx's
